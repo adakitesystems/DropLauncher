@@ -87,6 +87,7 @@ public class MainWindow extends JFrame {
   }// </editor-fold>//GEN-END:initComponents
 
   private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    /* Debugging button. */
     FileArray files = FileDropList.getFiles();
     if (files == null)
       return;
@@ -98,7 +99,7 @@ public class MainWindow extends JFrame {
   }//GEN-LAST:event_jButton1ActionPerformed
 
   /**
-   * Main function.
+   * Main function called when main window is displayed.
    *
    * @param args the command line arguments
    */
@@ -152,4 +153,5 @@ public class MainWindow extends JFrame {
   private javax.swing.JButton jButton1;
   private javax.swing.JScrollPane scrollPaneFileDrop;
   // End of variables declaration//GEN-END:variables
+
 }

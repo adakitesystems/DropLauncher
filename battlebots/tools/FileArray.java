@@ -31,13 +31,6 @@ public class FileArray {
   }
 
   /**
-   * Returns the number of elements in the array.
-   */
-  public int size() {
-    return _fileCount;
-  }
-
-  /**
    * Resets the array element count without setting any elements to null.
    */
   public void reset() {
@@ -45,11 +38,18 @@ public class FileArray {
   }
 
   /**
+   * Returns the number of elements in the array.
+   */
+  public int size() {
+    return _fileCount;
+  }
+
+  /**
    * Ensures the array can hold at least one more element. The array
    * is resized if required.
    *
    * @return
-   *     true if array's capacity is sufficient or was resized sucessfully,
+   *     true if the array's capacity is sufficient or was resized sucessfully,
    *     otherwise false
    */
   private boolean ensureCapacity() {
@@ -71,14 +71,16 @@ public class FileArray {
   /**
    * Adds the specified file to the array. The file will not be added if
    * its canonical path matches another file already in the array and will
-   * return false.
+   * return false. If the File object is a directory, this function will
+   * recursively be called on all subdirectories and files.
    *
-   * @param file file object to add
+   * @param file File object to add
    * @return
-   *     true if element was added,
+   *     true if object was added,
    *     otherwise false
    */
   public boolean add(File file) {
+    /* Validate parameters. */
     if (file == null) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.NULL_OBJECT);
@@ -93,7 +95,7 @@ public class FileArray {
         if (getIndexOf(file.getCanonicalPath()) >= 0) {
           return false;
         }
-      } catch (IOException ex) {
+      } catch (IOException | SecurityException ex) {
         if (MainTools.DEBUG) {
           LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -101,6 +103,7 @@ public class FileArray {
       if (!ensureCapacity()) {
         return false;
       }
+      /* Add file. */
       _files[_fileCount++] = file;
       if (CLASS_DEBUG) {
         System.out.println("FileArray: added file: " + getCanonicalPath(file));
@@ -118,6 +121,7 @@ public class FileArray {
           }
           return false;
         }
+        /* Check if directory contains any files. */
         int len = files.length;
         if (len < 1) {
           if (MainTools.DEBUG) {
@@ -125,7 +129,7 @@ public class FileArray {
           }
           return false;
         }
-        /* Add directory contents to array. */
+        /* Add directory files to array. */
         for (int i = 0; i < len; i++) {
           if (!add(files[i])) {
             if (MainTools.DEBUG) {
@@ -157,10 +161,11 @@ public class FileArray {
    *
    * @param index index of element to return
    * @return
-   *     File object at specified index,
+   *     the File object at the specified index,
    *     otherwise null
    */
   public File get(int index) {
+    /* Validate parameters. */
     if (index < 0 || index >= _fileCount) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
@@ -171,15 +176,16 @@ public class FileArray {
   }
 
   /**
-   * Returns the index of the file matching the specified filename.
+   * Returns the index of the file matching the specified path or filename.
    *
-   * @param filename specified filename to use as search key
+   * @param path specified path or filename to use as search key
    * @return
    *     index of the element in the array if found,
    *     otherwise -1
    */
-  public int getIndexOf(String filename) {
-    if (MainTools.isEmpty(filename)) {
+  public int getIndexOf(String path) {
+    /* Validate parameters. */
+    if (MainTools.isEmpty(path)) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
       }
@@ -191,8 +197,8 @@ public class FileArray {
     for (int i = 0; i < _fileCount; i++) {
       tmpFile = _files[i];
       try {
-        if (tmpFile.getName().equals(filename)
-            || tmpFile.getCanonicalPath().equals(filename)) {
+        if (tmpFile.getName().equals(path)
+            || tmpFile.getCanonicalPath().equals(path)) {
           return i;
         }
       } catch (IOException | SecurityException ex) {
@@ -214,12 +220,14 @@ public class FileArray {
    *     otherwise -1
    */
   public static long getFileSize(File file) {
+    /* Validate parameters. */
     if (file == null) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.NULL_OBJECT);
       }
       return -1;
     }
+    /* Determine file size. */
     try {
       if (!file.isFile()) {
         if (MainTools.DEBUG) {
@@ -246,12 +254,14 @@ public class FileArray {
    *     otherwise null
    */
   public static String getCanonicalPath(File file) {
+    /* Validate parameters. */
     if (file == null) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.NULL_OBJECT);
       }
       return null;
     }
+    /* Determine canonical path. */
     try {
       String path = file.getCanonicalPath();
       return path;
@@ -273,12 +283,14 @@ public class FileArray {
    *     otherwise null
    */
   public static String getShortPath(File file) {
+    /* Validate parameters. */
     if (file == null) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.NULL_OBJECT);
       }
       return null;
     }
+    /* Determine short path. */
     try {
       String path = file.getName();
       return path;

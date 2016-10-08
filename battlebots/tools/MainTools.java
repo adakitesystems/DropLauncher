@@ -21,7 +21,7 @@ public class MainTools {
   /* ************************************************************ */
   /* Debugging variables */
   /* ************************************************************ */
-  public static final boolean  DEBUG = true;
+  public  static final boolean DEBUG = true;
   private static final boolean DEBUG_LOG_FILE_ENABLED = false;
   private static final String  DEBUG_LOG_FILENAME = "errorlog.xml";
   private static final Logger  LOGGER = Logger.getLogger(MainTools.class.getName());
@@ -32,6 +32,7 @@ public class MainTools {
   /* ************************************************************ */
 
   private MainTools() {
+    /* Create log file. */
     if (MainTools.DEBUG_LOG_FILE_ENABLED) {
       try {
         Handler handler = new FileHandler(DEBUG_LOG_FILENAME);
@@ -55,6 +56,7 @@ public class MainTools {
    */
   public static boolean isEmpty(String str) {
     boolean status = (str == null || str.length() < 1);
+    /* A null string may be intended. An empty string may not be. */
     if (MainTools.DEBUG && str != null && str.isEmpty()) {
       LOGGER.log(Level.WARNING, "non-null empty string detected");
     }

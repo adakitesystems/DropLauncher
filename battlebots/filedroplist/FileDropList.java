@@ -25,6 +25,10 @@ public class FileDropList {
     _files = new FileArray();
   }
 
+  /**
+   * Returns the FileArray object which holds the dropped files. Does not
+   * return a copy.
+   */
   public static FileArray getFiles() {
     return _files;
   }
