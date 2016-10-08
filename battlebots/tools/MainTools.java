@@ -3,6 +3,7 @@
 package battlebots.tools;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -61,6 +62,34 @@ public class MainTools {
       LOGGER.log(Level.WARNING, "non-null empty string detected");
     }
     return status;
+  }
+
+  /**
+   * Returns the String[] version of the specified ArrayList object.
+   *
+   * @param arrlist specified ArrayList object
+   * @return
+   *     String[] object if specified ArrayList is not null or empty,
+   *     otherwise null
+   */
+  public static String[] toStringArray(ArrayList<String> arrlist) {
+    int len = (arrlist == null) ? 0 : arrlist.size();
+
+    /* Validate parameters. */
+    if (len < 1) {
+      if (MainTools.DEBUG) {
+        /* Possibly just empty and not null. However, the result is the same. */
+        LOGGER.log(Level.WARNING, NULL_OBJECT);
+      }
+      return null;
+    }
+
+    String[] arr = new String[len];
+    for (int i = 0; i < len; i++) {
+      arr[i] = arrlist.get(i);
+    }
+
+    return arr;
   }
 
 }

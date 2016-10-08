@@ -4,6 +4,9 @@
 TODO:
 - This class needs to be changed to accommodate the passing of
 arguments to the ProcessBuilder.
+- Test if generic Exception throws the specific exception when caught.
+- Since the removal of "_isOpen", determine best way to check if
+process is running... suggestion: ".isAlive()"?
 */
 
 package battlebots.tools;
@@ -15,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,61 +35,59 @@ public final class ProcessPipe {
 
   public static final double DEFAULT_READ_TIMEOUT = (double)0.25; /* seconds */
 
-  private String _executablePath;
+  private String _path;
+  private String[] _args;
   private Process _process;
   private InputStream _is;
   private BufferedReader _br; /* read from process */
   private OutputStream _os;
   private BufferedWriter _bw; /* write to process */
-  private boolean _isOpen;
 
+  /**
+   * Initialize class variables.
+   */
   public ProcessPipe() {
-    _executablePath = "";
-    _isOpen = false;
+    _path = null;
+    _args = null;
+    _process = null;
+    _is = null;
+    _br = null;
+    _os = null;
+    _bw = null;
   }
 
   /**
-   * Checks if the pipe is open.
+   * Opens the pipe using the specified path and arguments.
    *
+   * @param path path to executable
+   * @param args arguments excluding path to executable
    * @return
-   *     true if open,
+   *     true if pipe was opened succesfully,
    *     otherwise false
    */
-  public boolean isOpen() {
-    return _isOpen;
-  }
-
-  /**
-   * Opens the pipe using the given executable path.
-   *
-   * @param executablePath path of the target executable
-   * @return
-   *     true if not previously open, is now successfully open,
-   *         and no errors were encountered,
-   *     otherwise false
-   */
-  public boolean open(String executablePath) {
-    /* Check if pipe is already open. */
-    if (_isOpen) {
-      if (MainTools.DEBUG) {
-        LOGGER.log(Level.SEVERE, "pipe is already open");
-      }
-      return false;
-    }
-
-    /* Validate parameters. */
-    if (MainTools.isEmpty(executablePath)) {
+  public boolean open(String path, String[] args) {
+    if (MainTools.isEmpty(path)) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.SEVERE, MainTools.EMPTY_STRING);
       }
       return false;
     }
 
-    _executablePath = executablePath;
-
-    /* Establish connection. */
     try {
-      _process = new ProcessBuilder(_executablePath).start();
+      String[] command;
+      _path = path;
+
+      if (args == null) {
+        command = new String[1];
+      } else {
+        _args = Arrays.copyOf(args, args.length);
+        command = new String[1 + _args.length];
+        System.arraycopy(_args, 0, command, 1, _args.length);
+      }
+
+      command[0] = _path;
+
+      _process = new ProcessBuilder(command).start();
 
       _is = _process.getInputStream();
       _br = new BufferedReader(new InputStreamReader(_is));
@@ -93,43 +95,34 @@ public final class ProcessPipe {
       _os = _process.getOutputStream();
       _bw = new BufferedWriter(new OutputStreamWriter(_os));
 
-      _isOpen = true;
-
       return true;
-    } catch (IOException ex) {
+    } catch (NullPointerException | IOException ex) {
       if (MainTools.DEBUG) {
-        LOGGER.log(
-            Level.SEVERE,
-            "encountered while opening pipe: " + _executablePath,
-            ex
-        );
+        LOGGER.log(Level.SEVERE, null, ex);
+      }
+      return false;
+    } catch (Exception ex) {
+      if (MainTools.DEBUG) {
+        LOGGER.log(Level.SEVERE, null, ex);
       }
       return false;
     }
   }
 
   /**
-   * Closes the pipe.
+   * Closes the pipe and destroys the process.
    *
-   * @return true if all pipe-related objects were closed and no errors
+   * @return
+   *     true if all pipe-related objects were closed and no errors
    *         were encountered,
-   *         otherwise false
+   *     otherwise false
    */
   public boolean close() {
-    /* Check if pipe is already closed. */
-    if (!_isOpen) {
-      if (MainTools.DEBUG) {
-        LOGGER.log(Level.WARNING, "pipe is already closed");
-      }
-      return true;
-    }
-
     try {
       _br.close();
       _is.close();
       _bw.close();
       _os.close();
-      _isOpen = false;
       _process.destroy();
       return true;
     } catch (IOException ex) {
@@ -141,12 +134,13 @@ public final class ProcessPipe {
   }
 
   /**
-   * Calls {@link #open(java.lang.String)} with the stored filename.
+   * Calls {@link #open(java.lang.String, java.lang.String[])}
+   * with the stored path and args.
    *
-   * @return value returned from {@link #open(java.lang.String)}.
+   * @return value returned from {@link #open(java.lang.String, java.lang.String[])}.
    */
   public boolean reopen() {
-    return open(getPath());
+    return open(_path, _args);
   }
 
   /**
@@ -154,13 +148,13 @@ public final class ProcessPipe {
    */
   public String getPath() {
     /* Validate class variables. */
-    if (MainTools.isEmpty(_executablePath)) {
+    if (MainTools.isEmpty(_path)) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
       }
       return null;
     }
-    return _executablePath;
+    return _path;
   }
 
   /*
@@ -178,13 +172,6 @@ public final class ProcessPipe {
    *     otherwise false
    */
   public boolean isInputReady(double seconds) {
-    if (!_isOpen) {
-      if (MainTools.DEBUG) {
-        LOGGER.log(Level.SEVERE, "pipe is not open");
-      }
-      return false;
-    }
-
     /* Validate parameters. */
     if (Double.compare(seconds, (double)0) < 0) {
       if (MainTools.DEBUG) {
@@ -222,14 +209,6 @@ public final class ProcessPipe {
    *     otherwise null if nothing was read or errors were encountered
    */
   public String readLine() {
-    /* Check if pipe is open. */
-    if (!_isOpen) {
-      if (MainTools.DEBUG) {
-        LOGGER.log(Level.SEVERE, "pipe is not open");
-      }
-      return null;
-    }
-
     /* Read from pipe. */
     try {
       if (_br.ready()) {
@@ -261,13 +240,8 @@ public final class ProcessPipe {
    *     otherwise false
    */
   public boolean write(String str) {
-    /* Check if pipe is open. */
-    if (!_isOpen) {
-      if (MainTools.DEBUG) {
-        LOGGER.log(Level.SEVERE, "pipe is not open");
-      }
-      return false;
-    } else if (MainTools.isEmpty(str)) {
+    /* Validate parameters. */
+    if (MainTools.isEmpty(str)) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
       }
@@ -325,14 +299,6 @@ public final class ProcessPipe {
    *     after reading
    */
   public void flushRead(boolean print) {
-    /* Check if pipe is open. */
-    if (!_isOpen) {
-      if (MainTools.DEBUG) {
-        LOGGER.log(Level.SEVERE, "pipe is not open");
-      }
-      return;
-    }
-
     /* Flush input. */
     try {
       String line;

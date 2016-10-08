@@ -11,6 +11,7 @@ import filedrop.FileDrop;
 
 import java.awt.EventQueue;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -147,6 +148,23 @@ public class MainWindow extends JFrame {
             }
           }
     });
+
+    /* DEBUGGING --- start */
+//    ArrayList<String> argsList = new ArrayList<>();
+//    argsList.add("a");
+//    argsList.add("b");
+//    argsList.add("c");
+//    argsList.add("d");
+//    Object[] argsArray = argsList.toArray();
+//    String[] argsArrayArray = (String[])argsArray;
+//    int len = argsArray.length;
+//    for (int i = 0; i < len; i++)
+//    {
+//      System.out.println(argsArray[i]);
+//    }
+//    ProcessBuilder p = new ProcessBuilder(argsArrayArray);
+//    p.start();
+    /* DEBUGGING --- end */
   }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
