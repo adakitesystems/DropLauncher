@@ -276,4 +276,16 @@ public final class TokenArray {
   public String toString() {
     return toString(" ");
   }
+
+  /**
+   * Returns a correctly allocated string array of the internal class array.
+   */
+  public String[] toStringArray() {
+    if (_tokenCount < 1)  {
+      return null;
+    }
+    String[] newArray = new String[_tokenCount];
+    System.arraycopy(_tokens, 0, newArray, 0, _tokenCount);
+    return newArray;
+  }
 }
