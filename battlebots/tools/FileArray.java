@@ -30,14 +30,19 @@ public class FileArray {
   }
 
   /**
-   * Resets the array element count without setting any elements to null.
+   * Sets the number of elements to zero and does not resize the array.
+   * All previous elements are still stored in the array until they are
+   * overwritten by new elements. The old elements are inaccessible via
+   * public functions due to the number of elements being set to zero and no
+   * way of accessing the rest of the array through public functions.
    */
   public void reset() {
     _fileCount = 0;
   }
 
   /**
-   * Returns the number of elements in the array.
+   * Returns the number of accessible elements in the array via
+   * public functions.
    */
   public int size() {
     return _fileCount;
