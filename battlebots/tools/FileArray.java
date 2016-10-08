@@ -15,8 +15,7 @@ import java.util.logging.Logger;
  */
 public class FileArray {
 
-  private static final Logger LOGGER =
-      Logger.getLogger(FileArray.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(FileArray.class.getName());
   private static final boolean CLASS_DEBUG = true;
 
   private static final int DEFAULT_ARRAY_SIZE = 1;
