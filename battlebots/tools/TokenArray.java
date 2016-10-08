@@ -1,7 +1,5 @@
 /* TokenArray.java */
 
-// CHECKSTYLE:OFF
-
 package battlebots.tools;
 
 import java.util.StringTokenizer;
@@ -79,8 +77,7 @@ public final class TokenArray {
    *     the array element at index if index is valid,
    *     otherwise null
    */
-  public String get(int index)
-  {
+  public String get(int index) {
     /* Validate parameters. */
     if (index < 0 || index >= _tokenCount) {
       if (MainTools.DEBUG) {
@@ -99,8 +96,7 @@ public final class TokenArray {
    *     index of element if found,
    *     otherwise -1
    */
-  public int getIndexOf(String str)
-  {
+  public int getIndexOf(String str) {
     if (MainTools.isEmpty(str)) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
@@ -129,7 +125,7 @@ public final class TokenArray {
   public boolean add(String str) {
     if (MainTools.isEmpty(str)) {
       if (MainTools.DEBUG) {
-          LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
+        LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
       }
       return false;
     }
@@ -153,7 +149,7 @@ public final class TokenArray {
   public void remove(int index) {
     if (index < 0 || index >= _tokenCount) {
       if (MainTools.DEBUG) {
-          LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
+        LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }
       return;
     }
@@ -219,7 +215,7 @@ public final class TokenArray {
    * Returns the maximum calculated number of possible tokens in a string
    * using the space character as a delimiter.
    *
-   * @param str
+   * @param str specified string to examine
    */
   public static int getMaxTokens(String str) {
     if (MainTools.isEmpty(str)) {
@@ -229,16 +225,16 @@ public final class TokenArray {
       return 0;
     }
 
-    int n = 1;
+    int counter = 1;
     int len = str.length();
 
     for (int i = 0; i < len; i++) {
       if (str.charAt(i) == ' ') {
-        n++;
+        counter++;
       }
     }
 
-    return n;
+    return counter;
   }
 
   /**
@@ -251,8 +247,7 @@ public final class TokenArray {
    *     the string of all tokens if token count is greater than 0,
    *     otherwise a non-null empty string
    */
-  public String toString(String delim)
-  {
+  public String toString(String delim) {
     if (_tokenCount < 1) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, "token count less than 1");
