@@ -209,4 +209,60 @@ public class MainTools {
     }
   }
 
+  /**
+   * Add double quotations to the beginning and end of the
+   * specified string.
+   *
+   * @param str specified string
+   * @return
+   *     the specified string encapsulated with quotation,
+   *     otherwise null if the string is null or empty
+   */
+  public static String addQuotations(String str) {
+    /* Validate parameters. */
+    if (isEmpty(str)) {
+      if (DEBUG) {
+        LOGGER.log(Level.WARNING, EMPTY_STRING);
+      }
+      return null;
+    }
+
+    if (!str.startsWith("\"")) {
+      str = "\"" + str;
+    }
+    if (!str.endsWith("\"")) {
+      str += "\"";
+    }
+
+    return str;
+  }
+
+  /**
+   * Remove double quotations from the beginning and end of the
+   * specified string.
+   *
+   * @param str specified string
+   * @return
+   *     the specified string without quotations,
+   *     otherwise null if the string is null or empty
+   */
+  public static String removeQuotations(String str) {
+    /* Validate parameters. */
+    if (isEmpty(str)) {
+      if (DEBUG) {
+        LOGGER.log(Level.WARNING, EMPTY_STRING);
+      }
+      return null;
+    }
+
+    if (str.startsWith("\"")) {
+      str = str.substring(1, str.length());
+    }
+    if (str.endsWith("\"")) {
+      str = str.substring(0, str.length() - 1);
+    }
+
+    return str;
+  }
+
 }
