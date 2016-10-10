@@ -51,56 +51,124 @@ public class MainWindow extends JFrame {
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
 
-    scrollPaneFileDrop = new javax.swing.JScrollPane();
-    jButton1 = new javax.swing.JButton();
+    btngrpGameType = new javax.swing.ButtonGroup();
+    btngrpRace = new javax.swing.ButtonGroup();
+    btnEject = new javax.swing.JButton();
+    boxDropFiles = new javax.swing.JLabel();
+    btnLaunch = new javax.swing.JButton();
+    txtBotName = new javax.swing.JTextField();
+    lblBotName = new javax.swing.JLabel();
+    rbZerg = new javax.swing.JRadioButton();
+    rbTerran = new javax.swing.JRadioButton();
+    rbRandom = new javax.swing.JRadioButton();
+    rbProtoss = new javax.swing.JRadioButton();
+    rbLocalPC = new javax.swing.JRadioButton();
+    rbUDP = new javax.swing.JRadioButton();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-    jButton1.setText("jButton1");
-    jButton1.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        jButton1ActionPerformed(evt);
-      }
-    });
+    btnEject.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+    btnEject.setText("Eject");
+    btnEject.setEnabled(false);
+
+    boxDropFiles.setBackground(new java.awt.Color(0, 0, 0));
+    boxDropFiles.setForeground(new java.awt.Color(255, 255, 255));
+    boxDropFiles.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    boxDropFiles.setText("Drop bot files here");
+    boxDropFiles.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+    boxDropFiles.setOpaque(true);
+
+    btnLaunch.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+    btnLaunch.setText("Launch");
+    btnLaunch.setEnabled(false);
+
+    txtBotName.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+
+    lblBotName.setText(" Bot Name:");
+
+    btngrpRace.add(rbZerg);
+    rbZerg.setText("Zerg");
+
+    btngrpRace.add(rbTerran);
+    rbTerran.setText("Terran");
+
+    btngrpRace.add(rbRandom);
+    rbRandom.setText("Random");
+
+    btngrpRace.add(rbProtoss);
+    rbProtoss.setText("Protoss");
+
+    btngrpGameType.add(rbLocalPC);
+    rbLocalPC.setText("Local PC");
+
+    btngrpGameType.add(rbUDP);
+    rbUDP.setText("Local Area Network (UDP)");
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(boxDropFiles, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(rbUDP)
+          .addComponent(rbLocalPC))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(layout.createSequentialGroup()
-            .addGap(103, 103, 103)
-            .addComponent(scrollPaneFileDrop, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(btnEject, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+              .addComponent(btnLaunch, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
+              .addComponent(txtBotName)
+              .addComponent(lblBotName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addContainerGap())
           .addGroup(layout.createSequentialGroup()
-            .addGap(137, 137, 137)
-            .addComponent(jButton1)))
-        .addContainerGap(104, Short.MAX_VALUE))
+            .addGap(6, 6, 6)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(rbZerg)
+              .addComponent(rbTerran))
+            .addGap(32, 32, 32)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(rbRandom)
+              .addComponent(rbProtoss))
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(layout.createSequentialGroup()
-        .addGap(50, 50, 50)
-        .addComponent(scrollPaneFileDrop, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
-        .addComponent(jButton1)
-        .addGap(28, 28, 28))
+      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+        .addContainerGap(158, Short.MAX_VALUE)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addComponent(lblBotName)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(txtBotName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addComponent(rbLocalPC)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(rbUDP)))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+          .addGroup(layout.createSequentialGroup()
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addGroup(layout.createSequentialGroup()
+                .addComponent(rbTerran)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(rbZerg))
+              .addGroup(layout.createSequentialGroup()
+                .addComponent(rbProtoss)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(rbRandom)))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(btnEject, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(9, 9, 9)
+            .addComponent(btnLaunch, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addComponent(boxDropFiles, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        .addGap(7, 7, 7))
     );
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
-
-  private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    /* Debugging button. */
-    FileArray files = FileDropList.getFiles();
-    if (files == null)
-      return;
-    int len = files.size();
-    for (int i = 0; i < len; i++)
-    {
-      System.out.println(FileArray.getShortPath(files.get(i)));
-    }
-  }//GEN-LAST:event_jButton1ActionPerformed
 
   /**
    * Main function called when main window is displayed.
@@ -129,7 +197,7 @@ public class MainWindow extends JFrame {
     EventQueue.invokeLater(new Runnable() {
       @Override
       public void run() {
-        _mainWindow.setTitle("Battlebots");
+        _mainWindow.setTitle("battlebots");
         _mainWindow.setResizable(false);
         _mainWindow.setLocationRelativeTo(null);
         _mainWindow.setVisible(true);
@@ -141,7 +209,8 @@ public class MainWindow extends JFrame {
      * static container object named FileDropList.
      */
     FileDrop fileDrop = new FileDrop(
-        _mainWindow.scrollPaneFileDrop,
+//        _mainWindow.scrollPaneFileDrop,
+        _mainWindow.boxDropFiles,
         new FileDrop.Listener() {
           @Override
           public void filesDropped(File[] files) {
@@ -216,8 +285,19 @@ public class MainWindow extends JFrame {
   }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private javax.swing.JButton jButton1;
-  private javax.swing.JScrollPane scrollPaneFileDrop;
+  private javax.swing.JLabel boxDropFiles;
+  private javax.swing.JButton btnEject;
+  private javax.swing.JButton btnLaunch;
+  private javax.swing.ButtonGroup btngrpGameType;
+  private javax.swing.ButtonGroup btngrpRace;
+  private javax.swing.JLabel lblBotName;
+  private javax.swing.JRadioButton rbLocalPC;
+  private javax.swing.JRadioButton rbProtoss;
+  private javax.swing.JRadioButton rbRandom;
+  private javax.swing.JRadioButton rbTerran;
+  private javax.swing.JRadioButton rbUDP;
+  private javax.swing.JRadioButton rbZerg;
+  private javax.swing.JTextField txtBotName;
   // End of variables declaration//GEN-END:variables
 
 }
