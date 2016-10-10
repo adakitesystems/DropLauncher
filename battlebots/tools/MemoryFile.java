@@ -28,15 +28,15 @@ public class MemoryFile  {
   private static final Logger LOGGER = Logger.getLogger(MemoryFile.class.getName());
 
   private String _filename;
-  private ArrayList<String> _lines;
+  private TokenArray _lines;
 
   public MemoryFile() {
-    _lines = new ArrayList<>();
+    _lines = new TokenArray();
   }
 
   private void reset() {
     _filename = null;
-    _lines.clear();
+    _lines.reset();
   }
 
   public String getPath() {
@@ -160,7 +160,7 @@ public class MemoryFile  {
     }
   }
 
-  public ArrayList<String> getLines() {
+  public TokenArray getLines() {
     return _lines;
   }
 

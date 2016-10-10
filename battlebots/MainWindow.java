@@ -197,8 +197,8 @@ public class MainWindow extends JFrame {
 
 
 
-//    MemoryFile mf = new MemoryFile();
-//    mf.readIntoMemory("bwapi.ini");
+    MemoryFile mf = new MemoryFile();
+    mf.readIntoMemory("bwapi.ini");
 //    int index = mf.getIndexStartsWith("ai");
 //    String newDll;
 //    String tmpLine;
@@ -209,9 +209,9 @@ public class MainWindow extends JFrame {
 //      newDll = tmpLine.substring(tmpLine.indexOf("=") + 2, tmpLine.length());
 //      newDll = MainTools.getParentDirectory(newDll) + "\\NewBot.dll";
 //      System.out.println("ai = " + newDll);
-//      mf.writeToDisk(mf.getPath());
+////      mf.writeToDisk(mf.getPath());
 //    }
-//    mf.printToConsole();
+    mf.printToConsole();
     /* DEBUGGING --- end */
   }
 

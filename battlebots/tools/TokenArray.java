@@ -28,11 +28,26 @@ public class TokenArray {
   }
 
   /**
+   * Constructor allowing to set the initial array size. If a less than one
+   * value is specified, the default array size will be used.
+   *
+   * @param initialSize initial size to allocate array
+   */
+  public TokenArray(int initialSize) {
+    if (initialSize < 1) {
+      initialSize = DEFAULT_ARRAY_SIZE;
+      return;
+    }
+    _tokens = new String[initialSize];
+    reset();
+  }
+
+  /**
    * Ignores all tokens including and after the specified index.
    *
    * @param index specified index.
    */
-  public void sliceAt(int index) {
+  public void chopAt(int index) {
     if (index < 0 || index >= _tokenCount) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
@@ -132,23 +147,26 @@ public class TokenArray {
   }
 
   /**
-   * Adds the specified object to the array.
+   * Adds the specified string to the array.
    *
    * @param str string to add
+   * @param addEmpty whether a non-null empty string can be added
    * @return
    *     true if element was added successfully,
    *     otherwise false
    */
-  public boolean add(String str) {
+  public boolean add(String str, boolean addEmpty) {
     /* Validate parameters. */
-    if (MainTools.isEmpty(str)) {
+    if (str == null) {
       if (MainTools.DEBUG) {
-        LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
+        LOGGER.log(Level.WARNING, MainTools.NULL_OBJECT);
       }
       return false;
     }
 
-    if (!ensureCapacity()) {
+    /* Return false for unmet conditions. */
+    if ((MainTools.isEmpty(str) && !addEmpty)
+        || !ensureCapacity()) {
       return false;
     }
 
@@ -158,14 +176,28 @@ public class TokenArray {
   }
 
   /**
+   * Adds the specified string to the array. An empty string is valid.
+   * A null string will not be added.
+   *
+   * @param str string to add
+   * @return
+   *     true if element was added successfully,
+   *     otherwise false
+   */
+  public boolean add(String str) {
+    return add(str, true);
+  }
+
+  /**
    * Adds each string from the specified String array.
    *
    * @param arr specified array
+   * @param addEmpty whether a non-null empty string can be added
    * @return
    *     true if the elements were added successfully,
    *     otherwise false
    */
-  public boolean add(String[] arr) {
+  public boolean add(String[] arr, boolean addEmpty) {
     /* Validate parameters. */
     if (arr == null) {
       if (MainTools.DEBUG) {
@@ -175,9 +207,22 @@ public class TokenArray {
     }
 
     for (String str : arr) {
-      add(str);
+      add(str, addEmpty);
     }
     return true;
+  }
+
+  /**
+   * Adds each string from the specified String array. An empty string is valid.
+   * A null string will not be added.
+   *
+   * @param arr specified array
+   * @return
+   *     true if the elements were added successfully,
+   *     otherwise false
+   */
+  public boolean add(String[] arr) {
+    return add(arr, true);
   }
 
   /**
