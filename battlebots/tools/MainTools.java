@@ -2,6 +2,7 @@
 
 package battlebots.tools;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.FileHandler;
@@ -34,12 +35,12 @@ public class MainTools {
 
   private MainTools() {
     /* Create log file. */
-    if (MainTools.DEBUG_LOG_FILE_ENABLED) {
+    if (DEBUG_LOG_FILE_ENABLED) {
       try {
         Handler handler = new FileHandler(DEBUG_LOG_FILENAME);
         Logger.getLogger("").addHandler(handler);
       } catch (IOException | SecurityException ex) {
-        if (MainTools.DEBUG) {
+        if (DEBUG) {
           LOGGER.log(
               Level.WARNING,
               "encountered while creating log file: " + DEBUG_LOG_FILENAME, ex
@@ -58,7 +59,7 @@ public class MainTools {
   public static boolean isEmpty(String str) {
     boolean status = (str == null || str.length() < 1);
     /* A null string may be intended. An empty string may not be. */
-    if (MainTools.DEBUG && str != null && str.isEmpty()) {
+    if (DEBUG && str != null && str.isEmpty()) {
       LOGGER.log(Level.WARNING, "non-null empty string detected");
     }
     return status;
@@ -77,7 +78,7 @@ public class MainTools {
 
     /* Validate parameters. */
     if (len < 1) {
-      if (MainTools.DEBUG) {
+      if (DEBUG) {
         /* Possibly just empty and not null. However, the result is the same. */
         LOGGER.log(Level.WARNING, NULL_OBJECT);
       }
@@ -90,6 +91,122 @@ public class MainTools {
     }
 
     return arr;
+  }
+
+  /**
+   * Check if specified file exists and is not a directory.
+   *
+   * @param path path to file
+   * @return
+   *     true if specified path is a file,
+   *     otherwise false
+   */
+  public static boolean doesFileExist(String path) {
+    /* Validate parameters. */
+    if (isEmpty(path)) {
+      if (DEBUG) {
+        LOGGER.log(Level.WARNING, EMPTY_STRING);
+      }
+      return false;
+    }
+
+    try {
+      File file = new File(path);
+      if (file.exists() && file.isFile() && !file.isDirectory()) {
+        return true;
+      }
+    } catch (Exception ex) {
+      if (DEBUG) {
+        LOGGER.log(Level.SEVERE, "encountered while checking file existence", ex);
+      }
+      return false;
+    }
+
+    return false;
+  }
+
+  /**
+   * Check if specified directory exists.
+   *
+   * @param path path to directory
+   * @return
+   *     true if specified path is a directory,
+   *     otherwise false
+   */
+  public static boolean doesDirectoryExist(String path) {
+    /* Validate parameters. */
+    if (isEmpty(path)) {
+      if (DEBUG) {
+        LOGGER.log(Level.WARNING, EMPTY_STRING);
+      }
+      return false;
+    }
+
+    try {
+      File dir = new File(path);
+      if (dir != null && dir.exists() && dir.isDirectory()) {
+        return true;
+      }
+    } catch (Exception ex) {
+      if (DEBUG) {
+        LOGGER.log(Level.SEVERE, "encountered while checking directory existence", ex);
+      }
+      return false;
+    }
+
+    return false;
+  }
+
+  /**
+   * Return the specified filename excluding the last period character and
+   * all characters after it.
+   *
+   * @param filename specified filename
+   */
+  public static String getFilenameNoExt(String filename) {
+    /* Validate parameters. */
+    if (isEmpty(filename)) {
+      if (DEBUG) {
+        LOGGER.log(Level.WARNING, EMPTY_STRING);
+      }
+      return null;
+    }
+
+    int extIndex = filename.lastIndexOf(".");
+
+    return (extIndex > 0) ? filename.substring(0, extIndex) : filename;
+  }
+
+  /**
+   * Returns the parent directory of the specified path.
+   *
+   * @param path specified path
+   * @return
+   *     the parent directory of the specified path if parent exists,
+   *     otherwise null
+   */
+  public static String getParentDirectory(String path) {
+    /* Validate parameters. */
+    if (isEmpty(path)) {
+      if (DEBUG) {
+        LOGGER.log(Level.WARNING, EMPTY_STRING);
+      }
+      return null;
+    }
+
+    try {
+      String parent = null;
+      File file = new File(path);
+
+      parent = file.getParent();
+
+      return parent;
+    } catch (Exception ex) {
+      if (DEBUG) {
+        LOGGER.log(Level.WARNING, null, ex);
+      }
+      return null;
+    }
   }
 
 }

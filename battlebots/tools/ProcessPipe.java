@@ -2,8 +2,6 @@
 
 /*
 TODO:
-- This class needs to be changed to accommodate the passing of
-arguments to the ProcessBuilder.
 - Test if generic Exception throws the specific exception when caught.
 - Since the removal of "_isOpen", determine best way to check if
 process is running... suggestion: ".isAlive()"?
@@ -57,7 +55,11 @@ public final class ProcessPipe {
   }
 
   /**
-   * Opens the pipe using the specified path and arguments.
+   * Opens the pipe using the specified path and arguments. When specifying
+   * arguments, each string should be standalone.
+   * E.g. use args[0] = "--load" args[1] = "file.txt"
+   * instead of args[0] = "--load file.txt". The args parameter can be null
+   * in which case no arguments will be included during execution.
    *
    * @param path path to executable
    * @param args arguments excluding path to executable

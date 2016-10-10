@@ -6,6 +6,8 @@ package battlebots;
 
 import battlebots.filedroplist.FileDropList;
 import battlebots.tools.FileArray;
+import battlebots.tools.ProcessPipe;
+import battlebots.tools.TokenArray;
 
 import filedrop.FileDrop;
 
@@ -164,6 +166,30 @@ public class MainWindow extends JFrame {
 //    }
 //    ProcessBuilder p = new ProcessBuilder(argsArrayArray);
 //    p.start();
+    ProcessPipe pipe = new ProcessPipe();
+    String path = "bwheadless_newer.exe";
+    TokenArray pipeArgs = new TokenArray();
+//    pipeArgs.add("-e \"S:\\install\\StarCraft\\StarCraft.exe\"");
+    pipeArgs.add("-e");
+    pipeArgs.add("\"S:\\install\\StarCraft\\StarCraft.exe\"");
+    pipeArgs.add("-j");
+//    pipeArgs.add("-n IronBot");
+    pipeArgs.add("-n");
+    pipeArgs.add("IronBot");
+//    pipeArgs.add("-r Terran");
+    pipeArgs.add("-r");
+    pipeArgs.add("Terran");
+//    pipeArgs.add("-l BWAPI.dll");
+    pipeArgs.add("-l");
+    pipeArgs.add("BWAPI.dll");
+    pipeArgs.add("--lan");
+//    pipeArgs.add("--installpath \"S:\\install\\StarCraft\"");
+    pipeArgs.add("--installpath");
+    pipeArgs.add("\"S:\\install\\StarCraft\"");
+    if (!pipe.open(path, pipeArgs.toStringArray())) {
+      System.out.println("error opening pipe");
+    }
+    System.out.println(path + " " + pipeArgs.toString());
     /* DEBUGGING --- end */
   }
 

@@ -97,6 +97,7 @@ public final class TokenArray {
    *     otherwise -1
    */
   public int getIndexOf(String str) {
+    /* Validate parameters. */
     if (MainTools.isEmpty(str)) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
@@ -123,6 +124,7 @@ public final class TokenArray {
    *     otherwise false
    */
   public boolean add(String str) {
+    /* Validate parameters. */
     if (MainTools.isEmpty(str)) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
@@ -139,6 +141,29 @@ public final class TokenArray {
     return true;
   }
 
+  /**
+   * Adds each string from the specified String array.
+   *
+   * @param arr specified array
+   * @return
+   *     true if the elements were added successfully,
+   *     otherwise false
+   */
+  public boolean add(String[] arr) {
+    /* Validate parameters. */
+    if (arr == null) {
+      if (MainTools.DEBUG) {
+        LOGGER.log(Level.WARNING, MainTools.NULL_OBJECT);
+      }
+      return false;
+    }
+
+    for (String str : arr) {
+      add(str);
+    }
+    return true;
+  }
+
 
   /**
    * Removes element at the specified index. If the index is invalid,
@@ -147,6 +172,7 @@ public final class TokenArray {
    * @param index index of element to remove
    */
   public void remove(int index) {
+    /* Validate parameters. */
     if (index < 0 || index >= _tokenCount) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
@@ -186,6 +212,7 @@ public final class TokenArray {
    * @return number of tokens parsed in string
    */
   public int tokenize(String str) {
+    /* Validate parameters. */
     if (MainTools.isEmpty(str)) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING + ": String str");
@@ -218,6 +245,7 @@ public final class TokenArray {
    * @param str specified string to examine
    */
   public static int getMaxTokens(String str) {
+    /* Validate parameters. */
     if (MainTools.isEmpty(str)) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
@@ -248,6 +276,7 @@ public final class TokenArray {
    *     otherwise a non-null empty string
    */
   public String toString(String delim) {
+    /* Validate parameters. */
     if (_tokenCount < 1) {
       if (MainTools.DEBUG) {
         LOGGER.log(Level.WARNING, "token count less than 1");
