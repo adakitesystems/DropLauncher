@@ -12,7 +12,8 @@ import java.util.logging.Logger;
  * @author Adakite Systems
  * @author adakitesystems@gmail.com
  */
-public final class TokenArray {
+public class TokenArray {
+
   private static final Logger LOGGER = Logger.getLogger(TokenArray.class.getName());
 
   public static final int DEFAULT_ARRAY_SIZE = 1;
@@ -24,6 +25,21 @@ public final class TokenArray {
   public TokenArray() {
     _tokens = new String[DEFAULT_ARRAY_SIZE];
     reset();
+  }
+
+  /**
+   * Ignores all tokens including and after the specified index.
+   *
+   * @param index specified index.
+   */
+  public void sliceAt(int index) {
+    if (index < 0 || index >= _tokenCount) {
+      if (MainTools.DEBUG) {
+        LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
+      }
+      return;
+    }
+    _tokenCount = index;
   }
 
   /**
@@ -164,7 +180,6 @@ public final class TokenArray {
     return true;
   }
 
-
   /**
    * Removes element at the specified index. If the index is invalid,
    * nothing is affected.
@@ -203,6 +218,35 @@ public final class TokenArray {
    */
   public void remove(String str) {
     remove(getIndexOf(str));
+  }
+
+  /**
+   * Overwrites an entire set of tokens at the specified index. If the
+   * specified string is null or empty, the token set will be set to
+   * a non-null empty string.
+   *
+   * @param index specified index
+   * @param str replacement string
+   * @return
+   *     true if token set at index was overwritten,
+   *     otherwise false
+   */
+  public boolean overwrite(int index, String str) {
+    /* Validate parameters. */
+    if (index < 0 || index >= _tokenCount) {
+      if (MainTools.DEBUG) {
+        LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
+      }
+      return false;
+    }
+
+    if (MainTools.isEmpty(str)) {
+      _tokens[index] = "";
+      return true;
+    }
+
+    _tokens[index] = str;
+    return true;
   }
 
   /**

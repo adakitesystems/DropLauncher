@@ -6,6 +6,8 @@ package battlebots;
 
 import battlebots.filedroplist.FileDropList;
 import battlebots.tools.FileArray;
+import battlebots.tools.MainTools;
+import battlebots.tools.MemoryFile;
 import battlebots.tools.ProcessPipe;
 import battlebots.tools.TokenArray;
 
@@ -13,7 +15,6 @@ import filedrop.FileDrop;
 
 import java.awt.EventQueue;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -166,30 +167,51 @@ public class MainWindow extends JFrame {
 //    }
 //    ProcessBuilder p = new ProcessBuilder(argsArrayArray);
 //    p.start();
-    ProcessPipe pipe = new ProcessPipe();
-    String path = "bwheadless_newer.exe";
-    TokenArray pipeArgs = new TokenArray();
-//    pipeArgs.add("-e \"S:\\install\\StarCraft\\StarCraft.exe\"");
-    pipeArgs.add("-e");
-    pipeArgs.add("\"S:\\install\\StarCraft\\StarCraft.exe\"");
-    pipeArgs.add("-j");
-//    pipeArgs.add("-n IronBot");
-    pipeArgs.add("-n");
-    pipeArgs.add("IronBot");
-//    pipeArgs.add("-r Terran");
-    pipeArgs.add("-r");
-    pipeArgs.add("Terran");
-//    pipeArgs.add("-l BWAPI.dll");
-    pipeArgs.add("-l");
-    pipeArgs.add("BWAPI.dll");
-    pipeArgs.add("--lan");
-//    pipeArgs.add("--installpath \"S:\\install\\StarCraft\"");
-    pipeArgs.add("--installpath");
-    pipeArgs.add("\"S:\\install\\StarCraft\"");
-    if (!pipe.open(path, pipeArgs.toStringArray())) {
-      System.out.println("error opening pipe");
-    }
-    System.out.println(path + " " + pipeArgs.toString());
+
+
+
+//    ProcessPipe pipe = new ProcessPipe();
+//    String path = "bwheadless_newer.exe";
+//    TokenArray pipeArgs = new TokenArray();
+////    pipeArgs.add("-e \"S:\\install\\StarCraft\\StarCraft.exe\"");
+//    pipeArgs.add("-e");
+//    pipeArgs.add("\"S:\\install\\StarCraft\\StarCraft.exe\"");
+//    pipeArgs.add("-j");
+////    pipeArgs.add("-n IronBot");
+//    pipeArgs.add("-n");
+//    pipeArgs.add("IronBot");
+////    pipeArgs.add("-r Terran");
+//    pipeArgs.add("-r");
+//    pipeArgs.add("Terran");
+////    pipeArgs.add("-l BWAPI.dll");
+//    pipeArgs.add("-l");
+//    pipeArgs.add("BWAPI.dll");
+//    pipeArgs.add("--lan");
+////    pipeArgs.add("--installpath \"S:\\install\\StarCraft\"");
+//    pipeArgs.add("--installpath");
+//    pipeArgs.add("\"S:\\install\\StarCraft\"");
+//    if (!pipe.open(path, pipeArgs.toStringArray())) {
+//      System.out.println("error opening pipe");
+//    }
+//    System.out.println(path + " " + pipeArgs.toString());
+
+
+
+//    MemoryFile mf = new MemoryFile();
+//    mf.readIntoMemory("bwapi.ini");
+//    int index = mf.getIndexStartsWith("ai");
+//    String newDll;
+//    String tmpLine;
+//    TokenArray ta = new TokenArray();
+//    if (index >= 0) {
+//      System.out.println(mf.getLines().get(index));
+//      tmpLine = mf.getLines().get(index);
+//      newDll = tmpLine.substring(tmpLine.indexOf("=") + 2, tmpLine.length());
+//      newDll = MainTools.getParentDirectory(newDll) + "\\NewBot.dll";
+//      System.out.println("ai = " + newDll);
+//      mf.writeToDisk(mf.getPath());
+//    }
+//    mf.printToConsole();
     /* DEBUGGING --- end */
   }
 
