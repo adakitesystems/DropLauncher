@@ -23,10 +23,11 @@ public class MainTools {
   /* ************************************************************ */
   /* Debugging variables */
   /* ************************************************************ */
+  private static final Logger  LOGGER = Logger.getLogger(MainTools.class.getName());
   public  static final boolean DEBUG = true;
   private static final boolean DEBUG_LOG_FILE_ENABLED = false;
   private static final String  DEBUG_LOG_FILENAME = "errorlog.xml";
-  private static final Logger  LOGGER = Logger.getLogger(MainTools.class.getName());
+  private static final boolean CLASS_DEBUG = (DEBUG && true);
   /* Predefined logger messages */
   public static final String EMPTY_STRING = "null or empty string";
   public static final String NULL_OBJECT = "null object";
@@ -40,7 +41,7 @@ public class MainTools {
         Handler handler = new FileHandler(DEBUG_LOG_FILENAME);
         Logger.getLogger("").addHandler(handler);
       } catch (IOException | SecurityException ex) {
-        if (DEBUG) {
+        if (CLASS_DEBUG) {
           LOGGER.log(
               Level.WARNING,
               "encountered while creating log file: " + DEBUG_LOG_FILENAME, ex
@@ -59,7 +60,7 @@ public class MainTools {
   public static boolean isEmpty(String str) {
     boolean status = (str == null || str.length() < 1);
     /* A null string may be intended. An empty string may not be. */
-    if (DEBUG && str != null && str.isEmpty()) {
+    if (CLASS_DEBUG && str != null && str.isEmpty()) {
       LOGGER.log(Level.WARNING, "non-null empty string detected");
     }
     return status;
@@ -78,7 +79,7 @@ public class MainTools {
 
     /* Validate parameters. */
     if (len < 1) {
-      if (DEBUG) {
+      if (CLASS_DEBUG) {
         /* Possibly just empty and not null. However, the result is the same. */
         LOGGER.log(Level.WARNING, NULL_OBJECT);
       }
@@ -104,7 +105,7 @@ public class MainTools {
   public static boolean doesFileExist(String path) {
     /* Validate parameters. */
     if (isEmpty(path)) {
-      if (DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, EMPTY_STRING);
       }
       return false;
@@ -116,7 +117,7 @@ public class MainTools {
         return true;
       }
     } catch (Exception ex) {
-      if (DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, "encountered while checking file existence", ex);
       }
       return false;
@@ -136,7 +137,7 @@ public class MainTools {
   public static boolean doesDirectoryExist(String path) {
     /* Validate parameters. */
     if (isEmpty(path)) {
-      if (DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, EMPTY_STRING);
       }
       return false;
@@ -148,7 +149,7 @@ public class MainTools {
         return true;
       }
     } catch (Exception ex) {
-      if (DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, "encountered while checking directory existence", ex);
       }
       return false;
@@ -166,7 +167,7 @@ public class MainTools {
   public static String getFilenameNoExt(String filename) {
     /* Validate parameters. */
     if (isEmpty(filename)) {
-      if (DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, EMPTY_STRING);
       }
       return null;
@@ -188,7 +189,7 @@ public class MainTools {
   public static String getParentDirectory(String path) {
     /* Validate parameters. */
     if (isEmpty(path)) {
-      if (DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, EMPTY_STRING);
       }
       return null;
@@ -202,7 +203,7 @@ public class MainTools {
 
       return parent;
     } catch (Exception ex) {
-      if (DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, null, ex);
       }
       return null;
@@ -221,7 +222,7 @@ public class MainTools {
   public static String addQuotations(String str) {
     /* Validate parameters. */
     if (isEmpty(str)) {
-      if (DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, EMPTY_STRING);
       }
       return null;
@@ -249,7 +250,7 @@ public class MainTools {
   public static String removeQuotations(String str) {
     /* Validate parameters. */
     if (isEmpty(str)) {
-      if (DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, EMPTY_STRING);
       }
       return null;
@@ -263,6 +264,36 @@ public class MainTools {
     }
 
     return str;
+  }
+
+  public static String onlyLettersNumbers(String str) {
+    /* Validate parameters. */
+    if (isEmpty(str)) {
+      if (CLASS_DEBUG) {
+        LOGGER.log(Level.WARNING, EMPTY_STRING);
+      }
+      return null;
+    }
+
+    String newStr = "";
+    char c;
+    int len = str.length();
+
+    for (int i = 0; i < len; i++) {
+      c = str.charAt(i);
+      if (c == ' ' || c == '(' || c == ')'
+          || (c >= 'A' && c <= 'Z')
+          || (c >= 'a' && c <= 'z')
+          || (c >= '0' && c <= '9')) {
+        newStr += c;
+      }
+    }
+
+    if (newStr.length() < 1) {
+      newStr = null;
+    }
+
+    return newStr;
   }
 
 }

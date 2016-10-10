@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 public class TokenArray {
 
   private static final Logger LOGGER = Logger.getLogger(TokenArray.class.getName());
+  private static final boolean CLASS_DEBUG = (MainTools.DEBUG && true);
 
   public static final int DEFAULT_ARRAY_SIZE = 1;
   private static final int DEFAULT_ARRAY_INCREMENT = 1;
@@ -49,7 +50,7 @@ public class TokenArray {
    */
   public void chopAt(int index) {
     if (index < 0 || index >= _tokenCount) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }
       return;
@@ -91,7 +92,7 @@ public class TokenArray {
         System.arraycopy(_tokens, 0, newArray, 0, _tokenCount);
         _tokens = newArray;
       } catch (Exception ex) {
-        if (MainTools.DEBUG) {
+        if (CLASS_DEBUG) {
           LOGGER.log(Level.SEVERE, "encountered while attempting to resize array", ex);
         }
         return false;
@@ -111,7 +112,7 @@ public class TokenArray {
   public String get(int index) {
     /* Validate parameters. */
     if (index < 0 || index >= _tokenCount) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }
       return null;
@@ -130,7 +131,7 @@ public class TokenArray {
   public int getIndexOf(String str) {
     /* Validate parameters. */
     if (MainTools.isEmpty(str)) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
       }
       return -1;
@@ -158,7 +159,7 @@ public class TokenArray {
   public boolean add(String str, boolean addEmpty) {
     /* Validate parameters. */
     if (str == null) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.NULL_OBJECT);
       }
       return false;
@@ -200,7 +201,7 @@ public class TokenArray {
   public boolean add(String[] arr, boolean addEmpty) {
     /* Validate parameters. */
     if (arr == null) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.NULL_OBJECT);
       }
       return false;
@@ -234,7 +235,7 @@ public class TokenArray {
   public void remove(int index) {
     /* Validate parameters. */
     if (index < 0 || index >= _tokenCount) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }
       return;
@@ -279,7 +280,7 @@ public class TokenArray {
   public boolean set(int index, String str) {
     /* Validate parameters. */
     if (index < 0 || index >= _tokenCount) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }
       return false;
@@ -303,7 +304,7 @@ public class TokenArray {
   public int tokenize(String str) {
     /* Validate parameters. */
     if (MainTools.isEmpty(str)) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING + ": String str");
       }
       return 0;
@@ -336,7 +337,7 @@ public class TokenArray {
   public static int getMaxTokens(String str) {
     /* Validate parameters. */
     if (MainTools.isEmpty(str)) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
       }
       return 0;
@@ -367,7 +368,7 @@ public class TokenArray {
   public String toString(String delim) {
     /* Validate parameters. */
     if (_tokenCount < 1) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, "token count less than 1");
       }
       return "";

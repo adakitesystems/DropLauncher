@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 public class MemoryFile  {
 
   private static final Logger LOGGER = Logger.getLogger(MemoryFile.class.getName());
+  private static final boolean CLASS_DEBUG = (MainTools.DEBUG && true);
 
   private String _filename;
   private TokenArray _lines;
@@ -53,7 +54,7 @@ public class MemoryFile  {
   public boolean readIntoMemory(String filename) {
     /* Validate parameters. */
     if (MainTools.isEmpty(filename)) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, MainTools.EMPTY_STRING);
       }
       return false;
@@ -78,12 +79,12 @@ public class MemoryFile  {
 
       return true;
     } catch (FileNotFoundException ex) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, null, ex);
       }
       return false;
     } catch (IOException ex) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, null, ex);
       }
       return false;
@@ -111,20 +112,20 @@ public class MemoryFile  {
   public boolean writeToDisk(String filename) {
     /* Validate parameters. */
     if (MainTools.isEmpty(filename)) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, MainTools.EMPTY_STRING);
       }
       return false;
     }
     if (!MainTools.doesFileExist(filename)) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, "file inaccessible or does not exist: " + filename);
       }
       return false;
     }
 
     if (_lines.size() < 1) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, "nothing to write");
       }
       return false;
@@ -147,12 +148,12 @@ public class MemoryFile  {
 
       return true;
     } catch (FileNotFoundException ex) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, null, ex);
       }
       return false;
     } catch (IOException ex) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, null, ex);
       }
       return false;
@@ -175,7 +176,7 @@ public class MemoryFile  {
   public int getIndexStartsWith(String prefix) {
     /* Validate parameters. */
     if (MainTools.isEmpty(prefix)) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
       }
       return -1;

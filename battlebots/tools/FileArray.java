@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 public class FileArray {
 
   private static final Logger LOGGER = Logger.getLogger(FileArray.class.getName());
-  private static final boolean CLASS_DEBUG = true;
+  private static final boolean CLASS_DEBUG = (MainTools.DEBUG && true);
 
   private static final int DEFAULT_ARRAY_SIZE = 1;
   private static final int DEFAULT_ARRAY_INCREMENT = 1;
@@ -63,7 +63,7 @@ public class FileArray {
         System.arraycopy(_files, 0, newArray, 0, _fileCount);
         _files = newArray;
       } catch (Exception ex) {
-        if (MainTools.DEBUG) {
+        if (CLASS_DEBUG) {
           LOGGER.log(Level.SEVERE, "encountered while resizing array", ex);
         }
         return false;
@@ -86,7 +86,7 @@ public class FileArray {
   public boolean add(File file) {
     /* Validate parameters. */
     if (file == null) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.NULL_OBJECT);
       }
       return false;
@@ -100,7 +100,7 @@ public class FileArray {
           return false;
         }
       } catch (IOException | SecurityException ex) {
-        if (MainTools.DEBUG) {
+        if (CLASS_DEBUG) {
           LOGGER.log(Level.SEVERE, null, ex);
         }
       }
@@ -117,7 +117,7 @@ public class FileArray {
       try {
         File[] files = file.listFiles();
         if (files == null) {
-          if (MainTools.DEBUG) {
+          if (CLASS_DEBUG) {
             LOGGER.log(
                 Level.WARNING,
                 "empty directory detected or an error was encountered"
@@ -128,7 +128,7 @@ public class FileArray {
         /* Check if directory contains any files. */
         int len = files.length;
         if (len < 1) {
-          if (MainTools.DEBUG) {
+          if (CLASS_DEBUG) {
             LOGGER.log(Level.WARNING, "empty directory detected");
           }
           return false;
@@ -136,7 +136,7 @@ public class FileArray {
         /* Add directory files to array. */
         for (int i = 0; i < len; i++) {
           if (!add(files[i])) {
-            if (MainTools.DEBUG) {
+            if (CLASS_DEBUG) {
               LOGGER.log(
                   Level.SEVERE,
                   "encountered while adding file from directory"
@@ -145,7 +145,7 @@ public class FileArray {
           }
         }
       } catch (SecurityException ex) {
-        if (MainTools.DEBUG) {
+        if (CLASS_DEBUG) {
           LOGGER.log(
               Level.SEVERE,
               "encountered while reading list of files in directory",
@@ -171,7 +171,7 @@ public class FileArray {
   public File get(int index) {
     /* Validate parameters. */
     if (index < 0 || index >= _fileCount) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }
       return null;
@@ -190,7 +190,7 @@ public class FileArray {
   public int getIndexOf(String path) {
     /* Validate parameters. */
     if (MainTools.isEmpty(path)) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
       }
       return -1;
@@ -206,7 +206,7 @@ public class FileArray {
           return i;
         }
       } catch (IOException | SecurityException ex) {
-        if (MainTools.DEBUG) {
+        if (CLASS_DEBUG) {
           LOGGER.log(Level.SEVERE, null, ex);
         }
       }
@@ -226,7 +226,7 @@ public class FileArray {
   public static long getFileSize(File file) {
     /* Validate parameters. */
     if (file == null) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.NULL_OBJECT);
       }
       return -1;
@@ -234,7 +234,7 @@ public class FileArray {
     /* Determine file size. */
     try {
       if (!file.isFile()) {
-        if (MainTools.DEBUG) {
+        if (CLASS_DEBUG) {
           LOGGER.log(Level.WARNING, "object is not a file");
         }
         return -1;
@@ -242,7 +242,7 @@ public class FileArray {
       long len = file.length();
       return len;
     } catch (SecurityException ex) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, "encountered while reading file size", ex);
       }
       return -1;
@@ -260,7 +260,7 @@ public class FileArray {
   public static String getCanonicalPath(File file) {
     /* Validate parameters. */
     if (file == null) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.NULL_OBJECT);
       }
       return null;
@@ -270,7 +270,7 @@ public class FileArray {
       String path = file.getCanonicalPath();
       return path;
     } catch (IOException | SecurityException ex) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, null, ex);
       }
       return null;
@@ -289,7 +289,7 @@ public class FileArray {
   public static String getShortPath(File file) {
     /* Validate parameters. */
     if (file == null) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.NULL_OBJECT);
       }
       return null;
@@ -299,7 +299,7 @@ public class FileArray {
       String path = file.getName();
       return path;
     } catch (SecurityException ex) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, null, ex);
       }
       return null;

@@ -4,6 +4,7 @@
 
 package battlebots;
 
+import battlebots.bwheadless.BwHeadless;
 import battlebots.filedroplist.FileDropList;
 import battlebots.tools.FileArray;
 import battlebots.tools.MainTools;
@@ -31,8 +32,9 @@ public class MainWindow extends JFrame {
 
   private static final Logger LOGGER =
       Logger.getLogger(MainWindow.class.getName());
+  private static final boolean CLASS_DEBUG = (MainTools.DEBUG && true);
 
-  private static MainWindow _mainWindow;
+  public static MainWindow _mainWindow;
 
   /**
    * Creates new form MainWindow.
@@ -83,8 +85,19 @@ public class MainWindow extends JFrame {
     btnLaunch.setEnabled(false);
 
     txtBotName.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+    txtBotName.addKeyListener(new java.awt.event.KeyAdapter() {
+      public void keyPressed(java.awt.event.KeyEvent evt) {
+        txtBotNameKeyPressed(evt);
+      }
+      public void keyReleased(java.awt.event.KeyEvent evt) {
+        txtBotNameKeyReleased(evt);
+      }
+      public void keyTyped(java.awt.event.KeyEvent evt) {
+        txtBotNameKeyTyped(evt);
+      }
+    });
 
-    lblBotName.setText(" Bot Name:");
+    lblBotName.setText(" Bot name (max 24 chars):");
 
     btngrpRace.add(rbZerg);
     rbZerg.setText("Zerg");
@@ -100,9 +113,19 @@ public class MainWindow extends JFrame {
 
     btngrpGameType.add(rbLocalPC);
     rbLocalPC.setText("Local PC");
+    rbLocalPC.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        rbLocalPCActionPerformed(evt);
+      }
+    });
 
     btngrpGameType.add(rbUDP);
     rbUDP.setText("Local Area Network (UDP)");
+    rbUDP.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        rbUDPActionPerformed(evt);
+      }
+    });
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
@@ -110,10 +133,10 @@ public class MainWindow extends JFrame {
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
         .addContainerGap()
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
           .addComponent(boxDropFiles, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(rbUDP)
-          .addComponent(rbLocalPC))
+          .addComponent(rbUDP, javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(rbLocalPC, javax.swing.GroupLayout.Alignment.LEADING))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(layout.createSequentialGroup()
@@ -169,6 +192,39 @@ public class MainWindow extends JFrame {
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
+
+  private void rbLocalPCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbLocalPCActionPerformed
+    System.out.println("clicked Local PC");
+  }//GEN-LAST:event_rbLocalPCActionPerformed
+
+  private void rbUDPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbUDPActionPerformed
+    System.out.println("clicked LAN UDP");
+  }//GEN-LAST:event_rbUDPActionPerformed
+
+  private void txtBotNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBotNameKeyPressed
+
+  }//GEN-LAST:event_txtBotNameKeyPressed
+
+  private void txtBotNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBotNameKeyReleased
+    String text = txtBotName.getText();
+
+    if (text != null && !text.isEmpty()) {
+      if ((text = MainTools.onlyLettersNumbers(text)) == null) {
+        text = "";
+      } else if (text.length() > 24) {
+        text = text.substring(0, 24);
+      }
+    }
+
+    if (CLASS_DEBUG) {
+      System.out.println("Bot name: " + text);
+    }
+    BwHeadless.INSTANCE.setBotName(text);
+  }//GEN-LAST:event_txtBotNameKeyReleased
+
+  private void txtBotNameKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBotNameKeyTyped
+    // TODO add your handling code here:
+  }//GEN-LAST:event_txtBotNameKeyTyped
 
   /**
    * Main function called when main window is displayed.

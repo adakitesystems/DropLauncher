@@ -20,6 +20,7 @@ public class BwHeadless {
   public static final BwHeadless INSTANCE = new BwHeadless();
 
   private static final Logger LOGGER = Logger.getLogger(BwHeadless.class.getName());
+  private static final boolean CLASS_DEBUG = (MainTools.DEBUG && true);
 
   public static final String ARG_STARCRAFT_EXE = "-e"; /* requires second string */
   public static final String ARG_JOIN = "-j";
@@ -69,13 +70,13 @@ public class BwHeadless {
   public boolean setStarcraftExe(String path) {
     /* Validate parameters. */
     if (MainTools.isEmpty(path)) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
       }
       return false;
     }
     if (!MainTools.doesFileExist(path)) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, "file inaccessbile or does not exist: " + path);
       }
       return false;
@@ -91,6 +92,9 @@ public class BwHeadless {
   }
 
   public void setBotName(String str) {
+    if (MainTools.isEmpty(str)) {
+      str = "BOT";
+    }
     _botName = str;
   }
 
@@ -124,7 +128,7 @@ public class BwHeadless {
         _botRace = null;
         break;
       default:
-        if (MainTools.DEBUG) {
+        if (CLASS_DEBUG) {
           LOGGER.log(Level.WARNING, "unknown race");
         }
         break;
@@ -149,13 +153,13 @@ public class BwHeadless {
   public boolean setBwapiDll(String path) {
     /* Validate parameters. */
     if (MainTools.isEmpty(path)) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
       }
       return false;
     }
     if (!MainTools.doesFileExist(path)) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, "file inaccessbile or does not exist: " + path);
       }
       return false;
@@ -185,13 +189,13 @@ public class BwHeadless {
   public boolean setBotClient(String path) {
     /* Validate parameters. */
     if (MainTools.isEmpty(path)) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
       }
       return false;
     }
     if (!MainTools.doesFileExist(path)) {
-      if (MainTools.DEBUG) {
+      if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, "file inaccessible or does not exist: " + path);
       }
       return false;
