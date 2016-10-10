@@ -266,6 +266,15 @@ public class MainTools {
     return str;
   }
 
+  /**
+   * Returns a string stripped of non-standard ASCII letter and
+   * number characters. Parenthesis are allowed.
+   *
+   * @param str string to strip
+   * @return
+   *     the stripped string if specified string is not null or empty,
+   *     otherwise null
+   */
   public static String onlyLettersNumbers(String str) {
     /* Validate parameters. */
     if (isEmpty(str)) {
@@ -276,16 +285,16 @@ public class MainTools {
     }
 
     String newStr = "";
-    char c;
+    char ch;
     int len = str.length();
 
     for (int i = 0; i < len; i++) {
-      c = str.charAt(i);
-      if (c == ' ' || c == '(' || c == ')'
-          || (c >= 'A' && c <= 'Z')
-          || (c >= 'a' && c <= 'z')
-          || (c >= '0' && c <= '9')) {
-        newStr += c;
+      ch = str.charAt(i);
+      if (ch == ' ' || ch == '(' || ch == ')'
+          || (ch >= 'A' && ch <= 'Z')
+          || (ch >= 'a' && ch <= 'z')
+          || (ch >= '0' && ch <= '9')) {
+        newStr += ch;
       }
     }
 

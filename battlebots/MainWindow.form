@@ -151,9 +151,7 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtBotNameKeyPressed"/>
         <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtBotNameKeyReleased"/>
-        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtBotNameKeyTyped"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblBotName">
@@ -168,6 +166,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Zerg"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rbZergActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JRadioButton" name="rbTerran">
       <Properties>
@@ -176,6 +177,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Terran"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rbTerranActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JRadioButton" name="rbRandom">
       <Properties>
@@ -184,6 +188,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Random"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rbRandomActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JRadioButton" name="rbProtoss">
       <Properties>
@@ -192,6 +199,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Protoss"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rbProtossActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JRadioButton" name="rbLocalPC">
       <Properties>

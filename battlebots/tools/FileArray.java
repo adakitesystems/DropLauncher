@@ -110,7 +110,7 @@ public class FileArray {
       /* Add file. */
       _files[_fileCount++] = file;
       if (CLASS_DEBUG) {
-        System.out.println("FileArray: added file: " + getCanonicalPath(file));
+        System.out.println("Added file: " + getCanonicalPath(file));
       }
     } else if (file.isDirectory()) {
       /* If specified file object is a directory. */

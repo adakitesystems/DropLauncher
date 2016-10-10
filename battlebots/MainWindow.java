@@ -86,14 +86,8 @@ public class MainWindow extends JFrame {
 
     txtBotName.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
     txtBotName.addKeyListener(new java.awt.event.KeyAdapter() {
-      public void keyPressed(java.awt.event.KeyEvent evt) {
-        txtBotNameKeyPressed(evt);
-      }
       public void keyReleased(java.awt.event.KeyEvent evt) {
         txtBotNameKeyReleased(evt);
-      }
-      public void keyTyped(java.awt.event.KeyEvent evt) {
-        txtBotNameKeyTyped(evt);
       }
     });
 
@@ -101,15 +95,35 @@ public class MainWindow extends JFrame {
 
     btngrpRace.add(rbZerg);
     rbZerg.setText("Zerg");
+    rbZerg.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        rbZergActionPerformed(evt);
+      }
+    });
 
     btngrpRace.add(rbTerran);
     rbTerran.setText("Terran");
+    rbTerran.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        rbTerranActionPerformed(evt);
+      }
+    });
 
     btngrpRace.add(rbRandom);
     rbRandom.setText("Random");
+    rbRandom.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        rbRandomActionPerformed(evt);
+      }
+    });
 
     btngrpRace.add(rbProtoss);
     rbProtoss.setText("Protoss");
+    rbProtoss.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        rbProtossActionPerformed(evt);
+      }
+    });
 
     btngrpGameType.add(rbLocalPC);
     rbLocalPC.setText("Local PC");
@@ -194,37 +208,33 @@ public class MainWindow extends JFrame {
   }// </editor-fold>//GEN-END:initComponents
 
   private void rbLocalPCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbLocalPCActionPerformed
-    System.out.println("clicked Local PC");
+    BwHeadless.INSTANCE.setGameType(BwHeadless.GameType.localpc);
   }//GEN-LAST:event_rbLocalPCActionPerformed
 
   private void rbUDPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbUDPActionPerformed
-    System.out.println("clicked LAN UDP");
+    BwHeadless.INSTANCE.setGameType(BwHeadless.GameType.lan);
   }//GEN-LAST:event_rbUDPActionPerformed
-
-  private void txtBotNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBotNameKeyPressed
-
-  }//GEN-LAST:event_txtBotNameKeyPressed
 
   private void txtBotNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBotNameKeyReleased
     String text = txtBotName.getText();
-
-    if (text != null && !text.isEmpty()) {
-      if ((text = MainTools.onlyLettersNumbers(text)) == null) {
-        text = "";
-      } else if (text.length() > 24) {
-        text = text.substring(0, 24);
-      }
-    }
-
-    if (CLASS_DEBUG) {
-      System.out.println("Bot name: " + text);
-    }
     BwHeadless.INSTANCE.setBotName(text);
   }//GEN-LAST:event_txtBotNameKeyReleased
 
-  private void txtBotNameKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBotNameKeyTyped
-    // TODO add your handling code here:
-  }//GEN-LAST:event_txtBotNameKeyTyped
+  private void rbTerranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbTerranActionPerformed
+    BwHeadless.INSTANCE.setBotRace(BwHeadless.Race.Terran);
+  }//GEN-LAST:event_rbTerranActionPerformed
+
+  private void rbZergActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbZergActionPerformed
+    BwHeadless.INSTANCE.setBotRace(BwHeadless.Race.Zerg);
+  }//GEN-LAST:event_rbZergActionPerformed
+
+  private void rbProtossActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbProtossActionPerformed
+    BwHeadless.INSTANCE.setBotRace(BwHeadless.Race.Protoss);
+  }//GEN-LAST:event_rbProtossActionPerformed
+
+  private void rbRandomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbRandomActionPerformed
+    BwHeadless.INSTANCE.setBotRace(BwHeadless.Race.Random);
+  }//GEN-LAST:event_rbRandomActionPerformed
 
   /**
    * Main function called when main window is displayed.
