@@ -165,7 +165,7 @@ public class TokenArray {
     }
 
     /* Return false for unmet conditions. */
-    if ((MainTools.isEmpty(str) && !addEmpty)
+    if ((str.isEmpty() && !addEmpty)
         || !ensureCapacity()) {
       return false;
     }
@@ -276,7 +276,7 @@ public class TokenArray {
    *     true if token set at index was overwritten,
    *     otherwise false
    */
-  public boolean overwrite(int index, String str) {
+  public boolean set(int index, String str) {
     /* Validate parameters. */
     if (index < 0 || index >= _tokenCount) {
       if (MainTools.DEBUG) {
@@ -385,7 +385,7 @@ public class TokenArray {
   }
 
   /**
-   * Returns a string with all the tokens separated by a space character.
+   * Returns a string with all the tokens separated by the space character.
    *
    * @return
    *     string of all tokens
