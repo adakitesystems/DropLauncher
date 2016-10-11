@@ -1,6 +1,6 @@
 /* ConfigVariable.java */
 
-package config;
+package wildlauncher.config;
 
 import wildlauncher.tools.MainTools;
 

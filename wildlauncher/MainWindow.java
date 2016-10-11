@@ -4,7 +4,7 @@
 
 package wildlauncher;
 
-import config.ConfigFile;
+import wildlauncher.config.ConfigFile;
 import wildlauncher.bwheadless.BwHeadless;
 import wildlauncher.filedroplist.FileDropList;
 import wildlauncher.tools.FileArray;
