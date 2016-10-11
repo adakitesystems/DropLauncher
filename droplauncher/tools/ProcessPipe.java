@@ -7,7 +7,7 @@ TODO:
 process is running... suggestion: ".isAlive()"?
 */
 
-package wildlauncher.tools;
+package droplauncher.tools;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

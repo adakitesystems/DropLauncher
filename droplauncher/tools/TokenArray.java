@@ -1,6 +1,6 @@
 /* TokenArray.java */
 
-package wildlauncher.tools;
+package droplauncher.tools;
 
 import java.util.StringTokenizer;
 import java.util.logging.Level;

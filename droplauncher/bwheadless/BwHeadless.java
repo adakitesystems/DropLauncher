@@ -1,9 +1,9 @@
 /* BwHeadless.java */
 
-package wildlauncher.bwheadless;
+package droplauncher.bwheadless;
 
-import wildlauncher.tools.MainTools;
-import wildlauncher.tools.ProcessPipe;
+import droplauncher.tools.MainTools;
+import droplauncher.tools.ProcessPipe;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

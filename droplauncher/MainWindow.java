@@ -2,16 +2,16 @@
 
 // CHECKSTYLE:OFF
 
-package wildlauncher;
+package droplauncher;
 
-import wildlauncher.config.ConfigFile;
-import wildlauncher.bwheadless.BwHeadless;
-import wildlauncher.filedroplist.FileDropList;
-import wildlauncher.tools.FileArray;
-import wildlauncher.tools.MainTools;
-import wildlauncher.tools.MemoryFile;
-import wildlauncher.tools.ProcessPipe;
-import wildlauncher.tools.TokenArray;
+import droplauncher.config.ConfigFile;
+import droplauncher.bwheadless.BwHeadless;
+import droplauncher.filedroplist.FileDropList;
+import droplauncher.tools.FileArray;
+import droplauncher.tools.MainTools;
+import droplauncher.tools.MemoryFile;
+import droplauncher.tools.ProcessPipe;
+import droplauncher.tools.TokenArray;
 
 import filedrop.FileDrop;
 

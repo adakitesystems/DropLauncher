@@ -1,6 +1,6 @@
 /* FileArray.java */
 
-package wildlauncher.tools;
+package droplauncher.tools;
 
 import java.io.File;
 import java.io.IOException;

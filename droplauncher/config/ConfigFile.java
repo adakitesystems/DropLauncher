@@ -1,10 +1,10 @@
 /* ConfigFile.java */
 
-package wildlauncher.config;
+package droplauncher.config;
 
-import wildlauncher.tools.MainTools;
-import wildlauncher.tools.MemoryFile;
-import wildlauncher.tools.TokenArray;
+import droplauncher.tools.MainTools;
+import droplauncher.tools.MemoryFile;
+import droplauncher.tools.TokenArray;
 
 import java.util.ArrayList;
 import java.util.logging.Level;

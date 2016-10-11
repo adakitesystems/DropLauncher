@@ -1,8 +1,8 @@
 /* FileDropList.java */
 
-package wildlauncher.filedroplist;
+package droplauncher.filedroplist;
 
-import wildlauncher.tools.FileArray;
+import droplauncher.tools.FileArray;
 
 import java.util.logging.Logger;
 

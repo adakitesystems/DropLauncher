@@ -1,8 +1,8 @@
 /* ConfigVariable.java */
 
-package wildlauncher.config;
+package droplauncher.config;
 
-import wildlauncher.tools.MainTools;
+import droplauncher.tools.MainTools;
 
 import java.util.logging.Logger;
 
