@@ -2,15 +2,15 @@
 
 // CHECKSTYLE:OFF
 
-package battlebots;
+package wildlauncher;
 
-import battlebots.bwheadless.BwHeadless;
-import battlebots.filedroplist.FileDropList;
-import battlebots.tools.FileArray;
-import battlebots.tools.MainTools;
-import battlebots.tools.MemoryFile;
-import battlebots.tools.ProcessPipe;
-import battlebots.tools.TokenArray;
+import wildlauncher.bwheadless.BwHeadless;
+import wildlauncher.filedroplist.FileDropList;
+import wildlauncher.tools.FileArray;
+import wildlauncher.tools.MainTools;
+import wildlauncher.tools.MemoryFile;
+import wildlauncher.tools.ProcessPipe;
+import wildlauncher.tools.TokenArray;
 
 import filedrop.FileDrop;
 
@@ -263,7 +263,7 @@ public class MainWindow extends JFrame {
     EventQueue.invokeLater(new Runnable() {
       @Override
       public void run() {
-        _mainWindow.setTitle("battlebots");
+        _mainWindow.setTitle("WildLauncher");
         _mainWindow.setResizable(false);
         _mainWindow.setLocationRelativeTo(null);
         _mainWindow.setVisible(true);

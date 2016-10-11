@@ -1,6 +1,6 @@
 /* TokenArray.java */
 
-package battlebots.tools;
+package wildlauncher.tools;
 
 import java.util.StringTokenizer;
 import java.util.logging.Level;

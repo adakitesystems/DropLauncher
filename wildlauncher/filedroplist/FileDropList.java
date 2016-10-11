@@ -1,8 +1,8 @@
 /* FileDropList.java */
 
-package battlebots.filedroplist;
+package wildlauncher.filedroplist;
 
-import battlebots.tools.FileArray;
+import wildlauncher.tools.FileArray;
 
 import java.util.logging.Logger;
 

@@ -1,6 +1,6 @@
 /* MemoryFile.java */
 
-package battlebots.tools;
+package wildlauncher.tools;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

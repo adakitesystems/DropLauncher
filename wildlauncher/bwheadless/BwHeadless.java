@@ -1,9 +1,9 @@
 /* BwHeadless.java */
 
-package battlebots.bwheadless;
+package wildlauncher.bwheadless;
 
-import battlebots.tools.MainTools;
-import battlebots.tools.ProcessPipe;
+import wildlauncher.tools.MainTools;
+import wildlauncher.tools.ProcessPipe;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

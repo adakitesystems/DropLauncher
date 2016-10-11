@@ -1,6 +1,6 @@
 /* FileArray.java */
 
-package battlebots.tools;
+package wildlauncher.tools;
 
 import java.io.File;
 import java.io.IOException;
