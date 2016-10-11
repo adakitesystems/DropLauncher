@@ -160,6 +160,10 @@ public class MemoryFile  {
     }
   }
 
+  public boolean writeToDisk() {
+    return writeToDisk(getPath());
+  }
+
   public TokenArray getLines() {
     return _lines;
   }

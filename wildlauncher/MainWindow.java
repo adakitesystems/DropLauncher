@@ -4,6 +4,7 @@
 
 package wildlauncher;
 
+import config.ConfigFile;
 import wildlauncher.bwheadless.BwHeadless;
 import wildlauncher.filedroplist.FileDropList;
 import wildlauncher.tools.FileArray;
@@ -275,7 +276,6 @@ public class MainWindow extends JFrame {
      * static container object named FileDropList.
      */
     FileDrop fileDrop = new FileDrop(
-//        _mainWindow.scrollPaneFileDrop,
         _mainWindow.boxDropFiles,
         new FileDrop.Listener() {
           @Override
@@ -347,6 +347,18 @@ public class MainWindow extends JFrame {
 ////      mf.writeToDisk(mf.getPath());
 //    }
 //    mf.printToConsole();
+
+
+
+//      ConfigFile cf = new ConfigFile();
+//      if (cf.open("bwapi.ini")) {
+//        cf.setVariable("ai", "S:\\install\\StarCraft\\bwapi-data\\AI\\Iron.dll");
+//        cf.setVariable("holiday", "OFF");
+//        System.out.println("ai = " + cf.getValue("ai"));
+//        System.out.println("holiday = " + cf.getValue("holiday"));
+//      } else {
+//        System.out.println("error");
+//      }
     /* DEBUGGING --- end */
   }
 
