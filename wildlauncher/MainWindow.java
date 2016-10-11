@@ -350,23 +350,23 @@ public class MainWindow extends JFrame {
 
 
 
-      ConfigFile cf = new ConfigFile();
-      if (cf.open("bwapi.ini")) {
-//        cf.setVariable("ai", "S:\\install\\StarCraft\\bwapi-data\\AI\\LetaBot.dll");
-//        cf.setVariable("holiday", "ON");
-//        System.out.println("ai = " + cf.getValue("ai"));
-//        System.out.println("holiday = " + cf.getValue("holiday"));
+//      ConfigFile cf = new ConfigFile();
+//      if (cf.open("bwapi.ini")) {
+////        cf.setVariable("ai", "S:\\install\\StarCraft\\bwapi-data\\AI\\LetaBot.dll");
+////        cf.setVariable("holiday", "ON");
+////        System.out.println("ai = " + cf.getValue("ai"));
+////        System.out.println("holiday = " + cf.getValue("holiday"));
+////        cf.enableVariable("ai");
+////        System.out.println("ai = " + cf.getValue("ai"));
+//        System.out.println(cf.getValue("ai"));
+//        cf.disableVariable("ai");
+//        System.out.println(cf.getValue("ai"));
 //        cf.enableVariable("ai");
-//        System.out.println("ai = " + cf.getValue("ai"));
-        System.out.println(cf.getValue("ai"));
-        cf.disableVariable("ai");
-        System.out.println(cf.getValue("ai"));
-        cf.enableVariable("ai");
-        cf.setVariable("ai", "S:\\install\\StarCraft\\bwapi-data\\AI\\Iron.dll");
-        System.out.println(cf.getValue("ai"));
-      } else {
-        System.out.println("error");
-      }
+//        cf.setVariable("ai", "S:\\install\\StarCraft\\bwapi-data\\AI\\Iron.dll");
+//        System.out.println(cf.getValue("ai"));
+//      } else {
+//        System.out.println("error");
+//      }
     /* DEBUGGING --- end */
   }
 
