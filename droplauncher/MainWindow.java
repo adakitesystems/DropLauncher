@@ -309,6 +309,7 @@ public class MainWindow extends JFrame {
     EventQueue.invokeLater(new Runnable() {
       @Override
       public void run() {
+        /* Create or check for settings config file. */
         if (!MainTools.doesFileExist(BwHeadless.DEFAULT_CFG_FILE)) {
           BwHeadless.INSTANCE.createDefaultConfig();
         }

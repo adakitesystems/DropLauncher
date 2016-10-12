@@ -3,10 +3,8 @@
 package droplauncher.bwheadless;
 
 import droplauncher.config.ConfigFile;
-import droplauncher.config.ConfigVariable;
 import droplauncher.tools.MainTools;
 import droplauncher.tools.ProcessPipe;
-import java.util.ArrayList;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -91,6 +89,14 @@ public class BwHeadless {
     this.botRace        = Race.Random;
     this.gameType       = GameType.lan;
 
+    /* Create or check for settings config file. */
+    /* ... */
+    /* Code moved to MainWindow.java constructor so this class
+       object gets initialized before displaying information
+       to the MainWindow form. */
+    /* ... */
+
+    /* Create or check for checksum config file. */
     this.bwapiDllChecksums = new ConfigFile();
     if (MainTools.doesFileExist(BWAPI_DLL_FILE)) {
       if (bwapiDllChecksums.open(BWAPI_DLL_FILE)) {
