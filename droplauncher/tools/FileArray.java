@@ -21,11 +21,11 @@ public class FileArray {
   private static final int DEFAULT_ARRAY_SIZE = 1;
   private static final int DEFAULT_ARRAY_INCREMENT = 1;
 
-  private File[] _files;
-  private int _fileCount;
+  private File[] files;
+  private int fileCount;
 
   public FileArray() {
-    _files = new File[DEFAULT_ARRAY_SIZE];
+    this.files = new File[DEFAULT_ARRAY_SIZE];
     reset();
   }
 
@@ -37,7 +37,7 @@ public class FileArray {
    * way of accessing the rest of the array through public functions.
    */
   public void reset() {
-    _fileCount = 0;
+    this.fileCount = 0;
   }
 
   /**
@@ -45,7 +45,7 @@ public class FileArray {
    * public functions.
    */
   public int size() {
-    return _fileCount;
+    return this.fileCount;
   }
 
   /**
@@ -57,11 +57,11 @@ public class FileArray {
    *     otherwise false
    */
   private boolean ensureCapacity() {
-    if (_fileCount >= _files.length) {
+    if (this.fileCount >= this.files.length) {
       try {
-        File[] newArray = new File[_fileCount + DEFAULT_ARRAY_INCREMENT];
-        System.arraycopy(_files, 0, newArray, 0, _fileCount);
-        _files = newArray;
+        File[] newArray = new File[this.fileCount + DEFAULT_ARRAY_INCREMENT];
+        System.arraycopy(this.files, 0, newArray, 0,this.fileCount);
+        this.files = newArray;
       } catch (Exception ex) {
         if (CLASS_DEBUG) {
           LOGGER.log(Level.SEVERE, "encountered while resizing array", ex);
@@ -108,7 +108,7 @@ public class FileArray {
         return false;
       }
       /* Add file. */
-      _files[_fileCount++] = file;
+      this.files[this.fileCount++] = file;
       if (CLASS_DEBUG) {
         System.out.println("Added file: " + getCanonicalPath(file));
       }
@@ -170,13 +170,13 @@ public class FileArray {
    */
   public File get(int index) {
     /* Validate parameters. */
-    if (index < 0 || index >= _fileCount) {
+    if (index < 0 || index >= this.fileCount) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }
       return null;
     }
-    return _files[index];
+    return this.files[index];
   }
 
   /**
@@ -198,8 +198,8 @@ public class FileArray {
 
     File tmpFile;
 
-    for (int i = 0; i < _fileCount; i++) {
-      tmpFile = _files[i];
+    for (int i = 0; i < this.fileCount; i++) {
+      tmpFile = this.files[i];
       try {
         if (tmpFile.getName().equals(path)
             || tmpFile.getCanonicalPath().equals(path)) {

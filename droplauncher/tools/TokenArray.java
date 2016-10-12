@@ -20,11 +20,11 @@ public class TokenArray {
   public static final int DEFAULT_ARRAY_SIZE = 1;
   private static final int DEFAULT_ARRAY_INCREMENT = 1;
 
-  private String[] _tokens;
-  private int _tokenCount;
+  private String[] tokens;
+  private int tokenCount;
 
   public TokenArray() {
-    _tokens = new String[DEFAULT_ARRAY_SIZE];
+    this.tokens = new String[DEFAULT_ARRAY_SIZE];
     reset();
   }
 
@@ -39,7 +39,7 @@ public class TokenArray {
       initialSize = DEFAULT_ARRAY_SIZE;
       return;
     }
-    _tokens = new String[initialSize];
+    this.tokens = new String[initialSize];
     reset();
   }
 
@@ -49,13 +49,13 @@ public class TokenArray {
    * @param index specified index.
    */
   public void chopAt(int index) {
-    if (index < 0 || index >= _tokenCount) {
+    if (index < 0 || index >= this.tokenCount) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }
       return;
     }
-    _tokenCount = index;
+    this.tokenCount = index;
   }
 
   /**
@@ -66,7 +66,7 @@ public class TokenArray {
    * way of accessing the rest of the array through public functions.
    */
   public void reset() {
-    _tokenCount = 0;
+    this.tokenCount = 0;
   }
 
   /**
@@ -74,7 +74,7 @@ public class TokenArray {
    * public functions.
    */
   public int size() {
-    return _tokenCount;
+    return this.tokenCount;
   }
 
   /**
@@ -86,11 +86,11 @@ public class TokenArray {
    *     otherwise false
    */
   private boolean ensureCapacity() {
-    if (_tokenCount >= _tokens.length) {
+    if (this.tokenCount >= this.tokens.length) {
       try {
-        String[] newArray = new String[_tokenCount + DEFAULT_ARRAY_INCREMENT];
-        System.arraycopy(_tokens, 0, newArray, 0, _tokenCount);
-        _tokens = newArray;
+        String[] newArray = new String[this.tokenCount + DEFAULT_ARRAY_INCREMENT];
+        System.arraycopy(this.tokens, 0, newArray, 0,this.tokenCount);
+        this.tokens = newArray;
       } catch (Exception ex) {
         if (CLASS_DEBUG) {
           LOGGER.log(Level.SEVERE, "encountered while attempting to resize array", ex);
@@ -111,13 +111,13 @@ public class TokenArray {
    */
   public String get(int index) {
     /* Validate parameters. */
-    if (index < 0 || index >= _tokenCount) {
+    if (index < 0 || index >= this.tokenCount) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }
       return null;
     }
-    return _tokens[index];
+    return this.tokens[index];
   }
 
   /**
@@ -137,8 +137,8 @@ public class TokenArray {
       return -1;
     }
 
-    for (int i = 0; i < _tokenCount; i++) {
-      if (str.equals(_tokens[i])) {
+    for (int i = 0; i < this.tokenCount; i++) {
+      if (str.equals(this.tokens[i])) {
         return i;
       }
     }
@@ -171,7 +171,7 @@ public class TokenArray {
       return false;
     }
 
-    _tokens[_tokenCount++] = str;
+    this.tokens[this.tokenCount++] = str;
 
     return true;
   }
@@ -234,26 +234,26 @@ public class TokenArray {
    */
   public void remove(int index) {
     /* Validate parameters. */
-    if (index < 0 || index >= _tokenCount) {
+    if (index < 0 || index >= this.tokenCount) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }
       return;
     }
 
-    if (_tokenCount < 2) {
+    if (this.tokenCount < 2) {
       reset();
       return;
     }
 
     /* Shift elements to the left starting with the first element after
        the removed element. */
-    int len = _tokenCount - 1;
+    int len = this.tokenCount - 1;
     while (index < len) {
-      _tokens[index] = _tokens[index + 1];
+      this.tokens[index] = this.tokens[index + 1];
       index++;
     }
-    _tokenCount--;
+    this.tokenCount--;
   }
 
   /**
@@ -279,7 +279,7 @@ public class TokenArray {
    */
   public boolean set(int index, String str) {
     /* Validate parameters. */
-    if (index < 0 || index >= _tokenCount) {
+    if (index < 0 || index >= this.tokenCount) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }
@@ -287,11 +287,11 @@ public class TokenArray {
     }
 
     if (MainTools.isEmpty(str)) {
-      _tokens[index] = "";
+      this.tokens[index] = "";
       return true;
     }
 
-    _tokens[index] = str;
+    this.tokens[index] = str;
     return true;
   }
 
@@ -314,8 +314,8 @@ public class TokenArray {
     StringTokenizer st = new StringTokenizer(str);
 
     int maxTokens = getMaxTokens(str);
-    if (maxTokens > _tokens.length) {
-      _tokens = new String[maxTokens];
+    if (maxTokens > this.tokens.length) {
+      this.tokens = new String[maxTokens];
     }
 
     reset();
@@ -325,7 +325,7 @@ public class TokenArray {
       add(token);
     }
 
-    return _tokenCount;
+    return this.tokenCount;
   }
 
   /**
@@ -367,7 +367,7 @@ public class TokenArray {
    */
   public String toString(String delim) {
     /* Validate parameters. */
-    if (_tokenCount < 1) {
+    if (this.tokenCount < 1) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, "token count less than 1");
       }
@@ -377,9 +377,9 @@ public class TokenArray {
       delim = "";
     }
 
-    StringBuilder result = new StringBuilder(_tokens[0]);
-    for (int i = 1; i < _tokenCount; i++) {
-      result.append(delim).append(_tokens[i]);
+    StringBuilder result = new StringBuilder(this.tokens[0]);
+    for (int i = 1; i < this.tokenCount; i++) {
+      result.append(delim).append(this.tokens[i]);
     }
 
     return result.toString();
@@ -400,11 +400,11 @@ public class TokenArray {
    * Returns a correctly allocated string array of the internal class array.
    */
   public String[] toStringArray() {
-    if (_tokenCount < 1)  {
+    if (this.tokenCount < 1)  {
       return null;
     }
-    String[] newArray = new String[_tokenCount];
-    System.arraycopy(_tokens, 0, newArray, 0, _tokenCount);
+    String[] newArray = new String[this.tokenCount];
+    System.arraycopy(this.tokens, 0, newArray, 0,this.tokenCount);
     return newArray;
   }
 }

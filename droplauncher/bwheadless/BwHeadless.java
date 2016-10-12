@@ -59,26 +59,26 @@ public class BwHeadless {
   public static final String DEFAULT_BOT_NAME = "BOT";
   public static final int MAX_NAME_LENGTH = 24;
 
-  private ProcessPipe _bwHeadlessPipe;
-  private ProcessPipe _botClientPipe;
+  private ProcessPipe bwHeadlessPipe;
+  private ProcessPipe botClientPipe;
 
-  private String _starcraftExe;
-  private String _botName;
-  private String _botDllPath;
-  private String _botClientPath; /* e.g. EXE or JAR bot client */
+  private String starcraftExe;
+  private String botName;
+  private String botDllPath;
+  private String botClientPath; /* e.g. EXE or JAR bot client */
 
-  private Race _botRace;
-  private GameType _gameType;
+  private Race botRace;
+  private GameType gameType;
 
   private BwHeadless() {
-    _bwHeadlessPipe = new ProcessPipe();
-    _botClientPipe = new ProcessPipe();
-    _starcraftExe = null;
-    _botName = DEFAULT_BOT_NAME;
-    _botRace = Race.Random;
-    _botDllPath = null;
-    _botClientPath = null;
-    _gameType = GameType.lan;
+    this.bwHeadlessPipe = new ProcessPipe();
+    this.botClientPipe = new ProcessPipe();
+    this.starcraftExe = null;
+    this.botName = DEFAULT_BOT_NAME;
+    this.botRace = Race.Random;
+    this.botDllPath = null;
+    this.botClientPath = null;
+    this.gameType = GameType.lan;
   }
 
   /**
@@ -98,7 +98,7 @@ public class BwHeadless {
   }
 
   public String getStarcraftExe() {
-    return _starcraftExe;
+    return this.starcraftExe;
   }
 
   /**
@@ -125,17 +125,17 @@ public class BwHeadless {
       return false;
     }
 
-    _starcraftExe = path;
+    this.starcraftExe = path;
 
     if (CLASS_DEBUG) {
-      System.out.println("StarCraft.exe: " + _starcraftExe);
+      System.out.println("StarCraft.exe: " + this.starcraftExe);
     }
 
     return true;
   }
 
   public String getBotName() {
-    return _botName;
+    return this.botName;
   }
 
   /**
@@ -156,10 +156,10 @@ public class BwHeadless {
       str = str.substring(0, MAX_NAME_LENGTH);
     }
 
-    _botName = str;
+    this.botName = str;
 
     if (CLASS_DEBUG) {
-      System.out.println("Bot name: " + _botName);
+      System.out.println("Bot name: " + this.botName);
     }
   }
 
@@ -167,7 +167,7 @@ public class BwHeadless {
    * Returns the path to the BWAPI DLL file.
    */
   public String getBotDll() {
-    return _botDllPath;
+    return this.botDllPath;
   }
 
   /**
@@ -193,7 +193,7 @@ public class BwHeadless {
       return false;
     }
 
-    _botDllPath = path;
+    this.botDllPath = path;
 
     return true;
   }
@@ -202,7 +202,7 @@ public class BwHeadless {
    * Returns the path to the bot client file.
    */
   public String getBotClient() {
-    return _botClientPath;
+    return this.botClientPath;
   }
 
   /**
@@ -229,13 +229,13 @@ public class BwHeadless {
       return false;
     }
 
-    _botClientPath = path;
+    this.botClientPath = path;
 
     return true;
   }
 
   public Race getBotRace() {
-    return _botRace;
+    return this.botRace;
   }
 
   /**
@@ -244,23 +244,23 @@ public class BwHeadless {
    * @param race specified bot race
    */
   public void setBotRace(Race race) {
-    _botRace = race;
+    this.botRace = race;
     if (CLASS_DEBUG) {
-      System.out.println("Bot race: " + _botRace.toString());
+      System.out.println("Bot race: " + this.botRace.toString());
     }
   }
 
   public GameType getGameType() {
-    return _gameType;
+    return this.gameType;
   }
 
   /**
    * Sets the game type.
    */
   public void setGameType(GameType gameType) {
-    _gameType = gameType;
+    this.gameType = gameType;
     if (CLASS_DEBUG) {
-      System.out.println("Game type: " + _gameType.toString());
+      System.out.println("Game type: " + this.gameType.toString());
     }
   }
 

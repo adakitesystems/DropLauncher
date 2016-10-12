@@ -27,20 +27,20 @@ public class MemoryFile  {
   private static final Logger LOGGER = Logger.getLogger(MemoryFile.class.getName());
   private static final boolean CLASS_DEBUG = (MainTools.DEBUG && true);
 
-  private String _filename;
-  private TokenArray _lines;
+  private String filename;
+  private TokenArray lines;
 
   public MemoryFile() {
-    _lines = new TokenArray();
+    this.lines = new TokenArray();
   }
 
   private void reset() {
-    _filename = null;
-    _lines.reset();
+    this.filename = null;
+    this.lines.reset();
   }
 
   public String getPath() {
-    return _filename;
+    return this.filename;
   }
 
   /**
@@ -68,10 +68,10 @@ public class MemoryFile  {
       BufferedReader br = new BufferedReader(new InputStreamReader(fis));
       String line;
 
-      _filename = filename;
+      this.filename = filename;
 
       while ((line = br.readLine()) != null) {
-        _lines.add(line);
+        this.lines.add(line);
       }
 
       br.close();
@@ -98,7 +98,7 @@ public class MemoryFile  {
    *     the value from {@link #readIntoMemory(java.lang.String)}
    */
   public boolean refresh() {
-    return readIntoMemory(_filename);
+    return readIntoMemory(this.filename);
   }
 
   /**
@@ -124,7 +124,7 @@ public class MemoryFile  {
       return false;
     }
 
-    if (_lines.size() < 1) {
+    if (this.lines.size() < 1) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, "nothing to write");
       }
@@ -136,9 +136,9 @@ public class MemoryFile  {
       FileOutputStream fos = new FileOutputStream(filename);
       BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
-      int len = _lines.size();
+      int len = this.lines.size();
       for (int i = 0; i < len; i++) {
-        bw.write(_lines.get(i) + System.lineSeparator());
+        bw.write(this.lines.get(i) + System.lineSeparator());
       }
 
       bw.flush();
@@ -165,7 +165,7 @@ public class MemoryFile  {
   }
 
   public TokenArray getLines() {
-    return _lines;
+    return this.lines;
   }
 
   /**
@@ -186,9 +186,9 @@ public class MemoryFile  {
       return -1;
     }
 
-    int len = _lines.size();
+    int len = this.lines.size();
     for (int i = 0; i < len; i++) {
-      if (_lines.get(i).startsWith(prefix)) {
+      if (this.lines.get(i).startsWith(prefix)) {
         return i;
       }
     }
@@ -202,14 +202,14 @@ public class MemoryFile  {
    * Prints file to console.
    */
   public void printToConsole() {
-    int len = _lines.size();
+    int len = this.lines.size();
     if (len < 1) {
       return;
     }
-    System.out.println(_filename + ":");
+    System.out.println(this.filename + ":");
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < len; i++) {
-      sb.append(_lines.get(i)).append(System.lineSeparator());
+      sb.append(this.lines.get(i)).append(System.lineSeparator());
     }
     System.out.println(sb.toString());
   }

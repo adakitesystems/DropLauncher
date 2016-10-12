@@ -17,33 +17,33 @@ public class ConfigVariable {
   private static final Logger LOGGER = Logger.getLogger(ConfigVariable.class.getName());
   private static final boolean CLASS_DEBUG = (MainTools.DEBUG && true);
 
-  private String _name;
-  private String _value;
+  private String name;
+  private String value;
 
   public ConfigVariable() {
-    _name = null;
-    _value = null;
+    this.name = null;
+    this.value = null;
   }
 
   public ConfigVariable(String name, String value) {
-    _name = name;
-    _value = value;
+    this.name = name;
+    this.value = value;
   }
 
   public String getName() {
-    return _name;
+    return this.name;
   }
 
   public void setName(String name) {
-    _name = name;
+    this.name = name;
   }
 
   public String getValue() {
-    return _value;
+    return this.value;
   }
 
   public void setValue(String value) {
-    _value = value;
+    this.value = value;
   }
 
 }

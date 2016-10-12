@@ -34,25 +34,25 @@ public final class ProcessPipe {
 
   public static final double DEFAULT_READ_TIMEOUT = (double)0.25; /* seconds */
 
-  private String _path;
-  private String[] _args;
-  private Process _process;
-  private InputStream _is;
-  private BufferedReader _br; /* read from process */
-  private OutputStream _os;
-  private BufferedWriter _bw; /* write to process */
+  private String path;
+  private String[] args;
+  private Process process;
+  private InputStream is;
+  private BufferedReader br; /* read from process */
+  private OutputStream os;
+  private BufferedWriter bw; /* write to process */
 
   /**
    * Initialize class variables.
    */
   public ProcessPipe() {
-    _path = null;
-    _args = null;
-    _process = null;
-    _is = null;
-    _br = null;
-    _os = null;
-    _bw = null;
+    this.path = null;
+    this.args = null;
+    this.process = null;
+    this.is = null;
+    this.br = null;
+    this.os = null;
+    this.bw = null;
   }
 
   /**
@@ -78,25 +78,25 @@ public final class ProcessPipe {
 
     try {
       String[] command;
-      _path = path;
+      this.path = path;
 
       if (args == null) {
         command = new String[1];
       } else {
-        _args = Arrays.copyOf(args, args.length);
-        command = new String[1 + _args.length];
-        System.arraycopy(_args, 0, command, 1, _args.length);
+        this.args = Arrays.copyOf(args, args.length);
+        command = new String[1 + this.args.length];
+        System.arraycopy(this.args, 0, command, 1, this.args.length);
       }
 
-      command[0] = _path;
+      command[0] = this.path;
 
-      _process = new ProcessBuilder(command).start();
+      this.process = new ProcessBuilder(command).start();
 
-      _is = _process.getInputStream();
-      _br = new BufferedReader(new InputStreamReader(_is));
+      this.is = this.process.getInputStream();
+      this.br = new BufferedReader(new InputStreamReader(this.is));
 
-      _os = _process.getOutputStream();
-      _bw = new BufferedWriter(new OutputStreamWriter(_os));
+      this.os = this.process.getOutputStream();
+      this.bw = new BufferedWriter(new OutputStreamWriter(this.os));
 
       return true;
     } catch (NullPointerException | IOException ex) {
@@ -122,11 +122,11 @@ public final class ProcessPipe {
    */
   public boolean close() {
     try {
-      _br.close();
-      _is.close();
-      _bw.close();
-      _os.close();
-      _process.destroy();
+      this.br.close();
+      this.is.close();
+      this.bw.close();
+      this.os.close();
+      this.process.destroy();
       return true;
     } catch (IOException ex) {
       if (CLASS_DEBUG) {
@@ -143,7 +143,7 @@ public final class ProcessPipe {
    * @return value returned from {@link #open(java.lang.String, java.lang.String[])}.
    */
   public boolean reopen() {
-    return open(_path, _args);
+    return open(this.path,this.args);
   }
 
   /**
@@ -151,13 +151,13 @@ public final class ProcessPipe {
    */
   public String getPath() {
     /* Validate class variables. */
-    if (MainTools.isEmpty(_path)) {
+    if (MainTools.isEmpty(this.path)) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
       }
       return null;
     }
-    return _path;
+    return this.path;
   }
 
   /*
@@ -190,7 +190,7 @@ public final class ProcessPipe {
     /* Keep checking pipe's buffer. */
     while (currentTime <= endTime) {
       try {
-        if (_br.ready()) {
+        if (this.br.ready()) {
           return true;
         }
       } catch (IOException ex) {
@@ -214,8 +214,8 @@ public final class ProcessPipe {
   public String readLine() {
     /* Read from pipe. */
     try {
-      if (_br.ready()) {
-        String line = _br.readLine();
+      if (this.br.ready()) {
+        String line = this.br.readLine();
         if (CLASS_DEBUG && line != null && line.isEmpty()) {
           /* A non-null empty string will not break the program.
              This logging event was added in curiosity of such
@@ -253,8 +253,8 @@ public final class ProcessPipe {
 
     /* Write to pipe. */
     try {
-      _bw.write(str);
-      _bw.flush();
+      this.bw.write(str);
+      this.bw.flush();
     } catch (IOException ex) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, "encountered while writing to pipe", ex);
@@ -306,7 +306,7 @@ public final class ProcessPipe {
     try {
       String line;
       while (isInputReady(DEFAULT_READ_TIMEOUT)) {
-        line = _br.readLine();
+        line = this.br.readLine();
         if (print && !MainTools.isEmpty(line)) {
           System.out.println(line);
         }

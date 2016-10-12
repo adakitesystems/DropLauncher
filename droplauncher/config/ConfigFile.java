@@ -27,17 +27,17 @@ public class ConfigFile {
   public static final String VARIABLE_DELIMITER = "=";
   public static final String COMMENT_DELIMITER = ";";
 
-  private String _filename;
-  private MemoryFile _memoryFile;
-  private ArrayList<ConfigVariable> _variables;
+  private String filename;
+  private MemoryFile memoryFile;
+  private ArrayList<ConfigVariable> variables;
 
   /**
    * Initialize class variables.
    */
   public ConfigFile() {
-    _filename = null;
-    _memoryFile = new MemoryFile();
-    _variables = new ArrayList<>();
+    this.filename = null;
+    this.memoryFile = new MemoryFile();
+    this.variables = new ArrayList<>();
   }
 
   /**
@@ -45,8 +45,8 @@ public class ConfigFile {
    *
    * @param filename path to file
    * @return
-   *    true if file was created successfully and did not already exist,
-   *    otherwise false
+   *     true if file was created successfully and did not already exist,
+   *     otherwise false
    */
   public boolean create(String filename) {
     if (MainTools.isEmpty(filename)) {
@@ -69,7 +69,7 @@ public class ConfigFile {
     try {
       boolean status = file.createNewFile();
       if (status && open(filename)) {
-        _filename = filename;
+        this.filename = filename;
       }
       return status;
     } catch (IOException ex) {
@@ -90,12 +90,12 @@ public class ConfigFile {
    *     otherwise false
    */
   public boolean open(String filename) {
-    if (!_memoryFile.readIntoMemory(filename)) {
+    if (!this.memoryFile.readIntoMemory(filename)) {
       return false;
     }
-    _variables.clear();
+    this.variables.clear();
 
-    TokenArray lines = _memoryFile.getLines();
+    TokenArray lines = this.memoryFile.getLines();
     int len = lines.size();
     String line;
     String varName;
@@ -129,7 +129,7 @@ public class ConfigFile {
       varName = line.substring(0, index).trim();
       varValue = line.substring(index + 1, line.length()).trim();
 
-      _variables.add(new ConfigVariable(varName, varValue));
+      this.variables.add(new ConfigVariable(varName, varValue));
 
       if (CLASS_DEBUG) {
         System.out.println(
@@ -139,7 +139,7 @@ public class ConfigFile {
       }
     }
 
-    _filename = filename;
+    this.filename = filename;
 
     return true;
   }
@@ -158,11 +158,11 @@ public class ConfigFile {
       return -1;
     }
 
-    int len = _variables.size();
+    int len = this.variables.size();
     ConfigVariable tmpVar;
 
     for (int i = 0; i < len ; i++) {
-      tmpVar = _variables.get(i);
+      tmpVar = this.variables.get(i);
       if (tmpVar.getName().equals(name)) {
         return i;
       }
@@ -185,11 +185,11 @@ public class ConfigFile {
       return -1;
     }
 
-    int len = _variables.size();
+    int len = this.variables.size();
     ConfigVariable tmpVar;
 
     for (int i = 0; i < len ; i++) {
-      tmpVar = _variables.get(i);
+      tmpVar = this.variables.get(i);
       if (tmpVar.getValue().equals(value)) {
         return i;
       }
@@ -208,20 +208,29 @@ public class ConfigFile {
     if (index < 0) {
       return null;
     }
-    return _variables.get(index).getValue();
+    return this.variables.get(index).getValue();
   }
 
+  /**
+   * Create a new variable in the config file.
+   *
+   * @param name variable name
+   * @param value variable value
+   * @return
+   *     true if variable did not exist before and does now,
+   *     otherwise false
+   */
   public boolean createVariable(String name, String value) {
     if (indexOfName(name) >= 0)  {
       return false;
     }
-    _memoryFile.getLines().add(
+    this.memoryFile.getLines().add(
         name
         + " " + ConfigFile.VARIABLE_DELIMITER + " "
         + value
     );
-    System.out.println(_memoryFile.getLines().get(_memoryFile.getLines().size() - 1));
-    return _memoryFile.writeToDisk();
+    System.out.println(this.memoryFile.getLines().get(this.memoryFile.getLines().size() - 1));
+    return this.memoryFile.writeToDisk();
   }
 
   /**
@@ -240,7 +249,7 @@ public class ConfigFile {
     }
 
     int index;
-    TokenArray lines = _memoryFile.getLines();
+    TokenArray lines = this.memoryFile.getLines();
     String line;
     String comment;
     boolean writeToFile = false;
@@ -258,17 +267,17 @@ public class ConfigFile {
 
       if (line.trim().startsWith(name) && line.contains(VARIABLE_DELIMITER)) {
         line = name + " " + VARIABLE_DELIMITER + " " + value + " " + comment;
-        _memoryFile.getLines().set(i, line);
+        this.memoryFile.getLines().set(i, line);
         writeToFile = true;
       }
     }
 
     if (writeToFile) {
-      writeSuccess = _memoryFile.writeToDisk();
+      writeSuccess = this.memoryFile.writeToDisk();
       if (!writeSuccess) {
         return false;
       }
-      _variables.set(varIndex, new ConfigVariable(name, value));
+      this.variables.set(varIndex, new ConfigVariable(name, value));
       return true;
     }
 
@@ -290,7 +299,7 @@ public class ConfigFile {
       return true;
     }
 
-    TokenArray lines = _memoryFile.getLines();
+    TokenArray lines = this.memoryFile.getLines();
     String line;
     String currentLine = null;
     int currentIndex = -1;
@@ -313,9 +322,9 @@ public class ConfigFile {
 
     index = currentLine.indexOf(COMMENT_DELIMITER);
     currentLine = currentLine.substring(index + 1, currentLine.length()).trim();
-    _memoryFile.getLines().set(currentIndex, currentLine);
+    this.memoryFile.getLines().set(currentIndex, currentLine);
 
-    return (_memoryFile.writeToDisk() && open(_filename));
+    return (this.memoryFile.writeToDisk() && open(this.filename));
   }
 
   /**
@@ -333,7 +342,7 @@ public class ConfigFile {
     }
 
     String line;
-    TokenArray lines = _memoryFile.getLines();
+    TokenArray lines = this.memoryFile.getLines();
     int len = lines.size();
 
     for (int i = 0; i < len; i++) {
@@ -341,8 +350,8 @@ public class ConfigFile {
       if (line.trim().startsWith(name)
           && line.contains(VARIABLE_DELIMITER)) {
         line = COMMENT_DELIMITER + " " + line;
-        _memoryFile.getLines().set(i, line);
-        return (_memoryFile.writeToDisk() && open(_filename));
+        this.memoryFile.getLines().set(i, line);
+        return (this.memoryFile.writeToDisk() && open(this.filename));
       }
     }
 
