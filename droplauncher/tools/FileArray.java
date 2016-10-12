@@ -41,7 +41,7 @@ public class FileArray {
   }
 
   /**
-   * Returns the number of accessible elements in the array via
+   * Returns the number of accessible elements in this array via
    * public functions.
    */
   public int size() {
@@ -49,7 +49,7 @@ public class FileArray {
   }
 
   /**
-   * Ensures the array can hold at least one more element. The array
+   * Ensures this array can hold at least one more element. The array
    * is resized if required.
    *
    * @return
@@ -73,7 +73,7 @@ public class FileArray {
   }
 
   /**
-   * Adds the specified file to the array. The file will not be added if
+   * Adds the specified file to this array. The file will not be added if
    * its canonical path matches another file already in the array and will
    * return false. If the File object is a directory, this function will
    * recursively be called on all subdirectories and files.
@@ -92,10 +92,10 @@ public class FileArray {
       return false;
     }
 
-    if (file.isFile() && !file.isDirectory()) {
+    if (file.isFile()) {
       /* If specified file object is an actual file. */
       try {
-        /* If file already exists in array. */
+        /* If file already exists in this array. */
         if (getIndexOf(file.getCanonicalPath()) >= 0) {
           return false;
         }
@@ -113,46 +113,35 @@ public class FileArray {
         System.out.println("Added file: " + getCanonicalPath(file));
       }
     } else if (file.isDirectory()) {
-      /* If specified file object is a directory. */
-      try {
-        File[] files = file.listFiles();
-        if (files == null) {
-          if (CLASS_DEBUG) {
-            LOGGER.log(
-                Level.WARNING,
-                "empty directory detected or an error was encountered"
-            );
-          }
-          return false;
-        }
-        /* Check if directory contains any files. */
-        int len = files.length;
-        if (len < 1) {
-          if (CLASS_DEBUG) {
-            LOGGER.log(Level.WARNING, "empty directory detected");
-          }
-          return false;
-        }
-        /* Add directory files to array. */
-        for (int i = 0; i < len; i++) {
-          if (!add(files[i])) {
-            if (CLASS_DEBUG) {
-              LOGGER.log(
-                  Level.SEVERE,
-                  "encountered while adding file from directory"
-              );
-            }
-          }
-        }
-      } catch (SecurityException ex) {
+      /* If the specified file object is a directory. */
+      File[] files = file.listFiles();
+      if (files == null) {
         if (CLASS_DEBUG) {
           LOGGER.log(
-              Level.SEVERE,
-              "encountered while reading list of files in directory",
-              ex
+              Level.WARNING,
+              "empty directory detected or an error has encountered"
           );
         }
         return false;
+      }
+      /* Check if directory contains any files. */
+      int len = files.length;
+      if (len < 1) {
+        if (CLASS_DEBUG) {
+          LOGGER.log(Level.WARNING, "empty directory detected");
+        }
+        return false;
+      }
+      /* Add directory files to array. */
+      for (int i = 0; i < len; i++) {
+        if (!add(files[i])) {
+          if (CLASS_DEBUG) {
+            LOGGER.log(
+                Level.SEVERE,
+                "encountered while adding file from directory"
+            );
+          }
+        }
       }
     }
 
@@ -196,13 +185,13 @@ public class FileArray {
       return -1;
     }
 
-    File tmpFile;
+    File file;
 
     for (int i = 0; i < this.fileCount; i++) {
-      tmpFile = this.files[i];
+      file = this.files[i];
       try {
-        if (tmpFile.getName().equals(path)
-            || tmpFile.getCanonicalPath().equals(path)) {
+        if (file.getName().equals(path)
+            || file.getCanonicalPath().equals(path)) {
           return i;
         }
       } catch (IOException | SecurityException ex) {
@@ -232,21 +221,14 @@ public class FileArray {
       return -1;
     }
     /* Determine file size. */
-    try {
-      if (!file.isFile()) {
-        if (CLASS_DEBUG) {
-          LOGGER.log(Level.WARNING, "object is not a file");
-        }
-        return -1;
-      }
-      long len = file.length();
-      return len;
-    } catch (SecurityException ex) {
+    if (!file.isFile()) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.SEVERE, "encountered while reading file size", ex);
+        LOGGER.log(Level.WARNING, "object is not a file");
       }
       return -1;
     }
+    long len = file.length();
+    return len;
   }
 
   /**
@@ -269,7 +251,7 @@ public class FileArray {
     try {
       String path = file.getCanonicalPath();
       return path;
-    } catch (IOException | SecurityException ex) {
+    } catch (IOException ex) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, null, ex);
       }

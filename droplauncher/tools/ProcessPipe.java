@@ -69,6 +69,7 @@ public final class ProcessPipe {
    *     otherwise false
    */
   public boolean open(String path, String[] args) {
+    /* Validate parameters. */
     if (MainTools.isEmpty(path)) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, MainTools.EMPTY_STRING);
@@ -99,11 +100,6 @@ public final class ProcessPipe {
       this.bw = new BufferedWriter(new OutputStreamWriter(this.os));
 
       return true;
-    } catch (NullPointerException | IOException ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.SEVERE, null, ex);
-      }
-      return false;
     } catch (Exception ex) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, null, ex);
@@ -147,7 +143,11 @@ public final class ProcessPipe {
   }
 
   /**
-   * Returns previously specified path of the executable file.
+   * Returns the previously specified path of the executable file.
+   *
+   * @return
+   *     the path to the executable file if not null or empty,
+   *     otherwise null
    */
   public String getPath() {
     /* Validate class variables. */
@@ -160,9 +160,6 @@ public final class ProcessPipe {
     return this.path;
   }
 
-  /*
-  TODO: this may need to be changed.
-  */
   /**
    * Keeps checking the pipe's buffer status for a specified
    * amount of seconds. Uses a while() loop and values returned from
@@ -300,12 +297,17 @@ public final class ProcessPipe {
    *
    * @param print whether or not to print pipe's output to console
    *     after reading
+   * @param seconds amount of seconds to wait for input to be
+   *     ready to flush
    */
-  public void flushRead(boolean print) {
+  public void flushRead(boolean print, double seconds) {
+    if (Double.compare(seconds, 0) < 0) {
+      return;
+    }
     /* Flush input. */
     try {
       String line;
-      while (isInputReady(DEFAULT_READ_TIMEOUT)) {
+      while (isInputReady(seconds)) {
         line = this.br.readLine();
         if (print && !MainTools.isEmpty(line)) {
           System.out.println(line);
@@ -320,7 +322,18 @@ public final class ProcessPipe {
 
   /**
    * Flushes the pipe's output stream by reading then ignoring
-   * data from the stream until ProcessPipe.isInputReady() is false.
+   * data from the stream until {@link #isInputReady(double)} is false.
+   *
+   * @param print whether or not to print pipe's output to console
+   *     after reading
+   */
+  public void flushRead(boolean print) {
+    flushRead(print, DEFAULT_READ_TIMEOUT);
+  }
+
+  /**
+   * Flushes the pipe's output stream by reading then ignoring
+   * data from the stream until {@link #isInputReady(double)} is false.
    */
   public void flushRead() {
     flushRead(false);

@@ -52,10 +52,13 @@ public class MainTools {
   }
 
   /**
-   * Checks if the specified string is null or String.length() is less than 1.
+   * Tests whether the specified string is null or
+   * {@link java.lang.String#length()} is less than 1.
    *
-   * @param str string to check
-   * @return true if string is null or empty, otherwise false
+   * @param str the string to check
+   * @return
+   *     true if string is null or empty,
+   *     otherwise false
    */
   public static boolean isEmpty(String str) {
     boolean status = (str == null || str.length() < 1);
@@ -95,11 +98,11 @@ public class MainTools {
   }
 
   /**
-   * Check if specified file exists and is not a directory.
+   * Tests whether the specified file exists.
    *
-   * @param path path to file
+   * @param path the path to the file
    * @return
-   *     true if specified path is a file,
+   *     true if the file exists,
    *     otherwise false
    */
   public static boolean doesFileExist(String path) {
@@ -111,27 +114,17 @@ public class MainTools {
       return false;
     }
 
-    try {
-      File file = new File(path);
-      if (file.exists() && file.isFile() && !file.isDirectory()) {
-        return true;
-      }
-    } catch (Exception ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.SEVERE, "encountered while checking file existence", ex);
-      }
-      return false;
-    }
+    File file = new File(path);
 
-    return false;
+    return (file.exists() && file.isFile());
   }
 
   /**
-   * Check if specified directory exists.
+   * Tests whether the specified directory exists.
    *
-   * @param path path to directory
+   * @param path path to the directory
    * @return
-   *     true if specified path is a directory,
+   *     true if directory exists,
    *     otherwise false
    */
   public static boolean doesDirectoryExist(String path) {
@@ -143,19 +136,9 @@ public class MainTools {
       return false;
     }
 
-    try {
-      File dir = new File(path);
-      if (dir != null && dir.exists() && dir.isDirectory()) {
-        return true;
-      }
-    } catch (Exception ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.SEVERE, "encountered while checking directory existence", ex);
-      }
-      return false;
-    }
+    File dir = new File(path);
 
-    return false;
+    return (dir.exists() && dir.isDirectory());
   }
 
   /**
@@ -163,6 +146,11 @@ public class MainTools {
    * all characters after it.
    *
    * @param filename specified filename
+   *
+   * @return
+   *     the filename excluding the extension if the specified filename
+   *         is not null or empty,
+   *     otherwise null
    */
   public static String getFilenameNoExt(String filename) {
     /* Validate parameters. */
@@ -173,9 +161,9 @@ public class MainTools {
       return null;
     }
 
-    int extIndex = filename.lastIndexOf(".");
+    int index = filename.lastIndexOf(".");
 
-    return (extIndex > 0) ? filename.substring(0, extIndex) : filename;
+    return (index <= 0) ? null : filename.substring(0, index);
   }
 
   /**
@@ -195,31 +183,20 @@ public class MainTools {
       return null;
     }
 
-    try {
-      String parent = null;
-      File file = new File(path);
+    File file = new File(path);
 
-      parent = file.getParent();
-
-      return parent;
-    } catch (Exception ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, null, ex);
-      }
-      return null;
-    }
+    return file.getParent();
   }
 
   /**
-   * Add double quotations to the beginning and end of the
-   * specified string.
+   * Ensures the specified string is encapsulated with double quotations.
    *
    * @param str specified string
    * @return
-   *     the specified string encapsulated with quotation,
+   *     the specified string encapsulated with quotations,
    *     otherwise null if the string is null or empty
    */
-  public static String addQuotations(String str) {
+  public static String ensureQuotations(String str) {
     /* Validate parameters. */
     if (isEmpty(str)) {
       if (CLASS_DEBUG) {
@@ -256,10 +233,10 @@ public class MainTools {
       return null;
     }
 
-    if (str.startsWith("\"")) {
+    while (str.startsWith("\"")) {
       str = str.substring(1, str.length());
     }
-    if (str.endsWith("\"")) {
+    while (str.endsWith("\"")) {
       str = str.substring(0, str.length() - 1);
     }
 

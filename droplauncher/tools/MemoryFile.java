@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * Class for manipulating files. First, a file must be completely read in
  * with {@link #readIntoMemory(java.lang.String)}. After, any line may be
  * edited. After modifications have been made, the file can be written to
- * disk with {@link #writeToDisk(java.lang.String)}.
+ * disk with {@link #writeToDisk()} or {@link #writeToDisk(java.lang.String)}.
  *
  * @author Adakite Systems
  * @author adakitesystems@gmail.com
@@ -39,6 +39,12 @@ public class MemoryFile  {
     this.lines.reset();
   }
 
+  /**
+   * Returns the path to this file.
+   *
+   * @return
+   *     the path to this file
+   */
   public String getPath() {
     return this.filename;
   }
@@ -68,14 +74,14 @@ public class MemoryFile  {
       BufferedReader br = new BufferedReader(new InputStreamReader(fis));
       String line;
 
-      this.filename = filename;
-
       while ((line = br.readLine()) != null) {
         this.lines.add(line);
       }
 
       br.close();
       fis.close();
+
+      this.filename = filename;
 
       return true;
     } catch (FileNotFoundException ex) {
@@ -140,7 +146,6 @@ public class MemoryFile  {
       for (int i = 0; i < len; i++) {
         bw.write(this.lines.get(i) + System.lineSeparator());
       }
-
       bw.flush();
 
       bw.close();
@@ -151,30 +156,37 @@ public class MemoryFile  {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, null, ex);
       }
-      return false;
     } catch (IOException ex) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.SEVERE, null, ex);
       }
-      return false;
     }
+
+    /* If this line is reached, something went wrong. */
+    return false;
   }
 
   public boolean writeToDisk() {
     return writeToDisk(getPath());
   }
 
+  /**
+   * Returns the object which holds the lines of the file.
+   *
+   * @return
+   *     the object which holds the lines of the file
+   */
   public TokenArray getLines() {
     return this.lines;
   }
 
   /**
-   * Returns the first index of the string starting with the specified
+   * Returns the first index of the string which starts with the specified
    * prefix.
    *
-   * @param prefix specified prefix to find
+   * @param prefix specified prefix to use in search
    * @return
-   *     the index of the string,
+   *     the index of the string if found,
    *     otherwise -1
    */
   public int getIndexStartsWith(String prefix) {
@@ -193,13 +205,12 @@ public class MemoryFile  {
       }
     }
 
-    /* If this line is reached, line was not found to start with
-       the specified index. */
+    /* If this line is reached, line was not found. */
     return -1;
   }
 
   /**
-   * Prints file to console.
+   * Prints memory file to console. Mainly used for debugging.
    */
   public void printToConsole() {
     int len = this.lines.size();

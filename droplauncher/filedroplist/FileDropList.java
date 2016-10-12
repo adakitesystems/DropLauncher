@@ -19,18 +19,21 @@ public class FileDropList {
   private static final Logger LOGGER =
         Logger.getLogger(FileDropList.class.getName());
 
-  private static FileArray _files;
+  private static FileArray files;
 
   private FileDropList() {
-    _files = new FileArray();
+    this.files = new FileArray();
   }
 
   /**
    * Returns the FileArray object which holds the dropped files. Does not
    * return a copy.
+   *
+   * @return
+   *     the FileArray object
    */
   public static FileArray getFiles() {
-    return _files;
+    return FileDropList.files;
   }
 
 }

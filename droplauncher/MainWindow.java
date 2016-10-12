@@ -77,7 +77,8 @@ public class MainWindow extends JFrame {
     btnEject.setText("Eject");
     btnEject.setEnabled(false);
 
-    boxDropFiles.setBackground(new java.awt.Color(0, 0, 0));
+    boxDropFiles.setBackground(new java.awt.Color(138, 0, 0));
+    boxDropFiles.setFont(new java.awt.Font("sansserif", 0, 18)); // NOI18N
     boxDropFiles.setForeground(new java.awt.Color(255, 255, 255));
     boxDropFiles.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     boxDropFiles.setText("Drop bot files here");
@@ -89,6 +90,11 @@ public class MainWindow extends JFrame {
     btnLaunch.setEnabled(false);
 
     txtBotName.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+    txtBotName.addFocusListener(new java.awt.event.FocusAdapter() {
+      public void focusLost(java.awt.event.FocusEvent evt) {
+        txtBotNameFocusLost(evt);
+      }
+    });
     txtBotName.addKeyListener(new java.awt.event.KeyAdapter() {
       public void keyReleased(java.awt.event.KeyEvent evt) {
         txtBotNameKeyReleased(evt);
@@ -268,6 +274,10 @@ public class MainWindow extends JFrame {
       }
     }
   }//GEN-LAST:event_btnStarcraftDirActionPerformed
+
+  private void txtBotNameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBotNameFocusLost
+    txtBotName.setText(BwHeadless.DEFAULT_BOT_NAME);
+  }//GEN-LAST:event_txtBotNameFocusLost
 
   /**
    * Main function called when main window is displayed.

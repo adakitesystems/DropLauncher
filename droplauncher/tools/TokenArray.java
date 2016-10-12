@@ -46,7 +46,7 @@ public class TokenArray {
   /**
    * Ignores all tokens including and after the specified index.
    *
-   * @param index specified index.
+   * @param index specified index
    */
   public void chopAt(int index) {
     if (index < 0 || index >= this.tokenCount) {
@@ -72,13 +72,15 @@ public class TokenArray {
   /**
    * Returns the number of accessible elements in the array via
    * public functions.
+   *
+   * @return the number of tokens
    */
   public int size() {
     return this.tokenCount;
   }
 
   /**
-   * Ensures the array can hold at least one more element. The array
+   * Ensures this array can hold at least one more element. The array
    * is resized if required.
    *
    * @return
@@ -333,6 +335,7 @@ public class TokenArray {
    * using the space character as a delimiter.
    *
    * @param str specified string to examine
+   * @return the number of max tokens
    */
   public static int getMaxTokens(String str) {
     /* Validate parameters. */
@@ -388,8 +391,7 @@ public class TokenArray {
   /**
    * Returns a string with all the tokens separated by the space character.
    *
-   * @return
-   *     string of all tokens
+   * @return string of all tokens
    */
   @Override
   public String toString() {
@@ -398,6 +400,8 @@ public class TokenArray {
 
   /**
    * Returns a correctly allocated string array of the internal class array.
+   *
+   * @return the correctly allocated string array of this token array
    */
   public String[] toStringArray() {
     if (this.tokenCount < 1)  {

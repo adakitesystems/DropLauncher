@@ -37,14 +37,16 @@ public class BwHeadless {
 
   public static final String ARG_STARCRAFT_EXE = "-e"; /* requires second string */
   public static final String ARG_JOIN = "-j";
-  public static final String ARG_BOT_NAME = "-n"; /* requires second string */
-  public static final String ARG_BOT_RACE = "-r"; /* requires second string */
-  public static final String ARG_LOAD_DLL = "-l"; /* requires second string */
+  public static final String ARG_BOT_NAME = "-n"; /* requires second argument */
+  public static final String ARG_BOT_RACE = "-r"; /* requires second argument */
+  public static final String ARG_LOAD_DLL = "-l"; /* requires second argument */
   public static final String ARG_ENABLE_LAN = "--lan";
   public static final String ARG_ENABLE_LOCAL_PC = "--localpc";
   public static final String ARG_STARCRAFT_INSTALL_PATH =
-      "--installpath"; /* requires second string */
+      "--installpath"; /* requires second argument */
 
+  public static final String DEFAULT_CFG_FILE =
+      "settings" + ConfigFile.FILE_EXTENSION;
   public static final String CFG_STARCRAFT_EXE = "starcraft_exe";
   public static final String CFG_BOT_NAME = "bot_name";
   public static final String CFG_BOT_DLL = "bot_dll";
@@ -52,58 +54,68 @@ public class BwHeadless {
   public static final String CFG_BOT_RACE = "bot_race";
   public static final String CFG_GAME_TYPE = "game_type";
 
-
-
-  public static final String DEFAULT_CFG_FILE = "settings.cfg";
-
   public static final String DEFAULT_BOT_NAME = "BOT";
-  public static final int MAX_NAME_LENGTH = 24;
+  /* Maximum profile name length in Broodwar 1.16.1 */
+  public static final int MAX_BOT_NAME_LENGTH = 24;
 
-  private ProcessPipe bwHeadlessPipe;
-  private ProcessPipe botClientPipe;
-
-  private String starcraftExe;
-  private String botName;
-  private String botDllPath;
-  private String botClientPath; /* e.g. EXE or JAR bot client */
-
-  private Race botRace;
-  private GameType gameType;
+  private ProcessPipe bwHeadlessPipe; /* required */
+  private ProcessPipe botClientPipe;  /* required only when DLL is absent */
+  private String starcraftExe;        /* required */
+  private String botName;             /* required */
+  private String botDllPath;          /* required only when client is absent */
+  private String botClientPath;       /* required only when DLL is absent, *.exe or *.jar */
+  private Race botRace;               /* required */
+  private GameType gameType;          /* required */
 
   private BwHeadless() {
     this.bwHeadlessPipe = new ProcessPipe();
-    this.botClientPipe = new ProcessPipe();
-    this.starcraftExe = null;
-    this.botName = DEFAULT_BOT_NAME;
-    this.botRace = Race.Random;
-    this.botDllPath = null;
-    this.botClientPath = null;
-    this.gameType = GameType.lan;
+    this.botClientPipe  = new ProcessPipe();
+    this.starcraftExe   = null;
+    this.botName        = DEFAULT_BOT_NAME;
+    this.botDllPath     = null;
+    this.botClientPath  = null;
+    this.botRace        = Race.Random;
+    this.gameType       = GameType.lan;
   }
 
   /**
-   * Create a default config layout file.
+   * Creates the default config file {@link #DEFAULT_CFG_FILE}.
+   *
+   * @return
+   *     true if default config file was created,
+   *     otherwise false
    */
-  public void createDefaultConfig() {
+  public boolean createDefaultConfig() {
     ConfigFile cf = new ConfigFile();
-    if (cf.create(BwHeadless.DEFAULT_CFG_FILE)) {
-      cf.createVariable("starcraft_exe", "");
-      cf.createVariable("game_type", "lan");
-      cf.createVariable("bot_dll", "");
-      cf.createVariable("bot_client", "");
-      cf.createVariable("bot_race", "Random");
-      cf.createVariable("bot_client", "");
-      cf.createVariable("bot_name", BwHeadless.DEFAULT_BOT_NAME);
+
+    if (!cf.create(BwHeadless.DEFAULT_CFG_FILE)) {
+      return false;
     }
+
+    cf.createVariable("starcraft_exe", "");
+    cf.createVariable("game_type", "lan");
+    cf.createVariable("bot_dll", "");
+    cf.createVariable("bot_client", "");
+    cf.createVariable("bot_race", "Random");
+    cf.createVariable("bot_client", "");
+    cf.createVariable("bot_name", BwHeadless.DEFAULT_BOT_NAME);
+
+    if (CLASS_DEBUG) {
+      System.out.println("Created default config: " + BwHeadless.DEFAULT_CFG_FILE);
+    }
+
+    return true;
   }
 
+  /**
+   * Returns the path to the Starcraft executable.
+   */
   public String getStarcraftExe() {
     return this.starcraftExe;
   }
 
   /**
-   * Sets the path to the Starcraft executable if the specified path
-   * is valid.
+   * Sets the path to the Starcraft executable.
    *
    * @param path specified path to set as Starcraft executable
    * @return
@@ -120,7 +132,7 @@ public class BwHeadless {
     }
     if (!MainTools.doesFileExist(path)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, "file inaccessbile or does not exist: " + path);
+        LOGGER.log(Level.WARNING, "file inaccessible or does not exist: " + path);
       }
       return false;
     }
@@ -134,6 +146,12 @@ public class BwHeadless {
     return true;
   }
 
+  /**
+   * Returns the name of this bot.
+   *
+   * @return
+   *     the name of this bot
+   */
   public String getBotName() {
     return this.botName;
   }
@@ -152,8 +170,8 @@ public class BwHeadless {
         || (str = MainTools.onlyLettersNumbers(str)) == null) {
       str = DEFAULT_BOT_NAME;
     }
-    if (str.length() > MAX_NAME_LENGTH) {
-      str = str.substring(0, MAX_NAME_LENGTH);
+    if (str.length() > MAX_BOT_NAME_LENGTH) {
+      str = str.substring(0, MAX_BOT_NAME_LENGTH);
     }
 
     this.botName = str;
@@ -165,13 +183,16 @@ public class BwHeadless {
 
   /**
    * Returns the path to the BWAPI DLL file.
+   *
+   * @return
+   *     the path to the BWAPI DLL file
    */
   public String getBotDll() {
     return this.botDllPath;
   }
 
   /**
-   * Sets the bot dll to the specified path.
+   * Sets the bot DLL to the specified path.
    *
    * @param path specified path
    * @return
@@ -188,18 +209,25 @@ public class BwHeadless {
     }
     if (!MainTools.doesFileExist(path)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, "file inaccessbile or does not exist: " + path);
+        LOGGER.log(Level.WARNING, "file inaccessible or does not exist: " + path);
       }
       return false;
     }
 
     this.botDllPath = path;
 
+    if (CLASS_DEBUG) {
+      System.out.println("Bot dll: " + this.botDllPath);
+    }
+
     return true;
   }
 
   /**
    * Returns the path to the bot client file.
+   *
+   * @return
+   *     the path to the bot client file.
    */
   public String getBotClient() {
     return this.botClientPath;
@@ -209,7 +237,7 @@ public class BwHeadless {
    * Sets the bot client path to the specified path. Bot clients are usually
    * standalone EXE or JAR files.
    *
-   * @param path specified path
+   * @param path specified path to client file
    * @return
    *     true if path appears to be valid,
    *     otherwise false
@@ -231,9 +259,19 @@ public class BwHeadless {
 
     this.botClientPath = path;
 
+    if (CLASS_DEBUG) {
+      System.out.println("Bot client: " + this.botClientPath);
+    }
+
     return true;
   }
 
+  /**
+   * Returns the race of the specified bot.
+   *
+   * @return
+   *     the race of the specified bot
+   */
   public Race getBotRace() {
     return this.botRace;
   }
@@ -250,12 +288,20 @@ public class BwHeadless {
     }
   }
 
+  /**
+   * Returns the game type.
+   *
+   * @return
+   *     the game type
+   */
   public GameType getGameType() {
     return this.gameType;
   }
 
   /**
    * Sets the game type.
+   *
+   * @param gameType specified game type
    */
   public void setGameType(GameType gameType) {
     this.gameType = gameType;

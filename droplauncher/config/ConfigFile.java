@@ -221,15 +221,30 @@ public class ConfigFile {
    *     otherwise false
    */
   public boolean createVariable(String name, String value) {
+    /* Validate parameters. */
+    if (MainTools.isEmpty(name)) {
+      if (CLASS_DEBUG) {
+        LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
+      }
+      return false;
+    }
+    if (MainTools.isEmpty(value)) {
+      value = "";
+    }
+
+    /* Test if variable already exists. */
     if (indexOfName(name) >= 0)  {
       return false;
     }
+
+    /* Add complete variable string to memory file. */
     this.memoryFile.getLines().add(
         name
         + " " + ConfigFile.VARIABLE_DELIMITER + " "
         + value
     );
-    System.out.println(this.memoryFile.getLines().get(this.memoryFile.getLines().size() - 1));
+
+    /* Update changes in file. */
     return this.memoryFile.writeToDisk();
   }
 
@@ -237,25 +252,26 @@ public class ConfigFile {
    * Sets the specified variable's value and writes changes to disk.
    *
    * @param name specified variable name
-   * @param value value of variable
+   * @param value specified value of variable
    * @return
    *     true if variable exists, its value has been set, and written to disk,
    *     otherwise false
    */
   public boolean setVariable(String name, String value) {
+    /* Validate parameters. */
     int varIndex = indexOfName(name);
     if (varIndex < 0) {
       return false;
     }
 
-    int index;
     TokenArray lines = this.memoryFile.getLines();
     String line;
     String comment;
     boolean writeToFile = false;
-    boolean writeSuccess;
-
     int len = lines.size();
+    int index;
+
+    /* Find variable and set its value. */
     for (int i = 0; i < len; i++) {
       line = lines.get(i);
 
@@ -272,8 +288,9 @@ public class ConfigFile {
       }
     }
 
+    /* Update changes in file. */
     if (writeToFile) {
-      writeSuccess = this.memoryFile.writeToDisk();
+      boolean writeSuccess = this.memoryFile.writeToDisk();
       if (!writeSuccess) {
         return false;
       }
@@ -281,15 +298,17 @@ public class ConfigFile {
       return true;
     }
 
+    /* If this line is reached, something went wrong. */
     return false;
   }
 
   /**
-   * Enable a variable in the config file by uncommenting the line.
+   * Enables the specifiedd variable in the config file by
+   * uncommenting the line.
    *
    * @param name specified variable to enable
    * @return
-   *     true if variable is now enable if not previously,
+   *     true if variable is enabled,
    *     otherwise false
    */
   public boolean enableVariable(String name) {
@@ -305,7 +324,7 @@ public class ConfigFile {
     int currentIndex = -1;
     int len = lines.size();
 
-    /* Find the most current line. */
+    /* Find the most current line matching variable name. */
     for (int i = 0; i < len; i++) {
       line = lines.get(i);
       if (line.trim().startsWith(COMMENT_DELIMITER)
@@ -317,6 +336,7 @@ public class ConfigFile {
     }
 
     if (currentLine == null) {
+      /* Unable to find variable. */
       return false;
     }
 
@@ -328,11 +348,12 @@ public class ConfigFile {
   }
 
   /**
-   * Disable a variable in the config file by commenting the line.
+   * Disables the specified variable in the config file by
+   * commenting the line.
    *
    * @param name specified variable to disable
    * @return
-   *     true if variable is now disabled if not previously,
+   *     true if variable is now disabled,
    *     otherwise false
    */
   public boolean disableVariable(String name) {
