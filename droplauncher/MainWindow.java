@@ -420,6 +420,9 @@ public class MainWindow extends JFrame {
 //      } else {
 //        System.out.println("error");
 //      }
+
+//    System.out.println(BwHeadless.INSTANCE.bwapiDllChecksums.getValue("BWAPI.dll 4.1.0b"));
+//    System.out.println(BwHeadless.INSTANCE.bwapiDllChecksums.getName("5d5128709ba714aa9c6095598bcf4624"));
     /* DEBUGGING --- end */
   }
 

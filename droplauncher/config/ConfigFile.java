@@ -67,10 +67,8 @@ public class ConfigFile {
       file.mkdirs();
     }
     try {
-      boolean status = file.createNewFile();
-      if (status && open(filename)) {
-        this.filename = filename;
-      }
+      this.filename = filename;
+      boolean status = file.createNewFile() && open(filename);
       return status;
     } catch (IOException ex) {
       if (CLASS_DEBUG) {
@@ -85,12 +83,14 @@ public class ConfigFile {
    *
    * @param filename specified configuration file to read
    * @return
-   *     true if file has been opened successfully and contains
-   *         valid variables,
+   *     true if file has been opened successfully,
    *     otherwise false
    */
   public boolean open(String filename) {
     if (!this.memoryFile.readIntoMemory(filename)) {
+      if (CLASS_DEBUG) {
+        LOGGER.log(Level.SEVERE, "open failed: " + filename);
+      }
       return false;
     }
     this.variables.clear();
@@ -104,7 +104,7 @@ public class ConfigFile {
 
     /* Read was successful but file is empty. */
     if (len < 1) {
-      return false;
+      return true;
     }
 
     /* Read lines as variables and values. */
@@ -199,9 +199,24 @@ public class ConfigFile {
   }
 
   /**
+   * Returns the name corresponding to the specified variable value.
+   *
+   * @param value specified variable value
+   * @return the name corresponding to the specified variable value
+   */
+  public String getName(String value) {
+    int index = indexOfValue(value);
+    if (index < 0) {
+      return null;
+    }
+    return this.variables.get(index).getName();
+  }
+
+  /**
    * Returns the value corresponding to the specified variable name.
    *
    * @param name specified variable name
+   * @return the value corresponding to the specified variable name
    */
   public String getValue(String name) {
     int index = indexOfName(name);
@@ -245,7 +260,7 @@ public class ConfigFile {
     );
 
     /* Update changes in file. */
-    return this.memoryFile.writeToDisk();
+    return this.memoryFile.writeToDisk() && open(this.filename);
   }
 
   /**

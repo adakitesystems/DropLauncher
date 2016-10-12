@@ -3,8 +3,10 @@
 package droplauncher.bwheadless;
 
 import droplauncher.config.ConfigFile;
+import droplauncher.config.ConfigVariable;
 import droplauncher.tools.MainTools;
 import droplauncher.tools.ProcessPipe;
+import java.util.ArrayList;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,6 +56,18 @@ public class BwHeadless {
   public static final String CFG_BOT_RACE = "bot_race";
   public static final String CFG_GAME_TYPE = "game_type";
 
+  /* Checksums are used just for aesthetic purposes in possibly detecting
+     which BWAPI DLL is loaded. Tampering with the checksums or the DLLs
+     does not change the result of the program. */
+  public static final String BWAPI_DLL_FILE = "checksums" + ConfigFile.FILE_EXTENSION;
+  public static final String BWAPI_DLL_374_SUM  = "6e940dc6acc76b6e459b39a9cdd466ae";
+  public static final String BWAPI_DLL_375_SUM  = "5e590ea55c2d3c66a36bf75537f8655a";
+  public static final String BWAPI_DLL_401b_SUM = "84f413409387ae80a4b4acc51fed3923";
+  public static final String BWAPI_DLL_410b_SUM = "4814396fba36916fdb7cf3803b39ab51";
+  public static final String BWAPI_DLL_411b_SUM = "5d5128709ba714aa9c6095598bcf4624";
+  public static final String BWAPI_DLL_412_SUM  = "1364390d0aa085fba6ac11b7177797b0";
+  public ConfigFile bwapiDllChecksums;
+
   public static final String DEFAULT_BOT_NAME = "BOT";
   /* Maximum profile name length in Broodwar 1.16.1 */
   public static final int MAX_BOT_NAME_LENGTH = 24;
@@ -76,6 +90,28 @@ public class BwHeadless {
     this.botClientPath  = null;
     this.botRace        = Race.Random;
     this.gameType       = GameType.lan;
+
+    this.bwapiDllChecksums = new ConfigFile();
+    if (MainTools.doesFileExist(BWAPI_DLL_FILE)) {
+      if (bwapiDllChecksums.open(BWAPI_DLL_FILE)) {
+        if (CLASS_DEBUG) {
+          System.out.println("Read BWAPI DLL checksum config file: " + BWAPI_DLL_FILE);
+        }
+      }
+    } else {
+      if (bwapiDllChecksums.create(BWAPI_DLL_FILE)) {
+        boolean status;
+        status = bwapiDllChecksums.createVariable("BWAPI.dll 3.7.4", BWAPI_DLL_374_SUM);
+        status = bwapiDllChecksums.createVariable("BWAPI.dll 3.7.5", BWAPI_DLL_375_SUM);
+        status = bwapiDllChecksums.createVariable("BWAPI.dll 4.0.1b", BWAPI_DLL_401b_SUM);
+        status = bwapiDllChecksums.createVariable("BWAPI.dll 4.1.0b", BWAPI_DLL_410b_SUM);
+        status = bwapiDllChecksums.createVariable("BWAPI.dll 4.1.1b", BWAPI_DLL_411b_SUM);
+        status = bwapiDllChecksums.createVariable("BWAPI.dll 4.1.2", BWAPI_DLL_412_SUM);
+        if (CLASS_DEBUG) {
+          System.out.println("Created BWAPI DLL checksum config file: " + BWAPI_DLL_FILE);
+        }
+      }
+    }
   }
 
   /**
@@ -97,7 +133,6 @@ public class BwHeadless {
     cf.createVariable("bot_dll", "");
     cf.createVariable("bot_client", "");
     cf.createVariable("bot_race", "Random");
-    cf.createVariable("bot_client", "");
     cf.createVariable("bot_name", BwHeadless.DEFAULT_BOT_NAME);
 
     if (CLASS_DEBUG) {

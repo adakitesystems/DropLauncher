@@ -167,7 +167,7 @@ public class MemoryFile  {
   }
 
   public boolean writeToDisk() {
-    return writeToDisk(getPath());
+    return writeToDisk(this.filename);
   }
 
   /**
