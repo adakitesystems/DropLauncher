@@ -2,6 +2,7 @@
 
 package droplauncher.bwheadless;
 
+import droplauncher.config.ConfigFile;
 import droplauncher.tools.MainTools;
 import droplauncher.tools.ProcessPipe;
 
@@ -44,6 +45,17 @@ public class BwHeadless {
   public static final String ARG_STARCRAFT_INSTALL_PATH =
       "--installpath"; /* requires second string */
 
+  public static final String CFG_STARCRAFT_EXE = "starcraft_exe";
+  public static final String CFG_BOT_NAME = "bot_name";
+  public static final String CFG_BOT_DLL = "bot_dll";
+  public static final String CFG_BOT_CLIENT = "bot_client";
+  public static final String CFG_BOT_RACE = "bot_race";
+  public static final String CFG_GAME_TYPE = "game_type";
+
+
+
+  public static final String DEFAULT_CFG_FILE = "settings.cfg";
+
   public static final String DEFAULT_BOT_NAME = "BOT";
   public static final int MAX_NAME_LENGTH = 24;
 
@@ -62,11 +74,27 @@ public class BwHeadless {
     _bwHeadlessPipe = new ProcessPipe();
     _botClientPipe = new ProcessPipe();
     _starcraftExe = null;
-    _botName = null;
-    _botRace = null;
+    _botName = DEFAULT_BOT_NAME;
+    _botRace = Race.Random;
     _botDllPath = null;
     _botClientPath = null;
     _gameType = GameType.lan;
+  }
+
+  /**
+   * Create a default config layout file.
+   */
+  public void createDefaultConfig() {
+    ConfigFile cf = new ConfigFile();
+    if (cf.create(BwHeadless.DEFAULT_CFG_FILE)) {
+      cf.createVariable("starcraft_exe", "");
+      cf.createVariable("game_type", "lan");
+      cf.createVariable("bot_dll", "");
+      cf.createVariable("bot_client", "");
+      cf.createVariable("bot_race", "Random");
+      cf.createVariable("bot_client", "");
+      cf.createVariable("bot_name", BwHeadless.DEFAULT_BOT_NAME);
+    }
   }
 
   public String getStarcraftExe() {
@@ -98,6 +126,10 @@ public class BwHeadless {
     }
 
     _starcraftExe = path;
+
+    if (CLASS_DEBUG) {
+      System.out.println("StarCraft.exe: " + _starcraftExe);
+    }
 
     return true;
   }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Form version="1.8" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
     <Component class="javax.swing.ButtonGroup" name="btngrpGameType">
     </Component>
@@ -31,34 +31,42 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="boxDropFiles" alignment="1" min="-2" pref="252" max="-2" attributes="0"/>
-                  <Component id="rbUDP" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="rbLocalPC" alignment="0" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="btnEject" max="32767" attributes="0"/>
-                          <Component id="btnLaunch" alignment="1" pref="211" max="32767" attributes="0"/>
-                          <Component id="txtBotName" alignment="0" max="32767" attributes="0"/>
-                          <Component id="lblBotName" alignment="1" max="32767" attributes="0"/>
-                      </Group>
+                      <Component id="btnStarcraftDir" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
-                      <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="rbZerg" min="-2" max="-2" attributes="0"/>
-                          <Component id="rbTerran" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="boxDropFiles" alignment="1" min="-2" pref="252" max="-2" attributes="0"/>
+                          <Component id="rbUDP" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="rbLocalPC" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="rbRandom" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="rbProtoss" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="btnEject" max="32767" attributes="0"/>
+                                  <Component id="btnLaunch" alignment="1" pref="211" max="32767" attributes="0"/>
+                                  <Component id="txtBotName" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="lblBotName" alignment="1" max="32767" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="rbZerg" min="-2" max="-2" attributes="0"/>
+                                  <Component id="rbTerran" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="rbRandom" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="rbProtoss" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -67,7 +75,9 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace pref="158" max="32767" attributes="0"/>
+              <EmptySpace pref="170" max="32767" attributes="0"/>
+              <Component id="btnStarcraftDir" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="lblBotName" min="-2" max="-2" attributes="0"/>
@@ -156,7 +166,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblBotName">
       <Properties>
-        <Property name="text" type="java.lang.String" value=" Bot name (max 24 chars):"/>
+        <Property name="text" type="java.lang.String" value=" Custom bot name (max 24 chars):"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JRadioButton" name="rbZerg">
@@ -223,6 +233,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rbUDPActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnStarcraftDir">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="&lt;StarCraft Directory Not Set&gt;"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnStarcraftDirActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

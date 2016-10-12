@@ -17,8 +17,10 @@ import filedrop.FileDrop;
 
 import java.awt.EventQueue;
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -67,6 +69,7 @@ public class MainWindow extends JFrame {
     rbProtoss = new javax.swing.JRadioButton();
     rbLocalPC = new javax.swing.JRadioButton();
     rbUDP = new javax.swing.JRadioButton();
+    btnStarcraftDir = new javax.swing.JButton();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -92,7 +95,7 @@ public class MainWindow extends JFrame {
       }
     });
 
-    lblBotName.setText(" Bot name (max 24 chars):");
+    lblBotName.setText(" Custom bot name (max 24 chars):");
 
     btngrpRace.add(rbZerg);
     rbZerg.setText("Zerg");
@@ -142,40 +145,54 @@ public class MainWindow extends JFrame {
       }
     });
 
+    btnStarcraftDir.setText("<StarCraft Directory Not Set>");
+    btnStarcraftDir.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnStarcraftDirActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
         .addContainerGap()
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-          .addComponent(boxDropFiles, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(rbUDP, javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(rbLocalPC, javax.swing.GroupLayout.Alignment.LEADING))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(layout.createSequentialGroup()
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(btnEject, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-              .addComponent(btnLaunch, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
-              .addComponent(txtBotName)
-              .addComponent(lblBotName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(btnStarcraftDir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addContainerGap())
           .addGroup(layout.createSequentialGroup()
-            .addGap(6, 6, 6)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+              .addComponent(boxDropFiles, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addComponent(rbUDP, javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(rbLocalPC, javax.swing.GroupLayout.Alignment.LEADING))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(rbZerg)
-              .addComponent(rbTerran))
-            .addGap(32, 32, 32)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(rbRandom)
-              .addComponent(rbProtoss))
-            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+              .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(btnEject, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                  .addComponent(btnLaunch, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
+                  .addComponent(txtBotName)
+                  .addComponent(lblBotName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+              .addGroup(layout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(rbZerg)
+                  .addComponent(rbTerran))
+                .addGap(32, 32, 32)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(rbRandom)
+                  .addComponent(rbProtoss))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-        .addContainerGap(158, Short.MAX_VALUE)
+        .addContainerGap(170, Short.MAX_VALUE)
+        .addComponent(btnStarcraftDir)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
             .addComponent(lblBotName)
@@ -237,6 +254,21 @@ public class MainWindow extends JFrame {
     BwHeadless.INSTANCE.setBotRace(BwHeadless.Race.Random);
   }//GEN-LAST:event_rbRandomActionPerformed
 
+  private void btnStarcraftDirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStarcraftDirActionPerformed
+    JFileChooser fc = new JFileChooser();
+    if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+      File file = fc.getSelectedFile();
+      try {
+        String filename = file.getCanonicalPath();
+        BwHeadless.INSTANCE.setStarcraftExe(filename);
+        System.out.println(BwHeadless.INSTANCE.getStarcraftExe());
+        btnStarcraftDir.setText(filename);
+      } catch (IOException ex) {
+        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+      }
+    }
+  }//GEN-LAST:event_btnStarcraftDirActionPerformed
+
   /**
    * Main function called when main window is displayed.
    *
@@ -264,6 +296,14 @@ public class MainWindow extends JFrame {
     EventQueue.invokeLater(new Runnable() {
       @Override
       public void run() {
+        if (!MainTools.doesFileExist(BwHeadless.DEFAULT_CFG_FILE)) {
+          BwHeadless.INSTANCE.createDefaultConfig();
+        }
+
+        _mainWindow.updateInfo();
+        _mainWindow.enableLaunch(false);
+        _mainWindow.enableEject(false);
+
         _mainWindow.setTitle("WildLauncher");
         _mainWindow.setResizable(false);
         _mainWindow.setLocationRelativeTo(null);
@@ -370,10 +410,53 @@ public class MainWindow extends JFrame {
     /* DEBUGGING --- end */
   }
 
+  public void updateInfo() {
+    BwHeadless.GameType gameType = BwHeadless.INSTANCE.getGameType();
+    switch (gameType) {
+      case localpc:
+        _mainWindow.rbLocalPC.setSelected(true);
+        break;
+      case lan:
+        _mainWindow.rbUDP.setSelected(true);
+        break;
+      default:
+        break;
+    }
+
+    BwHeadless.Race race = BwHeadless.INSTANCE.getBotRace();
+    switch (race) {
+      case Terran:
+        _mainWindow.rbTerran.setSelected(true);
+        break;
+      case Zerg:
+        _mainWindow.rbZerg.setSelected(true);
+        break;
+      case Protoss:
+        _mainWindow.rbProtoss.setSelected(true);
+        break;
+      case Random:
+        _mainWindow.rbRandom.setSelected(true);
+        break;
+      default:
+        break;
+    }
+
+    _mainWindow.txtBotName.setText(BwHeadless.INSTANCE.getBotName());
+  }
+
+  public void enableLaunch(boolean status) {
+    _mainWindow.btnLaunch.setEnabled(status);
+  }
+
+  public void enableEject(boolean status) {
+    _mainWindow.btnEject.setEnabled(status);
+  }
+
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JLabel boxDropFiles;
   private javax.swing.JButton btnEject;
   private javax.swing.JButton btnLaunch;
+  private javax.swing.JButton btnStarcraftDir;
   private javax.swing.ButtonGroup btngrpGameType;
   private javax.swing.ButtonGroup btngrpRace;
   private javax.swing.JLabel lblBotName;
