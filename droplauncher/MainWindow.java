@@ -276,7 +276,10 @@ public class MainWindow extends JFrame {
   }//GEN-LAST:event_btnStarcraftDirActionPerformed
 
   private void txtBotNameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBotNameFocusLost
-    txtBotName.setText(BwHeadless.DEFAULT_BOT_NAME);
+    String str = txtBotName.getText();
+    if (MainTools.isEmpty(str)) {
+      txtBotName.setText(BwHeadless.DEFAULT_BOT_NAME);
+    }
   }//GEN-LAST:event_txtBotNameFocusLost
 
   /**
