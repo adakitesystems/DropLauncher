@@ -2,13 +2,21 @@
 
 package droplauncher.tools;
 
+import droplauncher.DropLauncher;
+import droplauncher.MainWindow;
+
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * Useful variables and functions.
@@ -19,6 +27,9 @@ import java.util.logging.Logger;
 public class MainTools {
 
   private static final MainTools INSTANCE = new MainTools();
+
+  private static MessageDigest md;
+  public static final String EMPTY_MD5_CHECKSUM = "00000000000000000000000000000000";
 
   /* ************************************************************ */
   /* Debugging variables */
@@ -35,6 +46,14 @@ public class MainTools {
   /* ************************************************************ */
 
   private MainTools() {
+    try {
+      md = MessageDigest.getInstance("MD5");
+    } catch (Exception ex) {
+      if (CLASS_DEBUG) {
+        LOGGER.log(Level.SEVERE, null, ex);
+      }
+    }
+
     /* Create log file. */
     if (DEBUG_LOG_FILE_ENABLED) {
       try {
@@ -280,6 +299,56 @@ public class MainTools {
     }
 
     return newStr;
+  }
+
+  /**
+   * Return the MD5 checksum of the specified file.
+   *
+   * @param path specified path to file
+   * @return
+   *     the MD5 checksum of the specified file,
+   *     otherwise {@link #EMPTY_MD5_CHECKSUM} if an error occurred
+   */
+  public static String getMD5Checksum(String path) {
+    if (!doesFileExist(path)) {
+      return EMPTY_MD5_CHECKSUM;
+    }
+    try {
+      md.update(Files.readAllBytes(Paths.get(path)));
+      byte[] digest = md.digest();
+      String checksum = DatatypeConverter.printHexBinary(digest).toLowerCase();
+      return checksum;
+    } catch (Exception ex) {
+      if (CLASS_DEBUG) {
+        LOGGER.log(Level.SEVERE, null, ex);
+      }
+    }
+    return EMPTY_MD5_CHECKSUM;
+  }
+
+  /**
+   * Display window message.
+   *
+   * @param message specified message to display
+   * @param title title of message window
+   */
+  public static void showWindowMessage(String message, String title) {
+    if (message == null) {
+      message = "";
+    }
+    if (isEmpty(title)) {
+      title = DropLauncher.PROGRAM_NAME;
+    }
+    JOptionPane.showMessageDialog(
+        MainWindow.mainWindow,
+        message,
+        title,
+        JOptionPane.INFORMATION_MESSAGE
+    );
+  }
+
+  public static void showWindowMessage(String message) {
+    showWindowMessage(message, null);
   }
 
 }

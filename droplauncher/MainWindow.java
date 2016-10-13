@@ -14,6 +14,7 @@ import droplauncher.tools.ProcessPipe;
 import droplauncher.tools.TokenArray;
 
 import filedrop.FileDrop;
+import java.awt.Color;
 
 import java.awt.EventQueue;
 import java.io.File;
@@ -37,7 +38,7 @@ public class MainWindow extends JFrame {
       Logger.getLogger(MainWindow.class.getName());
   private static final boolean CLASS_DEBUG = (MainTools.DEBUG && true);
 
-  public static MainWindow _mainWindow;
+  public static MainWindow mainWindow;
 
   /**
    * Creates new form MainWindow.
@@ -266,11 +267,19 @@ public class MainWindow extends JFrame {
       File file = fc.getSelectedFile();
       try {
         String filename = file.getCanonicalPath();
+        if (!filename.toLowerCase().endsWith(".exe")) {
+          if (CLASS_DEBUG) {
+            LOGGER.log(Level.WARNING, "invalid StarCraft.exe");
+          }
+          MainTools.showWindowMessage("Invalid path to StarCraft.exe:\n\n" + filename);
+          return;
+        }
         BwHeadless.INSTANCE.setStarcraftExe(filename);
-        System.out.println(BwHeadless.INSTANCE.getStarcraftExe());
         btnStarcraftDir.setText(filename);
       } catch (IOException ex) {
-        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        if (CLASS_DEBUG) {
+          LOGGER.log(Level.SEVERE, null, ex);
+        }
       }
     }
   }//GEN-LAST:event_btnStarcraftDirActionPerformed
@@ -305,7 +314,7 @@ public class MainWindow extends JFrame {
     }
 
     /* Create and display the form. */
-    _mainWindow = new MainWindow();
+    mainWindow = new MainWindow();
     EventQueue.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -314,14 +323,14 @@ public class MainWindow extends JFrame {
           BwHeadless.INSTANCE.createDefaultConfig();
         }
 
-        _mainWindow.updateInfo();
-        _mainWindow.enableLaunch(false);
-        _mainWindow.enableEject(false);
+        mainWindow.updateInfo();
+        mainWindow.enableLaunch(true);
+        mainWindow.enableEject(true);
 
-        _mainWindow.setTitle("WildLauncher");
-        _mainWindow.setResizable(false);
-        _mainWindow.setLocationRelativeTo(null);
-        _mainWindow.setVisible(true);
+        mainWindow.setTitle(DropLauncher.PROGRAM_NAME);
+        mainWindow.setResizable(false);
+        mainWindow.setLocationRelativeTo(null);
+        mainWindow.setVisible(true);
       }
     });
 
@@ -330,13 +339,12 @@ public class MainWindow extends JFrame {
      * static container object named FileDropList.
      */
     FileDrop fileDrop = new FileDrop(
-        _mainWindow.boxDropFiles,
+        mainWindow.boxDropFiles,
         new FileDrop.Listener() {
           @Override
           public void filesDropped(File[] files) {
-            FileArray droppedFiles = FileDropList.getFiles();
             for (File file : files) {
-              droppedFiles.add(file);
+              BwHeadless.INSTANCE.dropFile(file);
             }
           }
     });
@@ -431,10 +439,10 @@ public class MainWindow extends JFrame {
     BwHeadless.GameType gameType = BwHeadless.INSTANCE.getGameType();
     switch (gameType) {
       case localpc:
-        _mainWindow.rbLocalPC.setSelected(true);
+        mainWindow.rbLocalPC.setSelected(true);
         break;
       case lan:
-        _mainWindow.rbUDP.setSelected(true);
+        mainWindow.rbUDP.setSelected(true);
         break;
       default:
         break;
@@ -443,30 +451,38 @@ public class MainWindow extends JFrame {
     BwHeadless.Race race = BwHeadless.INSTANCE.getBotRace();
     switch (race) {
       case Terran:
-        _mainWindow.rbTerran.setSelected(true);
+        mainWindow.rbTerran.setSelected(true);
         break;
       case Zerg:
-        _mainWindow.rbZerg.setSelected(true);
+        mainWindow.rbZerg.setSelected(true);
         break;
       case Protoss:
-        _mainWindow.rbProtoss.setSelected(true);
+        mainWindow.rbProtoss.setSelected(true);
         break;
       case Random:
-        _mainWindow.rbRandom.setSelected(true);
+        mainWindow.rbRandom.setSelected(true);
         break;
       default:
         break;
     }
 
-    _mainWindow.txtBotName.setText(BwHeadless.INSTANCE.getBotName());
+    mainWindow.txtBotName.setText(BwHeadless.INSTANCE.getBotName());
   }
 
   public void enableLaunch(boolean status) {
-    _mainWindow.btnLaunch.setEnabled(status);
+    mainWindow.btnLaunch.setEnabled(status);
   }
 
   public void enableEject(boolean status) {
-    _mainWindow.btnEject.setEnabled(status);
+    mainWindow.btnEject.setEnabled(status);
+  }
+
+  public void setBoxDropFile(boolean status) {
+    if (status) {
+      mainWindow.boxDropFiles.setBackground(new Color(255, 255, 255));
+    } else {
+      mainWindow.boxDropFiles.setBackground(new Color(100, 0, 0));
+    }
   }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables

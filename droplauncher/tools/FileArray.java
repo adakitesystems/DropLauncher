@@ -73,6 +73,18 @@ public class FileArray {
   }
 
   /**
+   * Tests whether the specified index is currently valid.
+   *
+   * @param index specified index
+   * @return
+   *     true if index is not out of bounds,
+   *     otherwise false
+   */
+  private boolean isValidIndex(int index) {
+    return (index > -1 && index < this.fileCount);
+  }
+
+  /**
    * Adds the specified file to this array. The file will not be added if
    * its canonical path matches another file already in the array and will
    * return false. If the File object is a directory, this function will
@@ -159,7 +171,7 @@ public class FileArray {
    */
   public File get(int index) {
     /* Validate parameters. */
-    if (index < 0 || index >= this.fileCount) {
+    if (!isValidIndex(index)) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }

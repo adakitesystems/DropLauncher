@@ -7,7 +7,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Custom string array with token functionality.
+ * Custom String[] with token functionality. Can be used as
+ * a String[] object full of tokens from a String, or just as
+ * a String[] object full of lines from a file.
  *
  * @author Adakite Systems
  * @author adakitesystems@gmail.com
@@ -37,7 +39,6 @@ public class TokenArray {
   public TokenArray(int initialSize) {
     if (initialSize < 1) {
       initialSize = DEFAULT_ARRAY_SIZE;
-      return;
     }
     this.tokens = new String[initialSize];
     reset();
@@ -47,23 +48,29 @@ public class TokenArray {
    * Ignores all tokens including and after the specified index.
    *
    * @param index specified index
+   * @return
+   *     true if the elements at the specified index have been marked
+   *         to be ignored,
+   *     otherwise false
    */
-  public void chopAt(int index) {
-    if (index < 0 || index >= this.tokenCount) {
+  public boolean chopAt(int index) {
+    if (!isValidIndex(index)) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }
-      return;
+      return false;
     }
     this.tokenCount = index;
+    return true;
   }
 
   /**
    * Sets the number of elements to zero and does not resize the array.
    * All previous elements are still stored in the array until they are
    * overwritten by new elements. The old elements are inaccessible via
-   * public functions due to the number of elements being set to zero and no
-   * way of accessing the rest of the array through public functions.
+   * public functions due to the number of elements being set to zero which
+   * does not allow any public function to access an index outside of the
+   * token count.
    */
   public void reset() {
     this.tokenCount = 0;
@@ -104,6 +111,18 @@ public class TokenArray {
   }
 
   /**
+   * Tests whether the specified index is currently valid.
+   *
+   * @param index specified index
+   * @return
+   *     true if index is not out of bounds,
+   *     otherwise false
+   */
+  private boolean isValidIndex(int index) {
+    return (index > -1 && index < this.tokenCount);
+  }
+
+  /**
    * Returns the element at the specified index.
    *
    * @param index index of element
@@ -113,10 +132,7 @@ public class TokenArray {
    */
   public String get(int index) {
     /* Validate parameters. */
-    if (index < 0 || index >= this.tokenCount) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
-      }
+    if (!isValidIndex(index)) {
       return null;
     }
     return this.tokens[index];
@@ -170,6 +186,9 @@ public class TokenArray {
     /* Return false for unmet conditions. */
     if ((str.isEmpty() && !addEmpty)
         || !ensureCapacity()) {
+      if (CLASS_DEBUG) {
+        LOGGER.log(Level.WARNING, "add failed");
+      }
       return false;
     }
 
@@ -236,7 +255,7 @@ public class TokenArray {
    */
   public void remove(int index) {
     /* Validate parameters. */
-    if (index < 0 || index >= this.tokenCount) {
+    if (!isValidIndex(index)) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }
@@ -281,7 +300,7 @@ public class TokenArray {
    */
   public boolean set(int index, String str) {
     /* Validate parameters. */
-    if (index < 0 || index >= this.tokenCount) {
+    if (!isValidIndex(index)) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }

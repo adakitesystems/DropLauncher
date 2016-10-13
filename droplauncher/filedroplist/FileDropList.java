@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  */
 public class FileDropList {
 
-  private static FileDropList INSTANCE = new FileDropList();
+  public static FileDropList INSTANCE = new FileDropList();
 
   private static final Logger LOGGER =
         Logger.getLogger(FileDropList.class.getName());
