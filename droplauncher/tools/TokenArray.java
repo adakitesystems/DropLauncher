@@ -54,7 +54,7 @@ public class TokenArray {
    *     otherwise false
    */
   public boolean chopAt(int index) {
-    if (!isValidIndex(index)) {
+    if (!isIndexValid(index)) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }
@@ -118,7 +118,7 @@ public class TokenArray {
    *     true if index is not out of bounds,
    *     otherwise false
    */
-  private boolean isValidIndex(int index) {
+  private boolean isIndexValid(int index) {
     return (index > -1 && index < this.tokenCount);
   }
 
@@ -132,7 +132,7 @@ public class TokenArray {
    */
   public String get(int index) {
     /* Validate parameters. */
-    if (!isValidIndex(index)) {
+    if (!isIndexValid(index)) {
       return null;
     }
     return this.tokens[index];
@@ -255,7 +255,7 @@ public class TokenArray {
    */
   public void remove(int index) {
     /* Validate parameters. */
-    if (!isValidIndex(index)) {
+    if (!isIndexValid(index)) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }
@@ -300,7 +300,7 @@ public class TokenArray {
    */
   public boolean set(int index, String str) {
     /* Validate parameters. */
-    if (!isValidIndex(index)) {
+    if (!isIndexValid(index)) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }

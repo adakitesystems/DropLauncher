@@ -80,7 +80,7 @@ public class FileArray {
    *     true if index is not out of bounds,
    *     otherwise false
    */
-  private boolean isValidIndex(int index) {
+  private boolean isIndexValid(int index) {
     return (index > -1 && index < this.fileCount);
   }
 
@@ -171,7 +171,7 @@ public class FileArray {
    */
   public File get(int index) {
     /* Validate parameters. */
-    if (!isValidIndex(index)) {
+    if (!isIndexValid(index)) {
       if (CLASS_DEBUG) {
         LOGGER.log(Level.WARNING, MainTools.INDEX_OOB);
       }
