@@ -4,6 +4,7 @@ package droplauncher.tools;
 
 import droplauncher.DropLauncher;
 import droplauncher.MainWindow;
+import droplauncher.bwheadless.BwHeadless;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.xml.bind.DatatypeConverter;
 
@@ -349,6 +351,16 @@ public class MainTools {
 
   public static void showWindowMessage(String message) {
     showWindowMessage(message, null);
+  }
+
+  public static File showfileChooserDialog() {
+    JFileChooser fc = new JFileChooser();
+    if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+      File file = fc.getSelectedFile();
+      return file;
+    } else {
+      return null;
+    }
   }
 
 }

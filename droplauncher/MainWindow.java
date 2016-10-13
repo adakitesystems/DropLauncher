@@ -272,24 +272,26 @@ public class MainWindow extends JFrame {
   }//GEN-LAST:event_rbRandomActionPerformed
 
   private void btnStarcraftDirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStarcraftDirActionPerformed
-    JFileChooser fc = new JFileChooser();
-    if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-      File file = fc.getSelectedFile();
-      try {
-        String filename = file.getCanonicalPath();
-        if (!filename.toLowerCase().endsWith(".exe")) {
-          if (CLASS_DEBUG) {
-            LOGGER.log(Level.WARNING, "invalid StarCraft.exe");
-          }
-          MainTools.showWindowMessage("Invalid path to StarCraft.exe:\n\n" + filename);
-          return;
-        }
-        BwHeadless.INSTANCE.setStarcraftExe(filename);
-        btnStarcraftDir.setText(filename);
-      } catch (IOException ex) {
+    File file = MainTools.showfileChooserDialog();
+    if (file == null) {
+      return;
+    }
+
+    String filename;
+    try {
+      filename = file.getCanonicalPath();
+      if (!filename.toLowerCase().endsWith("starcraft.exe")) {
         if (CLASS_DEBUG) {
-          LOGGER.log(Level.SEVERE, null, ex);
+          LOGGER.log(Level.WARNING, "invalid StarCraft.exe");
         }
+        MainTools.showWindowMessage("Invalid path to StarCraft.exe:\n\n" + filename);
+        return;
+      }
+      BwHeadless.INSTANCE.setStarcraftExe(filename);
+      btnStarcraftDir.setText(filename);
+    } catch (IOException ex) {
+      if (CLASS_DEBUG) {
+        LOGGER.log(Level.SEVERE, null, ex);
       }
     }
   }//GEN-LAST:event_btnStarcraftDirActionPerformed
