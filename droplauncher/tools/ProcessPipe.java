@@ -118,11 +118,13 @@ public final class ProcessPipe {
    */
   public boolean close() {
     try {
-      this.br.close();
-      this.is.close();
-      this.bw.close();
-      this.os.close();
-      this.process.destroy();
+      if (this.process != null && this.process.isAlive()) {
+        this.br.close();
+        this.is.close();
+        this.bw.close();
+        this.os.close();
+        this.process.destroyForcibly();
+      }
       return true;
     } catch (IOException ex) {
       if (CLASS_DEBUG) {

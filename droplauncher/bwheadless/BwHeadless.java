@@ -7,6 +7,7 @@ import droplauncher.config.ConfigFile;
 import droplauncher.tools.FileArray;
 import droplauncher.tools.MainTools;
 import droplauncher.tools.ProcessPipe;
+import droplauncher.tools.TokenArray;
 
 import java.io.File;
 import java.io.IOException;
@@ -166,6 +167,78 @@ public class BwHeadless {
   }
 
   /**
+   * Launch the bot process.
+   *
+   * @return
+   *     true if bot process appears to be running,
+   *     otherwise false
+   */
+  public boolean launch() {
+    if (!checkReady()) {
+      return false;
+    }
+
+    /*
+     * Prepare runtime arguments.
+     */
+    TokenArray args = new TokenArray();
+    /* StarCraft.exe */
+    args.add(ARG_STARCRAFT_EXE);
+    args.add(this.starcraftExe);
+    /* Whether the bot should join or host. */
+    args.add(ARG_JOIN);
+    /* Bot name */
+    args.add(ARG_BOT_NAME);
+    args.add(this.botName);
+    /* Bot race */
+    args.add(ARG_BOT_RACE);
+    args.add(this.botRace.toString());
+    /* BWAPI.dll */
+    args.add(ARG_LOAD_DLL);
+    args.add(this.bwapiDll);
+    /* Where the game should be played. E.g. over LAN or Local PC. */
+    switch (this.gameType) {
+      case lan: args.add(ARG_ENABLE_LAN); break;
+      case localpc: args.add(ARG_ENABLE_LOCAL_PC); break;
+      default: break;
+    }
+    /* StarCraft install directory where "bwapi-data/" should be located. */
+    args.add(ARG_STARCRAFT_INSTALL_PATH);
+    args.add(MainTools.getParentDirectory(this.starcraftExe));
+
+    /* Start bwheadless.exe */
+    boolean status = this.bwHeadlessPipe.open(BW_HEADLESS_PATH, args.toStringArray());
+
+    /* Start bot client if present. */
+    if (this.botClientPath != null) {
+      if (!this.botClientPipe.open(this.botClientPath, null)) {
+        if (CLASS_DEBUG) {
+          LOGGER.log(Level.SEVERE, "failed to start bot client");
+        }
+        return false;
+      }
+    }
+
+    if (status) {
+      if (CLASS_DEBUG) {
+        System.out.println("Launch!");
+        System.out.println(BW_HEADLESS_PATH + " " + args.toString());
+      }
+    }
+
+    return status;
+  }
+
+  public boolean eject() {
+    boolean status = true;
+    if (this.botClientPath != null) {
+      status = this.botClientPipe.close();
+    }
+    status &= this.bwHeadlessPipe.close();
+    return status;
+  }
+
+  /**
    * Creates the default config file {@link #DEFAULT_CFG_FILE}.
    *
    * @return
@@ -259,7 +332,13 @@ public class BwHeadless {
       }
       return false;
     }
+
     this.bwapiDll = path;
+
+    if (CLASS_DEBUG) {
+      System.out.println("BWAPI.dll: " + this.bwapiDll);
+    }
+
     return true;
   }
 
@@ -511,11 +590,13 @@ public class BwHeadless {
    * Tests whether the program has the required information to
    * launch the bot and sets the UI components accordingly.
    */
-  public void checkReady() {
+  public boolean checkReady() {
     if (BwHeadless.INSTANCE.getReadyError() == null) {
       MainWindow.mainWindow.setBoxDropFile(true);
+      return true;
     } else {
       MainWindow.mainWindow.setBoxDropFile(false);
+      return false;
     }
   }
 

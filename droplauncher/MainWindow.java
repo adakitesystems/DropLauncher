@@ -77,6 +77,11 @@ public class MainWindow extends JFrame {
     btnEject.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
     btnEject.setText("Eject");
     btnEject.setEnabled(false);
+    btnEject.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnEjectActionPerformed(evt);
+      }
+    });
 
     boxDropFiles.setBackground(new java.awt.Color(138, 0, 0));
     boxDropFiles.setFont(new java.awt.Font("sansserif", 0, 18)); // NOI18N
@@ -89,6 +94,11 @@ public class MainWindow extends JFrame {
     btnLaunch.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
     btnLaunch.setText("Launch");
     btnLaunch.setEnabled(false);
+    btnLaunch.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnLaunchActionPerformed(evt);
+      }
+    });
 
     txtBotName.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
     txtBotName.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -291,6 +301,20 @@ public class MainWindow extends JFrame {
     }
   }//GEN-LAST:event_txtBotNameFocusLost
 
+  private void btnLaunchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLaunchActionPerformed
+    if (!BwHeadless.INSTANCE.checkReady()) {
+      String error = BwHeadless.INSTANCE.getReadyError();
+      MainTools.showWindowMessage("Error: " + error);
+    } else {
+      BwHeadless.INSTANCE.launch();
+    }
+  }//GEN-LAST:event_btnLaunchActionPerformed
+
+  private void btnEjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEjectActionPerformed
+    boolean status = BwHeadless.INSTANCE.eject();
+    System.out.println("Ejected: " + status);
+  }//GEN-LAST:event_btnEjectActionPerformed
+
   /**
    * Main function called when main window is displayed.
    *
@@ -322,6 +346,20 @@ public class MainWindow extends JFrame {
         if (!MainTools.doesFileExist(BwHeadless.DEFAULT_CFG_FILE)) {
           BwHeadless.INSTANCE.createDefaultConfig();
         }
+
+        /* Read settings from config file. */
+        ConfigFile settingsFile = new ConfigFile();
+        if (settingsFile.open(BwHeadless.DEFAULT_CFG_FILE)) {
+          /* StarCraft.exe */
+          String tmpPath = settingsFile.getValue(BwHeadless.CFG_STARCRAFT_EXE);
+          if (tmpPath != null) {
+            BwHeadless.INSTANCE.setStarcraftExe(tmpPath);
+          }
+        }
+
+        BwHeadless.INSTANCE.setBotDll("S:\\install\\StarCraft\\bwapi-data\\AI\\Iron.dll");
+        BwHeadless.INSTANCE.setBwapiDll("S:\\install\\StarCraft\\bwapi-data\\BWAPI.dll");
+        BwHeadless.INSTANCE.checkReady();
 
         mainWindow.updateInfo();
         mainWindow.enableLaunch(true);
@@ -436,6 +474,7 @@ public class MainWindow extends JFrame {
   }
 
   public void updateInfo() {
+    /* Game Type */
     BwHeadless.GameType gameType = BwHeadless.INSTANCE.getGameType();
     switch (gameType) {
       case localpc:
@@ -448,6 +487,7 @@ public class MainWindow extends JFrame {
         break;
     }
 
+    /* Race */
     BwHeadless.Race race = BwHeadless.INSTANCE.getBotRace();
     switch (race) {
       case Terran:
@@ -466,7 +506,14 @@ public class MainWindow extends JFrame {
         break;
     }
 
+    /* Bot name */
     mainWindow.txtBotName.setText(BwHeadless.INSTANCE.getBotName());
+
+    /* StarCraft.exe */
+    String path = BwHeadless.INSTANCE.getStarcraftExe();
+    if (path != null) {
+      mainWindow.btnStarcraftDir.setText(path);
+    }
   }
 
   public void enableLaunch(boolean status) {
