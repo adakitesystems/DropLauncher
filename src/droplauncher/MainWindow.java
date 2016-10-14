@@ -335,26 +335,26 @@ public class MainWindow extends JFrame {
     EventQueue.invokeLater(new Runnable() {
       @Override
       public void run() {
-        /* Create or check for settings config file. */
-        if (!MainTools.doesFileExist(BwHeadless.DEFAULT_CFG_FILE)) {
-          BwHeadless.INSTANCE.createDefaultConfig();
-        }
+//        /* Create or check for settings config file. */
+//        if (!MainTools.doesFileExist(BwHeadless.DEFAULT_CFG_FILE)) {
+//          BwHeadless.INSTANCE.createDefaultConfig();
+//        }
+//
+//        /* Read settings from config file. */
+//        ConfigFile settingsFile = new ConfigFile();
+//        if (settingsFile.open(BwHeadless.DEFAULT_CFG_FILE)) {
+//          /* StarCraft.exe */
+//          String tmpPath = settingsFile.getValue(BwHeadless.ConfigVariable.StarCraft_EXE.toString());
+//          if (tmpPath != null) {
+//            BwHeadless.INSTANCE.setStarcraftExe(tmpPath);
+//          }
+//        }
+//
+//        BwHeadless.INSTANCE.setBotDll("S:\\install\\StarCraft\\bwapi-data\\AI\\Iron.dll");
+//        BwHeadless.INSTANCE.setBwapiDll("S:\\install\\StarCraft\\bwapi-data\\BWAPI.dll");
+//        BwHeadless.INSTANCE.checkReady();
 
-        /* Read settings from config file. */
-        ConfigFile settingsFile = new ConfigFile();
-        if (settingsFile.open(BwHeadless.DEFAULT_CFG_FILE)) {
-          /* StarCraft.exe */
-          String tmpPath = settingsFile.getValue(BwHeadless.ConfigVariable.StarCraft_EXE.toString());
-          if (tmpPath != null) {
-            BwHeadless.INSTANCE.setStarcraftExe(tmpPath);
-          }
-        }
-
-        BwHeadless.INSTANCE.setBotDll("S:\\install\\StarCraft\\bwapi-data\\AI\\Iron.dll");
-        BwHeadless.INSTANCE.setBwapiDll("S:\\install\\StarCraft\\bwapi-data\\BWAPI.dll");
-        BwHeadless.INSTANCE.checkReady();
-
-        mainWindow.updateInfo();
+//        mainWindow.updateInfo();
         mainWindow.enableLaunch(true);
         mainWindow.enableEject(true);
 

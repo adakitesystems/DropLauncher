@@ -61,7 +61,7 @@ public class BwHeadless {
   }
 
   /*
-   * Checksums are used for aesthetic purposes in possibly detecting
+   * Checksums are used for aesthetic purposes for possibly detecting
    * which BWAPI DLL is loaded. Tampering with the checksums or the DLLs
    * does not change the result of the program.
    */
@@ -202,24 +202,19 @@ public class BwHeadless {
    *     otherwise a non-empty string
    */
   public String getReadyError() {
-    /* Missing bwheadless.exe */
     if (!MainTools.doesFileExist(BW_HEADLESS_PATH)) {
       return "missing bwheadless.exe";
     }
-    /* Missing bot files. */
     if ((this.botDllPath == null || !MainTools.doesFileExist(this.botDllPath))
         && (this.botClientPath == null || !MainTools.doesFileExist(this.botClientPath))) {
       return "missing bot file";
     }
-    /* Missing BWAPI DLL file. */
     if (this.bwapiDll == null || !MainTools.doesFileExist(this.bwapiDll)) {
       return "missing BWAPI.dll";
     }
-    /* Missing StarCraft.exe */
     if (this.starcraftExe == null || !MainTools.doesFileExist(this.starcraftExe)) {
       return "missing StarCraft.exe";
     }
-    /* Ready to launch bot. */
     return null;
   }
 
@@ -239,21 +234,15 @@ public class BwHeadless {
      * Prepare runtime arguments.
      */
     ArrayList<String> args = new ArrayList<>();
-    /* StarCraft.exe */
     args.add(Argument.StarCraft_EXE.toString());
     args.add(this.starcraftExe);
-    /* Whether the bot should join or host. */
     args.add(Argument.Join.toString());
-    /* Bot name */
     args.add(Argument.Bot_Name.toString());
     args.add(this.botName);
-    /* Bot race */
     args.add(Argument.Bot_Race.toString());
     args.add(this.botRace.toString());
-    /* BWAPI.dll */
     args.add(Argument.Load_DLL.toString());
     args.add(this.bwapiDll);
-    /* Where the game should be played. E.g. over LAN or Local PC. */
     switch (this.gameType) {
       case lan:
         args.add(Argument.Enable_LAN.toString());
@@ -360,7 +349,6 @@ public class BwHeadless {
    *     otherwise false
    */
   public boolean setStarcraftExe(String path) {
-    /* Validate parameters. */
     if (MainTools.isEmpty(path)) {
       LOGGER.warn(Debugging.EMPTY_STRING);
       return false;
@@ -427,7 +415,6 @@ public class BwHeadless {
    * @param str string to set as bot name
    */
   public void setBotName(String str) {
-    /* Validate parameters. */
     if (MainTools.isEmpty(str)
         || (str = MainTools.onlyLettersNumbers(str)) == null) {
       str = DEFAULT_BOT_NAME;
@@ -460,7 +447,6 @@ public class BwHeadless {
    *     otherwise false
    */
   public boolean setBotDll(String path) {
-    /* Validate parameters. */
     if (MainTools.isEmpty(path)) {
       LOGGER.warn(Debugging.EMPTY_STRING);
       return false;
@@ -497,7 +483,6 @@ public class BwHeadless {
    *     otherwise false
    */
   public boolean setBotClient(String path) {
-    /* Validate parameters. */
     if (MainTools.isEmpty(path)) {
       LOGGER.warn(Debugging.EMPTY_STRING);
       return false;

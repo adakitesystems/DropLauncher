@@ -2,7 +2,6 @@
 
 /*
 TODO:
-- Test if generic Exception throws the specific exception when caught.
 - Since the removal of "_isOpen", determine best way to check if
 process is running... suggestion: ".isAlive()"?
 */
@@ -10,6 +9,7 @@ process is running... suggestion: ".isAlive()"?
 package droplauncher.tools;
 
 import droplauncher.debugging.Debugging;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
