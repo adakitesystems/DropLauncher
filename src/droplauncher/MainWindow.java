@@ -35,6 +35,7 @@ public class MainWindow extends JFrame {
   private static final Logger LOGGER = LogManager.getRootLogger();
 
   public static MainWindow mainWindow;
+  public static BwHeadless bwheadless;
 
   /**
    * Creates new form MainWindow.
@@ -109,6 +110,8 @@ public class MainWindow extends JFrame {
       LOGGER.error(ex.getMessage(), ex);
     }
 
+    bwheadless = new BwHeadless();
+
     /* Create and display the form. */
     mainWindow = new MainWindow();
     EventQueue.invokeLater(new Runnable() {
@@ -133,6 +136,8 @@ public class MainWindow extends JFrame {
             for (File file : files) {
               FileDropList.INSTANCE.add(file);
             }
+            bwheadless.readDroppedFiles();
+            FileDropList.INSTANCE.clear();
           }
     });
 
@@ -222,6 +227,7 @@ public class MainWindow extends JFrame {
 
 //    System.out.println(BwHeadless.getInstance().bwapiDllChecksums.getValue("BWAPI.dll 4.1.0b"));
 //    System.out.println(BwHeadless.getInstance().bwapiDllChecksums.getName("5d5128709ba714aa9c6095598bcf4624"));
+
 
 
 

@@ -2,9 +2,10 @@
 
 package droplauncher.bwheadless;
 
-import droplauncher.starcraft.Race;
 import droplauncher.config.ConfigFile;
 import droplauncher.debugging.Debugging;
+import droplauncher.filedroplist.FileDropList;
+import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.tools.MainTools;
 import droplauncher.tools.ProcessPipe;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
  */
 public class BwHeadless {
 
-  private static Logger logger = LogManager.getRootLogger();
+  private static final Logger LOGGER = LogManager.getRootLogger();
 
   public static final String BW_HEADLESS_PATH = "bwheadless.exe";
 
@@ -46,8 +47,6 @@ public class BwHeadless {
   private Race botRace;               /* required */
   private GameType gameType;          /* required */
 
-  public static ArrayList<File> droppedFiles;
-
   /**
    * Intialize class members.
    */
@@ -62,7 +61,38 @@ public class BwHeadless {
     this.botClientPath    = null;
     this.botRace          = Race.RANDOM;
     this.gameType         = GameType.LAN;
-    this.droppedFiles     = new ArrayList<>();
+  }
+
+  /**
+   * Tests whether all required data is known.
+   *
+   * @return
+   *     null if all required data is known,
+   *     otherwise a string containing missing data
+   */
+  public String getReadyError() {
+    if (MainTools.isEmpty(this.starcraftExe)) {
+      return "missing StarCraft.exe path";
+    } else if (MainTools.isEmpty(this.bwapiDll)) {
+      return "missing BWAPI.dll";
+    } else if (MainTools.isEmpty(this.botName)) {
+      return "missing bot name";
+    } else if (MainTools.isEmpty(this.botDllPath)
+        && MainTools.isEmpty(this.botClientPath)) {
+      return "missing bot files";
+    }
+    return null;
+  }
+
+  /**
+   * Tests whether the bot is ready for launch.
+   *
+   * @return
+   *     true if bot is ready,
+   *     otherwise false
+   */
+  public boolean isReady() {
+    return (getReadyError() == null);
   }
 
   /**
@@ -84,17 +114,17 @@ public class BwHeadless {
    */
   public boolean setStarcraftExe(String path) {
     if (MainTools.isEmpty(path)) {
-      logger.warn(Debugging.EMPTY_STRING);
+      LOGGER.warn(Debugging.EMPTY_STRING);
       return false;
     }
     if (!MainTools.doesFileExist(path)) {
-      logger.warn("file inaccessible or does not exist: " + path);
+      LOGGER.warn("file inaccessible or does not exist: " + path);
       return false;
     }
 
     this.starcraftExe = path;
 
-    logger.info("StarCraft.exe: " + this.starcraftExe);
+    LOGGER.info("StarCraft.exe: " + this.starcraftExe);
 
     return true;
   }
@@ -118,13 +148,13 @@ public class BwHeadless {
    */
   public boolean setBwapiDll(String path) {
     if (!MainTools.doesFileExist(path)) {
-      logger.warn("file inaccessible or does not exist" + path);
+      LOGGER.warn("file inaccessible or does not exist" + path);
       return false;
     }
 
     this.bwapiDll = path;
 
-    logger.info("BWAPI.dll: " + this.bwapiDll);
+    LOGGER.info("BWAPI.dll: " + this.bwapiDll);
 
     return true;
   }
@@ -158,7 +188,7 @@ public class BwHeadless {
 
     this.botName = str;
 
-    logger.info("Bot name: " + this.botName);
+    LOGGER.info("Bot name: " + this.botName);
   }
 
   /**
@@ -181,17 +211,18 @@ public class BwHeadless {
    */
   public boolean setBotDll(String path) {
     if (MainTools.isEmpty(path)) {
-      logger.warn(Debugging.EMPTY_STRING);
-      return false;
+      this.botDllPath = null;
+      return true;
     }
     if (!MainTools.doesFileExist(path)) {
-      logger.warn("file inaccessible or does not exist: " + path);
+      LOGGER.warn("file inaccessible or does not exist: " + path);
       return false;
     }
 
     this.botDllPath = path;
+    this.botClientPath = null;
 
-    logger.info("Bot dll: " + this.botDllPath);
+    LOGGER.info("Bot dll: " + this.botDllPath);
 
     return true;
   }
@@ -217,17 +248,18 @@ public class BwHeadless {
    */
   public boolean setBotClient(String path) {
     if (MainTools.isEmpty(path)) {
-      logger.warn(Debugging.EMPTY_STRING);
-      return false;
+      this.botClientPath = null;
+      return true;
     }
     if (!MainTools.doesFileExist(path)) {
-      logger.warn("file inaccessible or does not exist: " + path);
+      LOGGER.warn("file inaccessible or does not exist: " + path);
       return false;
     }
 
     this.botClientPath = path;
+    this.botDllPath = null;
 
-    logger.info("Bot client: " + this.botClientPath);
+    LOGGER.info("Bot client: " + this.botClientPath);
 
     return true;
   }
@@ -249,7 +281,7 @@ public class BwHeadless {
    */
   public void setBotRace(Race race) {
     this.botRace = race;
-    logger.info("Bot race: " + this.botRace.toString());
+    LOGGER.info("Bot race: " + this.botRace.toString());
   }
 
   /**
@@ -269,7 +301,28 @@ public class BwHeadless {
    */
   public void setGameType(GameType gameType) {
     this.gameType = gameType;
-    logger.info("Game type: " + this.gameType.toString());
+    LOGGER.info("Game type: " + this.gameType.toString());
+  }
+
+  /**
+   * Read dropped files from FileDropList.
+   */
+  public void readDroppedFiles() {
+    ArrayList<File> droppedFiles = FileDropList.INSTANCE.getFiles();
+    String tmpName;
+    String tmpNameLower;
+
+    for (File tmpFile : droppedFiles) {
+      tmpName = tmpFile.getName();
+      tmpNameLower = tmpName.toLowerCase();
+      if (tmpNameLower.equals("bwapi.dll")) {
+        setBwapiDll(MainTools.getFullPath(tmpFile));
+      } else if (tmpNameLower.endsWith(".dll")) {
+        setBotDll(MainTools.getFullPath(tmpFile));
+      } else if (tmpNameLower.endsWith(".exe")) {
+        setBotClient(MainTools.getFullPath(tmpFile));
+      }
+    }
   }
 
 }

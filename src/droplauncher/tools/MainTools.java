@@ -10,7 +10,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -114,6 +116,22 @@ public class MainTools {
     }
     File file = new File(path);
     return file.getParent();
+  }
+
+  /**
+   * Returns the full path to the specified file.
+   *
+   * @param file specified file
+   * @return the full path to the specified file
+   */
+  public static String getFullPath(File file) {
+    try {
+      String path = file.getCanonicalPath();
+      return path;
+    } catch (IOException ex) {
+      LOGGER.error(ex.getMessage(), ex);
+    }
+    return null;
   }
 
   /**
