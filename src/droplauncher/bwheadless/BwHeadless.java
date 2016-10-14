@@ -272,6 +272,8 @@ public class BwHeadless {
 
   /**
    * Returns the path to the Starcraft executable.
+   *
+   * @return the path to the Starcraft executable
    */
   public String getStarcraftExe() {
     return this.starcraftExe;
@@ -356,7 +358,7 @@ public class BwHeadless {
 
   /**
    * Sets the name of the bot. The name length is capped at
-   * {@link #MAX_NAME_LENGTH}. Characters not matching A-Z, a-z, 0-9, or
+   * {@link #MAX_BOT_NAME_LENGTH}. Characters not matching A-Z, a-z, 0-9, or
    * standard parenthesis will be removed. If a null or empty name
    * is specified, the name will be set too {@link #DEFAULT_BOT_NAME}.
    *
@@ -596,6 +598,10 @@ public class BwHeadless {
   /**
    * Tests whether the program has the required information to
    * launch the bot and sets the UI components accordingly.
+   *
+   * @return
+   *     true if program is ready to launch bot,
+   *     otherwise false
    */
   public boolean checkReady() {
     if (BwHeadless.INSTANCE.getReadyError() == null) {

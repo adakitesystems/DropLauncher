@@ -147,6 +147,9 @@ public class ConfigFile {
    * Returns the index of the specified variable name.
    *
    * @param name specified variable name
+   * @return
+   *     the index of the specified variable name if found,
+   *     otherwise false
    */
   public int indexOfName(String name) {
     /* Validate parameters. */
@@ -174,6 +177,9 @@ public class ConfigFile {
    * Returns the index of the specified value.
    *
    * @param value specified value
+   * @return
+   *     the index of the specified value name if found,
+   *     otherwise false
    */
   public int indexOfValue(String value) {
     /* Validate parameters. */

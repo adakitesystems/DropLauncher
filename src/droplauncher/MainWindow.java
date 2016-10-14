@@ -6,10 +6,9 @@ package droplauncher;
 
 import droplauncher.config.ConfigFile;
 import droplauncher.bwheadless.BwHeadless;
+import droplauncher.debugging.Debugging;
 import droplauncher.filedroplist.FileDropList;
 import droplauncher.tools.MainTools;
-import droplauncher.tools.MemoryFile;
-import droplauncher.tools.ProcessPipe;
 
 import filedrop.FileDrop;
 import java.awt.Color;
@@ -17,12 +16,11 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Class for main window.
@@ -32,8 +30,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class MainWindow extends JFrame {
 
-  private static final Logger LOGGER =
-      Logger.getLogger(MainWindow.class.getName());
+  private static final Logger LOGGER = LogManager.getRootLogger();
   private static final boolean CLASS_DEBUG = (MainTools.DEBUG && true);
 
   public static MainWindow mainWindow;
@@ -279,18 +276,14 @@ public class MainWindow extends JFrame {
     try {
       filename = file.getCanonicalPath();
       if (!filename.toLowerCase().endsWith("starcraft.exe")) {
-        if (CLASS_DEBUG) {
-          LOGGER.log(Level.WARNING, "invalid StarCraft.exe");
-        }
+        LOGGER.warn("invalid StarCraft.exe");
         MainTools.showWindowMessage("Invalid path to StarCraft.exe:\n\n" + filename);
         return;
       }
       BwHeadless.INSTANCE.setStarcraftExe(filename);
       btnStarcraftDir.setText(filename);
     } catch (IOException ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.SEVERE, null, ex);
-      }
+      LOGGER.error(ex.getMessage(), ex);
     }
   }//GEN-LAST:event_btnStarcraftDirActionPerformed
 
@@ -320,7 +313,7 @@ public class MainWindow extends JFrame {
    *
    * @param args the command line arguments
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     /* Set the Nimbus look and feel if available. */
     try {
       for (UIManager.LookAndFeelInfo info :
@@ -334,7 +327,7 @@ public class MainWindow extends JFrame {
         | InstantiationException
         | IllegalAccessException
         | UnsupportedLookAndFeelException ex) {
-      LOGGER.log(Level.SEVERE, null, ex);
+      LOGGER.error(ex.getMessage(), ex);
     }
 
     /* Create and display the form. */
@@ -474,9 +467,6 @@ public class MainWindow extends JFrame {
 //    System.out.println(BwHeadless.INSTANCE.bwapiDllChecksums.getValue("BWAPI.dll 4.1.0b"));
 //    System.out.println(BwHeadless.INSTANCE.bwapiDllChecksums.getName("5d5128709ba714aa9c6095598bcf4624"));
     /* DEBUGGING --- end */
-
-
-
 
   }
 
