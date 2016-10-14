@@ -45,7 +45,7 @@ public class ConfigFile {
    *
    * @param filename path to file
    * @return
-   *     true if file was created successfully and did not already exist,
+   *     true if file was created successfully or already exists,
    *     otherwise false
    */
   public boolean create(String filename) {
@@ -54,7 +54,7 @@ public class ConfigFile {
       return false;
     } else if (MainTools.doesFileExist(filename)) {
       LOGGER.warn("file already exists: " + filename);
-      return false;
+      return true;
     }
 
     File file = new File(filename);
@@ -81,28 +81,34 @@ public class ConfigFile {
    *     otherwise false
    */
   public boolean open(String filename) {
+    this.filename = filename;
+
+    if (MainTools.isEmpty(filename)) {
+      LOGGER.warn(Debugging.EMPTY_STRING);
+    }
+
     if (!this.memoryFile.readIntoMemory(filename)) {
       LOGGER.warn("open failed: " + filename);
       return false;
     }
-    this.variables.clear();
 
+    this.variables.clear();
     ArrayList<String> lines = this.memoryFile.getLines();
     int len = lines.size();
-    String line;
-    String varName;
-    String varValue;
-    int index;
 
     /* Read was successful but file is empty. */
     if (len < 1) {
       return true;
     }
 
+    String line;
+    String varName;
+    String varValue;
+    int index;
+
     /* Read lines as variables and values. */
     for (int i = 0; i < len; i++) {
-      line = lines.get(i);
-      line = line.trim();
+      line = lines.get(i).trim();
 
       /* Ignore comments. */
       if (line.startsWith(COMMENT_DELIMITER)) {
@@ -129,9 +135,11 @@ public class ConfigFile {
       );
     }
 
-    this.filename = filename;
-
     return true;
+  }
+
+  public boolean refresh() {
+    return open(this.filename);
   }
 
   /**
@@ -140,10 +148,9 @@ public class ConfigFile {
    * @param name specified variable name
    * @return
    *     the index of the specified variable name if found,
-   *     otherwise false
+   *     otherwise -1
    */
   public int indexOfName(String name) {
-    /* Validate parameters. */
     if (MainTools.isEmpty(name)) {
       LOGGER.warn(Debugging.EMPTY_STRING);
       return -1;
@@ -154,7 +161,7 @@ public class ConfigFile {
 
     for (int i = 0; i < len ; i++) {
       tmpVar = this.variables.get(i);
-      if (tmpVar.getName().equals(name)) {
+      if (tmpVar.getName().equalsIgnoreCase(name)) {
         return i;
       }
     }
@@ -168,10 +175,9 @@ public class ConfigFile {
    * @param value specified value
    * @return
    *     the index of the specified value name if found,
-   *     otherwise false
+   *     otherwise -1
    */
   public int indexOfValue(String value) {
-    /* Validate parameters. */
     if (MainTools.isEmpty(value)) {
       LOGGER.warn(Debugging.EMPTY_STRING);
       return -1;
@@ -182,7 +188,7 @@ public class ConfigFile {
 
     for (int i = 0; i < len ; i++) {
       tmpVar = this.variables.get(i);
-      if (tmpVar.getValue().equals(value)) {
+      if (tmpVar.getValue().equalsIgnoreCase(value)) {
         return i;
       }
     }
@@ -228,7 +234,6 @@ public class ConfigFile {
    *     otherwise false
    */
   public boolean createVariable(String name, String value) {
-    /* Validate parameters. */
     if (MainTools.isEmpty(name)) {
       LOGGER.warn(Debugging.EMPTY_STRING);
       return false;
@@ -238,8 +243,8 @@ public class ConfigFile {
     }
 
     /* Test if variable already exists. */
-    if (indexOfName(name) >= 0)  {
-      return false;
+    if (indexOfName(name) >= 0) {
+      return setVariable(name, value);
     }
 
     /* Add complete variable string to memory file. */
@@ -250,7 +255,7 @@ public class ConfigFile {
     );
 
     /* Update changes in file. */
-    return this.memoryFile.writeToDisk() && open(this.filename);
+    return this.memoryFile.writeToDisk() && refresh();
   }
 
   /**
@@ -263,7 +268,6 @@ public class ConfigFile {
    *     otherwise false
    */
   public boolean setVariable(String name, String value) {
-    /* Validate parameters. */
     int varIndex = indexOfName(name);
     if (varIndex < 0) {
       return false;
@@ -280,13 +284,13 @@ public class ConfigFile {
     for (int i = 0; i < len; i++) {
       line = lines.get(i);
 
-      index = line.indexOf(COMMENT_DELIMITER);
       comment = "";
+      index = line.indexOf(COMMENT_DELIMITER);
       if (index >= 0) {
         comment = line.substring(index, line.length());
       }
 
-      if (line.trim().startsWith(name) && line.contains(VARIABLE_DELIMITER)) {
+      if (line.trim().toLowerCase().startsWith(name) && line.contains(VARIABLE_DELIMITER)) {
         line = name + " " + VARIABLE_DELIMITER + " " + value + " " + comment;
         this.memoryFile.getLines().set(i, line);
         writeToFile = true;
@@ -295,12 +299,11 @@ public class ConfigFile {
 
     /* Update changes in file. */
     if (writeToFile) {
-      boolean writeSuccess = this.memoryFile.writeToDisk();
-      if (!writeSuccess) {
+      if (!this.memoryFile.writeToDisk()) {
         return false;
       }
       this.variables.set(varIndex, new ConfigVariable(name, value));
-      return true;
+      return refresh();
     }
 
     /* If this line is reached, something went wrong. */
@@ -317,8 +320,7 @@ public class ConfigFile {
    *     otherwise false
    */
   public boolean enableVariable(String name) {
-    int index = indexOfName(name);
-    if (index >= 0) {
+    if (indexOfName(name) >= 0) {
       /* Variable is already enabled. */
       return true;
     }
@@ -328,11 +330,12 @@ public class ConfigFile {
     String currentLine = null;
     int currentIndex = -1;
     int len = lines.size();
+    int index;
 
     /* Find the most current line matching variable name. */
     for (int i = 0; i < len; i++) {
       line = lines.get(i);
-      if (line.trim().startsWith(COMMENT_DELIMITER)
+      if (line.trim().toLowerCase().startsWith(COMMENT_DELIMITER)
           && line.contains(name + " ")
           && line.contains(VARIABLE_DELIMITER)) {
         currentLine = line;
@@ -349,7 +352,7 @@ public class ConfigFile {
     currentLine = currentLine.substring(index + 1, currentLine.length()).trim();
     this.memoryFile.getLines().set(currentIndex, currentLine);
 
-    return (this.memoryFile.writeToDisk() && open(this.filename));
+    return (this.memoryFile.writeToDisk() && refresh());
   }
 
   /**
@@ -373,11 +376,11 @@ public class ConfigFile {
 
     for (int i = 0; i < len; i++) {
       line = lines.get(i);
-      if (line.trim().startsWith(name)
+      if (line.trim().toLowerCase().startsWith(name)
           && line.contains(VARIABLE_DELIMITER)) {
         line = COMMENT_DELIMITER + " " + line;
         this.memoryFile.getLines().set(i, line);
-        return (this.memoryFile.writeToDisk() && open(this.filename));
+        return (this.memoryFile.writeToDisk() && refresh());
       }
     }
 
