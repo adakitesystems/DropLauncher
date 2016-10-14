@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Singleton class for handling communication with "bwheadless.exe" and
@@ -25,90 +26,8 @@ public class BwHeadless {
 
   public static final BwHeadless INSTANCE = new BwHeadless();
 
-  private static final Logger LOGGER = LogManager.getRootLogger();
-
-  public static enum GameType {
-    lan,
-    localpc
-  }
-
-  public static enum Race {
-    Terran,
-    Zerg,
-    Protoss,
-    Random
-  }
-
-  public static enum Checksum {
-    Bwapi_Dll_374("6e940dc6acc76b6e459b39a9cdd466ae"),
-    Bwapi_Dll_375("5e590ea55c2d3c66a36bf75537f8655a"),
-    Bwapi_Dll_401b("84f413409387ae80a4b4acc51fed3923"),
-    Bwapi_Dll_410b("4814396fba36916fdb7cf3803b39ab51"),
-    Bwapi_Dll_411b("5d5128709ba714aa9c6095598bcf4624"),
-    Bwapi_Dll_412("1364390d0aa085fba6ac11b7177797b0")
-    ;
-
-    private final String data;
-
-    private Checksum(final String data) {
-      this.data = data;
-    }
-
-    @Override
-    public String toString() {
-      return data;
-    }
-  }
-
-  /*
-   * Checksums are used for aesthetic purposes for possibly detecting
-   * which BWAPI DLL is loaded. Tampering with the checksums or the DLLs
-   * does not change the result of the program.
-   */
-  public static enum Argument {
-    StarCraft_EXE("-e"), /* requires second string */
-    Join("-j"),
-    Bot_Name("-n"), /* requires second argument */
-    Bot_Race("-r"), /* requires second argument */
-    Load_DLL("-l"), /* requires second argument */
-    Enable_LAN("--lan"),
-    Enable_Local_PC("--localpc"),
-    StarCraft_Install_Path("--installpath") /* requires second argument */
-    ;
-
-    private final String data;
-
-    private Argument(final String data) {
-      this.data = data;
-    }
-
-    @Override
-    public String toString() {
-      return data;
-    }
-  }
-
-  public static enum ConfigVariable {
-    StarCraft_EXE("starcraft_exe"),
-    Bwapi_Dll("bwapi_dll"),
-    Bot_Name("bot_name"),
-    Bot_DLL("bot_dll"),
-    Bot_Client("bot_client"),
-    Bot_Race("bot_race"),
-    Game_Type("game_type")
-    ;
-
-    private final String data;
-
-    private ConfigVariable(final String data) {
-      this.data = data;
-    }
-
-    @Override
-    public String toString() {
-      return data;
-    }
-  }
+  private static HashMap map = new HashMap();
+  private static Logger logger = LogManager.getRootLogger();
 
   public static final String BW_HEADLESS_PATH = "bwheadless.exe";
   public static final String BWAPI_DIR = "bwapi-data";
@@ -123,33 +42,33 @@ public class BwHeadless {
   /* Maximum profile name length in Broodwar 1.16.1 */
   public static final int MAX_BOT_NAME_LENGTH = 24;
 
-  public ConfigFile bwapiDllChecksums;
+  public static ConfigFile bwapiDllChecksums;
 
-  private ProcessPipe bwHeadlessPipe; /* required */
-  private ProcessPipe botClientPipe;  /* required only when DLL is absent */
-  private String starcraftExe;        /* required */
-  private String bwapiDll;            /* required */
-  private String detectedBwapiDll;    /* not required */
-  private String botName;             /* required */
-  private String botDllPath;          /* required only when client is absent */
-  private String botClientPath;       /* required only when DLL is absent, *.exe or *.jar */
-  private Race botRace;               /* required */
-  private GameType gameType;          /* required */
+  private static ProcessPipe bwHeadlessPipe; /* required */
+  private static ProcessPipe botClientPipe;  /* required only when DLL is absent */
+  private static String starcraftExe;        /* required */
+  private static String bwapiDll;            /* required */
+  private static String detectedBwapiDll;    /* not required */
+  private static String botName;             /* required */
+  private static String botDllPath;          /* required only when client is absent */
+  private static String botClientPath;       /* required only when DLL is absent, *.exe or *.jar */
+  private static Race botRace;               /* required */
+  private static GameType gameType;          /* required */
 
-  public ArrayList<File> droppedFiles;
+  public static ArrayList<File> droppedFiles;
 
   private BwHeadless() {
-    this.bwHeadlessPipe   = new ProcessPipe();
-    this.botClientPipe    = new ProcessPipe();
-    this.starcraftExe     = null;
-    this.bwapiDll         = null;
-    this.detectedBwapiDll = null;
-    this.botName          = DEFAULT_BOT_NAME;
-    this.botDllPath       = null;
-    this.botClientPath    = null;
-    this.botRace          = Race.Random;
-    this.gameType         = GameType.lan;
-    this.droppedFiles     = new ArrayList<>();
+    BwHeadless.bwHeadlessPipe   = new ProcessPipe();
+    BwHeadless.botClientPipe    = new ProcessPipe();
+    BwHeadless.starcraftExe     = null;
+    BwHeadless.bwapiDll         = null;
+    BwHeadless.detectedBwapiDll = null;
+    BwHeadless.botName          = DEFAULT_BOT_NAME;
+    BwHeadless.botDllPath       = null;
+    BwHeadless.botClientPath    = null;
+    BwHeadless.botRace          = Race.RANDOM;
+    BwHeadless.gameType         = GameType.LAN;
+    BwHeadless.droppedFiles     = new ArrayList<>();
 
     /* Create or check for settings config file. */
     /* ... */
@@ -159,38 +78,42 @@ public class BwHeadless {
     /* ... */
 
     /* Create or check for checksums config file. */
-    this.bwapiDllChecksums = new ConfigFile();
+    BwHeadless.bwapiDllChecksums = new ConfigFile();
     if (MainTools.doesFileExist(BWAPI_DLL_FILE)) {
       if (bwapiDllChecksums.open(BWAPI_DLL_FILE)) {
-        LOGGER.info("Read BWAPI DLL checksum config file: " + BWAPI_DLL_FILE);
+        logger.info("Read BWAPI DLL checksum config file: " + BWAPI_DLL_FILE);
       }
     } else {
       if (bwapiDllChecksums.create(BWAPI_DLL_FILE)) {
-        LOGGER.info("Created BWAPI DLL checksum config file: " + BWAPI_DLL_FILE);
+        logger.info("Created BWAPI DLL checksum config file: " + BWAPI_DLL_FILE);
         boolean status =
             bwapiDllChecksums.createVariable(
                 "BWAPI.dll 3.7.4",
-                Checksum.Bwapi_Dll_374.toString())
+                Checksum.BWAPI_DLL_374.toString())
             && bwapiDllChecksums.createVariable(
                 "BWAPI.dll 3.7.5",
-                Checksum.Bwapi_Dll_375.toString())
+                Checksum.BWAPI_DLL_375.toString())
             && bwapiDllChecksums.createVariable(
                 "BWAPI.dll 4.0.1b",
-                Checksum.Bwapi_Dll_401b.toString())
+                Checksum.BWAPI_DLL_401B.toString())
             && bwapiDllChecksums.createVariable(
                 "BWAPI.dll 4.1.0b",
-                Checksum.Bwapi_Dll_410b.toString())
+                Checksum.BWAPI_DLL_410B.toString())
             && bwapiDllChecksums.createVariable(
                 "BWAPI.dll 4.1.1b",
-                Checksum.Bwapi_Dll_411b.toString())
+                Checksum.BWAPI_DLL_411B.toString())
             && bwapiDllChecksums.createVariable(
                 "BWAPI.dll 4.1.2",
-                Checksum.Bwapi_Dll_412.toString());
+                Checksum.BWAPI_DLL_412.toString());
         if (!status) {
-          LOGGER.warn("Unable to create all variables: " + BwHeadless.DEFAULT_CFG_FILE);
+          logger.warn("Unable to create all variables: " + BwHeadless.DEFAULT_CFG_FILE);
         }
       }
     }
+  }
+
+  public static BwHeadless getInstance() {
+    return INSTANCE;
   }
 
   /**
@@ -201,18 +124,18 @@ public class BwHeadless {
    *     null if program is ready to launch the bot,
    *     otherwise a non-empty string
    */
-  public String getReadyError() {
+  public static String getReadyError() {
     if (!MainTools.doesFileExist(BW_HEADLESS_PATH)) {
       return "missing bwheadless.exe";
     }
-    if ((this.botDllPath == null || !MainTools.doesFileExist(this.botDllPath))
-        && (this.botClientPath == null || !MainTools.doesFileExist(this.botClientPath))) {
+    if ((BwHeadless.botDllPath == null || !MainTools.doesFileExist(BwHeadless.botDllPath))
+        && (BwHeadless.botClientPath == null || !MainTools.doesFileExist(BwHeadless.botClientPath))) {
       return "missing bot file";
     }
-    if (this.bwapiDll == null || !MainTools.doesFileExist(this.bwapiDll)) {
+    if (BwHeadless.bwapiDll == null || !MainTools.doesFileExist(BwHeadless.bwapiDll)) {
       return "missing BWAPI.dll";
     }
-    if (this.starcraftExe == null || !MainTools.doesFileExist(this.starcraftExe)) {
+    if (BwHeadless.starcraftExe == null || !MainTools.doesFileExist(BwHeadless.starcraftExe)) {
       return "missing StarCraft.exe";
     }
     return null;
@@ -234,44 +157,40 @@ public class BwHeadless {
      * Prepare runtime arguments.
      */
     ArrayList<String> args = new ArrayList<>();
-    args.add(Argument.StarCraft_EXE.toString());
-    args.add(this.starcraftExe);
-    args.add(Argument.Join.toString());
-    args.add(Argument.Bot_Name.toString());
-    args.add(this.botName);
-    args.add(Argument.Bot_Race.toString());
-    args.add(this.botRace.toString());
-    args.add(Argument.Load_DLL.toString());
-    args.add(this.bwapiDll);
-    switch (this.gameType) {
-      case lan:
-        args.add(Argument.Enable_LAN.toString());
-        break;
-      case localpc:
-        args.add(Argument.Enable_Local_PC.toString());
-        break;
-      default: break;
+    args.add(Argument.STARCRAFT_EXE.toString());
+    args.add(BwHeadless.starcraftExe);
+    args.add(Argument.JOIN_GAME.toString());
+    args.add(Argument.BOT_NAME.toString());
+    args.add(BwHeadless.botName);
+    args.add(Argument.BOT_RACE.toString());
+    args.add(BwHeadless.botRace.toString());
+    args.add(Argument.LOAD_DLL.toString());
+    args.add(BwHeadless.bwapiDll);
+    if (BwHeadless.gameType == GameType.LAN) {
+      args.add(Argument.ENABLE_LAN.toString());
+    } else if (BwHeadless.gameType == GameType.LOCAL_PC) {
+      args.add(Argument.ENABLE_LOCAL_PC.toString());
     }
     /* StarCraft install directory where "bwapi-data/" should be located. */
-    args.add(Argument.StarCraft_Install_Path.toString());
-    args.add(MainTools.getParentDirectory(this.starcraftExe));
+    args.add(Argument.STARCRAFT_INSTALL_PATH.toString());
+    args.add(MainTools.getParentDirectory(BwHeadless.starcraftExe));
 
     /* Start bwheadless.exe */
-    boolean status = this.bwHeadlessPipe.open(BW_HEADLESS_PATH, MainTools.toStringArray(args));
+    boolean status = BwHeadless.bwHeadlessPipe.open(BW_HEADLESS_PATH, MainTools.toStringArray(args));
 
     /* Start bot client if present. */
-    if (this.botClientPath != null) {
-      if (!this.botClientPipe.open(this.botClientPath, null)) {
-        LOGGER.error("failed to start bot client");
+    if (BwHeadless.botClientPath != null) {
+      if (!BwHeadless.botClientPipe.open(BwHeadless.botClientPath, null)) {
+        logger.error("failed to start bot client");
         return false;
       }
     }
 
     if (status) {
-      LOGGER.info("Launch: OK: " + BW_HEADLESS_PATH + " "
+      logger.info("Launch: OK: " + BW_HEADLESS_PATH + " "
           + MainTools.arrayListToString(args));
     } else {
-      LOGGER.error("Launch: FAIL " + BW_HEADLESS_PATH + " "
+      logger.error("Launch: FAIL " + BW_HEADLESS_PATH + " "
           + MainTools.arrayListToString(args));
     }
 
@@ -287,15 +206,15 @@ public class BwHeadless {
    */
   public boolean eject() {
     boolean status = true;
-    if (this.botClientPath != null) {
-      status = this.botClientPipe.close();
+    if (BwHeadless.botClientPath != null) {
+      status = BwHeadless.botClientPipe.close();
     }
-    status &= this.bwHeadlessPipe.close();
+    status &= BwHeadless.bwHeadlessPipe.close();
 
     if (status) {
-      LOGGER.info("Eject: OK");
+      logger.info("Eject: OK");
     } else {
-      LOGGER.error("Eject: FAIL ");
+      logger.error("Eject: FAIL ");
     }
 
     return status;
@@ -315,17 +234,17 @@ public class BwHeadless {
       return false;
     }
 
-    LOGGER.info("Created default config: " + BwHeadless.DEFAULT_CFG_FILE);
+    logger.info("Created default config: " + BwHeadless.DEFAULT_CFG_FILE);
     boolean status =
-        cf.createVariable(ConfigVariable.StarCraft_EXE.toString(), "")
-        && cf.createVariable(ConfigVariable.Bwapi_Dll.toString(), "")
-        && cf.createVariable(ConfigVariable.Game_Type.toString(), GameType.lan.toString())
-        && cf.createVariable(ConfigVariable.Bot_DLL.toString(), "")
-        && cf.createVariable(ConfigVariable.Bot_Client.toString(), "")
-        && cf.createVariable(ConfigVariable.Bot_Race.toString(), Race.Random.toString())
-        && cf.createVariable(ConfigVariable.Bot_Name.toString(), BwHeadless.DEFAULT_BOT_NAME);
+        cf.createVariable(Variable.STARCRAFT_EXE.toString(), "")
+        && cf.createVariable(Variable.BWAPI_DLL.toString(), "")
+        && cf.createVariable(Variable.GAME_TYPE.toString(), GameType.LAN.toString())
+        && cf.createVariable(Variable.BOT_DLL.toString(), "")
+        && cf.createVariable(Variable.BOT_CLIENT.toString(), "")
+        && cf.createVariable(Variable.BOT_RACE.toString(), Race.RANDOM.toString())
+        && cf.createVariable(Variable.BOT_NAME.toString(), BwHeadless.DEFAULT_BOT_NAME);
     if (!status) {
-      LOGGER.warn("Unable to create all variables: " + BwHeadless.DEFAULT_CFG_FILE);
+      logger.warn("Unable to create all variables: " + BwHeadless.DEFAULT_CFG_FILE);
     }
 
     return true;
@@ -337,7 +256,7 @@ public class BwHeadless {
    * @return the path to the Starcraft executable
    */
   public String getStarcraftExe() {
-    return this.starcraftExe;
+    return BwHeadless.starcraftExe;
   }
 
   /**
@@ -350,17 +269,17 @@ public class BwHeadless {
    */
   public boolean setStarcraftExe(String path) {
     if (MainTools.isEmpty(path)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+      logger.warn(Debugging.EMPTY_STRING);
       return false;
     }
     if (!MainTools.doesFileExist(path)) {
-      LOGGER.warn("file inaccessible or does not exist: " + path);
+      logger.warn("file inaccessible or does not exist: " + path);
       return false;
     }
 
-    this.starcraftExe = path;
+    BwHeadless.starcraftExe = path;
 
-    LOGGER.info("StarCraft.exe: " + this.starcraftExe);
+    logger.info("StarCraft.exe: " + BwHeadless.starcraftExe);
 
     checkReady();
 
@@ -373,7 +292,7 @@ public class BwHeadless {
    * @return the path to the BWAPI DLL file
    */
   public String getBwapiDll() {
-    return this.bwapiDll;
+    return BwHeadless.bwapiDll;
   }
 
   /**
@@ -386,13 +305,13 @@ public class BwHeadless {
    */
   public boolean setBwapiDll(String path) {
     if (!MainTools.doesFileExist(path)) {
-      LOGGER.warn("file inaccessible or does not exist" + path);
+      logger.warn("file inaccessible or does not exist" + path);
       return false;
     }
 
-    this.bwapiDll = path;
+    BwHeadless.bwapiDll = path;
 
-    LOGGER.info("BWAPI.dll: " + this.bwapiDll);
+    logger.info("BWAPI.dll: " + BwHeadless.bwapiDll);
 
     return true;
   }
@@ -403,7 +322,7 @@ public class BwHeadless {
    * @return the name of this bot
    */
   public String getBotName() {
-    return this.botName;
+    return BwHeadless.botName;
   }
 
   /**
@@ -423,9 +342,9 @@ public class BwHeadless {
       str = str.substring(0, MAX_BOT_NAME_LENGTH);
     }
 
-    this.botName = str;
+    BwHeadless.botName = str;
 
-    LOGGER.info("Bot name: " + this.botName);
+    logger.info("Bot name: " + BwHeadless.botName);
   }
 
   /**
@@ -435,7 +354,7 @@ public class BwHeadless {
    *     the path to the BWAPI DLL file
    */
   public String getBotDll() {
-    return this.botDllPath;
+    return BwHeadless.botDllPath;
   }
 
   /**
@@ -448,17 +367,17 @@ public class BwHeadless {
    */
   public boolean setBotDll(String path) {
     if (MainTools.isEmpty(path)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+      logger.warn(Debugging.EMPTY_STRING);
       return false;
     }
     if (!MainTools.doesFileExist(path)) {
-      LOGGER.warn("file inaccessible or does not exist: " + path);
+      logger.warn("file inaccessible or does not exist: " + path);
       return false;
     }
 
-    this.botDllPath = path;
+    BwHeadless.botDllPath = path;
 
-    LOGGER.info("Bot dll: " + this.botDllPath);
+    logger.info("Bot dll: " + BwHeadless.botDllPath);
 
     return true;
   }
@@ -470,7 +389,7 @@ public class BwHeadless {
    *     the path to the bot client file.
    */
   public String getBotClient() {
-    return this.botClientPath;
+    return BwHeadless.botClientPath;
   }
 
   /**
@@ -484,17 +403,17 @@ public class BwHeadless {
    */
   public boolean setBotClient(String path) {
     if (MainTools.isEmpty(path)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+      logger.warn(Debugging.EMPTY_STRING);
       return false;
     }
     if (!MainTools.doesFileExist(path)) {
-      LOGGER.warn("file inaccessible or does not exist: " + path);
+      logger.warn("file inaccessible or does not exist: " + path);
       return false;
     }
 
-    this.botClientPath = path;
+    BwHeadless.botClientPath = path;
 
-    LOGGER.info("Bot client: " + this.botClientPath);
+    logger.info("Bot client: " + BwHeadless.botClientPath);
 
     return true;
   }
@@ -506,7 +425,7 @@ public class BwHeadless {
    *     the race of the specified bot
    */
   public Race getBotRace() {
-    return this.botRace;
+    return BwHeadless.botRace;
   }
 
   /**
@@ -515,8 +434,8 @@ public class BwHeadless {
    * @param race specified bot race
    */
   public void setBotRace(Race race) {
-    this.botRace = race;
-    LOGGER.info("Bot race: " + this.botRace.toString());
+    BwHeadless.botRace = race;
+    logger.info("Bot race: " + BwHeadless.botRace.toString());
   }
 
   /**
@@ -526,7 +445,7 @@ public class BwHeadless {
    *     the game type
    */
   public GameType getGameType() {
-    return this.gameType;
+    return BwHeadless.gameType;
   }
 
   /**
@@ -535,8 +454,8 @@ public class BwHeadless {
    * @param gameType specified game type
    */
   public void setGameType(GameType gameType) {
-    this.gameType = gameType;
-    LOGGER.info("Game type: " + this.gameType.toString());
+    BwHeadless.gameType = gameType;
+    logger.info("Game type: " + BwHeadless.gameType.toString());
   }
 
   /**
@@ -550,7 +469,7 @@ public class BwHeadless {
 //       it was used in the case we keep previously dropped files in an array.
 //       Now, we are just resetting the array after every drop. */
 //    int countBefore = droppedFiles.size();
-//    this.droppedFiles.add(file);
+//    BwHeadless.droppedFiles.add(file);
 //    int countAfter = droppedFiles.size();
 //    /* ************************************************************ */
 //
@@ -562,7 +481,7 @@ public class BwHeadless {
 //    if (countAfter > countBefore) {
 //      /* Loop through newly dropped files. */
 //      for (int i = countBefore; i < countAfter; i++) {
-//        tmpFile = this.droppedFiles.get(i);
+//        tmpFile = BwHeadless.droppedFiles.get(i);
 //        tmpName = tmpFile.getName();
 //
 //        if (CLASS_DEBUG) {
@@ -572,10 +491,10 @@ public class BwHeadless {
 //        /* Test if the dropped file is a BWAPI.dll. */
 //        if (tmpName.equalsIgnoreCase("BWAPI.dll")) {
 //          try {
-//            this.bwapiDll = tmpFile.getCanonicalPath();
+//            BwHeadless.bwapiDll = tmpFile.getCanonicalPath();
 //          } catch (IOException ex) {
 //            if (CLASS_DEBUG) {
-//              LOGGER.log(Level.SEVERE, null, ex);
+//              logger.log(Level.SEVERE, null, ex);
 //            }
 //          }
 //          tmpFileMd5 = MainTools.getMD5Checksum(tmpName);
@@ -586,19 +505,19 @@ public class BwHeadless {
 //            if (CLASS_DEBUG) {
 //              System.out.println("Detected BWAPI DLL version: " + bwapiDllVersion);
 //            }
-//            this.detectedBwapiDll = bwapiDllVersion;
+//            BwHeadless.detectedBwapiDll = bwapiDllVersion;
 //          }
 //
 //        /* Test if dropped file is a DLL file. */
 //        } else if (tmpName.toLowerCase().endsWith(".dll")) {
 //          try {
 //            /* Disable the bot client file. */
-//            this.botClientPath = null;
+//            BwHeadless.botClientPath = null;
 //            /* Assume this is the bot DLL file. */
-//            this.botDllPath = tmpFile.getCanonicalPath();
+//            BwHeadless.botDllPath = tmpFile.getCanonicalPath();
 //          } catch (IOException ex) {
 //            if (CLASS_DEBUG) {
-//              LOGGER.log(Level.SEVERE, null, ex);
+//              logger.log(Level.SEVERE, null, ex);
 //            }
 //          }
 //
@@ -606,12 +525,12 @@ public class BwHeadless {
 //        } else if (tmpName.toLowerCase().endsWith(".exe")) {
 //          try {
 //            /* Disable the bot DLL file. */
-//            this.botDllPath = null;
+//            BwHeadless.botDllPath = null;
 //            /* Assume this is the bot client file. */
-//            this.botClientPath = tmpFile.getCanonicalPath();
+//            BwHeadless.botClientPath = tmpFile.getCanonicalPath();
 //          } catch (IOException ex) {
 //            if (CLASS_DEBUG) {
-//              LOGGER.log(Level.SEVERE, null, ex);
+//              logger.log(Level.SEVERE, null, ex);
 //            }
 //          }
 //        }
@@ -621,7 +540,7 @@ public class BwHeadless {
 //    checkReady();
 //
 //    /* Reset array after drop. */
-//    this.droppedFiles.clear();
+//    BwHeadless.droppedFiles.clear();
 //  }
 
   /**
