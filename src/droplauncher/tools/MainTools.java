@@ -7,13 +7,9 @@ import droplauncher.MainWindow;
 import droplauncher.debugging.Debugging;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.xml.bind.DatatypeConverter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,24 +22,14 @@ import org.apache.logging.log4j.Logger;
  */
 public class MainTools {
 
-  private static final MainTools INSTANCE = new MainTools();
+  public static final MainTools INSTANCE = new MainTools();
 
   private static final Logger LOGGER = LogManager.getRootLogger();
-
-  private static MessageDigest md;
-  public static final String EMPTY_MD5_CHECKSUM = "00000000000000000000000000000000";
 
   /* needs to be deleted */
   public static final boolean DEBUG = true;
 
-
-  private MainTools() {
-    try {
-      md = MessageDigest.getInstance("MD5");
-    } catch (Exception ex) {
-      LOGGER.error(ex.getMessage(), ex);
-    }
-  }
+  private MainTools() {}
 
   /**
    * Tests whether the specified string is null or
@@ -194,30 +180,6 @@ public class MainTools {
     }
 
     return newStr;
-  }
-
-  /**
-   * Returns the MD5 checksum of the specified file.
-   *
-   * @param path specified path to file
-   * @return
-   *     the MD5 checksum of the specified file,
-   *     otherwise {@link #EMPTY_MD5_CHECKSUM} if an error occurred
-   */
-  public static String getMD5Checksum(String path) {
-    if (!doesFileExist(path)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
-      return EMPTY_MD5_CHECKSUM;
-    }
-    try {
-      md.update(Files.readAllBytes(Paths.get(path)));
-      byte[] digest = md.digest();
-      String checksum = DatatypeConverter.printHexBinary(digest).toLowerCase();
-      return checksum;
-    } catch (Exception ex) {
-      LOGGER.error(ex.getMessage(), ex);
-    }
-    return EMPTY_MD5_CHECKSUM;
   }
 
   /**
