@@ -6,11 +6,12 @@ import droplauncher.debugging.Debugging;
 import droplauncher.tools.MainTools;
 import droplauncher.tools.MemoryFile;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Class for handling configuration files.
@@ -20,8 +21,7 @@ import java.util.logging.Logger;
  */
 public class ConfigFile {
 
-  private static final Logger LOGGER = Logger.getLogger(ConfigFile.class.getName());
-  private static final boolean CLASS_DEBUG = (MainTools.DEBUG && false);
+  private static final Logger LOGGER = LogManager.getRootLogger();
 
   public static final String FILE_EXTENSION = ".cfg";
   public static final String VARIABLE_DELIMITER = "=";
@@ -50,14 +50,10 @@ public class ConfigFile {
    */
   public boolean create(String filename) {
     if (MainTools.isEmpty(filename)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
-      }
+      LOGGER.warn(Debugging.EMPTY_STRING);
       return false;
     } else if (MainTools.doesFileExist(filename)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, "file already exists: " + filename);
-      }
+      LOGGER.warn("file already exists: " + filename);
       return false;
     }
 
@@ -71,9 +67,7 @@ public class ConfigFile {
       boolean status = file.createNewFile() && open(filename);
       return status;
     } catch (IOException ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.SEVERE, null, ex);
-      }
+      LOGGER.error(ex.getMessage(), ex);
       return false;
     }
   }
@@ -88,9 +82,7 @@ public class ConfigFile {
    */
   public boolean open(String filename) {
     if (!this.memoryFile.readIntoMemory(filename)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.SEVERE, "open failed: " + filename);
-      }
+      LOGGER.warn("open failed: " + filename);
       return false;
     }
     this.variables.clear();
@@ -131,12 +123,10 @@ public class ConfigFile {
 
       this.variables.add(new ConfigVariable(varName, varValue));
 
-      if (CLASS_DEBUG) {
-        System.out.println(
-            "Read variable: " + filename + ": "
-            + varName + " " + VARIABLE_DELIMITER + " " + varValue
-        );
-      }
+      LOGGER.info(
+          "Read variable: " + filename + ": "
+          + varName + " " + VARIABLE_DELIMITER + " " + varValue
+      );
     }
 
     this.filename = filename;
@@ -155,9 +145,7 @@ public class ConfigFile {
   public int indexOfName(String name) {
     /* Validate parameters. */
     if (MainTools.isEmpty(name)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
-      }
+      LOGGER.warn(Debugging.EMPTY_STRING);
       return -1;
     }
 
@@ -185,9 +173,7 @@ public class ConfigFile {
   public int indexOfValue(String value) {
     /* Validate parameters. */
     if (MainTools.isEmpty(value)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
-      }
+      LOGGER.warn(Debugging.EMPTY_STRING);
       return -1;
     }
 
@@ -244,9 +230,7 @@ public class ConfigFile {
   public boolean createVariable(String name, String value) {
     /* Validate parameters. */
     if (MainTools.isEmpty(name)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
-      }
+      LOGGER.warn(Debugging.EMPTY_STRING);
       return false;
     }
     if (MainTools.isEmpty(value)) {

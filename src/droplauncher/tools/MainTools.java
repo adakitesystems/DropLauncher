@@ -11,11 +11,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.xml.bind.DatatypeConverter;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Useful variables and functions.
@@ -27,25 +28,20 @@ public class MainTools {
 
   private static final MainTools INSTANCE = new MainTools();
 
-  /* ************************************************************ */
-  /* Debugging */
-  /* ************************************************************ */
-  public  static final boolean DEBUG = true;
-  private static final boolean DEBUG_LOG_FILE_ENABLED = false;
-  private static final String  DEBUG_LOG_FILENAME = "errorlog.xml";
-  private static final String  CLASS_NAME = Debugging.class.getName();
-  private static final boolean CLASS_DEBUG = (DEBUG && true);
-  private static final Logger  LOGGER = Logger.getLogger(CLASS_NAME);
-  /* ************************************************************ */
+  private static final Logger LOGGER = LogManager.getRootLogger();
 
   private static MessageDigest md;
   public static final String EMPTY_MD5_CHECKSUM = "00000000000000000000000000000000";
+
+  /* needs to be deleted */
+  public static final boolean DEBUG = true;
+
 
   private MainTools() {
     try {
       md = MessageDigest.getInstance("MD5");
     } catch (Exception ex) {
-      LOGGER.log(Level.SEVERE, null, ex);
+      LOGGER.error(ex.getMessage(), ex);
     }
   }
 
@@ -61,8 +57,8 @@ public class MainTools {
   public static boolean isEmpty(String str) {
     boolean status = (str == null || str.length() < 1);
     /* A null string may be intended. An empty string may not be. */
-    if (CLASS_DEBUG && str != null && str.isEmpty()) {
-      LOGGER.log(Level.WARNING, "non-null empty string detected");
+    if (str != null && str.isEmpty()) {
+      LOGGER.warn("non-null empty string detected");
     }
     return status;
   }
@@ -77,21 +73,14 @@ public class MainTools {
    */
   public static String[] toStringArray(ArrayList<String> arrlist) {
     int len = (arrlist == null) ? 0 : arrlist.size();
-
-    /* Validate parameters. */
     if (len < 1) {
-      if (CLASS_DEBUG) {
-        /* Possibly just empty and not null. However, the result is the same. */
-        LOGGER.log(Level.WARNING, Debugging.NULL_OBJECT);
-      }
+      LOGGER.warn(Debugging.NULL_OBJECT);
       return null;
     }
-
     String[] arr = new String[len];
     for (int i = 0; i < len; i++) {
       arr[i] = arrlist.get(i);
     }
-
     return arr;
   }
 
@@ -104,16 +93,11 @@ public class MainTools {
    *     otherwise false
    */
   public static boolean doesFileExist(String path) {
-    /* Validate parameters. */
     if (isEmpty(path)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
-      }
+      LOGGER.warn(Debugging.EMPTY_STRING);
       return false;
     }
-
     File file = new File(path);
-
     return (file.exists() && file.isFile());
   }
 
@@ -126,42 +110,12 @@ public class MainTools {
    *     otherwise false
    */
   public static boolean doesDirectoryExist(String path) {
-    /* Validate parameters. */
     if (isEmpty(path)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
-      }
+      LOGGER.warn(Debugging.EMPTY_STRING);
       return false;
     }
-
     File dir = new File(path);
-
     return (dir.exists() && dir.isDirectory());
-  }
-
-  /**
-   * Return the specified filename excluding the last period character and
-   * all characters after it.
-   *
-   * @param filename specified filename
-   *
-   * @return
-   *     the filename excluding the extension if the specified filename
-   *         is not null or empty,
-   *     otherwise null
-   */
-  public static String getFilenameNoExt(String filename) {
-    /* Validate parameters. */
-    if (isEmpty(filename)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
-      }
-      return null;
-    }
-
-    int index = filename.lastIndexOf(".");
-
-    return (index <= 0) ? null : filename.substring(0, index);
   }
 
   /**
@@ -173,16 +127,11 @@ public class MainTools {
    *     otherwise null
    */
   public static String getParentDirectory(String path) {
-    /* Validate parameters. */
     if (isEmpty(path)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
-      }
+      LOGGER.warn(Debugging.EMPTY_STRING);
       return null;
     }
-
     File file = new File(path);
-
     return file.getParent();
   }
 
@@ -195,11 +144,8 @@ public class MainTools {
    *     otherwise null if the string is null or empty
    */
   public static String ensureQuotations(String str) {
-    /* Validate parameters. */
     if (isEmpty(str)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
-      }
+      LOGGER.warn(Debugging.EMPTY_STRING);
       return null;
     }
 
@@ -208,34 +154,6 @@ public class MainTools {
     }
     if (!str.endsWith("\"")) {
       str += "\"";
-    }
-
-    return str;
-  }
-
-  /**
-   * Remove double quotations from the beginning and end of the
-   * specified string.
-   *
-   * @param str specified string
-   * @return
-   *     the specified string without quotations,
-   *     otherwise null if the string is null or empty
-   */
-  public static String removeQuotations(String str) {
-    /* Validate parameters. */
-    if (isEmpty(str)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
-      }
-      return null;
-    }
-
-    while (str.startsWith("\"")) {
-      str = str.substring(1, str.length());
-    }
-    while (str.endsWith("\"")) {
-      str = str.substring(0, str.length() - 1);
     }
 
     return str;
@@ -253,9 +171,7 @@ public class MainTools {
   public static String onlyLettersNumbers(String str) {
     /* Validate parameters. */
     if (isEmpty(str)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
-      }
+      LOGGER.warn(Debugging.EMPTY_STRING);
       return null;
     }
 
@@ -273,7 +189,7 @@ public class MainTools {
       }
     }
 
-    if (newStr.length() < 1) {
+    if (isEmpty(newStr)) {
       newStr = null;
     }
 
@@ -281,7 +197,7 @@ public class MainTools {
   }
 
   /**
-   * Return the MD5 checksum of the specified file.
+   * Returns the MD5 checksum of the specified file.
    *
    * @param path specified path to file
    * @return
@@ -290,6 +206,7 @@ public class MainTools {
    */
   public static String getMD5Checksum(String path) {
     if (!doesFileExist(path)) {
+      LOGGER.warn(Debugging.EMPTY_STRING);
       return EMPTY_MD5_CHECKSUM;
     }
     try {
@@ -298,20 +215,18 @@ public class MainTools {
       String checksum = DatatypeConverter.printHexBinary(digest).toLowerCase();
       return checksum;
     } catch (Exception ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.SEVERE, null, ex);
-      }
+      LOGGER.error(ex.getMessage(), ex);
     }
     return EMPTY_MD5_CHECKSUM;
   }
 
   /**
-   * Display window message.
+   * Displays a window message.
    *
    * @param message specified message to display
    * @param title title of message window
    */
-  public static void showWindowMessage(String message, String title) {
+  public static void showInfoMessage(String message, String title) {
     if (message == null) {
       message = "";
     }
@@ -327,7 +242,7 @@ public class MainTools {
   }
 
   public static void showWindowMessage(String message) {
-    showWindowMessage(message, null);
+    showInfoMessage(message, null);
   }
 
   /**
@@ -358,7 +273,7 @@ public class MainTools {
   public static String arrayListToString(ArrayList<String> arrlist) {
     int len = (arrlist == null) ? 0 : arrlist.size();
     if (len < 1) {
-      LOGGER.warning("non-null empty array");
+      LOGGER.warn("non-null empty array");
       return null;
     }
 

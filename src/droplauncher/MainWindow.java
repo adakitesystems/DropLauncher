@@ -33,7 +33,6 @@ import org.apache.logging.log4j.Logger;
 public class MainWindow extends JFrame {
 
   private static final Logger LOGGER = LogManager.getRootLogger();
-  private static final boolean CLASS_DEBUG = (MainTools.DEBUG && true);
 
   public static MainWindow mainWindow;
 
@@ -223,16 +222,11 @@ public class MainWindow extends JFrame {
 
 //    System.out.println(BwHeadless.getInstance().bwapiDllChecksums.getValue("BWAPI.dll 4.1.0b"));
 //    System.out.println(BwHeadless.getInstance().bwapiDllChecksums.getName("5d5128709ba714aa9c6095598bcf4624"));
+
+
+
     /* DEBUGGING --- end */
 
-  }
-
-  public void setBoxDropFile(boolean status) {
-    if (status) {
-      mainWindow.boxDropFiles.setBackground(new Color(255, 255, 255));
-    } else {
-      mainWindow.boxDropFiles.setBackground(new Color(100, 0, 0));
-    }
   }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
