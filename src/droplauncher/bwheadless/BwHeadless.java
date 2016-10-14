@@ -5,6 +5,7 @@ package droplauncher.bwheadless;
 import droplauncher.starcraft.Race;
 import droplauncher.config.ConfigFile;
 import droplauncher.debugging.Debugging;
+import droplauncher.starcraft.Starcraft;
 import droplauncher.tools.MainTools;
 import droplauncher.tools.ProcessPipe;
 
@@ -26,17 +27,11 @@ public class BwHeadless {
   private static Logger logger = LogManager.getRootLogger();
 
   public static final String BW_HEADLESS_PATH = "bwheadless.exe";
-  public static final String BWAPI_DIR = "bwapi-data";
 
   public static final String DEFAULT_CFG_FILE =
       "settings" + ConfigFile.FILE_EXTENSION;
 
-  public static final String BWAPI_DLL_FILE =
-      "checksums" + ConfigFile.FILE_EXTENSION;
-
   public static final String DEFAULT_BOT_NAME = "BOT";
-  /* Maximum profile name length in Broodwar 1.16.1 */
-  public static final int MAX_BOT_NAME_LENGTH = 24;
 
   public static ConfigFile bwapiDllChecksums;
 
@@ -145,7 +140,8 @@ public class BwHeadless {
 
   /**
    * Sets the name of the bot. The name length is capped at
-   * {@link #MAX_BOT_NAME_LENGTH}. Characters not matching A-Z, a-z, 0-9, or
+   * {@link droplauncher.starcraft.Starcraft#MAX_PROFILE_NAME_LENGTH}.
+   * Characters not matching A-Z, a-z, 0-9, or
    * standard parenthesis will be removed. If a null or empty name
    * is specified, the name will be set too {@link #DEFAULT_BOT_NAME}.
    *
@@ -156,8 +152,8 @@ public class BwHeadless {
         || (str = MainTools.onlyLettersNumbers(str)) == null) {
       str = DEFAULT_BOT_NAME;
     }
-    if (str.length() > MAX_BOT_NAME_LENGTH) {
-      str = str.substring(0, MAX_BOT_NAME_LENGTH);
+    if (str.length() > Starcraft.MAX_PROFILE_NAME_LENGTH) {
+      str = str.substring(0, Starcraft.MAX_PROFILE_NAME_LENGTH);
     }
 
     this.botName = str;
