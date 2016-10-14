@@ -11,6 +11,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import javax.swing.JFileChooser;
@@ -244,7 +247,7 @@ public class MainTools {
    * @return
    *     the concatenated string
    */
-  public static String arrayListToString(ArrayList<String> arrlist) {
+  public static String toString(ArrayList<String> arrlist) {
     int len = (arrlist == null) ? 0 : arrlist.size();
     if (len < 1) {
       LOGGER.warn("non-null empty array");
@@ -257,6 +260,29 @@ public class MainTools {
     }
 
     return str;
+  }
+
+  /**
+   * Copy specified source file to destination.
+   *
+   * @param src specified source
+   * @param dest specified destination
+   * @return
+   *     true if file was copied successfully,
+   *     otherwise false
+   */
+  public static boolean copyFile(String src, String dest) {
+    Path srcPath = new File(src).toPath();
+    Path destPath = new File(dest).toPath();
+
+    try {
+      Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
+      return true;
+    } catch (Exception ex) {
+      LOGGER.error(ex.getMessage(), ex);
+    }
+
+    return false;
   }
 
 }

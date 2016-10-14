@@ -104,6 +104,41 @@ public class BwHeadless {
     return this.starcraftExe;
   }
 
+  public boolean launch() {
+    if (!isReady()) {
+      LOGGER.warn("not ready to launch: " + getReadyError());
+    }
+
+    ArrayList<String> args = new ArrayList<>();
+
+    args.add(Arguments.STARCRAFT_EXE.toString());
+    args.add(this.starcraftExe);
+
+    args.add(Arguments.JOIN_GAME.toString());
+
+    args.add(Arguments.BOT_NAME.toString());
+    args.add(this.botName);
+
+    args.add(Arguments.BOT_RACE.toString());
+    args.add(this.botRace.toString());
+
+    args.add(Arguments.LOAD_DLL.toString());
+    args.add(this.bwapiDll);
+
+    args.add(Arguments.ENABLE_LAN.toString());
+
+    args.add(Arguments.STARCRAFT_INSTALL_PATH.toString());
+    args.add(MainTools.getParentDirectory(this.starcraftExe));
+
+    String[] command = new String[args.size() + 1];
+    command[0] = BW_HEADLESS_PATH;
+    System.arraycopy(MainTools.toStringArray(args), 0, command, 1, args.size());
+
+
+
+    return true;
+  }
+
   /**
    * Sets the path to the Starcraft executable.
    *
