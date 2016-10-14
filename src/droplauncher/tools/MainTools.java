@@ -155,7 +155,6 @@ public class MainTools {
    *     otherwise null
    */
   public static String onlyLettersNumbers(String str) {
-    /* Validate parameters. */
     if (isEmpty(str)) {
       LOGGER.warn(Debugging.EMPTY_STRING);
       return null;
@@ -214,7 +213,7 @@ public class MainTools {
    *     the selected file if user selects OK with the file selected,
    *     otherwise null
    */
-  public static File showfileChooserDialog() {
+  public static File showFileChooserDialog() {
     JFileChooser fc = new JFileChooser();
     if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
       File file = fc.getSelectedFile();

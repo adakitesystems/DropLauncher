@@ -10,6 +10,9 @@ package droplauncher.tools;
 
 import droplauncher.debugging.Debugging;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -18,8 +21,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Generic class for handling communication between the main program and
@@ -30,8 +31,7 @@ import java.util.logging.Logger;
  */
 public final class ProcessPipe {
 
-  private static final Logger LOGGER = Logger.getLogger(ProcessPipe.class.getName());
-  private static final boolean CLASS_DEBUG = (MainTools.DEBUG && true);
+  private static final Logger LOGGER = LogManager.getRootLogger();
 
   public static final double DEFAULT_READ_TIMEOUT = (double)0.25; /* seconds */
 
@@ -70,11 +70,8 @@ public final class ProcessPipe {
    *     otherwise false
    */
   public boolean open(String path, String[] args) {
-    /* Validate parameters. */
     if (MainTools.isEmpty(path)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.SEVERE, Debugging.EMPTY_STRING);
-      }
+      LOGGER.warn(Debugging.EMPTY_STRING);
       return false;
     }
 
@@ -86,7 +83,7 @@ public final class ProcessPipe {
         command = new String[1];
       } else {
         this.args = Arrays.copyOf(args, args.length);
-        command = new String[1 + this.args.length];
+        command = new String[this.args.length + 1];
         System.arraycopy(this.args, 0, command, 1, this.args.length);
       }
 
@@ -102,11 +99,10 @@ public final class ProcessPipe {
 
       return true;
     } catch (Exception ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.SEVERE, null, ex);
-      }
-      return false;
+      LOGGER.error(ex.getMessage(), ex);
     }
+
+    return false;
   }
 
   /**
@@ -128,39 +124,9 @@ public final class ProcessPipe {
       }
       return true;
     } catch (IOException ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.SEVERE, "encountered while closing pipe", ex);
-      }
-      return false;
+      LOGGER.error(ex.getMessage(), ex);
     }
-  }
-
-  /**
-   * Calls {@link #open(java.lang.String, java.lang.String[])}
-   * with the stored path and args.
-   *
-   * @return value returned from {@link #open(java.lang.String, java.lang.String[])}.
-   */
-  public boolean reopen() {
-    return open(this.path,this.args);
-  }
-
-  /**
-   * Returns the previously specified path of the executable file.
-   *
-   * @return
-   *     the path to the executable file if not null or empty,
-   *     otherwise null
-   */
-  public String getPath() {
-    /* Validate class variables. */
-    if (MainTools.isEmpty(this.path)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
-      }
-      return null;
-    }
-    return this.path;
+    return false;
   }
 
   /**
@@ -175,11 +141,8 @@ public final class ProcessPipe {
    *     otherwise false
    */
   public boolean isInputReady(double seconds) {
-    /* Validate parameters. */
     if (Double.compare(seconds, (double)0) < 0) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, "negative value for seconds parameter");
-      }
+      LOGGER.warn("negative value for seconds parameter");
       return isInputReady((double)0);
     }
 
@@ -194,9 +157,7 @@ public final class ProcessPipe {
           return true;
         }
       } catch (IOException ex) {
-        if (CLASS_DEBUG) {
-          LOGGER.log(Level.SEVERE, null, ex);
-        }
+        LOGGER.error(ex.getMessage(), ex);
       }
       currentTime = System.currentTimeMillis();
     }
@@ -212,26 +173,17 @@ public final class ProcessPipe {
    *     otherwise null if nothing was read or errors were encountered
    */
   public String readLine() {
-    /* Read from pipe. */
     try {
       if (this.br.ready()) {
         String line = this.br.readLine();
-        if (CLASS_DEBUG && line != null && line.isEmpty()) {
-          /* A non-null empty string will not break the program.
-             This logging event was added in curiosity of such
-             occurences and their frequency. */
-          LOGGER.log(Level.WARNING, "non-null empty string read from pipe");
-        }
         return line;
       } else {
         return null;
       }
     } catch (IOException ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.SEVERE, null, ex);
-      }
-      return null;
+      LOGGER.error(ex.getMessage(), ex);
     }
+    return null;
   }
 
   /**
@@ -243,25 +195,17 @@ public final class ProcessPipe {
    *     otherwise false
    */
   public boolean write(String str) {
-    /* Validate parameters. */
     if (MainTools.isEmpty(str)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
-      }
+      LOGGER.warn(Debugging.EMPTY_STRING);
       return false;
     }
-
-    /* Write to pipe. */
     try {
       this.bw.write(str);
       this.bw.flush();
     } catch (IOException ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.SEVERE, "encountered while writing to pipe", ex);
-      }
+      LOGGER.error(ex.getMessage(), ex);
       return false;
     }
-
     return true;
   }
 
@@ -317,9 +261,7 @@ public final class ProcessPipe {
         }
       }
     } catch (IOException ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.SEVERE, "encountered while reading from pipe", ex);
-      }
+      LOGGER.error(ex.getMessage(), ex);
     }
   }
 
