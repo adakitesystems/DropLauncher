@@ -6,13 +6,13 @@ import droplauncher.DropLauncher;
 import droplauncher.MainWindow;
 import droplauncher.debugging.Debugging;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Useful variables and functions.

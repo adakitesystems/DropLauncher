@@ -4,11 +4,11 @@ package droplauncher.filedroplist;
 
 import droplauncher.debugging.Debugging;
 import droplauncher.tools.MainTools;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Class for handling files dropped into file drop area.
@@ -20,13 +20,7 @@ public class FileDropList {
 
   public static FileDropList INSTANCE = new FileDropList();
 
-  /* ************************************************************ */
-  /* Debugging */
-  /* ************************************************************ */
-  private static final String CLASS_NAME = FileDropList.class.getName();
-  private static final boolean CLASS_DEBUG = true;
-  private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
-  /* ************************************************************ */
+  private static final Logger LOGGER = LogManager.getRootLogger();
 
   private ArrayList<File> files;
 
@@ -47,14 +41,38 @@ public class FileDropList {
    *     otherwise false
    */
   public boolean add(File file) {
+    if (file == null) {
+      LOGGER.warn(Debugging.NULL_OBJECT);
+      return false;
+    }
+
+    if (file.isDirectory()) {
+      File[] dirList = file.listFiles();
+      for (File tmpFile : dirList) {
+        add(tmpFile);
+      }
+      return true;
+    }
+
+    /* Remove old file. */
+    boolean oldFilePresent = false;
     int index = getIndex(file.getName());
-    if (index > -1) {
+    if (index >= 0) {
+      oldFilePresent = true;
       this.files.remove(index);
     }
+
+    /* Add new file. */
     boolean status = this.files.add(file);
+    String filename = file.getName();
     if (status) {
-      LOGGER.log(Level.INFO, "added file");
+      if (oldFilePresent) {
+        LOGGER.info("replaced file: " + filename);
+      } else {
+        LOGGER.info("added file: " + filename);
+      }
     }
+
     return status;
   }
 
@@ -67,13 +85,32 @@ public class FileDropList {
    *     otherwise -1
    */
   public int getIndex(String filename) {
+    if (MainTools.isEmpty(filename)) {
+      LOGGER.warn(Debugging.EMPTY_STRING);
+      return -1;
+    }
+
     int len = this.files.size();
     for (int i = 0; i < len; i++) {
-      if (this.files.get(i).getName().equals(filename)) {
+      if (this.files.get(i).getName().equalsIgnoreCase(filename)) {
         return i;
       }
     }
+
     return -1;
+  }
+
+  /**
+   * Returns a copy of all the dropped files.
+   *
+   * @return a copy of all the dropped files
+   */
+  public ArrayList<File> getFiles() {
+    ArrayList<File> copyArray = new ArrayList<>();
+    for (File tmpFile : this.files) {
+      copyArray.add(tmpFile);
+    }
+    return copyArray;
   }
 
 }

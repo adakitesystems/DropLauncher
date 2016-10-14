@@ -1,5 +1,11 @@
+/* GameType.java */
+
 package droplauncher.bwheadless;
 
+/**
+ * @author Adakite Systems
+ * @author adakitesystems@gmail.com
+ */
 public final class GameType {
 
   private String str;

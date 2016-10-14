@@ -1,5 +1,11 @@
+/* Argument.java */
+
 package droplauncher.bwheadless;
 
+/**
+ * @author Adakite Systems
+ * @author adakitesystems@gmail.com
+ */
 public final class Argument {
 
   private String str;
@@ -20,6 +26,7 @@ public final class Argument {
   public static final Argument LOAD_DLL = new Argument("-l"); /* requires second argument */
   public static final Argument ENABLE_LAN = new Argument("--lan");
   public static final Argument ENABLE_LOCAL_PC = new Argument("--localpc");
-  public static final Argument STARCRAFT_INSTALL_PATH = new Argument("--installpath"); /* requires second argument */
+  public static final Argument STARCRAFT_INSTALL_PATH =
+      new Argument("--installpath"); /* requires second argument */
 
 }

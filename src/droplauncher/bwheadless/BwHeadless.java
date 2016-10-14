@@ -52,6 +52,9 @@ public class BwHeadless {
 
   public static ArrayList<File> droppedFiles;
 
+  /**
+   * Intialize class members.
+   */
   public BwHeadless() {
     this.bwHeadlessPipe   = new ProcessPipe();
     this.botClientPipe    = new ProcessPipe();

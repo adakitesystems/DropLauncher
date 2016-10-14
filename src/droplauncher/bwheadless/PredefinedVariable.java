@@ -1,5 +1,11 @@
+/* PredefinedVariable.java */
+
 package droplauncher.bwheadless;
 
+/**
+ * @author Adakite Systems
+ * @author adakitesystems@gmail.com
+ */
 public final class PredefinedVariable {
 
   private String str;

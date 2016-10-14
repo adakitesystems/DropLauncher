@@ -1,5 +1,11 @@
+/* Checksum.java */
+
 package droplauncher.bwheadless;
 
+/**
+ * @author Adakite Systems
+ * @author adakitesystems@gmail.com
+ */
 public final class Checksum {
 
   private String str;

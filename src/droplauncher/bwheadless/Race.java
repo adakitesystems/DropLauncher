@@ -1,5 +1,11 @@
+/* Race.java */
+
 package droplauncher.bwheadless;
 
+/**
+ * @author Adakite Systems
+ * @author adakitesystems@gmail.com
+ */
 public final class Race {
 
   private String str;
