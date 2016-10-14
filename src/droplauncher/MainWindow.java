@@ -344,7 +344,7 @@ public class MainWindow extends JFrame {
         ConfigFile settingsFile = new ConfigFile();
         if (settingsFile.open(BwHeadless.DEFAULT_CFG_FILE)) {
           /* StarCraft.exe */
-          String tmpPath = settingsFile.getValue(BwHeadless.CFG_STARCRAFT_EXE);
+          String tmpPath = settingsFile.getValue(BwHeadless.ConfigVariable.StarCraft_EXE.toString());
           if (tmpPath != null) {
             BwHeadless.INSTANCE.setStarcraftExe(tmpPath);
           }

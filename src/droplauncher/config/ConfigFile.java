@@ -2,6 +2,7 @@
 
 package droplauncher.config;
 
+import droplauncher.debugging.Debugging;
 import droplauncher.tools.MainTools;
 import droplauncher.tools.MemoryFile;
 
@@ -50,7 +51,7 @@ public class ConfigFile {
   public boolean create(String filename) {
     if (MainTools.isEmpty(filename)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
+        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
       }
       return false;
     } else if (MainTools.doesFileExist(filename)) {
@@ -155,7 +156,7 @@ public class ConfigFile {
     /* Validate parameters. */
     if (MainTools.isEmpty(name)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
+        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
       }
       return -1;
     }
@@ -185,7 +186,7 @@ public class ConfigFile {
     /* Validate parameters. */
     if (MainTools.isEmpty(value)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
+        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
       }
       return -1;
     }
@@ -244,7 +245,7 @@ public class ConfigFile {
     /* Validate parameters. */
     if (MainTools.isEmpty(name)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
+        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
       }
       return false;
     }

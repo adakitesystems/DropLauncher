@@ -9,6 +9,7 @@ process is running... suggestion: ".isAlive()"?
 
 package droplauncher.tools;
 
+import droplauncher.debugging.Debugging;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -72,7 +73,7 @@ public final class ProcessPipe {
     /* Validate parameters. */
     if (MainTools.isEmpty(path)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.SEVERE, MainTools.EMPTY_STRING);
+        LOGGER.log(Level.SEVERE, Debugging.EMPTY_STRING);
       }
       return false;
     }
@@ -155,7 +156,7 @@ public final class ProcessPipe {
     /* Validate class variables. */
     if (MainTools.isEmpty(this.path)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
+        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
       }
       return null;
     }
@@ -245,7 +246,7 @@ public final class ProcessPipe {
     /* Validate parameters. */
     if (MainTools.isEmpty(str)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, MainTools.EMPTY_STRING);
+        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
       }
       return false;
     }

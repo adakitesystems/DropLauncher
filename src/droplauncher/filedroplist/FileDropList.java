@@ -38,6 +38,14 @@ public class FileDropList {
     this.files.clear();
   }
 
+  /**
+   * Adds the specified file to the list.
+   *
+   * @param file specified file
+   * @return
+   *     true if file was added successfully,
+   *     otherwise false
+   */
   public boolean add(File file) {
     int index = getIndex(file.getName());
     if (index > -1) {
@@ -50,6 +58,14 @@ public class FileDropList {
     return status;
   }
 
+  /**
+   * Returns the index of the specified file.
+   *
+   * @param filename specified file
+   * @return
+   *     the index of the specified file if found,
+   *     otherwise -1
+   */
   public int getIndex(String filename) {
     int len = this.files.size();
     for (int i = 0; i < len; i++) {

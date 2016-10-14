@@ -36,10 +36,6 @@ public class MainTools {
   private static final String  CLASS_NAME = Debugging.class.getName();
   private static final boolean CLASS_DEBUG = (DEBUG && true);
   private static final Logger  LOGGER = Logger.getLogger(CLASS_NAME);
-  /* Predefined logger messages */
-  public static final String EMPTY_STRING = "null or empty string";
-  public static final String NULL_OBJECT = "null object";
-  public static final String INDEX_OOB = "index out of range";
   /* ************************************************************ */
 
   private static MessageDigest md;
@@ -86,7 +82,7 @@ public class MainTools {
     if (len < 1) {
       if (CLASS_DEBUG) {
         /* Possibly just empty and not null. However, the result is the same. */
-        LOGGER.log(Level.WARNING, NULL_OBJECT);
+        LOGGER.log(Level.WARNING, Debugging.NULL_OBJECT);
       }
       return null;
     }
@@ -111,7 +107,7 @@ public class MainTools {
     /* Validate parameters. */
     if (isEmpty(path)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, EMPTY_STRING);
+        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
       }
       return false;
     }
@@ -133,7 +129,7 @@ public class MainTools {
     /* Validate parameters. */
     if (isEmpty(path)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, EMPTY_STRING);
+        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
       }
       return false;
     }
@@ -158,7 +154,7 @@ public class MainTools {
     /* Validate parameters. */
     if (isEmpty(filename)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, EMPTY_STRING);
+        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
       }
       return null;
     }
@@ -180,7 +176,7 @@ public class MainTools {
     /* Validate parameters. */
     if (isEmpty(path)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, EMPTY_STRING);
+        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
       }
       return null;
     }
@@ -202,7 +198,7 @@ public class MainTools {
     /* Validate parameters. */
     if (isEmpty(str)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, EMPTY_STRING);
+        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
       }
       return null;
     }
@@ -230,7 +226,7 @@ public class MainTools {
     /* Validate parameters. */
     if (isEmpty(str)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, EMPTY_STRING);
+        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
       }
       return null;
     }
@@ -258,7 +254,7 @@ public class MainTools {
     /* Validate parameters. */
     if (isEmpty(str)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Level.WARNING, EMPTY_STRING);
+        LOGGER.log(Level.WARNING, Debugging.EMPTY_STRING);
       }
       return null;
     }
@@ -349,6 +345,29 @@ public class MainTools {
     } else {
       return null;
     }
+  }
+
+  /**
+   * Return a concatenated string of all the elements in the
+   * String array list.
+   *
+   * @param arrlist specified String array list.
+   * @return
+   *     the concatenated string
+   */
+  public static String arrayListToString(ArrayList<String> arrlist) {
+    int len = (arrlist == null) ? 0 : arrlist.size();
+    if (len < 1) {
+      LOGGER.warning("non-null empty array");
+      return null;
+    }
+
+    String str = arrlist.get(0);
+    for (int i = 1; i < len; i++) {
+      str += " " + arrlist.get(i);
+    }
+
+    return str;
   }
 
 }
