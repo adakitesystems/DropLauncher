@@ -22,12 +22,7 @@ import javax.swing.JOptionPane;
  */
 public class MainTools {
 
-  public static final MainTools INSTANCE = new MainTools();
-
   private static final Logger LOGGER = LogManager.getRootLogger();
-
-  /* needs to be deleted */
-  public static final boolean DEBUG = true;
 
   private MainTools() {}
 

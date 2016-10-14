@@ -7,7 +7,7 @@ package droplauncher;
 import droplauncher.config.ConfigFile;
 import droplauncher.bwheadless.BwHeadless;
 import droplauncher.bwheadless.GameType;
-import droplauncher.bwheadless.Race;
+import droplauncher.starcraft.Race;
 import droplauncher.debugging.Debugging;
 import droplauncher.filedroplist.FileDropList;
 import droplauncher.tools.MainTools;

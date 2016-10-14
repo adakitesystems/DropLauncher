@@ -1,6 +1,6 @@
 /* Race.java */
 
-package droplauncher.bwheadless;
+package droplauncher.starcraft;
 
 /**
  * @author Adakite Systems
