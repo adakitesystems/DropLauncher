@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -60,7 +59,7 @@ public class MainTools {
   public static String[] toStringArray(ArrayList<String> arrlist) {
     int len = (arrlist == null) ? 0 : arrlist.size();
     if (len < 1) {
-      LOGGER.warn(Debugging.NULL_OBJECT);
+      LOGGER.warn(Debugging.nullObject());
       return null;
     }
     String[] arr = new String[len];
@@ -80,7 +79,7 @@ public class MainTools {
    */
   public static boolean doesFileExist(File file) {
     if (file == null) {
-      LOGGER.warn(Debugging.NULL_OBJECT);
+      LOGGER.warn(Debugging.nullObject());
       return false;
     }
     return (file.exists() && file.isFile());
@@ -100,7 +99,7 @@ public class MainTools {
    */
   public static boolean doesDirectoryExist(String path) {
     if (isEmpty(path)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+      LOGGER.warn(Debugging.emptyString());
       return false;
     }
     File dir = new File(path);
@@ -117,7 +116,7 @@ public class MainTools {
    */
   public static String getParentDirectory(File file) {
     if (file == null) {
-      LOGGER.warn(Debugging.NULL_OBJECT);
+      LOGGER.warn(Debugging.nullObject());
       return null;
     }
     String parent = file.getParent();
@@ -135,6 +134,14 @@ public class MainTools {
    * @return the full path to the specified file
    */
   public static String getFullPath(File file) {
+    if (file == null) {
+      LOGGER.warn(Debugging.nullObject());
+      return null;
+    }
+    if (!MainTools.doesFileExist(file)) {
+      LOGGER.warn(Debugging.fileDoesNotExist(file));
+      return null;
+    }
     try {
       String path = file.getCanonicalPath();
       return path;
@@ -154,7 +161,7 @@ public class MainTools {
    */
   public static String ensureQuotations(String str) {
     if (isEmpty(str)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+      LOGGER.warn(Debugging.emptyString());
       return null;
     }
 
@@ -179,7 +186,7 @@ public class MainTools {
    */
   public static String onlyLettersNumbers(String str) {
     if (isEmpty(str)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+      LOGGER.warn(Debugging.emptyString());
       return null;
     }
 

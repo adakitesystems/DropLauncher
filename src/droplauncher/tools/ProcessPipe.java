@@ -18,7 +18,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
@@ -72,7 +71,7 @@ public final class ProcessPipe {
    */
   public boolean open(File file, String[] args) {
     if (file == null) {
-      LOGGER.warn(Debugging.NULL_OBJECT);
+      LOGGER.warn(Debugging.nullObject());
       return false;
     }
 
@@ -201,7 +200,7 @@ public final class ProcessPipe {
    */
   public boolean write(String str) {
     if (MainTools.isEmpty(str)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+      LOGGER.warn(Debugging.emptyString());
       return false;
     }
     try {

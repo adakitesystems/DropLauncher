@@ -42,7 +42,7 @@ public class FileDropList {
    */
   public boolean add(File file) {
     if (file == null) {
-      LOGGER.warn(Debugging.NULL_OBJECT);
+      LOGGER.warn(Debugging.nullObject());
       return false;
     }
 
@@ -86,7 +86,7 @@ public class FileDropList {
    */
   public int getIndex(String filename) {
     if (MainTools.isEmpty(filename)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+      LOGGER.warn(Debugging.emptyString());
       return -1;
     }
 

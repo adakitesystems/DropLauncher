@@ -111,7 +111,7 @@ public class BwHeadless {
     ConfigFile ini = new ConfigFile();
     String starcraftDir = MainTools.getParentDirectory(this.starcraftExe);
     ini.open(new File(starcraftDir + File.separator + Bwapi.BWAPI_DATA_INI));
-    
+
     /* Enable or disable "ai" variable in "BWAPI.ini". */
     if (this.botDll != null) {
       ini.enableVariable("ai");
@@ -181,11 +181,11 @@ public class BwHeadless {
    */
   public boolean setStarcraftExe(File file) {
     if (file == null) {
-      LOGGER.warn(Debugging.NULL_OBJECT);
+      LOGGER.warn(Debugging.nullObject());
       return false;
     }
     if (!MainTools.doesFileExist(file)) {
-      LOGGER.warn("file inaccessible or does not exist: " + file.getAbsolutePath());
+      LOGGER.warn(Debugging.fileDoesNotExist(file));
       return false;
     }
 
@@ -219,7 +219,7 @@ public class BwHeadless {
       return false;
     }
     if (!MainTools.doesFileExist(file)) {
-      LOGGER.warn("file inaccessible or does not exist" + file.getAbsolutePath());
+      LOGGER.warn(Debugging.fileDoesNotExist(file));
       return false;
     }
 
@@ -285,7 +285,7 @@ public class BwHeadless {
       return true;
     }
     if (!MainTools.doesFileExist(file)) {
-      LOGGER.warn("file inaccessible or does not exist: " + file.getAbsolutePath());
+      LOGGER.warn(Debugging.fileDoesNotExist(file));
       return false;
     }
 
@@ -321,7 +321,7 @@ public class BwHeadless {
       return true;
     }
     if (!MainTools.doesFileExist(file)) {
-      LOGGER.warn("file inaccessible or does not exist: " + file.getAbsolutePath());
+      LOGGER.warn(Debugging.fileDoesNotExist(file));
       return false;
     }
 
