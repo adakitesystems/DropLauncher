@@ -28,7 +28,7 @@ public class BwHeadless {
 
   private static final Logger LOGGER = LogManager.getRootLogger();
 
-  public static final String BW_HEADLESS_PATH = "bwheadless.exe";
+  public static final File BW_HEADLESS_EXE = new File("bwheadless.exe");
 
   public static final String DEFAULT_CFG_FILE =
       "settings" + ConfigFile.FILE_EXTENSION;
@@ -39,14 +39,13 @@ public class BwHeadless {
 
   private ProcessPipe bwHeadlessPipe; /* required */
   private ProcessPipe botClientPipe;  /* required only when DLL is absent */
-  private String starcraftExe;        /* required */
-  private String bwapiDll;            /* required */
-  private String detectedBwapiDll;    /* not required */
-  private String botName;             /* required */
-  private String botDllPath;          /* required only when client is absent */
-  private String botClientPath;       /* required only when DLL is absent, *.exe or *.jar */
-  private Race botRace;               /* required */
-  private GameType gameType;          /* required */
+  private File        starcraftExe;   /* required */
+  private File        bwapiDll;       /* required */
+  private String      botName;        /* required */
+  private File        botDll;         /* required only when client is absent */
+  private File        botClient;      /* required only when DLL is absent, *.exe or *.jar */
+  private Race        botRace;        /* required */
+  private GameType    gameType;       /* required */
 
   /**
    * Intialize class members.
@@ -56,10 +55,9 @@ public class BwHeadless {
     this.botClientPipe    = new ProcessPipe();
     this.starcraftExe     = null;
     this.bwapiDll         = null;
-    this.detectedBwapiDll = null;
     this.botName          = DEFAULT_BOT_NAME;
-    this.botDllPath       = null;
-    this.botClientPath    = null;
+    this.botDll           = null;
+    this.botClient        = null;
     this.botRace          = Race.RANDOM;
     this.gameType         = GameType.LAN;
   }
@@ -69,17 +67,17 @@ public class BwHeadless {
    *
    * @return
    *     null if all required data is known,
-   *     otherwise a string containing missing data
+   *     otherwise a string indicating missing data
    */
-  public String getReadyError() {
-    if (MainTools.isEmpty(this.starcraftExe)) {
-      return "missing StarCraft.exe path";
-    } else if (MainTools.isEmpty(this.bwapiDll)) {
+  public String getNotReadyError() {
+    if (this.starcraftExe == null) {
+      return "missing StarCraft.exe";
+    } else if (this.bwapiDll == null) {
       return "missing BWAPI.dll";
     } else if (MainTools.isEmpty(this.botName)) {
       return "missing bot name";
-    } else if (MainTools.isEmpty(this.botDllPath)
-        && MainTools.isEmpty(this.botClientPath)) {
+    } else if (this.botDll == null
+        && this.botClient == null) {
       return "missing bot files";
     }
     return null;
@@ -93,83 +91,75 @@ public class BwHeadless {
    *     otherwise false
    */
   public boolean isReady() {
-    return (getReadyError() == null);
+    return (getNotReadyError() == null);
   }
 
   /**
-   * Returns the path to the Starcraft executable.
+   * Returns the Starcraft executable
    *
-   * @return the path to the Starcraft executable
+   * @return the Starcraft executable
    */
-  public String getStarcraftExe() {
+  public File getStarcraftExe() {
     return this.starcraftExe;
   }
 
   public boolean launch() {
     if (!isReady()) {
-      LOGGER.warn("not ready to launch: " + getReadyError());
+      LOGGER.warn("not ready to launch: " + getNotReadyError());
     }
 
     ConfigFile ini = new ConfigFile();
     String starcraftDir = MainTools.getParentDirectory(this.starcraftExe);
     ini.open(starcraftDir + File.separator + Bwapi.BWAPI_DATA_INI);
 
-    if (!MainTools.isEmpty(this.botDllPath)) {
+    /* Enable or disable "ai" variable in "BWAPI.ini". */
+    if (this.botDll != null) {
       ini.enableVariable("ai");
-      ini.setVariable("ai", this.botDllPath);
-    } else if (!MainTools.isEmpty(this.botClientPath)) {
+      ini.setVariable("ai", MainTools.getFullPath(this.botDll));
+    } else if (this.botClient != null) {
       ini.disableVariable("ai");
-      //
-      //      File botClientFile = new File(this.botClientPath);
-      //      String botClientFilePath = MainTools.getFullPath(botClientFile);
-      //
-      //      File destinationFile = new File(
-      //          starcraftDir + File.separator + botClientFile.getName()
-      //      );
-      //      String destinationFilePath = MainTools.getFullPath(destinationFile);
-      //
-      //      LOGGER.info("Copy " + botClientFilePath + " to " + destinationFilePath);
-      //      MainTools.copyFile(botClientFilePath, destinationFilePath);
-      //
-      //      setBotClient(destinationFilePath);
     }
 
-    ArrayList<String> args = new ArrayList<>();
+    ArrayList<String> bwheadlessArgs = new ArrayList<>();
 
-    args.add(Arguments.STARCRAFT_EXE.toString());
-    args.add(this.starcraftExe);
+    bwheadlessArgs.add(Arguments.STARCRAFT_EXE.toString());
+    bwheadlessArgs.add(MainTools.getFullPath(this.starcraftExe));
 
-    args.add(Arguments.JOIN_GAME.toString());
+    bwheadlessArgs.add(Arguments.JOIN_GAME.toString());
 
-    args.add(Arguments.BOT_NAME.toString());
-    args.add(this.botName);
+    bwheadlessArgs.add(Arguments.BOT_NAME.toString());
+    bwheadlessArgs.add(this.botName);
 
-    args.add(Arguments.BOT_RACE.toString());
-    args.add(this.botRace.toString());
+    bwheadlessArgs.add(Arguments.BOT_RACE.toString());
+    bwheadlessArgs.add(this.botRace.toString());
 
-    args.add(Arguments.LOAD_DLL.toString());
-    args.add(this.bwapiDll);
+    bwheadlessArgs.add(Arguments.LOAD_DLL.toString());
+    bwheadlessArgs.add(MainTools.getFullPath(this.bwapiDll));
 
     if (this.gameType == GameType.LAN) {
-      args.add(Arguments.ENABLE_LAN.toString());
+      bwheadlessArgs.add(Arguments.ENABLE_LAN.toString());
     } else if (this.gameType == GameType.LOCAL_PC) {
-      args.add(Arguments.ENABLE_LOCAL_PC.toString());
+      bwheadlessArgs.add(Arguments.ENABLE_LOCAL_PC.toString());
     }
 
-    args.add(Arguments.STARCRAFT_INSTALL_PATH.toString());
-    args.add(MainTools.getParentDirectory(this.starcraftExe));
+    bwheadlessArgs.add(Arguments.STARCRAFT_INSTALL_PATH.toString());
+    bwheadlessArgs.add(MainTools.getParentDirectory(this.starcraftExe));
 
-    if (!MainTools.isEmpty(this.botClientPath)) {
-      if (!this.botClientPipe.open(this.botClientPath, null)) {
-        LOGGER.error("failed to start bot client");
-        return false;
-      }
+    if (this.botClient != null
+        && !this.botClientPipe.open(this.botClient, null)) {
+      LOGGER.error(
+          "failed to start bot client: "
+          + this.botClient.getAbsolutePath()
+      );
+      return false;
     }
 
-    if (!this.bwHeadlessPipe.open(
-        BwHeadless.BW_HEADLESS_PATH,
-        MainTools.toStringArray(args))) {
-      LOGGER.error("failed to start bwheadless.exe");
+    if (!this.bwHeadlessPipe.open(BwHeadless.BW_HEADLESS_EXE,
+        MainTools.toStringArray(bwheadlessArgs))) {
+      LOGGER.error(
+          "failed to start: " + BwHeadless.BW_HEADLESS_EXE.getAbsolutePath()
+          + " " + MainTools.toString(bwheadlessArgs)
+      );
       return false;
     }
 
@@ -182,57 +172,60 @@ public class BwHeadless {
   }
 
   /**
-   * Sets the path to the Starcraft executable.
+   * Sets the Starcraft executable.
    *
-   * @param path specified path to set as Starcraft executable
+   * @param file Starcraft executable
    * @return
-   *     true if path appears to valid,
+   *     true if file appears to valid,
    *     otherwise false
    */
-  public boolean setStarcraftExe(String path) {
-    if (MainTools.isEmpty(path)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+  public boolean setStarcraftExe(File file) {
+    if (file == null) {
+      LOGGER.warn(Debugging.NULL_OBJECT);
       return false;
     }
-    if (!MainTools.doesFileExist(path)) {
-      LOGGER.warn("file inaccessible or does not exist: " + path);
+    if (!MainTools.doesFileExist(file)) {
+      LOGGER.warn("file inaccessible or does not exist: " + file.getAbsolutePath());
       return false;
     }
 
-    this.starcraftExe = path;
+    this.starcraftExe = file;
 
-    LOGGER.info("StarCraft.exe: " + this.starcraftExe);
+    LOGGER.info("StarCraft.exe: " + MainTools.getFullPath(this.starcraftExe));
 
     return true;
   }
 
   /**
-   * Returns the path to the BWAPI DLL file.
+   * Returns the BWAPI DLL file.
    *
-   * @return the path to the BWAPI DLL file
+   * @return the BWAPI DLL file
    */
-  public String getBwapiDll() {
+  public File getBwapiDll() {
     return this.bwapiDll;
   }
 
   /**
-   * Sets the BWAPI DLL path.
+   * Sets the BWAPI DLL.
    *
-   * @param path specified path
+   * @param file BWAPI DLL
    * @return
-   *     true if path appears to valid,
+   *     true if file appears to valid,
    *     otherwise false
    */
-  public boolean setBwapiDll(String path) {
-    if (!MainTools.doesFileExist(path)) {
-      LOGGER.warn("file inaccessible or does not exist" + path);
+  public boolean setBwapiDll(File file) {
+    if (file == null) {
+      LOGGER.warn(Debugging.NULL_OBJECT);
+      return false;
+    }
+    if (!MainTools.doesFileExist(file)) {
+      LOGGER.warn("file inaccessible or does not exist" + file.getAbsolutePath());
       return false;
     }
 
+    this.bwapiDll = file;
 
-    this.bwapiDll = MainTools.getFullPath(new File(path));
-
-    LOGGER.info("BWAPI.dll: " + this.bwapiDll);
+    LOGGER.info("BWAPI.dll: " + MainTools.getFullPath(this.bwapiDll));
 
     return true;
   }
@@ -270,74 +263,72 @@ public class BwHeadless {
   }
 
   /**
-   * Returns the path to the BWAPI DLL file.
+   * Returns the BWAPI DLL file.
    *
-   * @return
-   *     the path to the BWAPI DLL file
+   * @return the BWAPI DLL file
    */
-  public String getBotDll() {
-    return this.botDllPath;
+  public File getBotDll() {
+    return this.botDll;
   }
 
   /**
-   * Sets the bot DLL to the specified path.
+   * Sets the bot DLL to the specified file.
    *
-   * @param path specified path
+   * @param file specified file
    * @return
-   *     true if path appears to valid,
+   *     true if file appears to valid,
    *     otherwise false
    */
-  public boolean setBotDll(String path) {
-    if (MainTools.isEmpty(path)) {
-      this.botDllPath = null;
+  public boolean setBotDll(File file) {
+    if (file == null) {
+      this.botDll = null;
       return true;
     }
-    if (!MainTools.doesFileExist(path)) {
-      LOGGER.warn("file inaccessible or does not exist: " + path);
+    if (!MainTools.doesFileExist(file)) {
+      LOGGER.warn("file inaccessible or does not exist: " + file.getAbsolutePath());
       return false;
     }
 
-    this.botDllPath = MainTools.getFullPath(new File(path));
-    this.botClientPath = null;
+    this.botDll = file;
+    this.botClient = null;
 
-    LOGGER.info("Bot dll: " + this.botDllPath);
+    LOGGER.info("Bot dll: " + MainTools.getFullPath(this.botDll));
 
     return true;
   }
 
   /**
-   * Returns the path to the bot client file.
+   * Returns the bot client file.
    *
    * @return
-   *     the path to the bot client file.
+   *     the bot client file
    */
-  public String getBotClient() {
-    return this.botClientPath;
+  public File getBotClient() {
+    return this.botClient;
   }
 
   /**
-   * Sets the bot client path to the specified path. Bot clients are usually
-   * standalone EXE or JAR files.
+   * Sets the bot client. Bot clients are usually standalone EXE or JAR files.
    *
-   * @param path specified path to client file
+   * @param file specified client file
    * @return
    *     true if path appears to be valid,
    *     otherwise false
    */
-  public boolean setBotClient(String path) {
-    if (MainTools.isEmpty(path)) {
-      this.botClientPath = null;
+  public boolean setBotClient(File file) {
+    if (file == null) {
+      this.botClient = null;
       return true;
     }
-    if (!MainTools.doesFileExist(path)) {
-      LOGGER.warn("file inaccessible or does not exist: " + path);
+    if (!MainTools.doesFileExist(file)) {
+      LOGGER.warn("file inaccessible or does not exist: " + file.getAbsolutePath());
       return false;
     }
 
-    this.botClientPath = MainTools.getFullPath(new File(path));
-    this.botDllPath = null;
+    this.botClient = file;
+    this.botDll = null;
 
-    LOGGER.info("Bot client: " + this.botClientPath);
+    LOGGER.info("Bot client: " + MainTools.getFullPath(this.botClient));
 
     return true;
   }
@@ -389,16 +380,15 @@ public class BwHeadless {
     ArrayList<File> droppedFiles = FileDropList.INSTANCE.getFiles();
     String tmpName;
     String tmpNameLower;
-
     for (File tmpFile : droppedFiles) {
       tmpName = tmpFile.getName();
       tmpNameLower = tmpName.toLowerCase();
       if (tmpNameLower.equals("bwapi.dll")) {
-        setBwapiDll(MainTools.getFullPath(tmpFile));
+        setBwapiDll(tmpFile);
       } else if (tmpNameLower.endsWith(".dll")) {
-        setBotDll(MainTools.getFullPath(tmpFile));
+        setBotDll(tmpFile);
       } else if (tmpNameLower.endsWith(".exe")) {
-        setBotClient(MainTools.getFullPath(tmpFile));
+        setBotClient(tmpFile);
       }
     }
   }

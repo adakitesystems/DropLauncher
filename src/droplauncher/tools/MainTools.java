@@ -73,18 +73,21 @@ public class MainTools {
   /**
    * Tests whether the specified file exists.
    *
-   * @param path the path to the file
+   * @param file specified file
    * @return
    *     true if the file exists,
    *     otherwise false
    */
-  public static boolean doesFileExist(String path) {
-    if (isEmpty(path)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+  public static boolean doesFileExist(File file) {
+    if (file == null) {
+      LOGGER.warn(Debugging.NULL_OBJECT);
       return false;
     }
-    File file = new File(path);
     return (file.exists() && file.isFile());
+  }
+
+  public static boolean doesFileExist(String path) {
+    return doesFileExist(new File(path));
   }
 
   /**
@@ -105,20 +108,24 @@ public class MainTools {
   }
 
   /**
-   * Returns the parent directory of the specified path.
+   * Returns the parent directory of the specified file.
    *
-   * @param path specified path
+   * @param file specifiedd file
    * @return
    *     the parent directory of the specified path if parent exists,
-   *     otherwise null
+   *     otherwise a non-null empty string
    */
-  public static String getParentDirectory(String path) {
-    if (isEmpty(path)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+  public static String getParentDirectory(File file) {
+    if (file == null) {
+      LOGGER.warn(Debugging.NULL_OBJECT);
       return null;
     }
-    File file = new File(path);
-    return file.getParent();
+    String parent = file.getParent();
+    return MainTools.isEmpty(parent) ? "" : parent;
+  }
+
+  public static String getParentDirectory(String path) {
+    return getParentDirectory(new File(path));
   }
 
   /**

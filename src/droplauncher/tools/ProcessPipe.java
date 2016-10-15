@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -35,7 +36,7 @@ public final class ProcessPipe {
 
   public static final double DEFAULT_READ_TIMEOUT = (double)0.25; /* seconds */
 
-  private String path;
+  private File file;
   private String[] args;
   private Process process;
   private InputStream is;
@@ -47,7 +48,7 @@ public final class ProcessPipe {
    * Initialize class variables.
    */
   public ProcessPipe() {
-    this.path = null;
+    this.file = null;
     this.args = null;
     this.process = null;
     this.is = null;
@@ -63,21 +64,21 @@ public final class ProcessPipe {
    * instead of args[0] = "--load file.txt". The args parameter can be null
    * in which case no arguments will be included during execution.
    *
-   * @param path path to executable
+   * @param file executable file
    * @param args arguments excluding path to executable
    * @return
    *     true if pipe was opened succesfully,
    *     otherwise false
    */
-  public boolean open(String path, String[] args) {
-    if (MainTools.isEmpty(path)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+  public boolean open(File file, String[] args) {
+    if (file == null) {
+      LOGGER.warn(Debugging.NULL_OBJECT);
       return false;
     }
 
     try {
       String[] command;
-      this.path = path;
+      this.file = file;
 
       if (args == null) {
         command = new String[1];
@@ -87,7 +88,7 @@ public final class ProcessPipe {
         System.arraycopy(this.args, 0, command, 1, this.args.length);
       }
 
-      command[0] = this.path;
+      command[0] = MainTools.getFullPath(this.file);
 
       this.process = new ProcessBuilder(command).start();
 
