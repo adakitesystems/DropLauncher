@@ -91,7 +91,7 @@ public class BwHeadless {
    *     otherwise false
    */
   public boolean isReady() {
-    return (getNotReadyError() == null);
+    return (MainTools.isEmpty(getNotReadyError()));
   }
 
   /**
@@ -104,8 +104,9 @@ public class BwHeadless {
   }
 
   public boolean launch() {
-    if (!isReady()) {
-      LOGGER.warn("not ready to launch: " + getNotReadyError());
+    String notReadyError = getNotReadyError();
+    if (!MainTools.isEmpty(notReadyError)) {
+      LOGGER.warn("not ready to launch: " + notReadyError);
     }
 
     ConfigFile ini = new ConfigFile();
@@ -263,9 +264,9 @@ public class BwHeadless {
   }
 
   /**
-   * Returns the BWAPI DLL file.
+   * Returns the bot DLL file.
    *
-   * @return the BWAPI DLL file
+   * @return the bot DLL file
    */
   public File getBotDll() {
     return this.botDll;
@@ -282,6 +283,7 @@ public class BwHeadless {
   public boolean setBotDll(File file) {
     if (file == null) {
       this.botDll = null;
+      LOGGER.info("Bot DLL file reset");
       return true;
     }
     if (!MainTools.doesFileExist(file)) {
@@ -318,6 +320,7 @@ public class BwHeadless {
   public boolean setBotClient(File file) {
     if (file == null) {
       this.botClient = null;
+      LOGGER.info("Bot client file reset");
       return true;
     }
     if (!MainTools.doesFileExist(file)) {
