@@ -110,8 +110,8 @@ public class BwHeadless {
 
     ConfigFile ini = new ConfigFile();
     String starcraftDir = MainTools.getParentDirectory(this.starcraftExe);
-    ini.open(starcraftDir + File.separator + Bwapi.BWAPI_DATA_INI);
-
+    ini.open(new File(starcraftDir + File.separator + Bwapi.BWAPI_DATA_INI));
+    
     /* Enable or disable "ai" variable in "BWAPI.ini". */
     if (this.botDll != null) {
       ini.enableVariable("ai");

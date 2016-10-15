@@ -27,7 +27,7 @@ public class ConfigFile {
   public static final String VARIABLE_DELIMITER = "=";
   public static final String COMMENT_DELIMITER = ";";
 
-  private String filename;
+  private File file;
   private MemoryFile memoryFile;
   private ArrayList<ConfigVariable> variables;
 
@@ -35,40 +35,40 @@ public class ConfigFile {
    * Initialize class variables.
    */
   public ConfigFile() {
-    this.filename = null;
+    this.file = null;
     this.memoryFile = new MemoryFile();
     this.variables = new ArrayList<>();
   }
 
-  public String getFilename() {
-    return this.filename;
+  public File getFile() {
+    return this.file;
   }
 
   /**
    * Create a file if it does not already exist.
    *
-   * @param filename path to file
+   * @param file specified file to create
    * @return
    *     true if file was created successfully or already exists,
    *     otherwise false
    */
-  public boolean create(String filename) {
-    if (MainTools.isEmpty(filename)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+  public boolean create(File file) {
+    if (file == null) {
+      LOGGER.warn(Debugging.nullObject());
       return false;
-    } else if (MainTools.doesFileExist(filename)) {
-      LOGGER.warn("file already exists: " + filename);
+    } else if (MainTools.doesFileExist(file)) {
+      LOGGER.warn(Debugging.fileAlreadyExists(file));
       return true;
     }
 
-    File file = new File(filename);
     String parentDir = file.getParent();
-    if (parentDir != null && !MainTools.doesDirectoryExist(parentDir)) {
+    if (!MainTools.isEmpty(parentDir)
+        && !MainTools.doesDirectoryExist(parentDir)) {
       file.mkdirs();
     }
     try {
-      this.filename = filename;
-      boolean status = file.createNewFile() && open(filename);
+      this.file = file;
+      boolean status = file.createNewFile() && open(file);
       return status;
     } catch (IOException ex) {
       LOGGER.error(ex.getMessage(), ex);
@@ -79,20 +79,20 @@ public class ConfigFile {
   /**
    * Opens the configuration file and read in its variables.
    *
-   * @param filename specified configuration file to read
+   * @param file specified configuration file to read
    * @return
    *     true if file has been opened successfully,
    *     otherwise false
    */
-  public boolean open(String filename) {
-    this.filename = filename;
+  public boolean open(File file) {
+    this.file = file;
 
-    if (MainTools.isEmpty(filename)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+    if (file == null) {
+      LOGGER.warn(Debugging.nullObject());
     }
 
-    if (!this.memoryFile.readIntoMemory(filename)) {
-      LOGGER.warn("open failed: " + filename);
+    if (!this.memoryFile.readIntoMemory(file)) {
+      LOGGER.warn(Debugging.openFail(file));
       return false;
     }
 
@@ -133,8 +133,7 @@ public class ConfigFile {
 
       this.variables.add(new ConfigVariable(varName, varValue));
 
-      LOGGER.info(
-          "Read variable: " + filename + ": "
+      LOGGER.info("Read variable: " + file + ": "
           + varName + " " + VARIABLE_DELIMITER + " " + varValue
       );
     }
@@ -143,7 +142,7 @@ public class ConfigFile {
   }
 
   public boolean refresh() {
-    return open(this.filename);
+    return open(this.file);
   }
 
   /**
@@ -156,7 +155,7 @@ public class ConfigFile {
    */
   public int indexOfName(String name) {
     if (MainTools.isEmpty(name)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+      LOGGER.warn(Debugging.emptyString());
       return -1;
     }
 
@@ -183,7 +182,7 @@ public class ConfigFile {
    */
   public int indexOfValue(String value) {
     if (MainTools.isEmpty(value)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+      LOGGER.warn(Debugging.emptyString());
       return -1;
     }
 
@@ -239,7 +238,7 @@ public class ConfigFile {
    */
   public boolean createVariable(String name, String value) {
     if (MainTools.isEmpty(name)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+      LOGGER.warn(Debugging.emptyString());
       return false;
     }
     if (MainTools.isEmpty(value)) {

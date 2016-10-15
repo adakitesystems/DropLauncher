@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
@@ -28,51 +29,51 @@ public class MemoryFile  {
 
   private static final Logger LOGGER = LogManager.getRootLogger();
 
-  private String filename;
+  private File file;
   private ArrayList<String> lines;
 
   public MemoryFile() {
-    this.filename = null;
+    this.file = null;
     this.lines = new ArrayList<>();
   }
 
   private void reset() {
-    this.filename = null;
+    this.file = null;
     this.lines.clear();
   }
 
   /**
-   * Returns the path to this file.
+   * Returns this file object.
    *
-   * @return the path to this file
+   * @return this file object
    */
-  public String getPath() {
-    return this.filename;
+  public File getFile() {
+    return this.file;
   }
 
   /**
    * Reads entire file into memory.
    *
-   * @param filename specified file to read
+   * @param file specified file to read
    * @return
    *     true if entire file has been read into memory,
    *     otherwise false
    */
-  public boolean readIntoMemory(String filename) {
-    if (MainTools.isEmpty(filename)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+  public boolean readIntoMemory(File file) {
+    if (file == null) {
+      LOGGER.warn(Debugging.nullObject());
       return false;
     }
-    if (!MainTools.doesFileExist(filename)) {
-      LOGGER.warn("file inaccessible: " + filename);
+    if (!MainTools.doesFileExist(file)) {
+      LOGGER.warn(Debugging.fileDoesNotExist(file));
       return false;
     }
 
     reset();
-    this.filename = filename;
+    this.file = file;
 
     try {
-      FileInputStream fis = new FileInputStream(filename);
+      FileInputStream fis = new FileInputStream(file);
       BufferedReader br = new BufferedReader(new InputStreamReader(fis));
       String line;
 
@@ -94,27 +95,27 @@ public class MemoryFile  {
    * Reads the entire file into memory again.
    *
    * @return
-   *     the value from {@link #readIntoMemory(java.lang.String)}
+   *     the value from {@link #readIntoMemory(java.io.File)}
    */
   public boolean refresh() {
-    return readIntoMemory(this.filename);
+    return readIntoMemory(this.file);
   }
 
   /**
    * Writes entire file from memory to disk.
    *
-   * @param filename specified file to write
+   * @param file specified file to write
    * @return
    *     true if entire file has been written to disk,
    *     otherwise false
    */
-  public boolean writeToDisk(String filename) {
-    if (MainTools.isEmpty(filename)) {
-      LOGGER.warn(Debugging.EMPTY_STRING);
+  public boolean writeToDisk(File file) {
+    if (file == null) {
+      LOGGER.warn(Debugging.nullObject());
       return false;
     }
-    if (!MainTools.doesFileExist(filename)) {
-      LOGGER.warn("file inaccessible: " + filename);
+    if (!MainTools.doesFileExist(file)) {
+      LOGGER.warn(Debugging.fileDoesNotExist(file));
       return false;
     }
     if (this.lines.size() < 1) {
@@ -123,7 +124,7 @@ public class MemoryFile  {
     }
 
     try {
-      FileOutputStream fos = new FileOutputStream(filename);
+      FileOutputStream fos = new FileOutputStream(file);
       BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
       int len = this.lines.size();
@@ -143,7 +144,7 @@ public class MemoryFile  {
   }
 
   public boolean writeToDisk() {
-    return writeToDisk(this.filename);
+    return writeToDisk(this.file);
   }
 
   /**
@@ -163,7 +164,7 @@ public class MemoryFile  {
     if (len < 1) {
       return;
     }
-    System.out.println(this.filename + ":");
+    System.out.println(this.file.getAbsolutePath() + ":");
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < len; i++) {
       sb.append(this.lines.get(i)).append(System.lineSeparator());
