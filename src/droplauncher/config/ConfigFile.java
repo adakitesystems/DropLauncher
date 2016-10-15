@@ -133,9 +133,9 @@ public class ConfigFile {
 
       this.variables.add(new ConfigVariable(varName, varValue));
 
-      LOGGER.info("Read variable: " + file + ": "
-          + varName + " " + VARIABLE_DELIMITER + " " + varValue
-      );
+      //      LOGGER.info("Read variable: " + file + ": "
+      //          + varName + " " + VARIABLE_DELIMITER + " " + varValue
+      //      );
     }
 
     return true;

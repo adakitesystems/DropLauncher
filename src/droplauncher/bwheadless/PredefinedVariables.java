@@ -25,6 +25,6 @@ public final class PredefinedVariables {
   public static final PredefinedVariables BOT_DLL = new PredefinedVariables("bot_dll");
   public static final PredefinedVariables BOT_CLIENT = new PredefinedVariables("bot_client");
   public static final PredefinedVariables BOT_RACE = new PredefinedVariables("bot_race");
-  public static final PredefinedVariables GAME_TYPE = new PredefinedVariables("game_type");
+  public static final PredefinedVariables GAME_TYPE = new PredefinedVariables("network");
 
 }

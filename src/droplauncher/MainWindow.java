@@ -6,7 +6,7 @@ package droplauncher;
 
 import droplauncher.config.ConfigFile;
 import droplauncher.bwheadless.BwHeadless;
-import droplauncher.bwheadless.GameType;
+import droplauncher.bwheadless.GameTypes;
 import droplauncher.starcraft.Race;
 import droplauncher.debugging.Debugging;
 import droplauncher.filedroplist.FileDropList;
@@ -238,6 +238,8 @@ public class MainWindow extends JFrame {
 ////    bwheadless.setBotClient("bwheadless.exe");
 //    bwheadless.launch();
 //    bwheadless.eject();
+
+    bwheadless.ensureDefaultConfigFile();
 
     /* DEBUGGING --- end */
 

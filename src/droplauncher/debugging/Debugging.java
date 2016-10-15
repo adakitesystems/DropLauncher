@@ -18,6 +18,7 @@ public class Debugging {
   public static final String FILE_DOES_NOT_EXIST = "file inaccessible or does not exist";
   public static final String FILE_ALREADY_EXISTS = "file already exists";
   public static final String OPEN_FAIL = "open failed";
+  public static final String CREATE_FAIL = "create failed";
 
   public static String emptyString() {
     return Debugging.EMPTY_STRING;
@@ -41,6 +42,10 @@ public class Debugging {
 
   public static String openFail(File file) {
     return (Debugging.OPEN_FAIL + ": " + file.getAbsolutePath());
+  }
+
+  public static String createFail(File file) {
+    return (Debugging.CREATE_FAIL + ": " + file.getAbsolutePath());
   }
 
 }
