@@ -229,14 +229,14 @@ public class MainWindow extends JFrame {
 //    System.out.println(BwHeadless.getInstance().bwapiDllChecksums.getName("5d5128709ba714aa9c6095598bcf4624"));
 
 
-    bwheadless.setStarcraftExe("S:\\install\\StarCraft\\StarCraft.exe");
-    bwheadless.setBwapiDll("S:\\install\\StarCraft\\bwapi-data\\BWAPI.dll");
-    bwheadless.setBotDll("S:\\install\\StarCraft\\bwapi-data\\AI\\KillerBot.dll");
-    bwheadless.setBotName("KillerBot");
-    bwheadless.setGameType(GameType.LAN);
-    bwheadless.setBotRace(Race.ZERG);
-//    bwheadless.setBotClient("bwheadless.exe");
-    bwheadless.launch();
+//    bwheadless.setStarcraftExe("S:\\install\\StarCraft\\StarCraft.exe");
+//    bwheadless.setBwapiDll("S:\\install\\StarCraft\\bwapi-data\\BWAPI.dll");
+//    bwheadless.setBotDll("S:\\install\\StarCraft\\bwapi-data\\AI\\KillerBot.dll");
+//    bwheadless.setBotName("KillerBot");
+//    bwheadless.setGameType(GameType.LAN);
+//    bwheadless.setBotRace(Race.ZERG);
+////    bwheadless.setBotClient("bwheadless.exe");
+//    bwheadless.launch();
 //    bwheadless.eject();
 
     /* DEBUGGING --- end */

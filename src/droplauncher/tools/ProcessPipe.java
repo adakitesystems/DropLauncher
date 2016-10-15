@@ -91,8 +91,12 @@ public final class ProcessPipe {
 
       this.process = new ProcessBuilder(command).start();
 
-      this.is = this.process.getInputStream();
-      this.br = new BufferedReader(new InputStreamReader(this.is));
+      //      this.is = this.process.getInputStream();
+      //      this.br = new BufferedReader(new InputStreamReader(this.is));
+      StreamGobbler gobblerStdout = new StreamGobbler(this.is);
+      StreamGobbler gobblerStderr = new StreamGobbler(this.process.getErrorStream());
+      gobblerStdout.start();
+      gobblerStderr.start();
 
       this.os = this.process.getOutputStream();
       this.bw = new BufferedWriter(new OutputStreamWriter(this.os));
