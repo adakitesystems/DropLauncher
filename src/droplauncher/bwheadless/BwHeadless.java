@@ -150,7 +150,11 @@ public class BwHeadless {
     args.add(Arguments.LOAD_DLL.toString());
     args.add(this.bwapiDll);
 
-    args.add(Arguments.ENABLE_LAN.toString());
+    if (this.gameType == GameType.LAN) {
+      args.add(Arguments.ENABLE_LAN.toString());
+    } else if (this.gameType == GameType.LOCAL_PC) {
+      args.add(Arguments.ENABLE_LOCAL_PC.toString());
+    }
 
     args.add(Arguments.STARCRAFT_INSTALL_PATH.toString());
     args.add(MainTools.getParentDirectory(this.starcraftExe));
