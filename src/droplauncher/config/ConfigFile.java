@@ -40,6 +40,10 @@ public class ConfigFile {
     this.variables = new ArrayList<>();
   }
 
+  public String getFilename() {
+    return this.filename;
+  }
+
   /**
    * Create a file if it does not already exist.
    *

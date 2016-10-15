@@ -2,6 +2,7 @@
 
 package droplauncher.bwheadless;
 
+import droplauncher.bwapi.Bwapi;
 import droplauncher.config.ConfigFile;
 import droplauncher.debugging.Debugging;
 import droplauncher.filedroplist.FileDropList;
@@ -109,6 +110,30 @@ public class BwHeadless {
       LOGGER.warn("not ready to launch: " + getReadyError());
     }
 
+    ConfigFile ini = new ConfigFile();
+    String starcraftDir = MainTools.getParentDirectory(this.starcraftExe);
+    ini.open(starcraftDir + File.separator + Bwapi.BWAPI_DATA_INI);
+
+    if (!MainTools.isEmpty(this.botDllPath)) {
+      ini.enableVariable("ai");
+      ini.setVariable("ai", this.botDllPath);
+    } else if (!MainTools.isEmpty(this.botClientPath)) {
+      ini.disableVariable("ai");
+      //
+      //      File botClientFile = new File(this.botClientPath);
+      //      String botClientFilePath = MainTools.getFullPath(botClientFile);
+      //
+      //      File destinationFile = new File(
+      //          starcraftDir + File.separator + botClientFile.getName()
+      //      );
+      //      String destinationFilePath = MainTools.getFullPath(destinationFile);
+      //
+      //      LOGGER.info("Copy " + botClientFilePath + " to " + destinationFilePath);
+      //      MainTools.copyFile(botClientFilePath, destinationFilePath);
+      //
+      //      setBotClient(destinationFilePath);
+    }
+
     ArrayList<String> args = new ArrayList<>();
 
     args.add(Arguments.STARCRAFT_EXE.toString());
@@ -130,13 +155,26 @@ public class BwHeadless {
     args.add(Arguments.STARCRAFT_INSTALL_PATH.toString());
     args.add(MainTools.getParentDirectory(this.starcraftExe));
 
-    String[] command = new String[args.size() + 1];
-    command[0] = BW_HEADLESS_PATH;
-    System.arraycopy(MainTools.toStringArray(args), 0, command, 1, args.size());
+    if (!MainTools.isEmpty(this.botClientPath)) {
+      if (!this.botClientPipe.open(this.botClientPath, null)) {
+        LOGGER.error("failed to start bot client");
+        return false;
+      }
+    }
 
-
+    if (!this.bwHeadlessPipe.open(
+        BwHeadless.BW_HEADLESS_PATH,
+        MainTools.toStringArray(args))) {
+      LOGGER.error("failed to start bwheadless.exe");
+      return false;
+    }
 
     return true;
+  }
+
+  public void eject() {
+    this.bwHeadlessPipe.close();
+    this.botClientPipe.close();
   }
 
   /**
@@ -187,7 +225,8 @@ public class BwHeadless {
       return false;
     }
 
-    this.bwapiDll = path;
+
+    this.bwapiDll = MainTools.getFullPath(new File(path));
 
     LOGGER.info("BWAPI.dll: " + this.bwapiDll);
 
@@ -254,7 +293,7 @@ public class BwHeadless {
       return false;
     }
 
-    this.botDllPath = path;
+    this.botDllPath = MainTools.getFullPath(new File(path));
     this.botClientPath = null;
 
     LOGGER.info("Bot dll: " + this.botDllPath);
@@ -291,7 +330,7 @@ public class BwHeadless {
       return false;
     }
 
-    this.botClientPath = path;
+    this.botClientPath = MainTools.getFullPath(new File(path));
     this.botDllPath = null;
 
     LOGGER.info("Bot client: " + this.botClientPath);

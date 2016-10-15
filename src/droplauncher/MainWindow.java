@@ -229,10 +229,14 @@ public class MainWindow extends JFrame {
 //    System.out.println(BwHeadless.getInstance().bwapiDllChecksums.getName("5d5128709ba714aa9c6095598bcf4624"));
 
 
-    bwheadless.setStarcraftExe("S:\\install\\StarCraft\\StarCraft.exe");
-    bwheadless.setBwapiDll("BWAPI.dll");
-    bwheadless.setBotDll("Iron.dll");
-    bwheadless.launch();
+//    bwheadless.setStarcraftExe("S:\\install\\StarCraft\\StarCraft.exe");
+//    bwheadless.setBwapiDll("BWAPI.dll");
+//    bwheadless.setBotDll("Iron.dll");
+//    bwheadless.setBotName("IronBot");
+//    bwheadless.setBotRace(Race.TERRAN);
+////    bwheadless.setBotClient("bwheadless.exe");
+//    bwheadless.launch();
+//    bwheadless.eject();
 
     /* DEBUGGING --- end */
 
