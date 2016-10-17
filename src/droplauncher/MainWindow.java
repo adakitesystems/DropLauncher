@@ -39,13 +39,14 @@ public class MainWindow extends JFrame {
   private static final Logger LOGGER = LogManager.getRootLogger();
 
   public static MainWindow mainWindow;
-  public static BwHeadless bwheadless;
+  private BwHeadless bwheadless;
 
   /**
    * Creates new form MainWindow.
    */
   /* Changed from public to private. */
-  private MainWindow() {
+  private MainWindow(BwHeadless bwheadless) {
+    this.bwheadless = bwheadless;
     initComponents();
   }
 
@@ -267,10 +268,10 @@ public class MainWindow extends JFrame {
       LOGGER.error(ex.getMessage(), ex);
     }
 
-    bwheadless = new BwHeadless();
+    BwHeadless bwheadless = new BwHeadless();
 
     /* Create and display the form. */
-    mainWindow = new MainWindow();
+    mainWindow = new MainWindow(bwheadless);
     EventQueue.invokeLater(new Runnable() {
       @Override
       public void run() {
