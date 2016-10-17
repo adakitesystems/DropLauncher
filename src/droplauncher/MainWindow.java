@@ -218,7 +218,6 @@ public class MainWindow extends JFrame {
   }// </editor-fold>//GEN-END:initComponents
 
   private void btnLaunchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLaunchActionPerformed
-    bwheadless.eject();
     bwheadless.launch();
   }//GEN-LAST:event_btnLaunchActionPerformed
 

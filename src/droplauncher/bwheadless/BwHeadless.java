@@ -167,7 +167,8 @@ public class BwHeadless {
     if (this.botClient != null) {
       cf.setVariable(
           PredefinedVariables.BOT_CLIENT.toString(),
-          MainTools.getFullPath(this.botClient)
+//          MainTools.getFullPath(this.botClient)
+          this.botClient.getAbsolutePath()
       );
     } else {
       cf.setVariable(PredefinedVariables.BOT_CLIENT.toString(), null);
@@ -175,7 +176,8 @@ public class BwHeadless {
     if (this.botDll != null) {
       cf.setVariable(
           PredefinedVariables.BOT_DLL.toString(),
-          MainTools.getFullPath(this.botDll)
+//          MainTools.getFullPath(this.botDll)
+          this.botDll.getAbsolutePath()
       );
     } else {
       cf.setVariable(PredefinedVariables.BOT_DLL.toString(), null);
@@ -191,7 +193,8 @@ public class BwHeadless {
     if (this.bwapiDll != null) {
       cf.setVariable(
           PredefinedVariables.BWAPI_DLL.toString(),
-          MainTools.getFullPath(this.bwapiDll)
+//          MainTools.getFullPath(this.bwapiDll)
+          this.bwapiDll.getAbsolutePath()
       );
     } else {
       cf.setVariable(PredefinedVariables.BWAPI_DLL.toString(), null);
@@ -203,7 +206,8 @@ public class BwHeadless {
     if (this.starcraftExe != null) {
       cf.setVariable(
           PredefinedVariables.STARCRAFT_EXE.toString(),
-          MainTools.getFullPath(this.starcraftExe)
+//          MainTools.getFullPath(this.starcraftExe)
+          this.starcraftExe.getAbsolutePath()
       );
     } else {
       cf.setVariable(PredefinedVariables.STARCRAFT_EXE.toString(), null);
@@ -261,7 +265,7 @@ public class BwHeadless {
    *     otherwise false
    */
   public boolean launch() {
-    LOGGER.debug("launch(): ACK");
+    LOGGER.info("launch(): ACK");
     eject();
 
     String notReadyError = getNotReadyError();
@@ -276,12 +280,11 @@ public class BwHeadless {
 
     /* Enable or disable "ai" variable in "BWAPI.ini". */
     if (this.botDll != null) {
-      String dllDest = MainTools.getParentDirectory(this.botDll);
-      dllDest = Bwapi.BWAPI_DATA_DIR + File.separator
+      String dllDest =
+          Bwapi.BWAPI_DATA_DIR + File.separator
           + "AI" + File.separator
           + this.botDll.getName();
       ini.enableVariable("ai");
-//      ini.setVariable("ai", MainTools.getFullPath(this.botDll));
       ini.setVariable("ai", dllDest);
     } else if (this.botClient != null) {
       ini.disableVariable("ai");
@@ -308,7 +311,7 @@ public class BwHeadless {
     }
 
     bwheadlessArgs.add(Arguments.STARCRAFT_INSTALL_PATH.toString());
-    bwheadlessArgs.add(MainTools.getParentDirectory(this.starcraftExe));
+    bwheadlessArgs.add(starcraftDir);
 
     if (this.botClient != null
         && !this.botClientPipe.open(this.botClient, null)) {
@@ -319,20 +322,22 @@ public class BwHeadless {
       return false;
     }
 
+    String command =
+        BwHeadless.BW_HEADLESS_EXE.getAbsolutePath()
+        + " " + MainTools.toString(bwheadlessArgs);
     if (!this.bwHeadlessPipe.open(BwHeadless.BW_HEADLESS_EXE,
         MainTools.toStringArray(bwheadlessArgs))) {
-      LOGGER.error(
-          "failed to start: " + BwHeadless.BW_HEADLESS_EXE.getAbsolutePath()
-          + " " + MainTools.toString(bwheadlessArgs)
-      );
+      LOGGER.error("failed to start bwheadless.exe: " + command);
       return false;
     }
+
+    LOGGER.info("Command: " + command);
 
     return true;
   }
 
   public void eject() {
-    LOGGER.debug("eject(): ACK");
+    LOGGER.info("eject(): ACK");
     this.bwHeadlessPipe.close();
     this.botClientPipe.close();
   }

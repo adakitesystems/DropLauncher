@@ -19,14 +19,11 @@ import java.util.ArrayList;
 public class FileDropList {
 
   public static FileDropList INSTANCE = new FileDropList();
+  private FileDropList() {}
 
   private static final Logger LOGGER = LogManager.getRootLogger();
 
-  private ArrayList<File> files;
-
-  private FileDropList() {
-    this.files = new ArrayList<>();
-  }
+  private ArrayList<File> files = new ArrayList<>();
 
   public void clear() {
     this.files.clear();
@@ -55,10 +52,10 @@ public class FileDropList {
     }
 
     /* Remove old file. */
-    boolean oldFilePresent = false;
+    boolean oldFileExists = false;
     int index = getIndex(file.getName());
     if (index >= 0) {
-      oldFilePresent = true;
+      oldFileExists = true;
       this.files.remove(index);
     }
 
@@ -66,7 +63,7 @@ public class FileDropList {
     boolean status = this.files.add(file);
     String filename = file.getName();
     if (status) {
-      if (oldFilePresent) {
+      if (oldFileExists) {
         LOGGER.info("replaced file: " + filename);
       } else {
         LOGGER.info("added file: " + filename);
