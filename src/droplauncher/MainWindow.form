@@ -30,17 +30,91 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="boxDropFiles" min="-2" pref="252" max="-2" attributes="0"/>
-              <EmptySpace pref="223" max="32767" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="261" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="rbRaceTerran" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="rbRaceZerg" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="rbRaceRandom" min="-2" max="-2" attributes="0"/>
+                          <Component id="rbRaceProtoss" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="28" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="boxDropFiles" min="-2" pref="231" max="-2" attributes="0"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="lblBwapiDll" alignment="1" min="-2" pref="97" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                      <Component id="lblBotFile" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="lblBwapiDllVer" alignment="0" pref="97" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="lblBwapiDllText" max="32767" attributes="0"/>
+                                  <Component id="lblBotFileText" alignment="0" pref="119" max="32767" attributes="0"/>
+                                  <Component id="lblBwapiDllVersionText" alignment="0" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="btnLaunch" max="32767" attributes="0"/>
+                          <Component id="txtBotName" max="32767" attributes="0"/>
+                          <Component id="lblBotName" alignment="0" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+              </Group>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace pref="260" max="32767" attributes="0"/>
-              <Component id="boxDropFiles" min="-2" pref="147" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="lblBwapiDll" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblBwapiDllText" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="lblBwapiDllVer" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblBwapiDllVersionText" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="lblBotFile" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblBotFileText" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="14" max="32767" attributes="0"/>
+              <Component id="lblBotName" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="txtBotName" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="rbRaceProtoss" min="-2" max="-2" attributes="0"/>
+                          <Component id="rbRaceTerran" alignment="1" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="rbRaceZerg" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="rbRaceRandom" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="btnLaunch" min="-2" pref="59" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="boxDropFiles" min="-2" pref="159" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -50,23 +124,107 @@
     <Component class="javax.swing.JLabel" name="boxDropFiles">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="0" green="0" red="8a" type="rgb"/>
+          <Color blue="89" green="35" red="0" type="rgb"/>
         </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="sansserif" size="18" style="0"/>
         </Property>
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+          <Color blue="cc" green="cc" red="cc" type="rgb"/>
         </Property>
         <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="text" type="java.lang.String" value="Drop bot files here"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+          <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
             <BevelBorder/>
           </Border>
         </Property>
         <Property name="opaque" type="boolean" value="true"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnLaunch">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Launch"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLaunchActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="rbRaceTerran">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btngrpRace"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Terran"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rbRaceTerranActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="rbRaceZerg">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btngrpRace"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Zerg"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rbRaceZergActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="rbRaceProtoss">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btngrpRace"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Protoss"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rbRaceProtossActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="rbRaceRandom">
+      <Properties>
+        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+          <ComponentRef name="btngrpRace"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Random"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rbRaceRandomActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtBotName">
+      <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtBotNameKeyPressed"/>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtBotNameKeyReleased"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblBotName">
+      <Properties>
+        <Property name="text" type="java.lang.String" value=" Bot name:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblBwapiDll">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="BWAPI.dll:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblBwapiDllVer">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="BWAPI Version:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblBotFile">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Bot file:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblBwapiDllText">
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblBwapiDllVersionText">
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblBotFileText">
     </Component>
   </SubComponents>
 </Form>

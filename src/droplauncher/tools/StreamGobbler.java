@@ -6,7 +6,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -29,9 +28,9 @@ public class StreamGobbler extends Thread {
       while ((line = br.readLine()) != null) {
         System.out.println(line);
       }
-    } catch (IOException ex) {
+    } catch (Exception ex) {
       LOGGER.error(ex.getMessage(), ex);
     }
   }
-  
+
 }

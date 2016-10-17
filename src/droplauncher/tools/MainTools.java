@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -277,6 +278,36 @@ public class MainTools {
   }
 
   /**
+   * Create specified file.
+   *
+   * @param file specified file
+   * @return
+   *     the created File if created or already exists,
+   *     otherwise null
+   */
+  public static File create(File file) {
+    if (file == null) {
+      LOGGER.warn(Debugging.nullObject());
+      return null;
+    } else if (MainTools.doesFileExist(file)) {
+      LOGGER.warn(Debugging.fileAlreadyExists(file));
+      return new File(MainTools.getFullPath(file));
+    }
+
+    String parentDir = file.getParent();
+    if (!MainTools.isEmpty(parentDir)
+        && !MainTools.doesDirectoryExist(parentDir)) {
+      file.mkdirs();
+    }
+    try {
+      return file.createNewFile() ? new File(MainTools.getFullPath(file)) : null;
+    } catch (IOException ex) {
+      LOGGER.error(ex.getMessage(), ex);
+      return null;
+    }
+  }
+
+  /**
    * Copy specified source file to destination.
    *
    * @param src specified source
@@ -289,6 +320,8 @@ public class MainTools {
     Path srcPath = new File(src).toPath();
     Path destPath = new File(dest).toPath();
 
+    LOGGER.info("Copy file: " + src + " to " + dest);
+
     try {
       Files.copy(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
       return true;
@@ -297,6 +330,26 @@ public class MainTools {
     }
 
     return false;
+  }
+
+  /**
+   * Removes all characters after the last '.' character.
+   *
+   * @param filename specified string from which to remove the file extension
+   * @return
+   *     the specified string excluding the file extension
+   *     otherwise null if the specified string is null or empty
+   */
+  public static String removeFileExtension(String filename) {
+    if (MainTools.isEmpty(filename)) {
+      LOGGER.warn(Debugging.emptyString());
+      return null;
+    }
+    int index = filename.lastIndexOf(".");
+    if (index < 0) {
+      return null;
+    }
+    return filename.substring(0, index);
   }
 
 }

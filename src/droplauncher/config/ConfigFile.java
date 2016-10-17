@@ -27,7 +27,6 @@ public class ConfigFile {
   public static final String VARIABLE_DELIMITER = "=";
   public static final String COMMENT_DELIMITER = ";";
 
-  private File file;
   private MemoryFile memoryFile;
   private ArrayList<ConfigVariable> variables;
 
@@ -35,13 +34,16 @@ public class ConfigFile {
    * Initialize class variables.
    */
   public ConfigFile() {
-    this.file = null;
     this.memoryFile = new MemoryFile();
     this.variables = new ArrayList<>();
   }
 
   public File getFile() {
-    return this.file;
+    return memoryFile.getFile();
+  }
+
+  public void reset() {
+    this.variables.clear();
   }
 
   /**
@@ -53,27 +55,8 @@ public class ConfigFile {
    *     otherwise false
    */
   public boolean create(File file) {
-    if (file == null) {
-      LOGGER.warn(Debugging.nullObject());
-      return false;
-    } else if (MainTools.doesFileExist(file)) {
-      LOGGER.warn(Debugging.fileAlreadyExists(file));
-      return true;
-    }
-
-    String parentDir = file.getParent();
-    if (!MainTools.isEmpty(parentDir)
-        && !MainTools.doesDirectoryExist(parentDir)) {
-      file.mkdirs();
-    }
-    try {
-      this.file = file;
-      boolean status = file.createNewFile() && open(file);
-      return status;
-    } catch (IOException ex) {
-      LOGGER.error(ex.getMessage(), ex);
-      return false;
-    }
+    reset();
+    return this.memoryFile.create(file);
   }
 
   /**
@@ -85,7 +68,7 @@ public class ConfigFile {
    *     otherwise false
    */
   public boolean open(File file) {
-    this.file = file;
+    reset();
 
     if (file == null) {
       LOGGER.warn(Debugging.nullObject());
@@ -96,7 +79,6 @@ public class ConfigFile {
       return false;
     }
 
-    this.variables.clear();
     ArrayList<String> lines = this.memoryFile.getLines();
     int len = lines.size();
 
@@ -114,7 +96,7 @@ public class ConfigFile {
     for (int i = 0; i < len; i++) {
       line = lines.get(i).trim();
 
-      /* Ignore comments. */
+      /* Ignore comment. */
       if (line.startsWith(COMMENT_DELIMITER)) {
         continue;
       }
@@ -132,17 +114,13 @@ public class ConfigFile {
       varValue = line.substring(index + 1, line.length()).trim();
 
       this.variables.add(new ConfigVariable(varName, varValue));
-
-      //      LOGGER.info("Read variable: " + file + ": "
-      //          + varName + " " + VARIABLE_DELIMITER + " " + varValue
-      //      );
     }
 
     return true;
   }
 
   public boolean refresh() {
-    return open(this.file);
+    return open(this.memoryFile.getFile());
   }
 
   /**
@@ -236,25 +214,21 @@ public class ConfigFile {
    *     true if variable did not exist before and does now,
    *     otherwise false
    */
-  public boolean createVariable(String name, String value) {
+  private boolean createVariable(String name) {
     if (MainTools.isEmpty(name)) {
       LOGGER.warn(Debugging.emptyString());
       return false;
     }
-    if (MainTools.isEmpty(value)) {
-      value = "";
-    }
 
     /* Test if variable already exists. */
     if (indexOfName(name) >= 0) {
-      return setVariable(name, value);
+      return true;
     }
 
     /* Add complete variable string to memory file. */
     this.memoryFile.getLines().add(
         name
         + " " + ConfigFile.VARIABLE_DELIMITER + " "
-        + value
     );
 
     /* Update changes in file. */
@@ -271,9 +245,12 @@ public class ConfigFile {
    *     otherwise false
    */
   public boolean setVariable(String name, String value) {
-    int varIndex = indexOfName(name);
-    if (varIndex < 0) {
+    if (!createVariable(name)) {
+      LOGGER.warn("failed to create variable: ");
       return false;
+    }
+    if (value == null) {
+      value = "";
     }
 
     ArrayList<String> lines = this.memoryFile.getLines();
@@ -302,14 +279,11 @@ public class ConfigFile {
 
     /* Update changes in file. */
     if (writeToFile) {
-      if (!this.memoryFile.writeToDisk()) {
-        return false;
-      }
-      this.variables.set(varIndex, new ConfigVariable(name, value));
-      return refresh();
+      return (this.memoryFile.writeToDisk() && refresh());
     }
 
     /* If this line is reached, something went wrong. */
+    LOGGER.warn("unable to set: " + name + " " + VARIABLE_DELIMITER + " " + value);
     return false;
   }
 

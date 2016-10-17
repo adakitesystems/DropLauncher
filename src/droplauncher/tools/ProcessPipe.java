@@ -93,7 +93,7 @@ public final class ProcessPipe {
 
       //      this.is = this.process.getInputStream();
       //      this.br = new BufferedReader(new InputStreamReader(this.is));
-      StreamGobbler gobblerStdout = new StreamGobbler(this.is);
+      StreamGobbler gobblerStdout = new StreamGobbler(this.process.getInputStream());
       StreamGobbler gobblerStderr = new StreamGobbler(this.process.getErrorStream());
       gobblerStdout.start();
       gobblerStderr.start();
@@ -119,15 +119,17 @@ public final class ProcessPipe {
    */
   public boolean close() {
     try {
-      if (this.process != null && this.process.isAlive()) {
+      if (this.br != null && this.is != null
+          && this.bw != null && this.os != null
+          && this.process != null && this.process.isAlive()) {
+        this.process.destroyForcibly();
         this.br.close();
         this.is.close();
         this.bw.close();
         this.os.close();
-        this.process.destroyForcibly();
       }
       return true;
-    } catch (IOException ex) {
+    } catch (Exception ex) {
       LOGGER.error(ex.getMessage(), ex);
     }
     return false;

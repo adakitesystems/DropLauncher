@@ -37,7 +37,19 @@ public class MemoryFile  {
     this.lines = new ArrayList<>();
   }
 
-  private void reset() {
+  /**
+   * Constructor allowing a specified file as a parameter to load as
+   * the working file.
+   *
+   * @param file specified file
+   */
+  public MemoryFile(File file) {
+    this.file = null;
+    this.lines = new ArrayList<>();
+    readIntoMemory(file);
+  }
+
+  public void reset() {
     this.file = null;
     this.lines.clear();
   }
@@ -52,14 +64,30 @@ public class MemoryFile  {
   }
 
   /**
-   * Reads entire file into memory.
+   * Create specified file.
+   *
+   * @param file specified file
+   * @return
+   *     true if file was created successfully or already exists,
+   *     otherwise false
+   */
+  public boolean create(File file) {
+    reset();
+    this.file = MainTools.create(file);
+    return (this.file != null);
+  }
+
+  /**
+   * Reads file into memory.
    *
    * @param file specified file to read
    * @return
-   *     true if entire file has been read into memory,
+   *     true if file has been read into memory,
    *     otherwise false
    */
   public boolean readIntoMemory(File file) {
+    reset();
+
     if (file == null) {
       LOGGER.warn(Debugging.nullObject());
       return false;
@@ -69,7 +97,6 @@ public class MemoryFile  {
       return false;
     }
 
-    reset();
     this.file = file;
 
     try {
@@ -94,8 +121,7 @@ public class MemoryFile  {
   /**
    * Reads the entire file into memory again.
    *
-   * @return
-   *     the value from {@link #readIntoMemory(java.io.File)}
+   * @return the value from {@link #readIntoMemory(java.io.File)}
    */
   public boolean refresh() {
     return readIntoMemory(this.file);
@@ -114,13 +140,14 @@ public class MemoryFile  {
       LOGGER.warn(Debugging.nullObject());
       return false;
     }
-    if (!MainTools.doesFileExist(file)) {
+    if (!MainTools.doesFileExist(file)
+        && ((file = MainTools.create(file)) == null)) {
       LOGGER.warn(Debugging.fileDoesNotExist(file));
       return false;
     }
     if (this.lines.size() < 1) {
       LOGGER.warn("nothing to write");
-      return false;
+      return true;
     }
 
     try {

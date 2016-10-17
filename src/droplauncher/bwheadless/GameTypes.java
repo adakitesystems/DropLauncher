@@ -20,6 +20,6 @@ public final class GameTypes {
   }
 
   public static final GameTypes LAN = new GameTypes("lan");
-  public static final GameTypes LOCAL_PC = new GameTypes("localpc");
+//  public static final GameTypes LOCAL_PC = new GameTypes("localpc");
 
 }
