@@ -25,7 +25,6 @@ public final class Arguments {
   public static final Arguments BOT_RACE = new Arguments("-r"); /* requires second argument */
   public static final Arguments LOAD_DLL = new Arguments("-l"); /* requires second argument */
   public static final Arguments ENABLE_LAN = new Arguments("--lan");
-  public static final Arguments ENABLE_LOCAL_PC = new Arguments("--localpc");
   public static final Arguments STARCRAFT_INSTALL_PATH =
       new Arguments("--installpath"); /* requires second argument */
 

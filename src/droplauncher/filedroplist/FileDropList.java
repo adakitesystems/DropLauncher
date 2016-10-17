@@ -4,6 +4,7 @@ package droplauncher.filedroplist;
 
 import droplauncher.debugging.Debugging;
 import droplauncher.tools.MainTools;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
