@@ -300,6 +300,7 @@ public class MainWindow extends JFrame {
 //          }
 //    });
     FileDrop.Listener listener = new FileDropListener(bwheadless);
+    new FileDrop(mainWindow.boxDropFiles, listener);
 
     /* DEBUGGING --- start */
 //    ArrayList<String> argsList = new ArrayList<>();
