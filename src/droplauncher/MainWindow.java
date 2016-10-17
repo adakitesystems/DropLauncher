@@ -11,6 +11,7 @@ import droplauncher.bwheadless.GameTypes;
 import droplauncher.bwheadless.PredefinedVariables;
 import droplauncher.debugging.Debugging;
 import droplauncher.filedroplist.FileDropList;
+import droplauncher.filedroplist.FileDropListener;
 import droplauncher.starcraft.Races;
 import droplauncher.tools.MD5Checksum;
 import droplauncher.tools.MainTools;
@@ -288,21 +289,17 @@ public class MainWindow extends JFrame {
      * Add FileDrop Listener. All valid dropped files are added to the
      * static container object named FileDropList.
      */
-    FileDrop fileDrop = new FileDrop(
-        mainWindow.boxDropFiles,
-        new FileDrop.Listener() {
-          @Override
-          public void filesDropped(File[] files) {
-            for (File file : files) {
-              FileDropList.INSTANCE.add(file);
-            }
-            bwheadless.readDroppedFiles();
-            FileDropList.INSTANCE.clear();
-          }
-    });
-
-
-
+//    FileDrop fileDrop = new FileDrop(
+//        mainWindow.boxDropFiles,
+//        new FileDrop.Listener() {
+//          @Override
+//          public void filesDropped(File[] files) {
+//
+//            bwheadless.readDroppedFiles();
+//            FileDropList.INSTANCE.clear();
+//          }
+//    });
+    FileDrop.Listener listener = new FileDropListener(bwheadless);
 
     /* DEBUGGING --- start */
 //    ArrayList<String> argsList = new ArrayList<>();
