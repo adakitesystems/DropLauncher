@@ -40,10 +40,10 @@ public class MainTools {
    */
   public static boolean isEmpty(String str) {
     boolean status = (str == null || str.length() < 1);
-    /* A null string may be intended. An empty string may not be. */
-    if (str != null && str.isEmpty()) {
-      LOGGER.warn("non-null empty string detected");
-    }
+    //    /* A null string may be intended. An empty string may not be. */
+    //    if (str != null && str.isEmpty()) {
+    //      LOGGER.warn("non-null empty string detected");
+    //    }
     return status;
   }
 

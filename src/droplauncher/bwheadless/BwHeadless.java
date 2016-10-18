@@ -395,21 +395,6 @@ public class BwHeadless {
     }
 
     this.bwapiDll = file;
-//    String dllSrc = MainTools.getFullPath(this.bwapiDll);
-    String dllSrc = this.bwapiDll.getAbsolutePath();
-    String dllDest =
-//        MainTools.getParentDirectory(MainTools.getFullPath(this.starcraftExe))
-        this.starcraftExe.getAbsolutePath()
-        + File.separator
-        + Bwapi.BWAPI_DATA_DIR
-        + File.separator
-        + this.bwapiDll.getName();
-
-    if (!MainTools.copyFile(dllSrc, dllDest)) {
-      return false;
-    }
-
-    this.bwapiDll = new File(dllDest);
 
     writeDefaultConfigFile();
 
@@ -481,21 +466,6 @@ public class BwHeadless {
 
     this.botClient = null;
     this.botDll = file;
-    String dllSrc = MainTools.getFullPath(this.botDll);
-    String dllDest =
-        MainTools.getParentDirectory(MainTools.getFullPath(this.starcraftExe))
-        + File.separator
-        + Bwapi.BWAPI_DATA_DIR
-        + File.separator
-        + "AI"
-        + File.separator
-        + this.botDll.getName();
-
-    if (!MainTools.copyFile(dllSrc, dllDest)) {
-      return false;
-    }
-
-    this.botDll = new File(dllDest);
 
     writeDefaultConfigFile();
 
@@ -576,9 +546,7 @@ public class BwHeadless {
    * @param gameType specified game type
    */
   public void setGameType(GameType gameType) {
-    /* Disable Local PC */
-    //    this.gameType = gameType;
-    this.gameType = GameType.LAN;
+    this.gameType = GameType.LAN; /* force game type as LAN UDP */
     writeDefaultConfigFile();
     LOGGER.info("set game type: " + this.gameType.toString());
   }

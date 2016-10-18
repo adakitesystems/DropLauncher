@@ -67,9 +67,12 @@ public class ConfigFile {
     if (file == null) {
       LOGGER.warn(Debugging.nullObject());
       return false;
-    } else if (!MainTools.doesFileExist(file) && !create(file)) {
-      LOGGER.error(Debugging.createFail(file));
-      return false;
+    } else if (!MainTools.doesFileExist(file)) {
+      if (!create(file)) {
+        LOGGER.error(Debugging.createFail(file));
+        return false;
+      }
+      return true;
     } else {
       reset();
     }
