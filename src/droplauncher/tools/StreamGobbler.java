@@ -1,4 +1,4 @@
-/* StreamGobbler.java */
+/* StreamDivert.java */
 
 package droplauncher.tools;
 

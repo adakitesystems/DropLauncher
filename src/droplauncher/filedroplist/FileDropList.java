@@ -4,7 +4,6 @@ package droplauncher.filedroplist;
 
 import droplauncher.debugging.Debugging;
 import droplauncher.tools.MainTools;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,12 +19,11 @@ import java.util.ArrayList;
 public class FileDropList {
 
   public static FileDropList INSTANCE = new FileDropList();
+  private FileDropList() {}
 
   private static final Logger LOGGER = LogManager.getRootLogger();
 
   private ArrayList<File> files = new ArrayList<>();
-
-  private FileDropList() {}
 
   public void clear() {
     this.files.clear();

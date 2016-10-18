@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.NullPointerException;
 import java.util.ArrayList;
 
 /**
