@@ -7,12 +7,11 @@ package droplauncher;
 import droplauncher.bwapi.Bwapi;
 import droplauncher.config.ConfigFile;
 import droplauncher.bwheadless.BwHeadless;
-import droplauncher.bwheadless.GameTypes;
 import droplauncher.bwheadless.PredefinedVariables;
 import droplauncher.debugging.Debugging;
 import droplauncher.filedroplist.FileDropList;
 import droplauncher.filedroplist.FileDropListener;
-import droplauncher.starcraft.Races;
+import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.tools.MD5Checksum;
 import droplauncher.tools.MainTools;
 import droplauncher.tools.MemoryFile;
@@ -236,19 +235,19 @@ public class MainWindow extends JFrame {
   }//GEN-LAST:event_btnLaunchActionPerformed
 
   private void rbRaceTerranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbRaceTerranActionPerformed
-    bwheadless.setBotRace(Races.TERRAN);
+    bwheadless.setBotRace(Race.TERRAN);
   }//GEN-LAST:event_rbRaceTerranActionPerformed
 
   private void rbRaceProtossActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbRaceProtossActionPerformed
-    bwheadless.setBotRace(Races.PROTOSS);
+    bwheadless.setBotRace(Race.PROTOSS);
   }//GEN-LAST:event_rbRaceProtossActionPerformed
 
   private void rbRaceRandomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbRaceRandomActionPerformed
-    bwheadless.setBotRace(Races.RANDOM);
+    bwheadless.setBotRace(Race.RANDOM);
   }//GEN-LAST:event_rbRaceRandomActionPerformed
 
   private void rbRaceZergActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbRaceZergActionPerformed
-    bwheadless.setBotRace(Races.ZERG);
+    bwheadless.setBotRace(Race.ZERG);
   }//GEN-LAST:event_rbRaceZergActionPerformed
 
   private void txtBotNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBotNameKeyPressed
@@ -295,14 +294,14 @@ public class MainWindow extends JFrame {
   }
 
   public void updateInfo() {
-    Races race = bwheadless.getBotRace();
-    if (race == Races.RANDOM) {
+    Race race = bwheadless.getBotRace();
+    if (race == Race.RANDOM) {
       rbRaceRandom.setSelected(true);
-    } else if (race == Races.TERRAN) {
+    } else if (race == Race.TERRAN) {
       rbRaceTerran.setSelected(true);
-    } else if (race == Races.ZERG) {
+    } else if (race == Race.ZERG) {
       rbRaceZerg.setSelected(true);
-    } else if (race == Races.PROTOSS) {
+    } else if (race == Race.PROTOSS) {
       rbRaceProtoss.setSelected(true);
     }
 

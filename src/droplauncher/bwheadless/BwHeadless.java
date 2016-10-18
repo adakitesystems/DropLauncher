@@ -7,8 +7,8 @@ import droplauncher.bwapi.Bwapi;
 import droplauncher.config.ConfigFile;
 import droplauncher.debugging.Debugging;
 import droplauncher.filedroplist.FileDropList;
-import droplauncher.starcraft.Races;
 import droplauncher.starcraft.Starcraft;
+import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.tools.MainTools;
 import droplauncher.tools.ProcessPipe;
 
@@ -27,6 +27,42 @@ import java.util.ArrayList;
  */
 public class BwHeadless {
 
+  public enum GameType {
+    LAN("lan");
+
+    private final String name;
+
+    private GameType(String name) {
+      this.name = name;
+    }
+
+    @Override
+    public String toString() {
+      return name;
+    }
+  }
+
+  public enum Argument {
+    STARCRAFT_EXE("-e"), /* requires second string */
+    JOIN_GAME("-j"),
+    BOT_NAME("-n"), /* requires second string */
+    BOT_RACE("-r"), /* requires second string */
+    LOAD_DLL("-l"), /* requires second string */
+    ENABLE_LAN("--lan"),
+    STARCRAFT_INSTALL_PATH("--installpath"); /* requires second string */
+
+    private final String name;
+
+    private Argument(String name) {
+      this.name = name;
+    }
+
+    @Override
+    public String toString() {
+      return name;
+    }
+  }
+
   private static final Logger LOGGER = LogManager.getRootLogger();
 
   public static final File BW_HEADLESS_EXE = new File("bwheadless.exe");
@@ -43,13 +79,13 @@ public class BwHeadless {
   private String      botName;        /* required */
   private File        botDll;         /* required only when client is absent */
   private File        botClient;      /* required only when DLL is absent, *.exe or *.jar */
-  private Races       botRace;        /* required */
-  private GameTypes   gameType;       /* required */
+  private Race        botRace;        /* required */
+  private GameType   gameType;       /* required */
 
   private MainWindow mainWindow;
 
   public BwHeadless() {
-    
+
   }
 
   /**
@@ -63,8 +99,8 @@ public class BwHeadless {
     this.botName          = DEFAULT_BOT_NAME;
     this.botDll           = null;
     this.botClient        = null;
-    this.botRace          = Races.RANDOM;
-    this.gameType         = GameTypes.LAN;
+    this.botRace          = Race.RANDOM;
+    this.gameType         = GameType.LAN;
 
     ensureDefaultConfigFile();
   }
@@ -123,8 +159,8 @@ public class BwHeadless {
     }
     if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariables.GAME_TYPE.toString()))) {
       /* Game Type */
-      if (tmpValue.equalsIgnoreCase(GameTypes.LAN.toString())) {
-        setGameType(GameTypes.LAN);
+      if (tmpValue.equalsIgnoreCase(GameType.LAN.toString())) {
+        setGameType(GameType.LAN);
       }
     }
     if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariables.BOT_NAME.toString()))) {
@@ -133,14 +169,14 @@ public class BwHeadless {
     }
     if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariables.BOT_RACE.toString()))) {
       /* Race */
-      if (tmpValue.equalsIgnoreCase(Races.TERRAN.toString())) {
-        setBotRace(Races.TERRAN);
-      } else if (tmpValue.equalsIgnoreCase(Races.ZERG.toString())) {
-        setBotRace(Races.ZERG);
-      } else if (tmpValue.equalsIgnoreCase(Races.PROTOSS.toString())) {
-        setBotRace(Races.PROTOSS);
-      } else if (tmpValue.equalsIgnoreCase(Races.RANDOM.toString())) {
-        setBotRace(Races.RANDOM);
+      if (tmpValue.equalsIgnoreCase(Race.TERRAN.toString())) {
+        setBotRace(Race.TERRAN);
+      } else if (tmpValue.equalsIgnoreCase(Race.ZERG.toString())) {
+        setBotRace(Race.ZERG);
+      } else if (tmpValue.equalsIgnoreCase(Race.PROTOSS.toString())) {
+        setBotRace(Race.PROTOSS);
+      } else if (tmpValue.equalsIgnoreCase(Race.RANDOM.toString())) {
+        setBotRace(Race.RANDOM);
       }
     }
     if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariables.BOT_DLL.toString()))) {
@@ -173,7 +209,6 @@ public class BwHeadless {
     if (this.botClient != null) {
       cf.setVariable(
           PredefinedVariables.BOT_CLIENT.toString(),
-//          MainTools.getFullPath(this.botClient)
           this.botClient.getAbsolutePath()
       );
     } else {
@@ -182,7 +217,6 @@ public class BwHeadless {
     if (this.botDll != null) {
       cf.setVariable(
           PredefinedVariables.BOT_DLL.toString(),
-//          MainTools.getFullPath(this.botDll)
           this.botDll.getAbsolutePath()
       );
     } else {
@@ -199,7 +233,6 @@ public class BwHeadless {
     if (this.bwapiDll != null) {
       cf.setVariable(
           PredefinedVariables.BWAPI_DLL.toString(),
-//          MainTools.getFullPath(this.bwapiDll)
           this.bwapiDll.getAbsolutePath()
       );
     } else {
@@ -212,7 +245,6 @@ public class BwHeadless {
     if (this.starcraftExe != null) {
       cf.setVariable(
           PredefinedVariables.STARCRAFT_EXE.toString(),
-//          MainTools.getFullPath(this.starcraftExe)
           this.starcraftExe.getAbsolutePath()
       );
     } else {
@@ -298,25 +330,25 @@ public class BwHeadless {
 
     ArrayList<String> bwheadlessArgs = new ArrayList<>();
 
-    bwheadlessArgs.add(Arguments.STARCRAFT_EXE.toString());
+    bwheadlessArgs.add(Argument.STARCRAFT_EXE.toString());
     bwheadlessArgs.add(MainTools.getFullPath(this.starcraftExe));
 
-    bwheadlessArgs.add(Arguments.JOIN_GAME.toString());
+    bwheadlessArgs.add(Argument.JOIN_GAME.toString());
 
-    bwheadlessArgs.add(Arguments.BOT_NAME.toString());
+    bwheadlessArgs.add(Argument.BOT_NAME.toString());
     bwheadlessArgs.add(this.botName);
 
-    bwheadlessArgs.add(Arguments.BOT_RACE.toString());
+    bwheadlessArgs.add(Argument.BOT_RACE.toString());
     bwheadlessArgs.add(this.botRace.toString());
 
-    bwheadlessArgs.add(Arguments.LOAD_DLL.toString());
+    bwheadlessArgs.add(Argument.LOAD_DLL.toString());
     bwheadlessArgs.add(MainTools.getFullPath(this.bwapiDll));
 
-    if (this.gameType == GameTypes.LAN) {
-      bwheadlessArgs.add(Arguments.ENABLE_LAN.toString());
+    if (this.gameType == GameType.LAN) {
+      bwheadlessArgs.add(Argument.ENABLE_LAN.toString());
     }
 
-    bwheadlessArgs.add(Arguments.STARCRAFT_INSTALL_PATH.toString());
+    bwheadlessArgs.add(Argument.STARCRAFT_INSTALL_PATH.toString());
     bwheadlessArgs.add(starcraftDir);
 
     if (this.botClient != null
@@ -342,6 +374,12 @@ public class BwHeadless {
     return true;
   }
 
+  /*
+  TODO: terminate the processes.
+  */
+  /**
+   * Close process pipes.
+   */
   public void eject() {
     LOGGER.info("eject(): ACK");
     this.bwHeadlessPipe.close();
@@ -403,10 +441,8 @@ public class BwHeadless {
     }
 
     this.bwapiDll = file;
-//    String dllSrc = MainTools.getFullPath(this.bwapiDll);
     String dllSrc = this.bwapiDll.getAbsolutePath();
     String dllDest =
-//        MainTools.getParentDirectory(MainTools.getFullPath(this.starcraftExe))
         this.starcraftExe.getAbsolutePath()
         + File.separator
         + Bwapi.BWAPI_DATA_DIR
@@ -554,7 +590,7 @@ public class BwHeadless {
    *
    * @return the race of the specified bot
    */
-  public Races getBotRace() {
+  public Race getBotRace() {
     return this.botRace;
   }
 
@@ -563,7 +599,7 @@ public class BwHeadless {
    *
    * @param race specified bot race
    */
-  public void setBotRace(Races race) {
+  public void setBotRace(Race race) {
     this.botRace = race;
     writeDefaultConfigFile();
     LOGGER.info("set bot race: " + this.botRace.toString());
@@ -574,7 +610,7 @@ public class BwHeadless {
    *
    * @return the game type
    */
-  public GameTypes getGameType() {
+  public GameType getGameType() {
     return this.gameType;
   }
 
@@ -583,10 +619,10 @@ public class BwHeadless {
    *
    * @param gameType specified game type
    */
-  public void setGameType(GameTypes gameType) {
+  public void setGameType(GameType gameType) {
     /* Disable Local PC */
     //    this.gameType = gameType;
-    this.gameType = GameTypes.LAN;
+    this.gameType = GameType.LAN;
     writeDefaultConfigFile();
     LOGGER.info("set game type: " + this.gameType.toString());
   }
