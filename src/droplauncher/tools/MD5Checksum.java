@@ -1,5 +1,3 @@
-/* MD5Checksum.java */
-
 package droplauncher.tools;
 
 import droplauncher.debugging.Debugging;

@@ -1,5 +1,3 @@
-/* ProcessPipe.java */
-
 /*
 TODO:
 - Since the removal of "_isOpen", determine best way to check if

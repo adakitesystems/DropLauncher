@@ -1,5 +1,3 @@
-/* Checksum.java */
-
 package droplauncher.starcraft;
 
 /**

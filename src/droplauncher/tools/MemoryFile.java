@@ -1,5 +1,3 @@
-/* MemoryFile.java */
-
 package droplauncher.tools;
 
 import droplauncher.debugging.Debugging;

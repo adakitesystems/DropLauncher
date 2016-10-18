@@ -1,5 +1,3 @@
-/* DropLauncher.java */
-
 package droplauncher;
 
 /**

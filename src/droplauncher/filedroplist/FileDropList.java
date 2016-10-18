@@ -1,5 +1,3 @@
-/* FileDropList.java */
-
 package droplauncher.filedroplist;
 
 import droplauncher.debugging.Debugging;

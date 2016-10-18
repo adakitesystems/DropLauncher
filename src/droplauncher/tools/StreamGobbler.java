@@ -1,5 +1,3 @@
-/* StreamDivert.java */
-
 package droplauncher.tools;
 
 import org.apache.logging.log4j.LogManager;
@@ -16,7 +14,11 @@ public class StreamGobbler extends Thread {
   private InputStream is;
   private BufferedReader br;
 
-  StreamGobbler(InputStream is) {
+  private StreamGobbler() {
+
+  }
+
+  public StreamGobbler(InputStream is) {
     this.is = is;
   }
 

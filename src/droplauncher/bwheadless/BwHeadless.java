@@ -1,5 +1,3 @@
-/* BwHeadless.java */
-
 package droplauncher.bwheadless;
 
 import droplauncher.MainWindow;

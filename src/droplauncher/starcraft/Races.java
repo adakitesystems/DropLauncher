@@ -1,5 +1,3 @@
-/* Race.java */
-
 package droplauncher.starcraft;
 
 /**

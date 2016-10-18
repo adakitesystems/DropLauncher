@@ -1,5 +1,3 @@
-/* GameType.java */
-
 package droplauncher.bwheadless;
 
 /**

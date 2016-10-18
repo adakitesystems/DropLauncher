@@ -1,5 +1,3 @@
-/* FileDrop.java */
-
 // CHECKSTYLE:OFF
 
 package filedrop;

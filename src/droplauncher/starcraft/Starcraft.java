@@ -1,5 +1,3 @@
-/* Starcraft.java */
-
 package droplauncher.starcraft;
 
 /**

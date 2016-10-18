@@ -1,5 +1,3 @@
-/* Argument.java */
-
 package droplauncher.bwheadless;
 
 /**

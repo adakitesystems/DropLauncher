@@ -1,5 +1,3 @@
-/* Bwapi.java  */
-
 package droplauncher.bwapi;
 
 import droplauncher.starcraft.Checksums;

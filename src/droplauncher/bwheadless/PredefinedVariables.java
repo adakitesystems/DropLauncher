@@ -1,5 +1,3 @@
-/* PredefinedVariable.java */
-
 package droplauncher.bwheadless;
 
 /**

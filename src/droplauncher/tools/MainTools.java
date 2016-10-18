@@ -1,5 +1,3 @@
-/* MainTools.java */
-
 package droplauncher.tools;
 
 import droplauncher.DropLauncher;

@@ -1,5 +1,3 @@
-/* ConfigFile.java */
-
 package droplauncher.config;
 
 import droplauncher.debugging.Debugging;
