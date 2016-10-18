@@ -76,7 +76,15 @@ public class BwHeadless {
         LOGGER.error(Debugging.createFail(file));
         return false;
       }
-      cf.setVariable(PredefinedVariables.STARCRAFT_EXE.toString(), null);
+      //      cf.setVariable(PredefinedVariables.STARCRAFT_EXE.toString(), null);
+      String scExe1 = "C:\\Program Files\\StarCraft\\StarCraft.exe";
+      String scExe2 = "C:\\Program Files (x86)\\StarCraft\\StarCraft.exe";
+      if (MainTools.doesFileExist(scExe1)) {
+        cf.setVariable(PredefinedVariables.STARCRAFT_EXE.toString(), scExe1);
+      } else if (MainTools.doesFileExist(scExe2)) {
+        cf.setVariable(PredefinedVariables.STARCRAFT_EXE.toString(), scExe2);
+      }
+
       cf.setVariable(PredefinedVariables.BWAPI_DLL.toString(), null);
       cf.setVariable(PredefinedVariables.GAME_TYPE.toString(), this.gameType.toString());
       cf.setVariable(PredefinedVariables.BOT_NAME.toString(), this.botName);
@@ -84,6 +92,7 @@ public class BwHeadless {
       cf.setVariable(PredefinedVariables.BOT_DLL.toString(), null);
       cf.setVariable(PredefinedVariables.BOT_CLIENT.toString(), null);
     }
+
     return readConfigFile(file);
   }
 
@@ -165,7 +174,6 @@ public class BwHeadless {
     if (this.botClient != null) {
       cf.setVariable(
           PredefinedVariables.BOT_CLIENT.toString(),
-//          MainTools.getFullPath(this.botClient)
           this.botClient.getAbsolutePath()
       );
     } else {
@@ -174,7 +182,6 @@ public class BwHeadless {
     if (this.botDll != null) {
       cf.setVariable(
           PredefinedVariables.BOT_DLL.toString(),
-//          MainTools.getFullPath(this.botDll)
           this.botDll.getAbsolutePath()
       );
     } else {
@@ -191,7 +198,6 @@ public class BwHeadless {
     if (this.bwapiDll != null) {
       cf.setVariable(
           PredefinedVariables.BWAPI_DLL.toString(),
-//          MainTools.getFullPath(this.bwapiDll)
           this.bwapiDll.getAbsolutePath()
       );
     } else {
@@ -204,7 +210,6 @@ public class BwHeadless {
     if (this.starcraftExe != null) {
       cf.setVariable(
           PredefinedVariables.STARCRAFT_EXE.toString(),
-//          MainTools.getFullPath(this.starcraftExe)
           this.starcraftExe.getAbsolutePath()
       );
     } else {
@@ -334,6 +339,9 @@ public class BwHeadless {
     return true;
   }
 
+  /**
+   * Eject bwheadless.exe and also the bot client if present.
+   */
   public void eject() {
     LOGGER.info("eject(): ACK");
     this.bwHeadlessPipe.close();

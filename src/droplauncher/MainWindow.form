@@ -29,8 +29,8 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+          <Group type="102" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="261" max="-2" attributes="0"/>
@@ -45,25 +45,8 @@
                       </Group>
                       <EmptySpace pref="28" max="32767" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="boxDropFiles" min="-2" pref="231" max="-2" attributes="0"/>
-                          <Group type="102" alignment="1" attributes="0">
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="lblBwapiDll" alignment="1" min="-2" pref="97" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="lblBotFile" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="lblBwapiDllVer" alignment="0" pref="97" max="32767" attributes="0"/>
-                                  </Group>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="lblBwapiDllText" max="32767" attributes="0"/>
-                                  <Component id="lblBotFileText" alignment="0" pref="119" max="32767" attributes="0"/>
-                                  <Component id="lblBwapiDllVersionText" alignment="0" max="32767" attributes="0"/>
-                              </Group>
-                          </Group>
-                      </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="boxDropFiles" min="-2" pref="231" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="btnLaunch" max="32767" attributes="0"/>
@@ -72,6 +55,37 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" alignment="0" groupAlignment="1" attributes="0">
+                              <Component id="lblBwapiDll" alignment="1" min="-2" pref="97" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="lblBotFile" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="lblBwapiDllVersion" alignment="0" pref="97" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Component id="lblStarCraftExe" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="lblBwapiDllText" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="lblBotFileText" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="lblBwapiDllVersionText" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="txtStarcraftExe" min="-2" pref="343" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
               </Group>
           </Group>
       </Group>
@@ -79,14 +93,19 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="lblStarCraftExe" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtStarcraftExe" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="lblBwapiDll" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblBwapiDllText" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="lblBwapiDllVer" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblBwapiDllVersion" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblBwapiDllVersionText" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -94,7 +113,7 @@
                   <Component id="lblBotFile" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblBotFileText" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="14" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Component id="lblBotName" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -209,7 +228,7 @@
         <Property name="text" type="java.lang.String" value="BWAPI.dll:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="lblBwapiDllVer">
+    <Component class="javax.swing.JLabel" name="lblBwapiDllVersion">
       <Properties>
         <Property name="text" type="java.lang.String" value="BWAPI Version:"/>
       </Properties>
@@ -220,10 +239,29 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lblBwapiDllText">
+      <Properties>
+        <Property name="text" type="java.lang.String" value=" "/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lblBwapiDllVersionText">
+      <Properties>
+        <Property name="text" type="java.lang.String" value=" "/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lblBotFileText">
+      <Properties>
+        <Property name="text" type="java.lang.String" value=" "/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblStarCraftExe">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="StarCraft.exe:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtStarcraftExe">
+      <Events>
+        <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="txtStarcraftExeMousePressed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

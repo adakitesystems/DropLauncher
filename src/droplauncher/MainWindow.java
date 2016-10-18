@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.io.File;
 import java.io.IOException;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -67,11 +68,13 @@ public class MainWindow extends JFrame {
     txtBotName = new javax.swing.JTextField();
     lblBotName = new javax.swing.JLabel();
     lblBwapiDll = new javax.swing.JLabel();
-    lblBwapiDllVer = new javax.swing.JLabel();
+    lblBwapiDllVersion = new javax.swing.JLabel();
     lblBotFile = new javax.swing.JLabel();
     lblBwapiDllText = new javax.swing.JLabel();
     lblBwapiDllVersionText = new javax.swing.JLabel();
     lblBotFileText = new javax.swing.JLabel();
+    lblStarCraftExe = new javax.swing.JLabel();
+    txtStarcraftExe = new javax.swing.JTextField();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -132,9 +135,23 @@ public class MainWindow extends JFrame {
 
     lblBwapiDll.setText("BWAPI.dll:");
 
-    lblBwapiDllVer.setText("BWAPI Version:");
+    lblBwapiDllVersion.setText("BWAPI Version:");
 
     lblBotFile.setText("Bot file:");
+
+    lblBwapiDllText.setText(" ");
+
+    lblBwapiDllVersionText.setText(" ");
+
+    lblBotFileText.setText(" ");
+
+    lblStarCraftExe.setText("StarCraft.exe:");
+
+    txtStarcraftExe.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mousePressed(java.awt.event.MouseEvent evt) {
+        txtStarcraftExeMousePressed(evt);
+      }
+    });
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
@@ -153,43 +170,57 @@ public class MainWindow extends JFrame {
               .addComponent(rbRaceRandom)
               .addComponent(rbRaceProtoss))
             .addContainerGap(28, Short.MAX_VALUE))
-          .addGroup(layout.createSequentialGroup()
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-              .addComponent(boxDropFiles, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-              .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                  .addComponent(lblBwapiDll, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                  .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(lblBotFile, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblBwapiDllVer, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                  .addComponent(lblBwapiDllText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                  .addComponent(lblBotFileText, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
-                  .addComponent(lblBwapiDllVersionText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addComponent(boxDropFiles, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
               .addComponent(btnLaunch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
               .addComponent(txtBotName)
               .addComponent(lblBotName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addContainerGap())))
+            .addContainerGap())
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addComponent(lblBwapiDll, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                  .addComponent(lblBotFile, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                  .addComponent(lblBwapiDllVersion, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)))
+              .addComponent(lblStarCraftExe))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+              .addGroup(layout.createSequentialGroup()
+                .addComponent(lblBwapiDllText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+              .addGroup(layout.createSequentialGroup()
+                .addComponent(lblBotFileText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+              .addGroup(layout.createSequentialGroup()
+                .addComponent(lblBwapiDllVersionText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+              .addGroup(layout.createSequentialGroup()
+                .addComponent(txtStarcraftExe, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())))))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-        .addGap(17, 17, 17)
+        .addGap(15, 15, 15)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(lblStarCraftExe)
+          .addComponent(txtStarcraftExe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(lblBwapiDll)
           .addComponent(lblBwapiDllText))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-          .addComponent(lblBwapiDllVer)
+          .addComponent(lblBwapiDllVersion)
           .addComponent(lblBwapiDllVersionText))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(lblBotFile)
           .addComponent(lblBotFileText))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         .addComponent(lblBotName)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -235,6 +266,17 @@ public class MainWindow extends JFrame {
   private void txtBotNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBotNameKeyReleased
 
   }//GEN-LAST:event_txtBotNameKeyReleased
+
+  private void txtStarcraftExeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtStarcraftExeMousePressed
+    JFileChooser fc = new JFileChooser();
+    if (fc.showOpenDialog(MainWindow.this) == JFileChooser.APPROVE_OPTION) {
+      File file = fc.getSelectedFile();
+      if (file != null) {
+        bwheadless.setStarcraftExe(file);
+        txtStarcraftExe.setText(file.getAbsolutePath());
+      }
+    }
+  }//GEN-LAST:event_txtStarcraftExeMousePressed
 
   /**
    * Main function called when main window is displayed.
@@ -294,6 +336,13 @@ public class MainWindow extends JFrame {
   }
 
   public void updateInfo() {
+    if (bwheadless.getStarcraftExe() != null) {
+      String starcraftDir = bwheadless.getStarcraftExe().getAbsolutePath();
+      txtStarcraftExe.setText(starcraftDir);
+    } else {
+      txtStarcraftExe.setText("Click here to choose StarCraft.exe");
+    }
+
     Race race = bwheadless.getBotRace();
     if (race == Race.RANDOM) {
       rbRaceRandom.setSelected(true);
@@ -335,13 +384,15 @@ public class MainWindow extends JFrame {
   private javax.swing.JLabel lblBotName;
   private javax.swing.JLabel lblBwapiDll;
   private javax.swing.JLabel lblBwapiDllText;
-  private javax.swing.JLabel lblBwapiDllVer;
+  private javax.swing.JLabel lblBwapiDllVersion;
   private javax.swing.JLabel lblBwapiDllVersionText;
+  private javax.swing.JLabel lblStarCraftExe;
   private javax.swing.JRadioButton rbRaceProtoss;
   private javax.swing.JRadioButton rbRaceRandom;
   private javax.swing.JRadioButton rbRaceTerran;
   private javax.swing.JRadioButton rbRaceZerg;
   private javax.swing.JTextField txtBotName;
+  private javax.swing.JTextField txtStarcraftExe;
   // End of variables declaration//GEN-END:variables
 
 }
