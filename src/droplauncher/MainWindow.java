@@ -265,7 +265,7 @@ public class MainWindow extends JFrame {
     EventQueue.invokeLater(new Runnable() {
       @Override
       public void run() {
-        mainWindow.setTitle(DropLauncher.PROGRAM_NAME);
+        mainWindow.setTitle(DropLauncher.PROGRAM_NAME + " " + DropLauncher.PROGRAM_VERSION);
         mainWindow.setResizable(false);
         mainWindow.setLocationRelativeTo(null);
         mainWindow.setVisible(true);
