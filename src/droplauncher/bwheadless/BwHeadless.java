@@ -46,10 +46,16 @@ public class BwHeadless {
   private Races       botRace;        /* required */
   private GameTypes   gameType;       /* required */
 
+  private MainWindow mainWindow;
+
+  public BwHeadless() {
+    
+  }
+
   /**
    * Intialize class members.
    */
-  public BwHeadless() {
+  public BwHeadless(MainWindow mainWindow) {
     this.bwHeadlessPipe   = new ProcessPipe();
     this.botClientPipe    = new ProcessPipe();
     this.starcraftExe     = null;
@@ -613,7 +619,11 @@ public class BwHeadless {
         setBotName(botName);
       }
     }
-    MainWindow.mainWindow.updateInfo();
+    this.mainWindow.updateInfo();
+  }
+
+  public void setMainWindow(MainWindow mainWindow) {
+    this.mainWindow = mainWindow;
   }
 
 }

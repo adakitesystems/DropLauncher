@@ -213,31 +213,6 @@ public class MainTools {
   }
 
   /**
-   * Displays a window message.
-   *
-   * @param message specified message to display
-   * @param title title of message window
-   */
-  public static void showInfoMessage(String message, String title) {
-    if (message == null) {
-      message = "";
-    }
-    if (isEmpty(title)) {
-      title = DropLauncher.PROGRAM_NAME;
-    }
-    JOptionPane.showMessageDialog(
-        MainWindow.mainWindow,
-        message,
-        title,
-        JOptionPane.INFORMATION_MESSAGE
-    );
-  }
-
-  public static void showWindowMessage(String message) {
-    showInfoMessage(message, null);
-  }
-
-  /**
    * Display a file chooser dialog.
    *
    * @return

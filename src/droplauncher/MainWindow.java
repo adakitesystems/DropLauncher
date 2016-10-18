@@ -39,7 +39,6 @@ public class MainWindow extends JFrame {
 
   private static final Logger LOGGER = LogManager.getRootLogger();
 
-  public static MainWindow mainWindow;
   private BwHeadless bwheadless;
 
   /**
@@ -48,7 +47,20 @@ public class MainWindow extends JFrame {
   /* Changed from public to private. */
   private MainWindow(BwHeadless bwheadless) {
     this.bwheadless = bwheadless;
+
     initComponents();
+
+    EventQueue.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        setTitle(DropLauncher.PROGRAM_NAME);
+        setResizable(false);
+        setLocationRelativeTo(null);
+        setVisible(true);
+
+        updateInfo();
+      }
+    });
   }
 
   /**
@@ -269,142 +281,17 @@ public class MainWindow extends JFrame {
       LOGGER.error(ex.getMessage(), ex);
     }
 
-    BwHeadless bwheadless = new BwHeadless();
-
     /* Create and display the form. */
-    mainWindow = new MainWindow(bwheadless);
-    EventQueue.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        mainWindow.setTitle(DropLauncher.PROGRAM_NAME);
-        mainWindow.setResizable(false);
-        mainWindow.setLocationRelativeTo(null);
-        mainWindow.setVisible(true);
-
-        mainWindow.updateInfo();
-      }
-    });
+    BwHeadless bwheadless = new BwHeadless();
+    MainWindow mainWindow = new MainWindow(bwheadless);
+    bwheadless.setMainWindow(mainWindow);
 
     /*
      * Add FileDrop Listener. All valid dropped files are added to the
      * static container object named FileDropList.
      */
-//    FileDrop fileDrop = new FileDrop(
-//        mainWindow.boxDropFiles,
-//        new FileDrop.Listener() {
-//          @Override
-//          public void filesDropped(File[] files) {
-//
-//            bwheadless.readDroppedFiles();
-//            FileDropList.INSTANCE.clear();
-//          }
-//    });
     FileDrop.Listener listener = new FileDropListener(bwheadless);
     new FileDrop(mainWindow.boxDropFiles, listener);
-
-    /* DEBUGGING --- start */
-//    ArrayList<String> argsList = new ArrayList<>();
-//    argsList.add("a");
-//    argsList.add("b");
-//    argsList.add("c");
-//    argsList.add("d");
-//    Object[] argsArray = argsList.toArray();
-//    String[] argsArrayArray = (String[])argsArray;
-//    int len = argsArray.length;
-//    for (int i = 0; i < len; i++)
-//    {
-//      System.out.println(argsArray[i]);
-//    }
-//    ProcessBuilder p = new ProcessBuilder(argsArrayArray);
-//    p.start();
-
-
-
-//    ProcessPipe pipe = new ProcessPipe();
-//    String path = "bwheadless_newer.exe";
-//    TokenArray pipeArgs = new TokenArray();
-////    pipeArgs.add("-e \"S:\\install\\StarCraft\\StarCraft.exe\"");
-//    pipeArgs.add("-e");
-//    pipeArgs.add("\"S:\\install\\StarCraft\\StarCraft.exe\"");
-//    pipeArgs.add("-j");
-////    pipeArgs.add("-n IronBot");
-//    pipeArgs.add("-n");
-//    pipeArgs.add("IronBot");
-////    pipeArgs.add("-r Terran");
-//    pipeArgs.add("-r");
-//    pipeArgs.add("Terran");
-////    pipeArgs.add("-l BWAPI.dll");
-//    pipeArgs.add("-l");
-//    pipeArgs.add("BWAPI.dll");
-//    pipeArgs.add("--lan");
-////    pipeArgs.add("--installpath \"S:\\install\\StarCraft\"");
-//    pipeArgs.add("--installpath");
-//    pipeArgs.add("\"S:\\install\\StarCraft\"");
-//    if (!pipe.open(path, pipeArgs.toStringArray())) {
-//      System.out.println("error opening pipe");
-//    }
-//    System.out.println(path + " " + pipeArgs.toString());
-
-
-
-//    MemoryFile mf = new MemoryFile();
-//    mf.readIntoMemory("bwapi.ini");
-//    int index = mf.getIndexStartsWith("ai");
-//    String newDll;
-//    String tmpLine;
-//    TokenArray ta = new TokenArray();
-//    if (index >= 0) {
-//      System.out.println(mf.getLines().get(index));
-//      tmpLine = mf.getLines().get(index);
-//      newDll = tmpLine.substring(tmpLine.indexOf("=") + 2, tmpLine.length());
-//      newDll = MainTools.getParentDirectory(newDll) + "\\NewBot.dll";
-//      System.out.println("ai = " + newDll);
-////      mf.writeToDisk(mf.getPath());
-//    }
-//    mf.printToConsole();
-
-
-
-//      ConfigFile cf = new ConfigFile();
-//      if (cf.open("bwapi.ini")) {
-////        cf.setVariable("ai", "S:\\install\\StarCraft\\bwapi-data\\AI\\LetaBot.dll");
-////        cf.setVariable("holiday", "ON");
-////        System.out.println("ai = " + cf.getValue("ai"));
-////        System.out.println("holiday = " + cf.getValue("holiday"));
-////        cf.enableVariable("ai");
-////        System.out.println("ai = " + cf.getValue("ai"));
-//        System.out.println(cf.getValue("ai"));
-//        cf.disableVariable("ai");
-//        System.out.println(cf.getValue("ai"));
-//        cf.enableVariable("ai");
-//        cf.setVariable("ai", "S:\\install\\StarCraft\\bwapi-data\\AI\\Iron.dll");
-//        System.out.println(cf.getValue("ai"));
-//      } else {
-//        System.out.println("error");
-//      }
-
-//    System.out.println(BwHeadless.getInstance().bwapiDllChecksums.getValue("BWAPI.dll 4.1.0b"));
-//    System.out.println(BwHeadless.getInstance().bwapiDllChecksums.getName("5d5128709ba714aa9c6095598bcf4624"));
-
-
-//    bwheadless.setStarcraftExe("S:\\install\\StarCraft\\StarCraft.exe");
-//    bwheadless.setBwapiDll("S:\\install\\StarCraft\\bwapi-data\\BWAPI.dll");
-//    bwheadless.setBotDll("S:\\install\\StarCraft\\bwapi-data\\AI\\KillerBot.dll");
-//    bwheadless.setBotName("KillerBot");
-//    bwheadless.setGameType(GameType.LAN);
-//    bwheadless.setBotRace(Race.ZERG);
-////    bwheadless.setBotClient("bwheadless.exe");
-//    bwheadless.launch();
-//    bwheadless.eject();
-
-//    bwheadless.ensureDefaultConfigFile();
-//    ConfigFile cf = new ConfigFile();
-//    cf.open(new File(BwHeadless.DEFAULT_CFG_FILE));
-//    cf.setVariable(PredefinedVariables.BOT_RACE.toString(), Race.RANDOM.toString());
-//    bwheadless.setBotClient(new File("bwheadless.exe"));
-//    bwheadless.loadConfigFile(new File(BwHeadless.DEFAULT_CFG_FILE));
-
-    /* DEBUGGING --- end */
   }
 
   public void updateInfo() {
