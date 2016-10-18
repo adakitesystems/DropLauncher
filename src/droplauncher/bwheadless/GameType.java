@@ -4,11 +4,11 @@ package droplauncher.bwheadless;
  * @author Adakite Systems
  * @author adakitesystems@gmail.com
  */
-public final class GameTypes {
+public final class GameType {
 
   private String str;
 
-  private GameTypes(String str) {
+  private GameType(String str) {
     this.str = str;
   }
 
@@ -17,6 +17,6 @@ public final class GameTypes {
     return this.str;
   }
 
-  public static final GameTypes LAN = new GameTypes("lan");
+  public static final GameType LAN = new GameType("lan");
 
 }

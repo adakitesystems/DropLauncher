@@ -18,6 +18,8 @@ public class Debugging {
   public static final String OPEN_FAIL = "open failed";
   public static final String CREATE_FAIL = "create failed";
 
+  private Debugging() {}
+
   public static String emptyString() {
     return Debugging.EMPTY_STRING;
   }

@@ -22,9 +22,7 @@ public class FileDropList {
 
   private ArrayList<File> files = new ArrayList<>();
 
-  private FileDropList() {
-
-  }
+  private FileDropList() {}
 
   public void clear() {
     this.files.clear();
