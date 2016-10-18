@@ -72,7 +72,7 @@ public class BwHeadless {
     File file = new File(BwHeadless.DEFAULT_CFG_FILE);
     if (!MainTools.doesFileExist(file)) {
       ConfigFile cf = new ConfigFile();
-      if (!cf.create(file)) {
+      if (!cf.open(file)) {
         LOGGER.error(Debugging.createFail(file));
         return false;
       }

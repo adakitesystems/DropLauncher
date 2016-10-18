@@ -86,19 +86,19 @@ public class MemoryFile  {
   public boolean readIntoMemory(File file) {
     reset();
 
-    if (file == null) {
+    this.file = file;
+
+    if (this.file == null) {
       LOGGER.warn(Debugging.nullObject());
       return false;
     }
-    if (!MainTools.doesFileExist(file)) {
-      LOGGER.warn(Debugging.fileDoesNotExist(file));
+    if (!MainTools.doesFileExist(this.file)) {
+      LOGGER.warn(Debugging.fileDoesNotExist(this.file));
       return false;
     }
 
-    this.file = file;
-
     try {
-      FileInputStream fis = new FileInputStream(file);
+      FileInputStream fis = new FileInputStream(this.file);
       BufferedReader br = new BufferedReader(new InputStreamReader(fis));
       String line;
 
@@ -140,7 +140,7 @@ public class MemoryFile  {
     }
     if (!MainTools.doesFileExist(file)
         && ((file = MainTools.create(file)) == null)) {
-      LOGGER.warn(Debugging.fileDoesNotExist(file));
+      LOGGER.error(Debugging.fileDoesNotExist(file));
       return false;
     }
     if (this.lines.size() < 1) {

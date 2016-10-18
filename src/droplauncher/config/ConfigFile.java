@@ -8,7 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -22,8 +21,8 @@ public class ConfigFile {
   private static final Logger LOGGER = LogManager.getRootLogger();
 
   public static final String FILE_EXTENSION = ".cfg";
-  public static final String VARIABLE_DELIMITER = "=";
-  public static final String COMMENT_DELIMITER = ";";
+  private static final String VARIABLE_DELIMITER = "=";
+  private static final String COMMENT_DELIMITER = ";";
 
   private MemoryFile memoryFile;
   private ArrayList<ConfigVariable> variables;
@@ -34,10 +33,6 @@ public class ConfigFile {
   public ConfigFile() {
     this.memoryFile = new MemoryFile();
     this.variables = new ArrayList<>();
-  }
-
-  public File getFile() {
-    return memoryFile.getFile();
   }
 
   public void reset() {
@@ -52,9 +47,12 @@ public class ConfigFile {
    *     true if file was created successfully or already exists,
    *     otherwise false
    */
-  public boolean create(File file) {
-    reset();
-    return this.memoryFile.create(file);
+  private boolean create(File file) {
+    boolean status = this.memoryFile.create(file);
+    if (!status) {
+      LOGGER.error(Debugging.CREATE_FAIL);
+    }
+    return status;
   }
 
   /**
@@ -66,10 +64,14 @@ public class ConfigFile {
    *     otherwise false
    */
   public boolean open(File file) {
-    reset();
-
     if (file == null) {
       LOGGER.warn(Debugging.nullObject());
+      return false;
+    } else if (!MainTools.doesFileExist(file) && !create(file)) {
+      LOGGER.error(Debugging.createFail(file));
+      return false;
+    } else {
+      reset();
     }
 
     if (!this.memoryFile.readIntoMemory(file)) {
@@ -135,12 +137,8 @@ public class ConfigFile {
       return -1;
     }
 
-    int len = this.variables.size();
-    ConfigVariable tmpVar;
-
-    for (int i = 0; i < len ; i++) {
-      tmpVar = this.variables.get(i);
-      if (tmpVar.getName().equalsIgnoreCase(name)) {
+    for (int i = 0; i < this.variables.size() ; i++) {
+      if (this.variables.get(i).getName().equalsIgnoreCase(name)) {
         return i;
       }
     }
@@ -162,12 +160,8 @@ public class ConfigFile {
       return -1;
     }
 
-    int len = this.variables.size();
-    ConfigVariable tmpVar;
-
-    for (int i = 0; i < len ; i++) {
-      tmpVar = this.variables.get(i);
-      if (tmpVar.getValue().equalsIgnoreCase(value)) {
+    for (int i = 0; i < this.variables.size() ; i++) {
+      if (this.variables.get(i).getValue().equalsIgnoreCase(value)) {
         return i;
       }
     }
@@ -179,7 +173,9 @@ public class ConfigFile {
    * Returns the name corresponding to the specified variable value.
    *
    * @param value specified variable value
-   * @return the name corresponding to the specified variable value
+   * @return
+   *     the name corresponding to the specified variable value,
+   *     otherwise null if value is not found
    */
   public String getName(String value) {
     int index = indexOfValue(value);
@@ -193,7 +189,9 @@ public class ConfigFile {
    * Returns the value corresponding to the specified variable name.
    *
    * @param name specified variable name
-   * @return the value corresponding to the specified variable name
+   * @return
+   *     the value corresponding to the specified variable name,
+   *     otherwise null if the name is not found
    */
   public String getValue(String name) {
     int index = indexOfName(name);
@@ -204,7 +202,7 @@ public class ConfigFile {
   }
 
   /**
-   * Create a new variable in the config file.
+   * Creates a new variable in the config file.
    *
    * @param name variable name
    * @param value variable value
@@ -230,7 +228,7 @@ public class ConfigFile {
     );
 
     /* Update changes in file. */
-    return this.memoryFile.writeToDisk() && refresh();
+    return (this.memoryFile.writeToDisk() && refresh());
   }
 
   /**
@@ -268,8 +266,12 @@ public class ConfigFile {
         comment = line.substring(index, line.length());
       }
 
-      if (line.trim().toLowerCase().startsWith(name) && line.contains(VARIABLE_DELIMITER)) {
-        line = name + " " + VARIABLE_DELIMITER + " " + value + " " + comment;
+      if (line.trim().toLowerCase().startsWith(name)
+          && line.contains(VARIABLE_DELIMITER)) {
+        line = name + " " + VARIABLE_DELIMITER + " " + value;
+        if (!MainTools.isEmpty(comment)) {
+          line += " " + comment;
+        }
         this.memoryFile.getLines().set(i, line);
         writeToFile = true;
       }
@@ -281,12 +283,14 @@ public class ConfigFile {
     }
 
     /* If this line is reached, something went wrong. */
-    LOGGER.warn("unable to set: " + name + " " + VARIABLE_DELIMITER + " " + value);
+    LOGGER.warn(this.memoryFile.getFile().getAbsolutePath()
+        + ": " + "unable to set: "
+        + name + " " + VARIABLE_DELIMITER + " " + value);
     return false;
   }
 
   /**
-   * Enables the specifiedd variable in the config file by
+   * Enables the specified variable in the config file by
    * uncommenting the line.
    *
    * @param name specified variable to enable
@@ -305,7 +309,6 @@ public class ConfigFile {
     String currentLine = null;
     int currentIndex = -1;
     int len = lines.size();
-    int index;
 
     /* Find the most current line matching variable name. */
     for (int i = 0; i < len; i++) {
@@ -323,7 +326,7 @@ public class ConfigFile {
       return false;
     }
 
-    index = currentLine.indexOf(COMMENT_DELIMITER);
+    int index = currentLine.indexOf(COMMENT_DELIMITER);
     currentLine = currentLine.substring(index + 1, currentLine.length()).trim();
     this.memoryFile.getLines().set(currentIndex, currentLine);
 
@@ -345,21 +348,22 @@ public class ConfigFile {
       return true;
     }
 
-    String line;
     ArrayList<String> lines = this.memoryFile.getLines();
-    int len = lines.size();
+    String tmpLine;
 
-    for (int i = 0; i < len; i++) {
-      line = lines.get(i);
-      if (line.trim().toLowerCase().startsWith(name)
-          && line.contains(VARIABLE_DELIMITER)) {
-        line = COMMENT_DELIMITER + " " + line;
-        this.memoryFile.getLines().set(i, line);
+    for (int i = 0; i < lines.size(); i++) {
+      tmpLine = lines.get(i);
+      if (tmpLine.trim().toLowerCase().startsWith(name)
+          && tmpLine.contains(VARIABLE_DELIMITER)) {
+        tmpLine = COMMENT_DELIMITER + " " + tmpLine;
+        this.memoryFile.getLines().set(i, tmpLine);
         return (this.memoryFile.writeToDisk() && refresh());
       }
     }
 
     /* If this line is reached, variable was not found in the config. */
+    LOGGER.warn(this.memoryFile.getFile().getAbsolutePath()
+        + ": unable to find variable to disable: " + name);
     return false;
   }
 
