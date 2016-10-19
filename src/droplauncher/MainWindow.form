@@ -46,45 +46,46 @@
                       <EmptySpace pref="28" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="boxDropFiles" min="-2" pref="231" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="btnLaunch" max="32767" attributes="0"/>
-                          <Component id="txtBotName" max="32767" attributes="0"/>
-                          <Component id="lblBotName" alignment="0" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" alignment="0" groupAlignment="1" attributes="0">
-                              <Component id="lblBwapiDll" alignment="1" min="-2" pref="97" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="lblBotFile" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="lblBwapiDllVersion" alignment="0" pref="97" max="32767" attributes="0"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="boxDropFiles" min="-2" pref="231" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="btnLaunch" max="32767" attributes="0"/>
+                                  <Component id="txtBotName" max="32767" attributes="0"/>
+                                  <Component id="lblBotName" alignment="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
-                          <Component id="lblStarCraftExe" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="103" alignment="0" groupAlignment="1" attributes="0">
+                                      <Component id="lblBwapiDll" alignment="1" min="-2" pref="97" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                          <Component id="lblBotFile" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="lblBwapiDllVersion" alignment="0" pref="97" max="32767" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Component id="lblStarCraftExe" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="lblBwapiDllText" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="lblBotFileText" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="lblBwapiDllVersionText" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Component id="txtStarcraftExe" alignment="0" min="-2" pref="343" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="lblBwapiDllText" max="32767" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="lblBotFileText" max="32767" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="lblBwapiDllVersionText" max="32767" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="txtStarcraftExe" min="-2" pref="343" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
                   </Group>
               </Group>
           </Group>
@@ -215,12 +216,13 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtBotName">
       <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtBotNameKeyPressed"/>
         <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtBotNameKeyReleased"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblBotName">
       <Properties>
-        <Property name="text" type="java.lang.String" value=" Bot name:"/>
+        <Property name="text" type="java.lang.String" value=" Bot name (max 24 characters):"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lblBwapiDll">
