@@ -9,6 +9,9 @@ import droplauncher.starcraft.Race;
 
 import filedrop.FileDrop;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.awt.EventQueue;
 import java.io.File;
 import java.io.IOException;
@@ -16,8 +19,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Class for main window.
@@ -30,7 +31,7 @@ public class MainWindow extends JFrame {
   private static final Logger LOGGER = LogManager.getRootLogger();
 
   public static MainWindow mainWindow;
-  public static BwHeadless bwheadless;
+  private static BwHeadless bwheadless;
   private int caretPosition;
 
   /**
@@ -279,8 +280,11 @@ public class MainWindow extends JFrame {
     if (fc.showOpenDialog(MainWindow.this) == JFileChooser.APPROVE_OPTION) {
       File file = fc.getSelectedFile();
       if (file != null) {
-        bwheadless.setStarcraftExe(file);
-        txtStarcraftExe.setText(file.getAbsolutePath());
+        if (bwheadless.setStarcraftExe(file)) {
+          txtStarcraftExe.setText(file.getAbsolutePath());
+        } else {
+          txtStarcraftExe.setText("");
+        }
       }
     }
   }//GEN-LAST:event_txtStarcraftExeMousePressed
@@ -294,7 +298,7 @@ public class MainWindow extends JFrame {
    *
    * @param args the command line arguments
    */
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) {
     /* Set the Nimbus look and feel if available. */
     try {
       for (UIManager.LookAndFeelInfo info :
@@ -304,10 +308,7 @@ public class MainWindow extends JFrame {
           break;
         }
       }
-    } catch (ClassNotFoundException
-        | InstantiationException
-        | IllegalAccessException
-        | UnsupportedLookAndFeelException ex) {
+    } catch (Exception ex) {
       LOGGER.error(ex.getMessage(), ex);
     }
 
@@ -318,20 +319,19 @@ public class MainWindow extends JFrame {
     EventQueue.invokeLater(new Runnable() {
       @Override
       public void run() {
-        mainWindow.setTitle(DropLauncher.PROGRAM_NAME + " " + DropLauncher.PROGRAM_VERSION);
+        mainWindow.setTitle(
+            DropLauncher.PROGRAM_NAME + " "
+            + DropLauncher.PROGRAM_VERSION
+        );
         mainWindow.setResizable(false);
         mainWindow.setLocationRelativeTo(null);
         mainWindow.setVisible(true);
 
-        mainWindow.updateInfo();
+        mainWindow.updateBotInfoUI();
       }
     });
 
-    /*
-     * Add FileDrop Listener. All valid dropped files are added to the
-     * static container object named FileDropList.
-     */
-    FileDrop fileDrop = new FileDrop(
+    new FileDrop(
         mainWindow.boxDropFiles,
         new FileDrop.Listener() {
           @Override
@@ -343,10 +343,9 @@ public class MainWindow extends JFrame {
             FileDropList.INSTANCE.clear();
           }
     });
-
   }
 
-  public void updateInfo() {
+  public void updateBotInfoUI() {
     if (bwheadless.getStarcraftExe() != null) {
       String starcraftDir = bwheadless.getStarcraftExe().getAbsolutePath();
       txtStarcraftExe.setText(starcraftDir);

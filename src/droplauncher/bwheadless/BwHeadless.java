@@ -587,7 +587,7 @@ public class BwHeadless {
         setBotName(botName);
       }
     }
-    MainWindow.mainWindow.updateInfo();
+    MainWindow.mainWindow.updateBotInfoUI();
   }
 
 }
