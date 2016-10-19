@@ -2,7 +2,7 @@
 This program is still in the testing phase.
 
 # Third-party Libraries/Applications
-* [tscmoo's bwheadless.exe](https://github.com/tscmoo/bwheadless) to load the bots into StarCraft.exe
+* [bwheadless.exe](https://github.com/tscmoo/bwheadless) to load the bots into StarCraft.exe
 * [FileDrop.java](http://iharder.sourceforge.net/current/java/filedrop/) for dropping files into the program
 
 # Known Issues
