@@ -83,17 +83,17 @@ public class BwHeadless {
       String scExe1 = "C:\\Program Files\\StarCraft\\StarCraft.exe";
       String scExe2 = "C:\\Program Files (x86)\\StarCraft\\StarCraft.exe";
       if (MainTools.doesFileExist(scExe1)) {
-        cf.setVariable(PredefinedVariables.STARCRAFT_EXE.toString(), scExe1);
+        cf.setVariable(PredefinedVariable.STARCRAFT_EXE.toString(), scExe1);
       } else if (MainTools.doesFileExist(scExe2)) {
-        cf.setVariable(PredefinedVariables.STARCRAFT_EXE.toString(), scExe2);
+        cf.setVariable(PredefinedVariable.STARCRAFT_EXE.toString(), scExe2);
       }
 
-      cf.setVariable(PredefinedVariables.BWAPI_DLL.toString(), null);
-      cf.setVariable(PredefinedVariables.GAME_TYPE.toString(), this.gameType.toString());
-      cf.setVariable(PredefinedVariables.BOT_NAME.toString(), this.botName);
-      cf.setVariable(PredefinedVariables.BOT_RACE.toString(), this.botRace.toString());
-      cf.setVariable(PredefinedVariables.BOT_DLL.toString(), null);
-      cf.setVariable(PredefinedVariables.BOT_CLIENT.toString(), null);
+      cf.setVariable(PredefinedVariable.BWAPI_DLL.toString(), null);
+      cf.setVariable(PredefinedVariable.GAME_TYPE.toString(), this.gameType.toString());
+      cf.setVariable(PredefinedVariable.BOT_NAME.toString(), this.botName);
+      cf.setVariable(PredefinedVariable.BOT_RACE.toString(), this.botRace.toString());
+      cf.setVariable(PredefinedVariable.BOT_DLL.toString(), null);
+      cf.setVariable(PredefinedVariable.BOT_CLIENT.toString(), null);
     }
 
     return readConfigFile(file);
@@ -117,25 +117,25 @@ public class BwHeadless {
     }
 
     String tmpValue;
-    if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariables.STARCRAFT_EXE.toString()))) {
+    if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariable.STARCRAFT_EXE.toString()))) {
       /* StarCraft.exe */
       setStarcraftExe(new File(tmpValue));
     }
-    if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariables.BWAPI_DLL.toString()))) {
+    if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariable.BWAPI_DLL.toString()))) {
       /* BWAPI.dll */
       setBwapiDll(new File(tmpValue));
     }
-    if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariables.GAME_TYPE.toString()))) {
+    if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariable.GAME_TYPE.toString()))) {
       /* Game Type */
       if (tmpValue.equalsIgnoreCase(GameType.LAN.toString())) {
         setGameType(GameType.LAN);
       }
     }
-    if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariables.BOT_NAME.toString()))) {
+    if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariable.BOT_NAME.toString()))) {
       /* Bot name */
       setBotName(tmpValue);
     }
-    if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariables.BOT_RACE.toString()))) {
+    if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariable.BOT_RACE.toString()))) {
       /* Race */
       if (tmpValue.equalsIgnoreCase(Race.TERRAN.toString())) {
         setBotRace(Race.TERRAN);
@@ -147,11 +147,11 @@ public class BwHeadless {
         setBotRace(Race.RANDOM);
       }
     }
-    if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariables.BOT_DLL.toString()))) {
+    if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariable.BOT_DLL.toString()))) {
       /* Bot DLL */
       setBotDll(new File(tmpValue));
     }
-    if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariables.BOT_CLIENT.toString()))) {
+    if (!MainTools.isEmpty(tmpValue = cf.getValue(PredefinedVariable.BOT_CLIENT.toString()))) {
       /* Bot client */
       setBotClient(new File(tmpValue));
     }
@@ -176,47 +176,47 @@ public class BwHeadless {
     /* Set variables which are not null. */
     if (this.botClient != null) {
       cf.setVariable(
-          PredefinedVariables.BOT_CLIENT.toString(),
+          PredefinedVariable.BOT_CLIENT.toString(),
           this.botClient.getAbsolutePath()
       );
     } else {
-      cf.setVariable(PredefinedVariables.BOT_CLIENT.toString(), null);
+      cf.setVariable(PredefinedVariable.BOT_CLIENT.toString(), null);
     }
     if (this.botDll != null) {
       cf.setVariable(
-          PredefinedVariables.BOT_DLL.toString(),
+          PredefinedVariable.BOT_DLL.toString(),
           this.botDll.getAbsolutePath()
       );
     } else {
-      cf.setVariable(PredefinedVariables.BOT_DLL.toString(), null);
+      cf.setVariable(PredefinedVariable.BOT_DLL.toString(), null);
     }
     cf.setVariable(
-        PredefinedVariables.BOT_NAME.toString(),
+        PredefinedVariable.BOT_NAME.toString(),
         this.botName
     );
     cf.setVariable(
-        PredefinedVariables.BOT_RACE.toString(),
+        PredefinedVariable.BOT_RACE.toString(),
         this.botRace.toString()
     );
     if (this.bwapiDll != null) {
       cf.setVariable(
-          PredefinedVariables.BWAPI_DLL.toString(),
+          PredefinedVariable.BWAPI_DLL.toString(),
           this.bwapiDll.getAbsolutePath()
       );
     } else {
-      cf.setVariable(PredefinedVariables.BWAPI_DLL.toString(), null);
+      cf.setVariable(PredefinedVariable.BWAPI_DLL.toString(), null);
     }
     cf.setVariable(
-        PredefinedVariables.GAME_TYPE.toString(),
+        PredefinedVariable.GAME_TYPE.toString(),
         this.gameType.toString()
     );
     if (this.starcraftExe != null) {
       cf.setVariable(
-          PredefinedVariables.STARCRAFT_EXE.toString(),
+          PredefinedVariable.STARCRAFT_EXE.toString(),
           this.starcraftExe.getAbsolutePath()
       );
     } else {
-      cf.setVariable(PredefinedVariables.STARCRAFT_EXE.toString(), null);
+      cf.setVariable(PredefinedVariable.STARCRAFT_EXE.toString(), null);
     }
 
     return true;
