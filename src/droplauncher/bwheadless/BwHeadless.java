@@ -1,3 +1,7 @@
+/*
+TODO: accept .jar bot clients
+*/
+
 package droplauncher.bwheadless;
 
 import droplauncher.MainWindow;
@@ -17,7 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 /**
- * Singleton class for handling communication with "bwheadless.exe" and
+ * Class for handling communication with "bwheadless.exe" and
  * starting the bot client if present.
  *
  * @author Adakite Systems
@@ -40,9 +44,9 @@ public class BwHeadless {
   private File        bwapiDll;       /* required */
   private String      botName;        /* required */
   private File        botDll;         /* required only when client is absent */
-  private File        botClient;      /* required only when DLL is absent, *.exe or *.jar */
-  private Race       botRace;        /* required */
-  private GameType   gameType;       /* required */
+  private File        botClient;      /* required only when DLL is absent */
+  private Race        botRace;        /* required */
+  private GameType    gameType;       /* required */
 
   /**
    * Intialize class members.
@@ -76,7 +80,6 @@ public class BwHeadless {
         LOGGER.error(Debugging.createFail(file));
         return false;
       }
-      //      cf.setVariable(PredefinedVariables.STARCRAFT_EXE.toString(), null);
       String scExe1 = "C:\\Program Files\\StarCraft\\StarCraft.exe";
       String scExe2 = "C:\\Program Files (x86)\\StarCraft\\StarCraft.exe";
       if (MainTools.doesFileExist(scExe1)) {
@@ -573,18 +576,18 @@ public class BwHeadless {
         setBwapiDll(tmpFile);
       } else if (tmpNameLower.endsWith(".dll")) {
         setBotDll(tmpFile);
-        String botName = MainTools.removeFileExtension(tmpName);
-        if (!botName.toLowerCase().contains("bot")) {
-          botName += " BOT";
+        String tmpBotName = MainTools.removeFileExtension(tmpName);
+        if (!tmpBotName.toLowerCase().contains("bot")) {
+          tmpBotName += " BOT";
         }
-        setBotName(botName);
+        setBotName(tmpBotName);
       } else if (tmpNameLower.endsWith(".exe")) {
         setBotClient(tmpFile);
-        String botName = MainTools.removeFileExtension(tmpName);
-        if (!botName.toLowerCase().contains("bot")) {
-          botName += " BOT";
+        String tmpBotName = MainTools.removeFileExtension(tmpName);
+        if (!tmpBotName.toLowerCase().contains("bot")) {
+          tmpBotName += " BOT";
         }
-        setBotName(botName);
+        setBotName(tmpBotName);
       }
     }
     MainWindow.mainWindow.updateBotInfoUI();
