@@ -14,11 +14,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.awt.EventQueue;
 import java.io.File;
-import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * Class for main window.
