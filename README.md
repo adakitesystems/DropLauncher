@@ -2,7 +2,7 @@
 This program is still in the testing phase.
 
 # Description
-A simple tool to aid humans in playing 1v1 StarCraft: Broodwar against against [BWAPI Bots](https://github.com/bwapi/bwapi).
+A simple tool to aid humans in playing 1v1 StarCraft: Broodwar against [BWAPI Bots](https://github.com/bwapi/bwapi).
 
 # Third-party Libraries/Applications
 * [bwheadless.exe](https://github.com/tscmoo/bwheadless) to load the bots into StarCraft.exe
