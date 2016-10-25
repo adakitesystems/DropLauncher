@@ -49,19 +49,10 @@ public class MD5Checksum {
     if (this.md == null) {
       LOGGER.warn("MessageDigest object is null");
       return MD5Checksum.EMPTY_CHECKSUM;
-<<<<<<< HEAD
     } else if (this.file == null) {
       LOGGER.warn(Debugging.nullObject());
       return MD5Checksum.EMPTY_CHECKSUM;
-    } else if (!MainTools.doesFileExist(this.file)) {
-=======
-    }
-    if (file == null) {
-      LOGGER.warn(Debugging.nullObject());
-      return MD5Checksum.EMPTY_CHECKSUM;
-    }
-    if (!MainTools.doesFileExist(file)) {
->>>>>>> 7e51a24cd594ac90570ea25349ade25b81e51681
+    } else if (!MainTools.doesFileExist(file)) {
       LOGGER.warn(Debugging.fileDoesNotExist(file));
       return MD5Checksum.EMPTY_CHECKSUM;
     }
@@ -74,10 +65,7 @@ public class MD5Checksum {
     } catch (Exception ex) {
       LOGGER.error(ex.getMessage(), ex);
     }
-<<<<<<< HEAD
-    
-=======
->>>>>>> 7e51a24cd594ac90570ea25349ade25b81e51681
+
     return MD5Checksum.EMPTY_CHECKSUM;
   }
 
