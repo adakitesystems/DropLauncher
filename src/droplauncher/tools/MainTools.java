@@ -13,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -39,12 +38,7 @@ public class MainTools {
    *     otherwise false
    */
   public static boolean isEmpty(String str) {
-    boolean status = (str == null || str.length() < 1);
-    //    /* A null string may be intended. An empty string may not be. */
-    //    if (str != null && str.isEmpty()) {
-    //      LOGGER.warn("non-null empty string detected");
-    //    }
-    return status;
+    return (str == null || str.length() < 1);
   }
 
   /**

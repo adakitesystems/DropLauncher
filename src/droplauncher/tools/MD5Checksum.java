@@ -19,7 +19,7 @@ public class MD5Checksum {
 
   public static final String EMPTY_MD5_CHECKSUM = "00000000000000000000000000000000";
 
-  private static MessageDigest md;
+  private static MessageDigest md = null;
 
   private MD5Checksum() {
     try {
@@ -38,6 +38,10 @@ public class MD5Checksum {
    *     otherwise {@link #EMPTY_MD5_CHECKSUM} if an error occurred
    */
   public static String getMD5Checksum(File file) {
+    if (md == null) {
+      LOGGER.warn("MessageDigest object is null");
+      return MD5Checksum.EMPTY_MD5_CHECKSUM;
+    }
     if (file == null) {
       LOGGER.warn(Debugging.nullObject());
       return MD5Checksum.EMPTY_MD5_CHECKSUM;
