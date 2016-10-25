@@ -13,17 +13,25 @@ import javax.xml.bind.DatatypeConverter;
 
 public class MD5Checksum {
 
-  public static final MD5Checksum INSTANCE = new MD5Checksum();
-
   private static final Logger LOGGER = LogManager.getRootLogger();
 
-  public static final String EMPTY_MD5_CHECKSUM = "00000000000000000000000000000000";
+  public static final String EMPTY_CHECKSUM =
+      "00000000000000000000000000000000";
 
-  private static MessageDigest md = null;
+  private MessageDigest md;
+  private File file;
 
-  private MD5Checksum() {
+  private MD5Checksum() {}
+
+  /**
+   * Constructor which initializes the required MessageDigest object.
+   *
+   * @param file specified file to process
+   */
+  public MD5Checksum(File file) {
+    this.file = file;
     try {
-      md = MessageDigest.getInstance("MD5");
+      this.md = MessageDigest.getInstance("MD5");
     } catch (Exception ex) {
       LOGGER.error(ex.getMessage(), ex);
     }
@@ -32,33 +40,33 @@ public class MD5Checksum {
   /**
    * Returns the MD5 checksum of the specified file.
    *
-   * @param file specified file
    * @return
    *     the MD5 checksum of the specified file,
-   *     otherwise {@link #EMPTY_MD5_CHECKSUM} if an error occurred
+   *     otherwise {@link #EMPTY_CHECKSUM} if an error has occurred
    */
-  public static String getMD5Checksum(File file) {
-    if (md == null) {
+  @Override
+  public String toString() {
+    if (this.md == null) {
       LOGGER.warn("MessageDigest object is null");
-      return MD5Checksum.EMPTY_MD5_CHECKSUM;
+      return MD5Checksum.EMPTY_CHECKSUM;
     }
     if (file == null) {
       LOGGER.warn(Debugging.nullObject());
-      return MD5Checksum.EMPTY_MD5_CHECKSUM;
+      return MD5Checksum.EMPTY_CHECKSUM;
     }
     if (!MainTools.doesFileExist(file)) {
       LOGGER.warn(Debugging.fileDoesNotExist(file));
-      return MD5Checksum.EMPTY_MD5_CHECKSUM;
+      return MD5Checksum.EMPTY_CHECKSUM;
     }
     try {
-      md.update(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
-      byte[] digest = md.digest();
+      this.md.update(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+      byte[] digest = this.md.digest();
       String checksum = DatatypeConverter.printHexBinary(digest).toLowerCase();
       return checksum;
     } catch (Exception ex) {
       LOGGER.error(ex.getMessage(), ex);
     }
-    return MD5Checksum.EMPTY_MD5_CHECKSUM;
+    return MD5Checksum.EMPTY_CHECKSUM;
   }
 
 }
