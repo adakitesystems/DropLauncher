@@ -1,0 +1,10 @@
+# Git commit files
+commit.txt
+diff.txt
+
+bwheadless.exe
+
+# NetBeans
+build.xml
+manifest.mf
+nbproject/*
