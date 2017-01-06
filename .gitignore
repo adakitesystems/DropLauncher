@@ -5,6 +5,8 @@ diff.txt
 bwheadless.exe
 
 # NetBeans
+build/*
+dist/*
 build.xml
 manifest.mf
 nbproject/*
