@@ -1,14 +1,11 @@
 package droplauncher.mvc;
 
 import droplauncher.bwheadless.BwHeadless;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.io.File;
 
 public class Model {
 
-  private MainWindow view;
+  private Controller controller;
 
   private BwHeadless bwheadless;
 
@@ -16,74 +13,8 @@ public class Model {
     this.bwheadless = new BwHeadless();
   }
 
-  public void setView(MainWindow view) {
-    this.view = view;
-  }
-
-  /* ************************************************************ */
-  /* Model functions passed to the View */
-  /* ************************************************************ */
-
-  //...
-
-  /* ************************************************************ */
-
-  /* ************************************************************ */
-  /* Model functions called by the View */
-  /* ************************************************************ */
-
-  public void btnLaunchActionPerformed(ActionEvent evt) {
-    //TODO
-  }
-
-  public void rbRaceTerranActionPerformed(ActionEvent evt) {
-    //TODO
-  }
-
-  public void rbRaceProtossActionPerformed(ActionEvent evt) {
-    //TODO
-  }
-
-  public void rbRaceRandomActionPerformed(ActionEvent evt) {
-    //TODO
-  }
-
-  public void rbRaceZergActionPerformed(ActionEvent evt) {
-    //TODO
-  }
-
-  public void txtBotNameKeyReleased(KeyEvent evt) {
-    //TODO
-//    String input = txtBotName.getText();
-//    bwheadless.setBotName(input);
-//    String inputCorrected = bwheadless.getBotName();
-//    if (!input.equals(inputCorrected)) {
-//      txtBotName.setText(inputCorrected);
-//      if (this.caretPosition > 0 && this.caretPosition < inputCorrected.length()) {
-//        txtBotName.setCaretPosition(this.caretPosition);
-//      } else {
-//        txtBotName.setCaretPosition(inputCorrected.length());
-//      }
-//    }
-  }
-
-  public void txtStarcraftExeMousePressed(MouseEvent evt) {
-    //TODO
-//    JFileChooser fc = new JFileChooser();
-//    if (fc.showOpenDialog(MainWindow.this) == JFileChooser.APPROVE_OPTION) {
-//      File file = fc.getSelectedFile();
-//      if (file != null) {
-//        if (bwheadless.setStarcraftExe(file)) {
-//          txtStarcraftExe.setText(file.getAbsolutePath());
-//        } else {
-//          txtStarcraftExe.setText("");
-//        }
-//      }
-//    }
-  }
-
-  public void txtBotNameKeyPressed(KeyEvent evt) {
-    //TODO
+  public void setControler(Controller controller) {
+    this.controller = controller;
   }
 
   public void filesDropped(File[] files) {
@@ -91,7 +22,5 @@ public class Model {
       System.out.println("It works! -> " + file.getAbsolutePath());
     }
   }
-
-  /* ************************************************************ */
 
 }

@@ -1,0 +1,105 @@
+package droplauncher.mvc;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.io.File;
+
+public class Controller {
+
+  private Model model;
+  private View view;
+
+  public Controller() {
+
+  }
+
+  public void setModel(Model model) {
+    this.model = model;
+  }
+
+  public void setView(View view) {
+
+  }
+
+  /* ************************************************************ */
+  /* Events from Model */
+  /* ************************************************************ */
+
+  //...
+
+  /* ************************************************************ */
+
+  /* ************************************************************ */
+  /* Events from View */
+  /* ************************************************************ */
+
+  public void btnLaunchActionPerformed(ActionEvent evt) {
+    //TODO
+  }
+
+  public void rbRaceTerranActionPerformed(ActionEvent evt) {
+    //TODO
+  }
+
+  public void rbRaceProtossActionPerformed(ActionEvent evt) {
+    //TODO
+  }
+
+  public void rbRaceRandomActionPerformed(ActionEvent evt) {
+    //TODO
+  }
+
+  public void rbRaceZergActionPerformed(ActionEvent evt) {
+    //TODO
+  }
+
+  public void txtBotNameKeyReleased(KeyEvent evt) {
+    //TODO
+//    String input = txtBotName.getText();
+//    bwheadless.setBotName(input);
+//    String inputCorrected = bwheadless.getBotName();
+//    if (!input.equals(inputCorrected)) {
+//      txtBotName.setText(inputCorrected);
+//      if (this.caretPosition > 0 && this.caretPosition < inputCorrected.length()) {
+//        txtBotName.setCaretPosition(this.caretPosition);
+//      } else {
+//        txtBotName.setCaretPosition(inputCorrected.length());
+//      }
+//    }
+  }
+
+  public void txtStarcraftExeMousePressed(MouseEvent evt) {
+    //TODO
+//    JFileChooser fc = new JFileChooser();
+//    if (fc.showOpenDialog(MainWindow.this) == JFileChooser.APPROVE_OPTION) {
+//      File file = fc.getSelectedFile();
+//      if (file != null) {
+//        if (bwheadless.setStarcraftExe(file)) {
+//          txtStarcraftExe.setText(file.getAbsolutePath());
+//        } else {
+//          txtStarcraftExe.setText("");
+//        }
+//      }
+//    }
+  }
+
+  public void txtBotNameKeyPressed(KeyEvent evt) {
+    //TODO
+  }
+
+  public void filesDropped(File[] files) {
+    this.model.filesDropped(files);
+  }
+
+  /* ************************************************************ */
+
+  /* ************************************************************ */
+  /* Events to View */
+  /* ************************************************************ */
+
+  //...
+
+  /* ************************************************************ */
+
+}

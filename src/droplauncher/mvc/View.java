@@ -1,38 +1,46 @@
 package droplauncher.mvc;
 
-
-
 import droplauncher.util.Constants;
 import filedrop.FileDrop;
 import droplauncher.util.FileDropListener;
-import java.awt.EventQueue;
+import java.io.File;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
+public class View extends JFrame {
 
-
-public class MainWindow extends JFrame {
-
-
-
-  private static final Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(View.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
+  private Controller controller;
 
+  public View() {
+    /* Set the Nimbus look and feel for the form. */
+    try {
+      for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+        if ("Nimbus".equals(info.getName())) {
+          UIManager.setLookAndFeel(info.getClassName());
+          break;
+        }
+      }
+    } catch (Exception ex) {
+      if (CLASS_DEBUG) {
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+      }
+    }
 
-  private Model model;
-
-
-
-  public MainWindow() {
     initComponents();
 
-    this.model = new Model();
-    this.model.setView(this);
+    /* Form settings */
+    setTitle(Constants.PROGRAM_NAME);
+    setResizable(false);
+    setLocationRelativeTo(null);
+    setVisible(true);
+
+    FileDrop.Listener fileDropListener = new FileDropListener(this);
+    new FileDrop(this.boxDropFiles, fileDropListener);
   }
-
-
 
   /* ************************************************************ */
   /**
@@ -45,7 +53,6 @@ public class MainWindow extends JFrame {
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
 
-    btngrpGameType = new javax.swing.ButtonGroup();
     btngrpRace = new javax.swing.ButtonGroup();
     boxDropFiles = new javax.swing.JLabel();
     btnLaunch = new javax.swing.JButton();
@@ -229,100 +236,55 @@ public class MainWindow extends JFrame {
   }// </editor-fold>//GEN-END:initComponents
   /* ************************************************************ */
 
-
+  public void setController(Controller controller) {
+    this.controller = controller;
+  }
 
   /* ************************************************************ */
-  /* View events passed to the Model */
+  /* View events passed to the Controller */
   /* ************************************************************ */
 
   private void btnLaunchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLaunchActionPerformed
-    this.model.btnLaunchActionPerformed(evt);
+    this.controller.btnLaunchActionPerformed(evt);
   }//GEN-LAST:event_btnLaunchActionPerformed
 
   private void rbRaceTerranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbRaceTerranActionPerformed
-    this.model.rbRaceTerranActionPerformed(evt);
+    this.controller.rbRaceTerranActionPerformed(evt);
   }//GEN-LAST:event_rbRaceTerranActionPerformed
 
   private void rbRaceProtossActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbRaceProtossActionPerformed
-    this.model.rbRaceProtossActionPerformed(evt);
+    this.controller.rbRaceProtossActionPerformed(evt);
   }//GEN-LAST:event_rbRaceProtossActionPerformed
 
   private void rbRaceRandomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbRaceRandomActionPerformed
-    this.model.rbRaceRandomActionPerformed(evt);
+    this.controller.rbRaceRandomActionPerformed(evt);
   }//GEN-LAST:event_rbRaceRandomActionPerformed
 
   private void rbRaceZergActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbRaceZergActionPerformed
-    this.model.rbRaceZergActionPerformed(evt);
+    this.controller.rbRaceZergActionPerformed(evt);
   }//GEN-LAST:event_rbRaceZergActionPerformed
 
   private void txtBotNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBotNameKeyReleased
-    this.model.txtBotNameKeyReleased(evt);
+    this.controller.txtBotNameKeyReleased(evt);
   }//GEN-LAST:event_txtBotNameKeyReleased
 
   private void txtStarcraftExeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtStarcraftExeMousePressed
-    this.model.txtStarcraftExeMousePressed(evt);
+    this.controller.txtStarcraftExeMousePressed(evt);
   }//GEN-LAST:event_txtStarcraftExeMousePressed
 
   private void txtBotNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBotNameKeyPressed
-    this.model.txtBotNameKeyPressed(evt);
+    this.controller.txtBotNameKeyPressed(evt);
   }//GEN-LAST:event_txtBotNameKeyPressed
 
-  /* ************************************************************ */
-
-
-
-  /* ************************************************************ */
-  /* View functions called by the Model */
-  /* ************************************************************ */
-
-  //...
-
-  /* ************************************************************ */
-
-
-
-  public static void main(String[] args) {
-    /* Set the Nimbus look and feel for the form. */
-    try {
-      for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-        if ("Nimbus".equals(info.getName())) {
-          UIManager.setLookAndFeel(info.getClassName());
-          break;
-        }
-      }
-    } catch (Exception ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
-      }
-    }
-
-    /* Create and display the form. */
-    EventQueue.invokeLater(new Runnable() {
-      public void run() {
-        MainWindow mainWindow = new MainWindow();
-        mainWindow.setTitle(Constants.PROGRAM_NAME);
-        mainWindow.setResizable(false);
-        mainWindow.setLocationRelativeTo(null);
-        mainWindow.setVisible(true);
-
-        FileDrop.Listener fileDropListener = new FileDropListener(mainWindow);
-        new FileDrop(mainWindow.boxDropFiles, fileDropListener);
-      }
-    });
+  public void filesDropped(File[] files) {
+    this.controller.filesDropped(files);
   }
 
-
-
-  public Model getModel() {
-    return this.model;
-  }
-
-
+  /* ************************************************************ */
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JLabel boxDropFiles;
   private javax.swing.JButton btnLaunch;
-  private javax.swing.ButtonGroup btngrpGameType;
   private javax.swing.ButtonGroup btngrpRace;
   private javax.swing.JLabel lblBotFile;
   private javax.swing.JLabel lblBotFileText;
@@ -339,7 +301,5 @@ public class MainWindow extends JFrame {
   private javax.swing.JTextField txtBotName;
   private javax.swing.JTextField txtStarcraftExe;
   // End of variables declaration//GEN-END:variables
-
-
 
 }

@@ -1,22 +1,21 @@
 package droplauncher.util;
 
-import droplauncher.mvc.MainWindow;
-import droplauncher.mvc.Model;
+import droplauncher.mvc.View;
 import filedrop.FileDrop;
 
 import java.io.File;
 
 public class FileDropListener implements FileDrop.Listener {
 
-  private Model model;
+  private View view;
 
-  public FileDropListener(MainWindow view) {
-    this.model = view.getModel();
+  public FileDropListener(View view) {
+    this.view = view;
   }
 
   @Override
   public void filesDropped(File[] files) {
-    this.model.filesDropped(files);
+    this.view.filesDropped(files);
   }
 
 }
