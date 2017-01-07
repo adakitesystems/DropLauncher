@@ -29,4 +29,8 @@ public class BwHeadless {
   private Race        botRace;        /* required */
   private GameType    gameType;       /* required */
 
+  public BwHeadless() {
+    
+  }
+
 }
