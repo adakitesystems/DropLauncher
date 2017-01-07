@@ -2,12 +2,13 @@ package droplauncher.bwheadless;
 
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
+import droplauncher.util.ProcessPipe;
 import java.io.File;
 import java.util.logging.Logger;
 
 /**
- * Class for handling communication with bwheadless.exe and
- * starting the bot client if present.
+ * Class for handling execution and communication with the
+ * bwheadless.exe process.
  */
 public class BwHeadless {
 
@@ -18,8 +19,8 @@ public class BwHeadless {
 
   public static final String DEFAULT_BOT_NAME = "BOT";
 
-//  private ProcessPipe bwHeadlessPipe; /* required */
-//  private ProcessPipe botClientPipe;  /* required only when DLL is absent */
+  private ProcessPipe bwHeadlessPipe; /* required */
+  private ProcessPipe botClientPipe;  /* required only when DLL is absent */
   private File        starcraftExe;   /* required */
   private File        bwapiDll;       /* required */
   private String      botName;        /* required */

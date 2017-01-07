@@ -2,6 +2,9 @@
 commit.txt
 diff.txt
 
+# Ignore AdakiteLibrary for now
+lib/adakite*
+
 bwheadless.exe
 
 # NetBeans
