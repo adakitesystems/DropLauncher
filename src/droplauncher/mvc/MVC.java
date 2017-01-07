@@ -11,8 +11,8 @@ public class MVC {
     View view = new View();
     Controller controller = new Controller();
 
-    controller.setModel(model);
-    controller.setView(view);
+    controller.addModel(model);
+    controller.addView(view);
 
     model.setControler(controller);
 

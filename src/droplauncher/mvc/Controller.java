@@ -14,11 +14,11 @@ public class Controller {
 
   }
 
-  public void setModel(Model model) {
+  public void addModel(Model model) {
     this.model = model;
   }
 
-  public void setView(View view) {
+  public void addView(View view) {
 
   }
 
