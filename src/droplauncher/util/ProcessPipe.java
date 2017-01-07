@@ -28,6 +28,7 @@ public class ProcessPipe {
   private BufferedReader br; /* read from process */
   private OutputStream os;
   private BufferedWriter bw; /* write to process */
+  private boolean isOpen;
 
   public ProcessPipe() {
     this.file = null;
@@ -37,6 +38,11 @@ public class ProcessPipe {
     this.br = null;
     this.os = null;
     this.bw = null;
+    this.isOpen = false;
+  }
+
+  public boolean isOpen() {
+    return this.isOpen;
   }
 
   public boolean open(File file, String[] args) {
@@ -71,13 +77,22 @@ public class ProcessPipe {
       this.os = this.process.getOutputStream();
       this.bw = new BufferedWriter(new OutputStreamWriter(this.os));
 
+      this.isOpen = true;
+
       return true;
     } catch (Exception ex) {
       if (CLASS_DEBUG) {
         LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
       }
     }
+
+    this.isOpen = false;
+
     return false;
+  }
+
+  public boolean open(File file) {
+    return open(file, null);
   }
 
   /**
@@ -89,6 +104,7 @@ public class ProcessPipe {
    *     otherwise false
    */
   public boolean close() {
+    this.isOpen = false;
     try {
       if (this.br != null && this.is != null
           && this.bw != null && this.os != null

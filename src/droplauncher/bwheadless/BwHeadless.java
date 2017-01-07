@@ -30,7 +30,19 @@ public class BwHeadless {
   private GameType    gameType;       /* required */
 
   public BwHeadless() {
-    
+    this.bwHeadlessPipe = new ProcessPipe();
+  }
+
+  public boolean launch() {
+    return this.bwHeadlessPipe.open(new File("C:\\Windows\\notepad.exe"));
+  }
+
+  public void close() {
+    this.bwHeadlessPipe.close();
+  }
+
+  public ProcessPipe getPipe() {
+    return this.bwHeadlessPipe;
   }
 
 }

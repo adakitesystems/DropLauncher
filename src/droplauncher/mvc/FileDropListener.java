@@ -1,6 +1,5 @@
-package droplauncher.util;
+package droplauncher.mvc;
 
-import droplauncher.mvc.View;
 import filedrop.FileDrop;
 
 import java.io.File;

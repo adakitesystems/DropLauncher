@@ -43,7 +43,7 @@ public class Controller {
   /* ************************************************************ */
 
   public void btnLaunchActionPerformed(ActionEvent evt) {
-    //TODO
+    this.model.btnLaunchActionPerformed(evt);
   }
 
   public void rbRaceTerranActionPerformed(ActionEvent evt) {

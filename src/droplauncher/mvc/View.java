@@ -2,7 +2,6 @@ package droplauncher.mvc;
 
 import droplauncher.util.Constants;
 import filedrop.FileDrop;
-import droplauncher.util.FileDropListener;
 import java.io.File;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -241,7 +240,15 @@ public class View extends JFrame {
   }
 
   /* ************************************************************ */
-  /* View events passed to the Controller */
+  /* Events from Controller */
+  /* ************************************************************ */
+
+  //...
+
+  /* ************************************************************ */
+
+  /* ************************************************************ */
+  /* Events to Controller */
   /* ************************************************************ */
 
   private void btnLaunchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLaunchActionPerformed
