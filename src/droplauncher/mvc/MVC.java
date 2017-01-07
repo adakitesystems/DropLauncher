@@ -14,7 +14,7 @@ public class MVC {
     controller.addModel(model);
     controller.addView(view);
 
-    model.setControler(controller);
+    model.setController(controller);
 
     view.setController(controller);
   }

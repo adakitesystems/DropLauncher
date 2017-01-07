@@ -13,7 +13,7 @@ public class Model {
     this.bwheadless = new BwHeadless();
   }
 
-  public void setControler(Controller controller) {
+  public void setController(Controller controller) {
     this.controller = controller;
   }
 

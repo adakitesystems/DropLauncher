@@ -19,7 +19,7 @@ public class Controller {
   }
 
   public void addView(View view) {
-
+    this.view = view;
   }
 
   /* ************************************************************ */
