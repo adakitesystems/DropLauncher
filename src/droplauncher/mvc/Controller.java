@@ -1,11 +1,16 @@
 package droplauncher.mvc;
 
+import droplauncher.util.Constants;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.logging.Logger;
 
 public class Controller {
+
+  private static final Logger LOGGER = Logger.getLogger(Controller.class.getName());
+  private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
   private Model model;
   private View view;

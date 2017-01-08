@@ -1,29 +1,30 @@
 package droplauncher.mvc;
 
-import droplauncher.bwheadless.BwHeadless;
+import droplauncher.bwheadless.BWHeadless;
+import droplauncher.util.Constants;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.logging.Logger;
 
 public class Model {
 
+  private static final Logger LOGGER = Logger.getLogger(Model.class.getName());
+  private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
+
   private Controller controller;
 
-  private BwHeadless bwheadless;
+  private BWHeadless bwheadless;
 
   public Model() {
-    this.bwheadless = new BwHeadless();
+    this.bwheadless = new BWHeadless();
   }
 
   public void setController(Controller controller) {
     this.controller = controller;
   }
 
-  public void launchBwHeadless() {
-    if (this.bwheadless.getPipe().isOpen()) {
-      this.bwheadless.close();
-    } else {
-      this.bwheadless.launch();
-    }
+  public void launchBWHeadless() {
+
   }
 
   /* ************************************************************ */
@@ -31,7 +32,7 @@ public class Model {
   /* ************************************************************ */
 
   public void btnLaunchActionPerformed(ActionEvent evt) {
-    launchBwHeadless();
+    launchBWHeadless();
   }
 
   public void filesDropped(File[] files) {

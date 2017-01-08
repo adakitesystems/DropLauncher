@@ -5,7 +5,8 @@ public enum Race {
   TERRAN("Terran"),
   PROTOSS("Protoss"),
   ZERG("Zerg"),
-  RANDOM("Random");
+  RANDOM("Random")
+  ;
 
   private String name;
 

@@ -2,14 +2,22 @@ package droplauncher.mvc;
 
 public class MVC {
 
-  private MVC() {
-    /* Do nothing. */
+  Model model;
+  View view;
+  Controller controller;
+
+  public MVC() {
+    init();
   }
 
   public MVC(String[] args) {
-    Model model = new Model();
-    View view = new View();
-    Controller controller = new Controller();
+    init();
+  }
+
+  private void init() {
+    this.model = new Model();
+    this.view = new View();
+    this.controller = new Controller();
 
     controller.addModel(model);
     controller.addView(view);

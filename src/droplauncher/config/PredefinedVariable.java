@@ -1,4 +1,4 @@
-package droplauncher.bwheadless;
+package droplauncher.config;
 
 public enum PredefinedVariable {
 
@@ -8,8 +8,12 @@ public enum PredefinedVariable {
   BOT_DLL("bot_dll"),
   BOT_CLIENT("bot_client"),
   BOT_RACE("bot_race"),
-  GAME_TYPE("network");
-
+  GAME_TYPE("network"),
+  JOIN_MODE("join_mode"),
+  GAME_NAME("game_name"),
+  MAP("map")
+  ;
+  
   private String str;
 
   private PredefinedVariable(String str) {
