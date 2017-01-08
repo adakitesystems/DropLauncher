@@ -1,5 +1,7 @@
 package droplauncher.bwheadless;
 
+import droplauncher.config.ConfigFile;
+import droplauncher.config.ConfigVariable;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import droplauncher.util.ProcessPipe;
@@ -31,6 +33,16 @@ public class BwHeadless {
 
   public BwHeadless() {
     this.bwHeadlessPipe = new ProcessPipe();
+
+    ConfigFile cf = new ConfigFile();
+    cf.setVariable(new ConfigVariable("starcraft_exe", "StarCraft.exe"));
+    cf.setVariable(new ConfigVariable("bwapi_dll", "BWAPI.dll"));
+    cf.setVariable(new ConfigVariable("network", "lan"));
+    cf.setVariable(new ConfigVariable("bot_name", "BOT"));
+    cf.setVariable(new ConfigVariable("bot_race", "Terran"));
+    cf.setVariable(new ConfigVariable("bot_dll", "bot.dll"));
+    cf.setVariable(new ConfigVariable("bot_client", "client.exe"));
+    cf.writeVariablesToFile();
   }
 
   public boolean launch() {
