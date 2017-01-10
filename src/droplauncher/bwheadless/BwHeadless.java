@@ -55,12 +55,12 @@ public class BWHeadless {
     return this.settings;
   }
 
-  public boolean launch() {
+  public boolean start() {
 //    return this.bwHeadlessPipe.open(new File("C:\\Windows\\notepad.exe"));
     return false;
   }
 
-  public void close() {
+  public void stop() {
 //    this.bwHeadlessPipe.close();
   }
 

@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 
 public class Controller {
 
@@ -51,58 +52,36 @@ public class Controller {
     this.model.btnLaunchActionPerformed(evt);
   }
 
-  public void rbRaceTerranActionPerformed(ActionEvent evt) {
-    //TODO
+  public void filesDropped(File[] files) {
+    this.model.filesDropped(files);
   }
 
   public void rbRaceProtossActionPerformed(ActionEvent evt) {
-    //TODO
+    this.model.rbRaceProtossActionPerformed(evt);
   }
 
   public void rbRaceRandomActionPerformed(ActionEvent evt) {
-    //TODO
+    this.model.rbRaceRandomActionPerformed(evt);
+  }
+
+  public void rbRaceTerranActionPerformed(ActionEvent evt) {
+    this.model.rbRaceTerranActionPerformed(evt);
   }
 
   public void rbRaceZergActionPerformed(ActionEvent evt) {
-    //TODO
-  }
-
-  public void txtBotNameKeyReleased(KeyEvent evt) {
-    //TODO
-//    String input = txtBotName.getText();
-//    bwheadless.setBotName(input);
-//    String inputCorrected = bwheadless.getBotName();
-//    if (!input.equals(inputCorrected)) {
-//      txtBotName.setText(inputCorrected);
-//      if (this.caretPosition > 0 && this.caretPosition < inputCorrected.length()) {
-//        txtBotName.setCaretPosition(this.caretPosition);
-//      } else {
-//        txtBotName.setCaretPosition(inputCorrected.length());
-//      }
-//    }
-  }
-
-  public void txtStarcraftExeMousePressed(MouseEvent evt) {
-    //TODO
-//    JFileChooser fc = new JFileChooser();
-//    if (fc.showOpenDialog(MainWindow.this) == JFileChooser.APPROVE_OPTION) {
-//      File file = fc.getSelectedFile();
-//      if (file != null) {
-//        if (bwheadless.setStarcraftExe(file)) {
-//          txtStarcraftExe.setText(file.getAbsolutePath());
-//        } else {
-//          txtStarcraftExe.setText("");
-//        }
-//      }
-//    }
+    this.model.rbRaceZergActionPerformed(evt);
   }
 
   public void txtBotNameKeyPressed(KeyEvent evt) {
-    //TODO
+    this.model.txtBotNameKeyPressed(evt);
   }
 
-  public void filesDropped(File[] files) {
-    this.model.filesDropped(files);
+  public void txtBotNameKeyReleased(KeyEvent evt) {
+    this.model.txtBotNameKeyReleased(evt);
+  }
+
+  public void txtStarcraftExeMousePressed(MouseEvent evt) {
+    this.model.txtStarcraftExeMousePressed(evt);
   }
 
   /* ************************************************************ */
@@ -111,7 +90,9 @@ public class Controller {
   /* Events to View */
   /* ************************************************************ */
 
-  //...
+  public int showFileChooser(JFileChooser fc) {
+    return this.view.showFileChooser(fc);
+  }
 
   /* ************************************************************ */
 

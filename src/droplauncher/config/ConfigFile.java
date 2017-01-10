@@ -44,12 +44,12 @@ public class ConfigFile {
   }
 
   public void writeVariablesToFile(File file) {
-//    File writeFile;
-//    if (file == null) {
-//      writeFile = this.file;
-//    } else {
-//      writeFile = file;
-//    }
+    File writeFile;
+    if (file == null) {
+      writeFile = this.file;
+    } else {
+      writeFile = file;
+    }
 //    for (String str : this.variables.getKeySet()) {
 //      System.out.println(str + " = " + variables.get(str));
 //    }

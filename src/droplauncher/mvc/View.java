@@ -4,6 +4,7 @@ import droplauncher.util.Constants;
 import filedrop.FileDrop;
 import java.io.File;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
@@ -243,7 +244,9 @@ public class View extends JFrame {
   /* Events from Controller */
   /* ************************************************************ */
 
-  //...
+  public int showFileChooser(JFileChooser fc) {
+    return fc.showOpenDialog(this);
+  }
 
   /* ************************************************************ */
 
