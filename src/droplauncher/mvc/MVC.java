@@ -1,10 +1,14 @@
 package droplauncher.mvc;
 
+/**
+ * Modified MVC design pattern without the Controller.
+ * The Model has access to the View and the View has access to the Model.
+ * For the most part, the View just displays internal variables of the Model.
+ */
 public class MVC {
 
   Model model;
   View view;
-  Controller controller;
 
   public MVC() {
     init();
@@ -17,14 +21,9 @@ public class MVC {
   private void init() {
     this.model = new Model();
     this.view = new View();
-    this.controller = new Controller();
 
-    controller.addModel(model);
-    controller.addView(view);
-
-    model.setController(controller);
-
-    view.setController(controller);
+    view.setModel(model);
+    model.setView(view);
   }
 
 }

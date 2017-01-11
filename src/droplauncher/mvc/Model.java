@@ -1,6 +1,5 @@
 package droplauncher.mvc;
 
-import adakite.utils.FileOperation;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
@@ -17,7 +16,7 @@ public class Model {
   private static final Logger LOGGER = Logger.getLogger(Model.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
-  private Controller controller;
+  private View view;
 
   private BWHeadless bwheadless;
 
@@ -25,24 +24,20 @@ public class Model {
     this.bwheadless = new BWHeadless();
   }
 
-  public void setController(Controller controller) {
-    this.controller = controller;
+  public void setView(View view) {
+    this.view = view;
   }
 
-  public void startBWHeadless() {
-
-  }
-
-  public void stopBWHeadless() {
-
+  public BWHeadless getBWHeadless() {
+    return this.bwheadless;
   }
 
   /* ************************************************************ */
-  /* Events from Controller */
+  /* Events from View */
   /* ************************************************************ */
 
   public void btnLaunchActionPerformed(ActionEvent evt) {
-    startBWHeadless();
+
   }
 
   public void filesDropped(File[] files) {
@@ -68,7 +63,7 @@ public class Model {
   }
 
   public void txtBotNameKeyPressed(KeyEvent evt) {
-    //TODO
+
   }
 
   public void txtBotNameKeyReleased(KeyEvent evt) {
@@ -90,18 +85,18 @@ public class Model {
     //TODO: Only accept StarCraft.exe file selection. Might need to remove "All files" filter as well.
     JFileChooser fc = new JFileChooser(new File("C:\\StarCraft"));
     fc.setFileFilter(new FileNameExtensionFilter("*.exe", "exe"));
-    if (this.controller.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
+    if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
       File file = fc.getSelectedFile();
       if (file != null) {
         System.out.println("File chosen: " + file.getAbsolutePath());
+        this.bwheadless.getSettings().setStarcraftExe(file);
+        this.view.getTextFieldStarcraftExe().setText(this.bwheadless.getSettings().getStarcraftExe().getAbsolutePath());
       }
     }
   }
 
   /* ************************************************************ */
-
-  /* ************************************************************ */
-  /* Events to Controller */
+  /* Events to View */
   /* ************************************************************ */
 
   //...

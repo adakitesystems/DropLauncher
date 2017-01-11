@@ -40,7 +40,7 @@ public class Settings {
     this.joinMode = null;
   }
 
-  public ReadyStatus getStatus() {
+  public ReadyStatus getReadyStatus() {
     if (this.starcraftExe == null
         || !(new FileOperation(this.starcraftExe).doesFileExist())) {
       return ReadyStatus.STARTCRAFT_EXE;
@@ -69,73 +69,114 @@ public class Settings {
   }
 
   public boolean isReady() {
-    return (getStatus() == ReadyStatus.READY);
+    return (getReadyStatus() == ReadyStatus.READY);
   }
 
   public File getStarcraftExe() {
     return this.starcraftExe;
   }
 
-  public void setStarcraftExe(File starcraftExe) {
+  public boolean setStarcraftExe(File starcraftExe) {
+    if (!(new FileOperation(starcraftExe)).doesFileExist()) {
+      this.starcraftExe = null;
+      return false;
+    }
     this.starcraftExe = starcraftExe;
+    if (CLASS_DEBUG) {
+      LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "setStarcraftExe: " + this.starcraftExe);
+    }
+    return true;
   }
 
   public File getBwapiDll() {
     return this.bwapiDll;
   }
 
-  public void setBwapiDll(File bwapiDll) {
+  public boolean setBwapiDll(File bwapiDll) {
+    if (!(new FileOperation(bwapiDll)).doesFileExist()) {
+      this.bwapiDll = null;
+      return false;
+    }
     this.bwapiDll = bwapiDll;
+    return true;
   }
 
   public String getBotName() {
     return this.botName;
   }
 
-  public void setBotName(String botName) {
-    this.botName = botName;
+  public boolean setBotName(String botName) {
+    this.botName = Starcraft.cleanProfileName(botName);
+    return true;
   }
 
   public File getBotDll() {
     return this.botDll;
   }
 
-  public void setBotDll(File botDll) {
+  public boolean setBotDll(File botDll) {
+    if (!(new FileOperation(botDll)).doesFileExist()) {
+      this.botClient = null;
+      this.botDll = null;
+      return false;
+    }
     this.botClient = null;
     this.botDll = botDll;
+    return true;
   }
 
   public File getBotClient() {
     return this.botClient;
   }
 
-  public void setBotClient(File botClient) {
+  public boolean setBotClient(File botClient) {
+    if (!(new FileOperation(botClient)).doesFileExist()) {
+      this.botClient = null;
+      this.botDll = null;
+      return false;
+    }
     this.botDll = null;
     this.botClient = botClient;
+    return true;
   }
 
   public Race getBotRace() {
     return this.botRace;
   }
 
-  public void setBotRace(Race botRace) {
+  public boolean setBotRace(Race botRace) {
+    if (botRace == null) {
+      this.botRace = null;
+      return false;
+    }
     this.botRace = botRace;
+    return true;
   }
 
   public GameType getGameType() {
     return this.gameType;
   }
 
-  public void setGameType(GameType gameType) {
+  public boolean setGameType(GameType gameType) {
+    if (gameType == null) {
+      this.gameType = null;
+      return false;
+    }
     this.gameType = gameType;
+    return true;
   }
 
   public JoinMode getJoinMode() {
     return this.joinMode;
   }
 
-  public void setJoinMode(JoinMode joinMode) {
+  public boolean setJoinMode(JoinMode joinMode) {
+    if (joinMode == null) {
+      this.joinMode = null;
+      return false;
+    }
     this.joinMode = joinMode;
+    return true;
   }
 
 }

@@ -45,9 +45,11 @@ public class BWHeadless {
   private static final Logger LOGGER = Logger.getLogger(BWHeadless.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
+  private ProcessPipe pipe;
   private Settings settings;
 
   public BWHeadless() {
+    this.pipe = new ProcessPipe();
     this.settings = new Settings();
   }
 
@@ -55,18 +57,25 @@ public class BWHeadless {
     return this.settings;
   }
 
+  public void setSettings(Settings settings) {
+    this.settings = settings;
+  }
+
+  public ReadyStatus getReadyStatus() {
+    return this.settings.getReadyStatus();
+  }
+
+  public boolean isReady() {
+    return this.settings.isReady();
+  }
+
   public boolean start() {
-//    return this.bwHeadlessPipe.open(new File("C:\\Windows\\notepad.exe"));
+    //TODO
     return false;
   }
 
   public void stop() {
-//    this.bwHeadlessPipe.close();
-  }
-
-  public ProcessPipe getPipe() {
-//    return this.bwHeadlessPipe;
-    return null;
+    //TODO
   }
 
 }
