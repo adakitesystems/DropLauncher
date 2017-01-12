@@ -1,4 +1,4 @@
-package droplauncher.mvc;
+package droplauncher.mvc.view;
 
 import filedrop.FileDrop;
 

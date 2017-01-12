@@ -65,12 +65,20 @@ public class BWHeadless {
     return this.settings.getReadyStatus();
   }
 
+  public boolean isRunning() {
+    return this.pipe.isOpen();
+  }
+
   public boolean isReady() {
     return this.settings.isReady();
   }
 
   public boolean start() {
-    //TODO
+    if (isReady()) {
+      System.out.println("Ready");
+    } else {
+      System.out.println("Not Ready");
+    }
     return false;
   }
 

@@ -1,5 +1,8 @@
 package droplauncher.mvc;
 
+import droplauncher.mvc.model.Model;
+import droplauncher.mvc.view.View;
+
 /**
  * Modified MVC design pattern without the Controller.
  * The Model has access to the View and the View has access to the Model.

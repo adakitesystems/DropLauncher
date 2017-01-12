@@ -1,7 +1,8 @@
-package droplauncher.mvc;
+package droplauncher.mvc.view;
 
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.Settings;
+import droplauncher.mvc.model.Model;
 import droplauncher.util.Constants;
 import filedrop.FileDrop;
 import java.io.File;
@@ -11,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
@@ -276,14 +278,23 @@ public class View extends JFrame {
     return fc.showOpenDialog(this);
   }
 
+  public void showMessageBox(String str, int messageType) {
+    JOptionPane.showMessageDialog(
+        this,
+        str,
+        Constants.PROGRAM_NAME,
+        messageType
+    );
+  }
+
   public void update() {
     Settings settings = this.model.getBWHeadless().getSettings();
 
     /* StarCraft.exe */
     if (settings.getStarcraftExe() != null) {
-      this.lblStarcraftExe.setText(settings.getStarcraftExe().getAbsolutePath());
+      this.txtStarcraftExe.setText(settings.getStarcraftExe().getAbsolutePath());
     } else {
-      this.lblStarcraftExe.setText("");
+      this.txtStarcraftExe.setText("");
     }
 
     /* BWAPI.dll */

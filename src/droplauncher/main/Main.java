@@ -1,4 +1,6 @@
-package droplauncher.mvc;
+package droplauncher.main;
+
+import droplauncher.mvc.MVC;
 
 public class Main {
 

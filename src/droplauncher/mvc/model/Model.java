@@ -1,6 +1,9 @@
-package droplauncher.mvc;
+package droplauncher.mvc.model;
 
+import droplauncher.mvc.view.View;
 import droplauncher.bwheadless.BWHeadless;
+import droplauncher.bwheadless.ReadyStatus;
+import droplauncher.mvc.view.LaunchButtonText;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import java.awt.event.ActionEvent;
@@ -9,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Model {
@@ -37,7 +41,21 @@ public class Model {
   /* ************************************************************ */
 
   public void btnLaunchActionPerformed(ActionEvent evt) {
-
+    if (!this.bwheadless.isRunning()) {
+      ReadyStatus status = this.bwheadless.getReadyStatus();
+      if (status != ReadyStatus.READY) {
+        this.view.showMessageBox("Not ready: " + status.toString(), JOptionPane.ERROR_MESSAGE);
+        return;
+      }
+      if (this.bwheadless.start()) {
+        this.view.getButtonLaunch().setText(LaunchButtonText.EJECT.toString());
+      } else {
+        //TODO: error
+      }
+    } else {
+      this.bwheadless.stop();
+      this.view.getButtonLaunch().setText(LaunchButtonText.LAUNCH.toString());
+    }
   }
 
   public void filesDropped(File[] files) {

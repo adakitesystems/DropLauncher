@@ -28,7 +28,7 @@ public class BWAPI {
     }
 
     String checksum = MD5Checksum.get(file);
-    String version = null;
+    String version;
 
     if (checksum.equals(Checksum.BWAPI_DLL_374.toString())) {
       version = "3.7.4";

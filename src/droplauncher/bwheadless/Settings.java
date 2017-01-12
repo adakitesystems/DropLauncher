@@ -82,9 +82,6 @@ public class Settings {
       return false;
     }
     this.starcraftExe = starcraftExe;
-    if (CLASS_DEBUG) {
-      LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "setStarcraftExe: " + this.starcraftExe);
-    }
     return true;
   }
 
