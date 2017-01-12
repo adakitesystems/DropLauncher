@@ -83,7 +83,8 @@ public class View extends JFrame {
     lblBwapiDllVersionText = new javax.swing.JLabel();
     lblBotFileText = new javax.swing.JLabel();
     lblStarcraftExe = new javax.swing.JLabel();
-    txtStarcraftExe = new javax.swing.JTextField();
+    btnStarcraftExe = new javax.swing.JButton();
+    lblStarcraftExeText = new javax.swing.JLabel();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -159,11 +160,15 @@ public class View extends JFrame {
 
     lblStarcraftExe.setText("StarCraft.exe:");
 
-    txtStarcraftExe.addMouseListener(new java.awt.event.MouseAdapter() {
-      public void mousePressed(java.awt.event.MouseEvent evt) {
-        txtStarcraftExeMousePressed(evt);
+    btnStarcraftExe.setFont(new java.awt.Font("Serif", 1, 12)); // NOI18N
+    btnStarcraftExe.setText("...");
+    btnStarcraftExe.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnStarcraftExeActionPerformed(evt);
       }
     });
+
+    lblStarcraftExeText.setText(" ");
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
@@ -204,16 +209,20 @@ public class View extends JFrame {
                   .addComponent(lblBwapiDllText, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
                   .addComponent(lblBotFileText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                   .addComponent(lblBwapiDllVersionText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                  .addComponent(txtStarcraftExe, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                  .addGroup(layout.createSequentialGroup()
+                    .addComponent(btnStarcraftExe, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(lblStarcraftExeText, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)))))
             .addContainerGap())))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-        .addGap(15, 15, 15)
+        .addGap(14, 14, 14)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(lblStarcraftExe)
-          .addComponent(txtStarcraftExe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addComponent(btnStarcraftExe, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(lblStarcraftExeText))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(lblBwapiDll)
@@ -267,12 +276,13 @@ public class View extends JFrame {
   public JLabel getLabelBwapiDllVersion() { return this.lblBwapiDllVersion; }
   public JLabel getLabelBwapiDllVersionText() { return this.lblBwapiDllVersionText; }
   public JLabel getLabelStarcraftExe() { return this.lblStarcraftExe; }
+  public JButton getButtonStarcraftExe() { return this.btnStarcraftExe; }
+  public JLabel getLabelStarcraftExeText() { return this.lblStarcraftExeText; }
   public JRadioButton getRadioButtonProtoss() { return this.rbRaceProtoss; }
   public JRadioButton getRadioButtonRandom() { return this.rbRaceRandom; }
   public JRadioButton getRadioButtonTerran() { return this.rbRaceTerran; }
   public JRadioButton getRadioButtonZerg() { return this.rbRaceZerg; }
   public JTextField getTextFieldBotName() { return this.txtBotName; }
-  public JTextField getTextFieldStarcraftExe() { return this.txtStarcraftExe; }
 
   public int showFileChooser(JFileChooser fc) {
     return fc.showOpenDialog(this);
@@ -292,9 +302,9 @@ public class View extends JFrame {
 
     /* StarCraft.exe */
     if (settings.getStarcraftExe() != null) {
-      this.txtStarcraftExe.setText(settings.getStarcraftExe().getAbsolutePath());
+      this.btnStarcraftExe.setText(settings.getStarcraftExe().getAbsolutePath());
     } else {
-      this.txtStarcraftExe.setText("");
+      this.btnStarcraftExe.setText("");
     }
 
     /* BWAPI.dll */
@@ -372,13 +382,13 @@ public class View extends JFrame {
     this.model.txtBotNameKeyReleased(evt);
   }//GEN-LAST:event_txtBotNameKeyReleased
 
-  private void txtStarcraftExeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtStarcraftExeMousePressed
-    this.model.txtStarcraftExeMousePressed(evt);
-  }//GEN-LAST:event_txtStarcraftExeMousePressed
-
   private void txtBotNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBotNameKeyPressed
     this.model.txtBotNameKeyPressed(evt);
   }//GEN-LAST:event_txtBotNameKeyPressed
+
+  private void btnStarcraftExeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStarcraftExeActionPerformed
+    this.model.btnStarcraftExeActionPerformed(evt);
+  }//GEN-LAST:event_btnStarcraftExeActionPerformed
 
   public void filesDropped(File[] files) {
     this.model.filesDropped(files);
@@ -396,6 +406,7 @@ public class View extends JFrame {
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JLabel boxDropFiles;
   private javax.swing.JButton btnLaunch;
+  private javax.swing.JButton btnStarcraftExe;
   private javax.swing.ButtonGroup btngrpRace;
   private javax.swing.JLabel lblBotFile;
   private javax.swing.JLabel lblBotFileText;
@@ -405,12 +416,12 @@ public class View extends JFrame {
   private javax.swing.JLabel lblBwapiDllVersion;
   private javax.swing.JLabel lblBwapiDllVersionText;
   private javax.swing.JLabel lblStarcraftExe;
+  private javax.swing.JLabel lblStarcraftExeText;
   private javax.swing.JRadioButton rbRaceProtoss;
   private javax.swing.JRadioButton rbRaceRandom;
   private javax.swing.JRadioButton rbRaceTerran;
   private javax.swing.JRadioButton rbRaceZerg;
   private javax.swing.JTextField txtBotName;
-  private javax.swing.JTextField txtStarcraftExe;
   // End of variables declaration//GEN-END:variables
 
 }

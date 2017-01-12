@@ -1,5 +1,6 @@
 package droplauncher.mvc.model;
 
+import adakite.utils.FileOperation;
 import droplauncher.mvc.view.View;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.ReadyStatus;
@@ -8,7 +9,6 @@ import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -58,9 +58,30 @@ public class Model {
     }
   }
 
+  public void btnStarcraftExeActionPerformed(ActionEvent evt) {
+    //TODO: Only accept StarCraft.exe file selection. Might need to remove "All files" filter as well.
+    //TODO: Guess StarCraft directory or read from registry.
+    JFileChooser fc = new JFileChooser(new File("C:\\StarCraft"));
+    fc.setFileFilter(new FileNameExtensionFilter("*.exe", "exe"));
+    if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
+      File file = fc.getSelectedFile();
+      if (file != null) {
+        this.bwheadless.getSettings().setStarcraftExe(file);
+        this.view.getLabelStarcraftExeText().setText(this.bwheadless.getSettings().getStarcraftExe().getAbsolutePath());
+      }
+    }
+  }
+
   public void filesDropped(File[] files) {
     for (File file : files) {
-      System.out.println("It works! -> " + file.getAbsolutePath());
+      if (file.isDirectory()) {
+        File[] tmpList = new FileOperation(file).getDirectoryContents();
+        for (File tmpFile : tmpList) {
+          System.out.println("File dropped: " + tmpFile.getAbsolutePath());
+        }
+      } else if (file.isFile()) {
+        System.out.println("File dropped: " + file.getAbsolutePath());
+      }
     }
   }
 
@@ -97,20 +118,6 @@ public class Model {
 //        txtBotName.setCaretPosition(inputCorrected.length());
 //      }
 //    }
-  }
-
-  public void txtStarcraftExeMousePressed(MouseEvent evt) {
-    //TODO: Only accept StarCraft.exe file selection. Might need to remove "All files" filter as well.
-    JFileChooser fc = new JFileChooser(new File("C:\\StarCraft"));
-    fc.setFileFilter(new FileNameExtensionFilter("*.exe", "exe"));
-    if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
-      File file = fc.getSelectedFile();
-      if (file != null) {
-        System.out.println("File chosen: " + file.getAbsolutePath());
-        this.bwheadless.getSettings().setStarcraftExe(file);
-        this.view.getTextFieldStarcraftExe().setText(this.bwheadless.getSettings().getStarcraftExe().getAbsolutePath());
-      }
-    }
   }
 
   /* ************************************************************ */
