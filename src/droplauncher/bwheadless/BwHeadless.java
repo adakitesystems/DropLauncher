@@ -75,15 +75,16 @@ public class BWHeadless {
 
   public boolean start() {
     if (isReady()) {
-      System.out.println("Ready");
+      System.out.println("BWH: Ready");
     } else {
-      System.out.println("Not Ready");
+      System.out.println("BWH: Not Ready");
     }
     return false;
   }
 
   public void stop() {
     //TODO
+    System.out.println("BWH: Stop");
   }
 
 }
