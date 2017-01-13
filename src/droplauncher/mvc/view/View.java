@@ -1,7 +1,7 @@
 package droplauncher.mvc.view;
 
 import droplauncher.bwapi.BWAPI;
-import droplauncher.bwheadless.Settings;
+import droplauncher.bwheadless.ProcessSettings;
 import droplauncher.mvc.model.Model;
 import droplauncher.util.Constants;
 import filedrop.FileDrop;
@@ -298,7 +298,7 @@ public class View extends JFrame {
   }
 
   public void update() {
-    Settings settings = this.model.getBWHeadless().getSettings();
+    ProcessSettings settings = this.model.getBWHeadless().getSettings();
 
     /* StarCraft.exe */
     if (settings.getStarcraftExe() != null) {
