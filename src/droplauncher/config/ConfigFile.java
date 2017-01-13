@@ -50,9 +50,12 @@ public class ConfigFile {
     } else {
       writeFile = file;
     }
-//    for (String str : this.variables.getKeySet()) {
-//      System.out.println(str + " = " + variables.get(str));
-//    }
+
+    //DEBUGGING ---
+    for (String str : this.variables.getKeySet()) {
+      System.out.println("Writing to: " + writeFile + ": " + str + " = " + variables.get(str));
+    }
+    //---
   }
 
   public void writeVariablesToFile() {
