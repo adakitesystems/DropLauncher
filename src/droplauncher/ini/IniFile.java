@@ -1,12 +1,25 @@
+/*
+TODO: Create a better INI class. Specifically, one that handles "sections".
+I might look into ini4j but I want it to be able to handle comments and virtually
+leave the structure of the original file untouched except for adding/changing
+variable values.
+*/
+
 package droplauncher.ini;
 
+import adakite.debugging.Debugging;
 import adakite.utils.AdakiteUtils;
+import droplauncher.util.Constants;
 import droplauncher.util.MemoryFile;
 import droplauncher.util.Settings;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class IniFile {
+
+  private static final Logger LOGGER = Logger.getLogger(IniFile.class.getName());
+  private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
   public static final String FILE_EXTENSION = ".ini";
   public static final String VARIABLE_DELIMITER = "=";
@@ -40,12 +53,16 @@ public class IniFile {
 
   public boolean open(File file) {
     if (file == null) {
-      //TODO: Display an error message.
+      if (CLASS_DEBUG) {
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject());
+      }
       return false;
     }
 
     if (!this.memoryFile.open(file)) {
-      //TODO: Display an error message.
+      if (CLASS_DEBUG) {
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.openFail(file));
+      }
       return false;
     }
 
@@ -86,6 +103,8 @@ public class IniFile {
 
   public boolean setVariable(String key, String val, String comment) {
     if (!this.settings.isVariableSet(key)) {
+      /* If the variable does not exist, do not add it since this code
+         does not handle sections yet. */
       return false;
     }
 
@@ -145,9 +164,18 @@ public class IniFile {
 
   public void disableVariable(String key) {
     if (!this.settings.isVariableSet(key)) {
+      /* Return if the variable is not set/found. */
       return;
     }
     int lineIndex = getIndexByKey(key);
+    if (lineIndex < 0) {
+      if (CLASS_DEBUG) {
+        /* The lineIndex should always be greater than 0 if
+           "isVariableSet" is functioning properly */
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "should not see this logic error");
+      }
+      return;
+    }
     String line = this.memoryFile.getLines().get(lineIndex);
     line = COMMENT_DELIMITER + line;
     this.memoryFile.getLines().set(lineIndex, line);
