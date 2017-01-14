@@ -1,12 +1,17 @@
 package droplauncher.util;
 
+import adakite.debugging.Debugging;
 import adakite.utils.FileOperation;
 import adakite.utils.ReadFile;
 import adakite.utils.WriteFile;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class MemoryFile  {
+
+  private static final Logger LOGGER = Logger.getLogger(MemoryFile.class.getName());
+  private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
   private File file;
   private ArrayList<String> lines;
@@ -38,14 +43,19 @@ public class MemoryFile  {
 
     this.file = file;
     if (!(new FileOperation(file).doesFileExist()) && !(new FileOperation(file).createFile())) {
-      //TODO: error message
-      this.file = null;
+      if (CLASS_DEBUG) {
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.createFail(file));
+      }
+      reset();
       return false;
     }
 
     ReadFile rf = new ReadFile();
     if (!rf.open(this.file)) {
-      //TODO: error message
+      if (CLASS_DEBUG) {
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.openFail(file));
+      }
+      reset();
       return false;
     }
     String line;
@@ -59,13 +69,17 @@ public class MemoryFile  {
 
   public boolean dumpToFile(File file) {
     if (file == null) {
-      //TODO: error
+      if (CLASS_DEBUG) {
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject());
+      }
       return false;
     }
 
     WriteFile wf = new WriteFile();
     if (!wf.open(file)) {
-      //TODO: error
+      if (CLASS_DEBUG) {
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.openFail(file));
+      }
       return false;
     }
     for (String line : this.lines) {
