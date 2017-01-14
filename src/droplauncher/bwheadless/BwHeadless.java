@@ -32,10 +32,9 @@ A tool to start StarCraft: Brood War as a console application, with no graphics,
 
 package droplauncher.bwheadless;
 
-import droplauncher.config.Settings;
+import droplauncher.util.Settings;
 import droplauncher.util.Constants;
 import droplauncher.util.ProcessPipe;
-import java.io.File;
 import java.util.logging.Logger;
 
 /**
@@ -56,9 +55,9 @@ public class BWHeadless {
     this.settings = new ProcessSettings();
     this.configFile = new Settings();
 
-    this.configFile.setFile(new File("config_file.cfg"));
-    this.settings.setConfigFile(configFile);
-    this.configFile.readVariablesFromFile(new File("config_file.cfg"));
+//    this.configFile.setFile(new File("config_file.cfg"));
+//    this.settings.setConfigFile(configFile);
+//    this.configFile.readVariablesFromFile(new File("config_file.cfg"));
   }
 
   public ProcessSettings getSettings() {

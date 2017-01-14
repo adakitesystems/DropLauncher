@@ -1,4 +1,4 @@
-package droplauncher.config;
+package droplauncher.bwheadless;
 
 public enum PredefinedVariable {
 
