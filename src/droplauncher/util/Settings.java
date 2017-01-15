@@ -22,6 +22,10 @@ public class Settings {
     this.variables = new HashMap<>();
   }
 
+  public void clear() {
+    this.variables.clear();
+  }
+
   public HashMap<String, String> getVariables() {
     return this.variables;
   }

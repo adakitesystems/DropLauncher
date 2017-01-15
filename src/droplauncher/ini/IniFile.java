@@ -41,7 +41,7 @@ public class IniFile {
     this.settings = settings;
   }
 
-  public int getIndexByKey(String key) {
+  public int getLineIndexByKey(String key) {
     for (int i = 0; i < this.memoryFile.getLines().size(); i++) {
       String line = this.memoryFile.getLines().get(i);
       if (line.startsWith(key)) {
@@ -52,6 +52,9 @@ public class IniFile {
   }
 
   public boolean open(File file) {
+    this.memoryFile.clear();
+    this.settings.clear();
+
     if (file == null) {
       if (CLASS_DEBUG) {
         LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject());
@@ -78,11 +81,13 @@ public class IniFile {
 
       index = line.indexOf(COMMENT_DELIMITER);
       if (index >= 0) {
+        /* Ignore comments. */
         line = line.substring(0, index);
       }
 
       index = line.indexOf(VARIABLE_DELIMITER);
       if (index < 0) {
+        /* Skip line if the variable delimiter is not found. */
         continue;
       }
       key = line.substring(0, index).trim();
@@ -110,7 +115,7 @@ public class IniFile {
 
     this.settings.setVariable(key, val);
 
-    int lineIndex = getIndexByKey(key);
+    int lineIndex = getLineIndexByKey(key);
     int commentIndex;
     String line = this.memoryFile.getLines().get(lineIndex);
     String tmpComment;
@@ -149,8 +154,7 @@ public class IniFile {
           && line.contains(key)
           && line.contains(VARIABLE_DELIMITER)
           && line.indexOf(COMMENT_DELIMITER) < line.indexOf(key)
-          && line.indexOf(key) < line.indexOf(VARIABLE_DELIMITER)
-      ) {
+          && line.indexOf(key) < line.indexOf(VARIABLE_DELIMITER)) {
         int commentIndex = line.indexOf(COMMENT_DELIMITER);
         line = line.substring(commentIndex + COMMENT_DELIMITER.length(), line.length()).trim();
         this.memoryFile.getLines().set(i, line);
@@ -167,7 +171,7 @@ public class IniFile {
       /* Return if the variable is not set/found. */
       return;
     }
-    int lineIndex = getIndexByKey(key);
+    int lineIndex = getLineIndexByKey(key);
     if (lineIndex < 0) {
       if (CLASS_DEBUG) {
         /* The lineIndex should always be greater than 0 if

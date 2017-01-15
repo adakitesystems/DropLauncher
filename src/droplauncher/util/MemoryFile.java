@@ -21,7 +21,7 @@ public class MemoryFile  {
     this.lines = new ArrayList<>();
   }
 
-  public void reset() {
+  public void clear() {
     this.file = null;
     this.lines.clear();
   }
@@ -35,7 +35,7 @@ public class MemoryFile  {
   }
 
   public boolean open(File file) {
-    reset();
+    clear();
 
     if (file == null) {
       return false;
@@ -46,7 +46,7 @@ public class MemoryFile  {
       if (CLASS_DEBUG) {
         LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.createFail(file));
       }
-      reset();
+      clear();
       return false;
     }
 
@@ -55,7 +55,7 @@ public class MemoryFile  {
       if (CLASS_DEBUG) {
         LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.openFail(file));
       }
-      reset();
+      clear();
       return false;
     }
     String line;
