@@ -11,10 +11,6 @@ public class Settings {
   private HashMap<String, String> variables;
 
   public Settings() {
-    init();
-  }
-
-  private void init() {
     this.variables = new HashMap<>();
   }
 
