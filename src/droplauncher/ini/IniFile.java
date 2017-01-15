@@ -3,13 +3,21 @@ TODO: Create a better INI class. Specifically, one that handles "sections".
 I might look into ini4j but I want it to be able to handle comments and virtually
 leave the structure of the original file untouched except for adding/changing
 variable values.
-      Update: Decided not to use ini4j. There are some minor issues that conflict
-      with my goal of preserving the original bwapi.ini file.
-      Notes: Currently, if the "ai" key is not present or also not disabled via
-      a comment char (i.e. ";ai = "), this class will be unable to set the "ai"
-      key.
+  Update: Decided not to use ini4j. There are some minor issues that conflict
+  with my goal of preserving the original bwapi.ini file.
+  Notes: Currently, if the "ai" key is not present or also not disabled via
+  a comment char (i.e. ";ai = "), this class will be unable to set the "ai"
+  key.
+  Update:
+    TODO: Working with Sections:
+    - Create a "find end of section" method for inserting new variables.
+    - Create a "Section" class to handle the sections.
+    - Create some class or method to integrate the Sections with the original
+    plain text, section/variable structure, and order of appearance (i.e. when
+    a variable is changed in the Section object, it is updated in-place in the
+    INI file without modifying the surrounding text/variables).
 TODO: Determine if "refresh()" is needed after updating a
-variable (i.e. set, enable, disable).
+variable (i.e. set, enable, disable).).
 */
 
 package droplauncher.ini;
