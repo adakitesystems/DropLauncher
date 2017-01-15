@@ -46,6 +46,12 @@ public class Settings {
     return true;
   }
 
+  public void removeVariable(String key) {
+    if (this.variables.containsKey(key)) {
+      this.variables.remove(key);
+    }
+  }
+
   public String getValue(String key) {
     if (!this.variables.containsKey(key)) {
       return null;
