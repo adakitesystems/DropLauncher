@@ -2,15 +2,11 @@ package droplauncher.util;
 
 import adakite.utils.AdakiteUtils;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 /**
  * Class for storing dynamic settings and variables.
  */
 public class Settings {
-
-  private static final Logger LOGGER = Logger.getLogger(Settings.class.getName());
-  private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
   private HashMap<String, String> variables;
 
