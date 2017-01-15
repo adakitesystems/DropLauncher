@@ -51,7 +51,8 @@ public class IniFile {
   public int getLineIndexByKey(String key) {
     for (int i = 0; i < this.memoryFile.getLines().size(); i++) {
       String line = this.memoryFile.getLines().get(i);
-      if (line.startsWith(key)) {
+      if (line.startsWith(key)
+          && line.indexOf(VARIABLE_DELIMITER) < line.indexOf(key)) {
         return i;
       }
     }
@@ -182,7 +183,7 @@ public class IniFile {
     if (lineIndex < 0) {
       if (CLASS_DEBUG) {
         /* The lineIndex should always be greater than 0 if
-           "isVariableSet" is functioning properly */
+           "isVariableSet" is functioning properly. */
         LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "should not see this logic error");
       }
       return;

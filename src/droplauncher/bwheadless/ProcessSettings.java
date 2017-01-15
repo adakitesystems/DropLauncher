@@ -35,12 +35,12 @@ public class ProcessSettings {
     this.configFile = null;
     this.starcraftExe = null;
     this.bwapiDll = null;
-    this.botName = null;
+    this.botName = DEFAULT_BOT_NAME;
     this.botDll = null;
     this.botClient = null;
-    this.botRace = null;
-    this.gameType = null;
-    this.joinMode = null;
+    this.botRace = Race.TERRAN;
+    this.gameType = GameType.LAN;
+    this.joinMode = JoinMode.JOIN;
   }
 
   public droplauncher.util.Settings getConfigFile() {

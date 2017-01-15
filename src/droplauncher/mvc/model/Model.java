@@ -77,10 +77,12 @@ public class Model {
       if (file.isDirectory()) {
         File[] tmpList = new FileOperation(file).getDirectoryContents();
         for (File tmpFile : tmpList) {
-          System.out.println("File dropped: " + tmpFile.getAbsolutePath());
+          System.out.println("File dropped from directory: " + tmpFile.getAbsolutePath());
         }
       } else if (file.isFile()) {
         System.out.println("File dropped: " + file.getAbsolutePath());
+      } else {
+        System.out.println("Unknown file dropped: " + file.getAbsolutePath());
       }
     }
   }

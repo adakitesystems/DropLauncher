@@ -1,6 +1,6 @@
 /*
 > bwheadless.exe --help
-Usage: C:\projects\DropLauncher\DropLauncher\bwheadless.exe [option]...
+Usage: bwheadless.exe [option]...
 A tool to start StarCraft: Brood War as a console application, with no graphics, sound or user input.
 
   -e, --exe         The exe file to launch. Default 'StarCraft.exe'.

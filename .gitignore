@@ -7,9 +7,10 @@ lib/adakite*
 
 bwheadless.exe
 
-# Ignore config files.
+# Ignore misc files.
 *.ini
 *.cfg
+*.txt
 
 # NetBeans
 build/*
