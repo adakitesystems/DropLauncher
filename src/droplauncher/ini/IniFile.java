@@ -149,8 +149,6 @@ public class IniFile {
             && i < this.memoryFile.getLines().size()) {
           i++;
         }
-        /* We have reached EOF or another section, rewind by one line. */
-        i--;
         /* Add the variable. */
         this.memoryFile.getLines().add(i, key + VARIABLE_DELIMITER + val);
       }
