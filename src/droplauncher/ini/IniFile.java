@@ -166,7 +166,7 @@ public class IniFile {
     this.memoryFile.dumpToFile();
   }
 
-  public int getSectionIndex(String name) {
+  private int getSectionIndex(String name) {
     for (int i = 0; i < this.memoryFile.getLines().size(); i++) {
       String line = this.memoryFile.getLines().get(i);
       line = line.trim();
@@ -177,7 +177,7 @@ public class IniFile {
     return -1;
   }
 
-  public int getKeyIndex(String name, String key) {
+  private int getKeyIndex(String name, String key) {
     int sectionIndex = getSectionIndex(name);
     if (sectionIndex < 0) {
       return -1;
@@ -200,12 +200,11 @@ public class IniFile {
     String ret = line.trim();
 
     int commentIndex = ret.indexOf(COMMENT_DELIMITER);
-    if (commentIndex < 1) {
-      /* Return an empty string if a comment is not found or starts at the
-         beginning of the line.*/
+    if (commentIndex == 0) {
       return "";
+    } else if (commentIndex > 0) {
+      ret = ret.substring(0, commentIndex).trim();
     }
-    ret = ret.substring(0, commentIndex).trim();
 
     return ret;
   }
@@ -226,7 +225,9 @@ public class IniFile {
     return ret;
   }
 
-//  public boolean enableVariable(String key) {
+  public boolean enableVariable(String key) {
+    //TODO
+    return false;
 //    if (this.settings.isVariableSet(key)) {
 //      return true;
 //    }
@@ -246,9 +247,11 @@ public class IniFile {
 //      }
 //    }
 //    return false;
-//  }
-//
-//  public void disableVariable(String key) {
+  }
+
+  public void disableVariable(String key) {
+    //TODO
+    return;
 //    if (!this.settings.isVariableSet(key)) {
 //      /* Return if the variable is not set/found. */
 //      return;
@@ -268,6 +271,6 @@ public class IniFile {
 //    this.memoryFile.dumpToFile();
 //    this.settings.getVariables().remove(key);
 //    refresh();
-//  }
+  }
 
 }
