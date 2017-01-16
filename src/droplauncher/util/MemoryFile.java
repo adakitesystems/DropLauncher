@@ -8,6 +8,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+/**
+ * Class for storing an entire file in memory as an ArrayList of String objects
+ * for each line.
+ */
 public class MemoryFile  {
 
   private static final Logger LOGGER = Logger.getLogger(MemoryFile.class.getName());
@@ -95,6 +99,9 @@ public class MemoryFile  {
   }
 
   public void dumpToConsole() {
+    if (this.lines.size() < 1) {
+      return;
+    }
     StringBuilder sb = new StringBuilder();
     for (String line : this.lines) {
       sb.append(line).append(System.lineSeparator());

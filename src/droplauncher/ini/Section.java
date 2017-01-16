@@ -1,11 +1,11 @@
 package droplauncher.ini;
 
-import droplauncher.util.Settings;
+import java.util.HashMap;
 
 public class Section {
 
   private String name;
-  private Settings settings;
+  private HashMap<String, String> keys;
 
   public Section() {
     init();
@@ -17,16 +17,16 @@ public class Section {
   }
 
   private void init() {
-    this.name = null;
-    this.settings = new Settings();
+    this.name = SectionName.NONE.toString();
+    this.keys = new HashMap<>();
   }
 
-  public Settings getSettings() {
-    return this.settings;
+  public String getName() {
+    return this.name;
   }
 
-  public void setSettings(Settings settings) {
-    this.settings = settings;
+  public HashMap<String, String> getKeys() {
+    return this.keys;
   }
 
 }

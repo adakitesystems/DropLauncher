@@ -5,7 +5,6 @@ import adakite.utils.FileOperation;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
-import droplauncher.util.Settings;
 import java.io.File;
 import java.util.logging.Logger;
 
@@ -21,7 +20,6 @@ public class ProcessSettings {
   public static final File BW_HEADLESS_EXE = new File("bwheadless.exe");
   public static final String DEFAULT_BOT_NAME = "BOT";
 
-  private Settings configFile; /* optional file for storing variables */
   private File starcraftExe; /* required */
   private File bwapiDll; /* required */
   private String botName; /* required */
@@ -32,7 +30,6 @@ public class ProcessSettings {
   private JoinMode joinMode; /* required */
 
   public ProcessSettings() {
-    this.configFile = null;
     this.starcraftExe = null;
     this.bwapiDll = null;
     this.botName = DEFAULT_BOT_NAME;
@@ -41,14 +38,6 @@ public class ProcessSettings {
     this.botRace = Race.TERRAN;
     this.gameType = GameType.LAN;
     this.joinMode = JoinMode.JOIN;
-  }
-
-  public droplauncher.util.Settings getConfigFile() {
-    return this.configFile;
-  }
-
-  public void setConfigFile(droplauncher.util.Settings configFile) {
-    this.configFile = configFile;
   }
 
   public ReadyStatus getReadyStatus() {
@@ -207,10 +196,7 @@ public class ProcessSettings {
   }
 
   public void updateSettingsFile(String key, String value) {
-    if (this.configFile != null) {
-      this.configFile.setVariable(key, value);
-//      this.configFile.writeVariablesToFile();
-    }
+    //TODO
   }
 
 
