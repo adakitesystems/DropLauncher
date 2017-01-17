@@ -9,6 +9,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+/**
+ * Class for manipulating a Windows INI file while attemping to preserve
+ * the file's original variables and comments.
+ *
+ * @author user1
+ */
 public class IniFile {
 
   private static final Logger LOGGER = Logger.getLogger(IniFile.class.getName());
@@ -207,6 +213,14 @@ public class IniFile {
     return ret;
   }
 
+  /**
+   * Scans the specified string for a comment and returns that string.
+   *
+   * @param line specified string to scan
+   * @return
+   *     the comment if present,
+   *     otherwise null
+   */
   public static String getComment(String line) {
     if (AdakiteUtils.isNullOrEmpty(line)) {
       return null;
@@ -219,56 +233,64 @@ public class IniFile {
       return null;
     }
     ret = ret.substring(commentIndex, ret.length()).trim();
+    if (ret.length() < 2) {
+      /* Comment only contains the comment delimiter. */
+      return null;
+    }
 
     return ret;
   }
 
-  public boolean enableVariable(String key) {
-    //TODO
+  public boolean enableVariable(String name, String key) {
+    if (this.sections.containsKey(name)) {
+      int sectionIndex = getSectionIndex(name);
+      /* Section exists. */
+      if (this.sections.get(name).getKeys().containsKey(key)) {
+        /* Variable is enabled already. */
+        return true;
+      } else {
+        /* Variable needs to be uncommented. */
+        for (int i = sectionIndex; i < this.memoryFile.getLines().size(); i++) {
+          String line = this.memoryFile.getLines().get(i);
+          if (line.contains(COMMENT_DELIMITER)
+              && line.contains(key)
+              && line.contains(VARIABLE_DELIMITER)
+              && line.indexOf(COMMENT_DELIMITER) < line.indexOf(key)
+              && line.indexOf(key) < line.indexOf(VARIABLE_DELIMITER)) {
+            int commentIndex = line.indexOf(COMMENT_DELIMITER);
+            line = line.substring(commentIndex + COMMENT_DELIMITER.length(), line.length()).trim();
+            this.memoryFile.getLines().set(i, line);
+            this.memoryFile.dumpToFile();
+            reload();
+            return true;
+          }
+        }
+      }
+    } else {
+      /* Section does not exist. */
+      return false;
+    }
+    /* The disabled variable was not found. */
     return false;
-//    if (this.settings.isVariableSet(key)) {
-//      return true;
-//    }
-//    for (int i = 0; i < this.memoryFile.getLines().size(); i++) {
-//      String line = this.memoryFile.getLines().get(i);
-//      if (line.contains(COMMENT_DELIMITER)
-//          && line.contains(key)
-//          && line.contains(VARIABLE_DELIMITER)
-//          && line.indexOf(COMMENT_DELIMITER) < line.indexOf(key)
-//          && line.indexOf(key) < line.indexOf(VARIABLE_DELIMITER)) {
-//        int commentIndex = line.indexOf(COMMENT_DELIMITER);
-//        line = line.substring(commentIndex + COMMENT_DELIMITER.length(), line.length()).trim();
-//        this.memoryFile.getLines().set(i, line);
-//        this.memoryFile.dumpToFile();
-//        refresh();
-//        return true;
-//      }
-//    }
-//    return false;
   }
 
-  public void disableVariable(String key) {
-    //TODO
-    return;
-//    if (!this.settings.isVariableSet(key)) {
-//      /* Return if the variable is not set/found. */
-//      return;
-//    }
-//    int lineIndex = getLineIndexByKey(key);
-//    if (lineIndex < 0) {
-//      if (CLASS_DEBUG) {
-//        /* The lineIndex should always be greater than 0 if
-//           "isVariableSet" is functioning properly. */
-//        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "should not see this logic error");
-//      }
-//      return;
-//    }
-//    String line = this.memoryFile.getLines().get(lineIndex);
-//    line = COMMENT_DELIMITER + line;
-//    this.memoryFile.getLines().set(lineIndex, line);
-//    this.memoryFile.dumpToFile();
-//    this.settings.getVariables().remove(key);
-//    refresh();
+  public void disableVariable(String name, String key) {
+    int keyIndex = getKeyIndex(name, key);
+    if (keyIndex < 0) {
+      /* Key not found. */
+      return;
+    }
+    /* Key found, disable it. */
+    String line = this.memoryFile.getLines().get(keyIndex);
+    line = COMMENT_DELIMITER + line;
+    this.memoryFile.getLines().set(keyIndex, line);
+    this.memoryFile.dumpToFile();
+    reload();
+  }
+
+  private void reload() {
+    File file = new File(this.memoryFile.getFile().getAbsolutePath());
+    open(file);
   }
 
 }
