@@ -166,7 +166,9 @@ public class IniFile {
       } else {
         /* Find the end of the section. */
         int i = sectionIndex + 1;
-        while (i < this.memoryFile.getLines().size() && !(this.memoryFile.getLines().get(i).startsWith("[") && this.memoryFile.getLines().get(i).endsWith("]"))) {
+        while (i < this.memoryFile.getLines().size()
+            && !(this.memoryFile.getLines().get(i).startsWith("[")
+              && this.memoryFile.getLines().get(i).endsWith("]"))) {
           i++;
         }
         /* Add the variable. */
