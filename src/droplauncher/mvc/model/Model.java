@@ -7,9 +7,11 @@ import droplauncher.bwheadless.ReadyStatus;
 import droplauncher.mvc.view.LaunchButtonText;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
+import droplauncher.util.Util;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -73,18 +75,46 @@ public class Model {
   }
 
   public void filesDropped(File[] files) {
+    ArrayList<File> fileList = new ArrayList<>();
     for (File file : files) {
       if (file.isDirectory()) {
         File[] tmpList = new FileOperation(file).getDirectoryContents();
         for (File tmpFile : tmpList) {
-          System.out.println("File dropped from directory: " + tmpFile.getAbsolutePath());
+//          System.out.println("File dropped from directory: " + tmpFile.getAbsolutePath());
+          fileList.add(tmpFile);
         }
       } else if (file.isFile()) {
-        System.out.println("File dropped: " + file.getAbsolutePath());
+//        System.out.println("File dropped: " + file.getAbsolutePath());
+        fileList.add(file);
       } else {
-        System.out.println("Unknown file dropped: " + file.getAbsolutePath());
+        if (CLASS_DEBUG) {
+          LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "Unknown file dropped: " + file.getAbsolutePath());
+        }
       }
     }
+
+    for (File file : fileList) {
+      String ext = Util.getFileExtension(file);
+      if (ext != null) {
+        if (ext.equalsIgnoreCase("dll")) {
+          if (file.getName().equalsIgnoreCase("BWAPI.dll")) {
+            this.bwheadless.getSettings().setBwapiDll(file);
+          } else {
+            this.bwheadless.getSettings().setBotDll(file);
+          }
+        } else if (ext.equalsIgnoreCase("exe")) {
+          this.bwheadless.getSettings().setBotClient(file);
+        } else if (ext.equalsIgnoreCase("jar")) {
+          this.bwheadless.getSettings().setBotClient(file);
+        } else {
+
+        }
+      } else {
+
+      }
+    }
+
+    this.view.update();
   }
 
   public void rbRaceProtossActionPerformed(ActionEvent evt) {

@@ -1,3 +1,12 @@
+/*
+TODO: Check error scenarios, e.g. if the memory file was not able to be opened,
+can the variables still be changed or updated, etc? What happens if the variables
+can be changed but the file cannot be modified?
+Since the file relies on a MemoryFile object and the MemoryFile object
+checks the file before writing, it should be OK? Double check. Determine if there
+is a better course of action.
+*/
+
 package droplauncher.ini;
 
 import adakite.debugging.Debugging;
@@ -109,9 +118,6 @@ public class IniFile {
         String key = line.substring(0, varIndex).trim();
         String val = line.substring(varIndex + VARIABLE_DELIMITER.length(), line.length()).trim();
         this.sections.get(currSection).getKeys().put(key, val);
-        //DEBUG ---
-        System.out.println("Read variable: [" + this.sections.get(currSection).getName() + "]: " + key + " = " + val);
-        //---
       }
     }
 
@@ -119,6 +125,15 @@ public class IniFile {
   }
 
   public void setVariable(String name, String key, String val) {
+    //DEBUG ---
+    if (name == null || key == null || val == null) {
+      if (CLASS_DEBUG) {
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject());
+      }
+      return;
+    }
+    //---
+
     boolean sectionExists = this.sections.containsKey(name);
     boolean keyExists = false;
 
@@ -151,8 +166,7 @@ public class IniFile {
       } else {
         /* Find the end of the section. */
         int i = sectionIndex + 1;
-        while (!(this.memoryFile.getLines().get(i).startsWith("[") && this.memoryFile.getLines().get(i).endsWith("]"))
-            && i < this.memoryFile.getLines().size()) {
+        while (i < this.memoryFile.getLines().size() && !(this.memoryFile.getLines().get(i).startsWith("[") && this.memoryFile.getLines().get(i).endsWith("]"))) {
           i++;
         }
         /* Add the variable. */
@@ -168,6 +182,15 @@ public class IniFile {
     }
 
     this.memoryFile.dumpToFile();
+  }
+
+  public String getValue(String name, String key) {
+    if (this.sections.containsKey(name)
+        && this.sections.get(name).getKeys().containsKey(key)) {
+      return this.sections.get(name).getKeys().get(key);
+    } else {
+      return null;
+    }
   }
 
   private int getSectionIndex(String name) {
@@ -189,6 +212,7 @@ public class IniFile {
     for (int i = sectionIndex; i < this.memoryFile.getLines().size(); i++) {
       String line = this.memoryFile.getLines().get(i);
       line = line.trim();
+      line = removeComment(line);
       if (line.startsWith(key) && line.contains(VARIABLE_DELIMITER)) {
         return i;
       }

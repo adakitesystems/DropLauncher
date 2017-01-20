@@ -309,7 +309,7 @@ public class View extends JFrame {
 
     if (settings.getBwapiDll() != null) {
       /* BWAPI.dll */
-      this.lblBwapiDllText.setText(settings.getBwapiDll().getAbsolutePath());
+      this.lblBwapiDllText.setText(settings.getBwapiDll().getName());
       /* BWAPI.dll version */
       this.lblBwapiDllVersionText.setText(BWAPI.getBwapiVersion(settings.getBwapiDll()));
     } else {
@@ -319,9 +319,9 @@ public class View extends JFrame {
 
     /* Bot file */
     if (settings.getBotDll() != null) {
-      this.lblBotFileText.setText(settings.getBotDll().getAbsolutePath());
+      this.lblBotFileText.setText(settings.getBotDll().getName());
     } else if (settings.getBotClient() != null) {
-      this.lblBotFileText.setText(settings.getBotClient().getAbsolutePath());
+      this.lblBotFileText.setText(settings.getBotClient().getName());
     } else {
       this.lblBotFileText.setText("");
     }

@@ -5,7 +5,7 @@ import droplauncher.mvc.MVC;
 public class Main {
 
   public static void main(String[] args) {
-    MVC mvc = new MVC(args);;
+    MVC mvc = new MVC(args);
   }
 
 }

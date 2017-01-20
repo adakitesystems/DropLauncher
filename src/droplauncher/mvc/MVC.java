@@ -10,8 +10,8 @@ import droplauncher.mvc.view.View;
  */
 public class MVC {
 
-  Model model;
-  View view;
+  private Model model;
+  private View view;
 
   public MVC() {
     init();
@@ -25,8 +25,10 @@ public class MVC {
     this.model = new Model();
     this.view = new View();
 
-    view.setModel(model);
-    model.setView(view);
+    this.view.setModel(model);
+    this.model.setView(view);
+
+    this.view.update();
   }
 
 }

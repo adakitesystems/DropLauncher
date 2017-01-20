@@ -51,18 +51,10 @@ public class BWHeadless {
   public BWHeadless() {
     this.pipe = new ProcessPipe();
     this.settings = new ProcessSettings();
-
-//    this.configFile.setFile(new File("config_file.cfg"));
-//    this.settings.setConfigFile(configFile);
-//    this.configFile.readVariablesFromFile(new File("config_file.cfg"));
   }
 
   public ProcessSettings getSettings() {
     return this.settings;
-  }
-
-  public void setSettings(ProcessSettings settings) {
-    this.settings = settings;
   }
 
   public ReadyStatus getReadyStatus() {
