@@ -1,7 +1,6 @@
 package droplauncher.mvc.view;
 
 import droplauncher.bwapi.BWAPI;
-import droplauncher.bwheadless.ProcessSettings;
 import droplauncher.mvc.model.Model;
 import droplauncher.util.Constants;
 import filedrop.FileDrop;
@@ -288,7 +287,7 @@ public class View extends JFrame {
     return fc.showOpenDialog(this);
   }
 
-  public void showMessageBox(String str, int messageType) {
+  public void showMessageBox(int messageType, String str) {
     JOptionPane.showMessageDialog(
         this,
         str,
@@ -298,43 +297,41 @@ public class View extends JFrame {
   }
 
   public void update() {
-    ProcessSettings settings = this.model.getBWHeadless().getSettings();
-
     /* StarCraft.exe */
-    if (settings.getStarcraftExe() != null) {
-      this.lblStarcraftExeText.setText(settings.getStarcraftExe().getAbsolutePath());
+    if (this.model.getBWHeadless().getStarcraftExe() != null) {
+      this.lblStarcraftExeText.setText(this.model.getBWHeadless().getStarcraftExe().getAbsolutePath());
     } else {
       this.lblStarcraftExeText.setText("");
     }
 
-    if (settings.getBwapiDll() != null) {
+    if (this.model.getBWHeadless().getBwapiDll() != null) {
       /* BWAPI.dll */
-      this.lblBwapiDllText.setText(settings.getBwapiDll().getName());
+      this.lblBwapiDllText.setText(this.model.getBWHeadless().getBwapiDll().getName());
       /* BWAPI.dll version */
-      this.lblBwapiDllVersionText.setText(BWAPI.getBwapiVersion(settings.getBwapiDll()));
+      this.lblBwapiDllVersionText.setText(BWAPI.getBwapiVersion(this.model.getBWHeadless().getBwapiDll()));
     } else {
       this.lblBwapiDllText.setText("");
       this.lblBwapiDllVersionText.setText("");
     }
 
     /* Bot file */
-    if (settings.getBotDll() != null) {
-      this.lblBotFileText.setText(settings.getBotDll().getName());
-    } else if (settings.getBotClient() != null) {
-      this.lblBotFileText.setText(settings.getBotClient().getName());
+    if (this.model.getBWHeadless().getBotDll() != null) {
+      this.lblBotFileText.setText(this.model.getBWHeadless().getBotDll().getName());
+    } else if (this.model.getBWHeadless().getBotClient() != null) {
+      this.lblBotFileText.setText(this.model.getBWHeadless().getBotClient().getName());
     } else {
       this.lblBotFileText.setText("");
     }
 
     /* Bot name */
-    if (settings.getBotName() != null) {
-      this.txtBotName.setText(settings.getBotName());
+    if (this.model.getBWHeadless().getBotName() != null) {
+      this.txtBotName.setText(this.model.getBWHeadless().getBotName());
     } else {
       this.txtBotName.setText("");
     }
 
     /* Bot race */
-    switch (settings.getBotRace()) {
+    switch (this.model.getBWHeadless().getBotRace()) {
       case TERRAN:
         this.rbRaceTerran.setSelected(true);
         break;

@@ -1,10 +1,37 @@
 /*
-TODO: Possibly rename this class or move this functionality to BWHeadless.java.
+> bwheadless.exe --help
+Usage: bwheadless.exe [option]...
+A tool to start StarCraft: Brood War as a console application, with no graphics, sound or user input.
+
+  -e, --exe         The exe file to launch. Default 'StarCraft.exe'.
+  -h, --host        Host a game instead of joining.
+  -j, --join        Join instead of hosting. The first game that is found
+                    will be joined.
+  -n, --name NAME   The player name. Default 'playername'.
+  -g, --game NAME   The game name when hosting. Defaults to the player name.
+                    If this option is specified when joining, then only games
+                    with the specified name will be joined.
+  -m, --map FILE    The map to use when hosting.
+  -r, --race RACE   Zerg/Terran/Protoss/Random/Z/T/P/R (case insensitive).
+  -l, --dll DLL     Load DLL into StarCraft. This option can be
+                    specified multiple times to load multiple dlls.
+      --networkprovider NAME  Use the specified network provider.
+                              'UDPN' is LAN (UDP), 'SMEM' is Local PC (provided
+                              by BWAPI). Others are provided by .snp files and
+                              may or may not work. Default SMEM.
+      --lan         Sets the network provider to LAN (UDP).
+      --localpc     Sets the network provider to Local PC (this is default).
+      --lan-sendto IP  Overrides the IP that UDP packets are sent to. This
+                       can be used together with --lan to connect to a
+                       specified IP-address instead of broadcasting for games
+                       on LAN (The ports used is 6111 and 6112).
+      --installpath PATH  Overrides the InstallPath value that would usually
+                          be read from the registry. This is used by BWAPI to
+                          locate bwapi-data/bwapi.ini.
 */
 
 package droplauncher.bwheadless;
 
-import adakite.debugging.Debugging;
 import adakite.utils.AdakiteUtils;
 import adakite.utils.FileOperation;
 import droplauncher.ini.IniFile;
@@ -15,18 +42,21 @@ import java.io.File;
 import java.util.logging.Logger;
 
 /**
- * Class to handle settings/arguments required to run a bot with a
+ * Class for handling execution and communication with the
  * bwheadless.exe process.
  */
-public class ProcessSettings {
+public class BWHeadless {
 
-  private static final Logger LOGGER = Logger.getLogger(ProcessSettings.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(BWHeadless.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
-  public static final File BW_HEADLESS_EXE = new File("bwheadless.exe");
-  public static final File DROP_LAUNCHER_INI = new File("droplauncher.ini");
+//  public static final File BW_HEADLESS_EXE = new File("bwheadless.exe");
   public static final String BW_HEADLESS_INI_SECTION = "bwheadless";
+
   public static final String DEFAULT_BOT_NAME = "BOT";
+  public static final Race DEFAULT_BOT_RACE = Race.TERRAN;
+  public static final GameType DEFAULT_GAME_TYPE = GameType.LAN;
+  public static final JoinMode DEFAULT_JOIN_MODE = JoinMode.JOIN;
 
   private File starcraftExe; /* required */
   private File bwapiDll; /* required */
@@ -39,24 +69,21 @@ public class ProcessSettings {
 
   private IniFile ini;
 
-  public ProcessSettings() {
+  public BWHeadless() {
     this.starcraftExe = null;
     this.bwapiDll = null;
     this.botName = DEFAULT_BOT_NAME;
     this.botDll = null;
     this.botClient = null;
-    this.botRace = Race.TERRAN;
-    this.gameType = GameType.LAN;
-    this.joinMode = JoinMode.JOIN;
+    this.botRace = DEFAULT_BOT_RACE;
+    this.gameType = DEFAULT_GAME_TYPE;
+    this.joinMode = DEFAULT_JOIN_MODE;
 
-    this.ini = new IniFile();
-    if (ini.open(DROP_LAUNCHER_INI)) {
-      readSettingsFile();
-    } else {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.openFail(DROP_LAUNCHER_INI));
-      }
-    }
+    this.ini = null;
+  }
+
+  public boolean isReady() {
+    return (getReadyStatus() == ReadyStatus.READY);
   }
 
   public ReadyStatus getReadyStatus() {
@@ -66,8 +93,8 @@ public class ProcessSettings {
     } else if (this.bwapiDll == null
         || !(new FileOperation(this.bwapiDll).doesFileExist())) {
       return ReadyStatus.BWAPI_DLL;
-    } else if (AdakiteUtils.isNullOrEmpty(botName, true)
-        || botName.length() > Starcraft.MAX_PROFILE_NAME_LENGTH) {
+    } else if (AdakiteUtils.isNullOrEmpty(this.botName, true)
+        || this.botName.length() > Starcraft.MAX_PROFILE_NAME_LENGTH) {
       //TODO: Also check for invalid characters.
       return ReadyStatus.BOT_NAME;
     } else if (
@@ -87,8 +114,26 @@ public class ProcessSettings {
     }
   }
 
-  public boolean isReady() {
-    return (getReadyStatus() == ReadyStatus.READY);
+  public boolean start() {
+    if (isReady()) {
+      System.out.println("BWH: Ready");
+      return true;
+    } else {
+      System.out.println("BWH: Not Ready");
+      return false;
+    }
+  }
+
+  public void stop() {
+    System.out.println("BWH: Stop");
+  }
+
+  public IniFile getIniFile() {
+    return this.ini;
+  }
+
+  public void setIniFile(IniFile ini) {
+    this.ini = ini;
   }
 
   public File getStarcraftExe() {
@@ -127,6 +172,9 @@ public class ProcessSettings {
 
   public boolean setBotName(String botName) {
     this.botName = Starcraft.cleanProfileName(botName);
+    if (AdakiteUtils.isNullOrEmpty(this.botName)) {
+      this.botName = DEFAULT_BOT_NAME;
+    }
     updateSettingsFile(PredefinedVariable.BOT_NAME.toString(), this.botName);
     return true;
   }
@@ -175,8 +223,8 @@ public class ProcessSettings {
 
   public boolean setBotRace(Race botRace) {
     if (botRace == null) {
-      this.botRace = null;
-      updateSettingsFile(PredefinedVariable.BOT_RACE.toString(), "");
+      this.botRace = DEFAULT_BOT_RACE;
+      updateSettingsFile(PredefinedVariable.BOT_RACE.toString(), this.botRace.toString());
       return false;
     }
     this.botRace = botRace;
@@ -190,8 +238,8 @@ public class ProcessSettings {
 
   public boolean setGameType(GameType gameType) {
     if (gameType == null) {
-      this.gameType = null;
-      updateSettingsFile(PredefinedVariable.GAME_TYPE.toString(), "");
+      this.gameType = DEFAULT_GAME_TYPE;
+      updateSettingsFile(PredefinedVariable.GAME_TYPE.toString(), this.gameType.toString());
       return false;
     }
     this.gameType = gameType;
@@ -205,8 +253,8 @@ public class ProcessSettings {
 
   public boolean setJoinMode(JoinMode joinMode) {
     if (joinMode == null) {
-      this.joinMode = null;
-      updateSettingsFile(PredefinedVariable.JOIN_MODE.toString(), "");
+      this.joinMode = DEFAULT_JOIN_MODE;
+      updateSettingsFile(PredefinedVariable.JOIN_MODE.toString(), this.joinMode.toString());
       return false;
     }
     this.joinMode = joinMode;
@@ -214,33 +262,37 @@ public class ProcessSettings {
     return true;
   }
 
-  public void updateSettingsFile(String key, String val) {
-    this.ini.setVariable(BW_HEADLESS_INI_SECTION, key, val);
+  private void updateSettingsFile(String name, String key, String val) {
+    this.ini.setVariable(name, key, val);
   }
 
-  private void readSettingsFile() {
-    if (this.ini == null) {
+  private void updateSettingsFile(String key, String val) {
+    updateSettingsFile(BW_HEADLESS_INI_SECTION, key, val);
+  }
+
+  public void readSettingsFile(IniFile ini) {
+    if (ini == null) {
       return;
     }
     String val;
-    if (!AdakiteUtils.isNullOrEmpty(val = this.ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.STARCRAFT_EXE.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.STARCRAFT_EXE.toString()))) {
       setStarcraftExe(new File(val));
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = this.ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BWAPI_DLL.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BWAPI_DLL.toString()))) {
       setBwapiDll(new File(val));
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = this.ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BOT_NAME.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BOT_NAME.toString()))) {
       setBotName(val);
     } else {
       setBotName(DEFAULT_BOT_NAME);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = this.ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BOT_DLL.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BOT_DLL.toString()))) {
       setBotDll(new File(val));
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = this.ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BOT_CLIENT.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BOT_CLIENT.toString()))) {
       setBotClient(new File(val));
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = this.ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BOT_RACE.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BOT_RACE.toString()))) {
       if (val.equalsIgnoreCase(Race.TERRAN.toString())) {
         setBotRace(Race.TERRAN);
       } else if (val.equalsIgnoreCase(Race.ZERG.toString())) {
@@ -251,18 +303,21 @@ public class ProcessSettings {
         setBotRace(Race.TERRAN);
       }
     } else {
-      setBotRace(Race.TERRAN);
+      setBotRace(DEFAULT_BOT_RACE);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = this.ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.GAME_TYPE.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.GAME_TYPE.toString()))) {
       if (val.equalsIgnoreCase(GameType.LAN.toString())) {
         setGameType(GameType.LAN);
+      } else {
+        setGameType(DEFAULT_GAME_TYPE);
       }
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = this.ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.JOIN_MODE.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.JOIN_MODE.toString()))) {
       if (val.equalsIgnoreCase(JoinMode.JOIN.toString())) {
         setJoinMode(JoinMode.JOIN);
+      } else {
+        setJoinMode(DEFAULT_JOIN_MODE);
       }
-      //TODO: Support other join modes.
     }
   }
 

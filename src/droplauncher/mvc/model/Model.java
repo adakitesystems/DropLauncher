@@ -1,9 +1,11 @@
 package droplauncher.mvc.model;
 
+import adakite.debugging.Debugging;
 import adakite.utils.FileOperation;
 import droplauncher.mvc.view.View;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.ReadyStatus;
+import droplauncher.ini.IniFile;
 import droplauncher.mvc.view.LaunchButtonText;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
@@ -22,12 +24,25 @@ public class Model {
   private static final Logger LOGGER = Logger.getLogger(Model.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
+  public static final File DROP_LAUNCHER_INI = new File("droplauncher.ini");
+
   private View view;
 
   private BWHeadless bwheadless;
+  private IniFile ini;
 
   public Model() {
     this.bwheadless = new BWHeadless();
+    this.ini = new IniFile();
+
+    this.bwheadless.setIniFile(this.ini);
+    if (this.ini.open(DROP_LAUNCHER_INI)) {
+      this.bwheadless.readSettingsFile(this.ini);
+    } else {
+      if (CLASS_DEBUG) {
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.openFail(DROP_LAUNCHER_INI));
+      }
+    }
   }
 
   public void setView(View view) {
@@ -43,19 +58,14 @@ public class Model {
   /* ************************************************************ */
 
   public void btnLaunchActionPerformed(ActionEvent evt) {
-    if (!this.bwheadless.isRunning()) {
-      ReadyStatus status = this.bwheadless.getReadyStatus();
-      if (status != ReadyStatus.READY) {
-        this.view.showMessageBox("Not ready: " + status.toString(), JOptionPane.ERROR_MESSAGE);
-        return;
-      }
-      if (this.bwheadless.start()) {
-        this.view.getButtonLaunch().setText(LaunchButtonText.EJECT.toString());
-      } else {
-        //TODO: error
-      }
-    } else {
-      this.bwheadless.stop();
+    ReadyStatus status = this.bwheadless.getReadyStatus();
+    if (status != ReadyStatus.READY) {
+      this.view.showMessageBox(JOptionPane.ERROR_MESSAGE, "Not ready: " + status.toString());
+      return;
+    }
+    if (this.view.getButtonLaunch().getText().equalsIgnoreCase(LaunchButtonText.LAUNCH.toString())) {
+      this.view.getButtonLaunch().setText(LaunchButtonText.EJECT.toString());
+    } else if (this.view.getButtonLaunch().getText().equalsIgnoreCase(LaunchButtonText.EJECT.toString())) {
       this.view.getButtonLaunch().setText(LaunchButtonText.LAUNCH.toString());
     }
   }
@@ -68,8 +78,8 @@ public class Model {
     if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
       File file = fc.getSelectedFile();
       if (file != null) {
-        this.bwheadless.getSettings().setStarcraftExe(file);
-        this.view.getLabelStarcraftExeText().setText(this.bwheadless.getSettings().getStarcraftExe().getAbsolutePath());
+        this.bwheadless.setStarcraftExe(file);
+        this.view.getLabelStarcraftExeText().setText(this.bwheadless.getStarcraftExe().getAbsolutePath());
       }
     }
   }
@@ -80,11 +90,9 @@ public class Model {
       if (file.isDirectory()) {
         File[] tmpList = new FileOperation(file).getDirectoryContents();
         for (File tmpFile : tmpList) {
-//          System.out.println("File dropped from directory: " + tmpFile.getAbsolutePath());
           fileList.add(tmpFile);
         }
       } else if (file.isFile()) {
-//        System.out.println("File dropped: " + file.getAbsolutePath());
         fileList.add(file);
       } else {
         if (CLASS_DEBUG) {
@@ -98,19 +106,19 @@ public class Model {
       if (ext != null) {
         if (ext.equalsIgnoreCase("dll")) {
           if (file.getName().equalsIgnoreCase("BWAPI.dll")) {
-            this.bwheadless.getSettings().setBwapiDll(file);
+            this.bwheadless.setBwapiDll(file);
           } else {
-            this.bwheadless.getSettings().setBotDll(file);
+            this.bwheadless.setBotDll(file);
           }
         } else if (ext.equalsIgnoreCase("exe")) {
-          this.bwheadless.getSettings().setBotClient(file);
+          this.bwheadless.setBotClient(file);
         } else if (ext.equalsIgnoreCase("jar")) {
-          this.bwheadless.getSettings().setBotClient(file);
+          this.bwheadless.setBotClient(file);
         } else {
-
+          /* If file extension is not recognized, ignore file. */
         }
       } else {
-
+        /* If no file extension is detected, ignore file. */
       }
     }
 
@@ -118,19 +126,19 @@ public class Model {
   }
 
   public void rbRaceProtossActionPerformed(ActionEvent evt) {
-    this.bwheadless.getSettings().setBotRace(Race.PROTOSS);
+    this.bwheadless.setBotRace(Race.PROTOSS);
   }
 
   public void rbRaceRandomActionPerformed(ActionEvent evt) {
-    this.bwheadless.getSettings().setBotRace(Race.RANDOM);
+    this.bwheadless.setBotRace(Race.RANDOM);
   }
 
   public void rbRaceTerranActionPerformed(ActionEvent evt) {
-    this.bwheadless.getSettings().setBotRace(Race.TERRAN);
+    this.bwheadless.setBotRace(Race.TERRAN);
   }
 
   public void rbRaceZergActionPerformed(ActionEvent evt) {
-    this.bwheadless.getSettings().setBotRace(Race.ZERG);
+    this.bwheadless.setBotRace(Race.ZERG);
   }
 
   public void txtBotNameKeyPressed(KeyEvent evt) {

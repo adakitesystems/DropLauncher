@@ -1,3 +1,7 @@
+/*
+TODO: Rename this and all "game types" to "NetworkProvider".
+*/
+
 package droplauncher.bwheadless;
 
 /**
