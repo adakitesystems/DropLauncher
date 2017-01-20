@@ -41,7 +41,7 @@ public class View extends JFrame {
     initComponents();
 
     /* Form settings */
-    setTitle(Constants.PROGRAM_NAME);
+    setTitle(Constants.PROGRAM_TITLE);
     setResizable(false);
     setLocationRelativeTo(null);
     setVisible(true);
