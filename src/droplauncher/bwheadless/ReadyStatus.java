@@ -8,7 +8,7 @@ public enum ReadyStatus {
   BOT_NAME("Bot Name"),
   BOT_FILE("Bot DLL/EXE"),
   BOT_RACE("Bot Race"),
-  GAME_TYPE("Game Type"),
+  NETWORK_PROVIDER("Network Provider"),
   JOIN_MODE("Join Mode")
   ;
 

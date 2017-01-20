@@ -55,7 +55,7 @@ public class BWHeadless {
 
   public static final String DEFAULT_BOT_NAME = "BOT";
   public static final Race DEFAULT_BOT_RACE = Race.TERRAN;
-  public static final GameType DEFAULT_GAME_TYPE = GameType.LAN;
+  public static final NetworkProvider DEFAULT_NETWORK_PROVIDER = NetworkProvider.LAN;
   public static final JoinMode DEFAULT_JOIN_MODE = JoinMode.JOIN;
 
   private File starcraftExe; /* required */
@@ -64,7 +64,7 @@ public class BWHeadless {
   private File botDll; /* required only when client is absent */
   private File botClient; /* *.exe or *.jar, required only when DLL is absent  */
   private Race botRace; /* required */
-  private GameType gameType; /* required */
+  private NetworkProvider networkProvider; /* required */
   private JoinMode joinMode; /* required */
 
   private IniFile ini;
@@ -76,7 +76,7 @@ public class BWHeadless {
     this.botDll = null;
     this.botClient = null;
     this.botRace = DEFAULT_BOT_RACE;
-    this.gameType = DEFAULT_GAME_TYPE;
+    this.networkProvider = DEFAULT_NETWORK_PROVIDER;
     this.joinMode = DEFAULT_JOIN_MODE;
 
     this.ini = null;
@@ -105,8 +105,8 @@ public class BWHeadless {
       return ReadyStatus.BOT_FILE;
     } else if (this.botRace == null) {
       return ReadyStatus.BOT_RACE;
-    } else if (this.gameType == null) {
-      return ReadyStatus.GAME_TYPE;
+    } else if (this.networkProvider == null) {
+      return ReadyStatus.NETWORK_PROVIDER;
     } else if (this.joinMode == null) {
       return ReadyStatus.JOIN_MODE;
     } else {
@@ -232,18 +232,18 @@ public class BWHeadless {
     return true;
   }
 
-  public GameType getGameType() {
-    return this.gameType;
+  public NetworkProvider getNetworkProvider() {
+    return this.networkProvider;
   }
 
-  public boolean setGameType(GameType gameType) {
-    if (gameType == null) {
-      this.gameType = DEFAULT_GAME_TYPE;
-      updateSettingsFile(PredefinedVariable.GAME_TYPE.toString(), this.gameType.toString());
+  public boolean setNetworkProvider(NetworkProvider networkProvider) {
+    if (networkProvider == null) {
+      this.networkProvider = DEFAULT_NETWORK_PROVIDER;
+      updateSettingsFile(PredefinedVariable.NETWORK_PROVIDER.toString(), this.networkProvider.toString());
       return false;
     }
-    this.gameType = gameType;
-    updateSettingsFile(PredefinedVariable.GAME_TYPE.toString(), this.gameType.toString());
+    this.networkProvider = networkProvider;
+    updateSettingsFile(PredefinedVariable.NETWORK_PROVIDER.toString(), this.networkProvider.toString());
     return true;
   }
 
@@ -305,12 +305,14 @@ public class BWHeadless {
     } else {
       setBotRace(DEFAULT_BOT_RACE);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.GAME_TYPE.toString()))) {
-      if (val.equalsIgnoreCase(GameType.LAN.toString())) {
-        setGameType(GameType.LAN);
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.NETWORK_PROVIDER.toString()))) {
+      if (val.equalsIgnoreCase(NetworkProvider.LAN.toString())) {
+        setNetworkProvider(NetworkProvider.LAN);
       } else {
-        setGameType(DEFAULT_GAME_TYPE);
+        setNetworkProvider(DEFAULT_NETWORK_PROVIDER);
       }
+    } else {
+//      setNetworkProvider(DEFAULT_NETWORK_PROVIDER);
     }
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.JOIN_MODE.toString()))) {
       if (val.equalsIgnoreCase(JoinMode.JOIN.toString())) {
@@ -318,6 +320,8 @@ public class BWHeadless {
       } else {
         setJoinMode(DEFAULT_JOIN_MODE);
       }
+    } else {
+//      setJoinMode(DEFAULT_JOIN_MODE);
     }
   }
 

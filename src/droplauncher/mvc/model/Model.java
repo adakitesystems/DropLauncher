@@ -146,7 +146,7 @@ public class Model {
   }
 
   public void txtBotNameKeyReleased(KeyEvent evt) {
-    //TODO
+    //TODO txtBotNameKeyReleased
 //    String input = txtBotName.getText();
 //    bwheadless.setBotName(input);
 //    String inputCorrected = bwheadless.getBotName();

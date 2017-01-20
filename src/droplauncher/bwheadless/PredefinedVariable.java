@@ -8,7 +8,7 @@ public enum PredefinedVariable {
   BOT_DLL("bot_dll"),
   BOT_CLIENT("bot_client"),
   BOT_RACE("bot_race"),
-  GAME_TYPE("network"),
+  NETWORK_PROVIDER("network"),
   JOIN_MODE("join_mode"),
   GAME_NAME("game_name"),
   MAP("map")
