@@ -30,7 +30,8 @@ public class Starcraft {
       char ch = str.charAt(i);
       if ((ch >= 'A' && ch <= 'Z')
           || (ch >= 'a' && ch <= 'z')
-          || (ch >= '0' && ch <= '9')) {
+          || (ch >= '0' && ch <= '9')
+          || ch == ' ') {
         ret += ch;
       }
     }

@@ -1,6 +1,7 @@
 package droplauncher.mvc.model;
 
 import adakite.debugging.Debugging;
+import adakite.utils.AdakiteUtils;
 import adakite.utils.FileOperation;
 import droplauncher.mvc.view.View;
 import droplauncher.bwheadless.BWHeadless;
@@ -8,6 +9,7 @@ import droplauncher.bwheadless.ReadyStatus;
 import droplauncher.ini.IniFile;
 import droplauncher.mvc.view.LaunchButtonText;
 import droplauncher.starcraft.Race;
+import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
 import droplauncher.util.Util;
 import java.awt.event.ActionEvent;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Model {
@@ -141,23 +144,35 @@ public class Model {
     this.bwheadless.setBotRace(Race.ZERG);
   }
 
+  //TODO: Delete
   public void txtBotNameKeyPressed(KeyEvent evt) {
 
   }
 
   public void txtBotNameKeyReleased(KeyEvent evt) {
-    //TODO txtBotNameKeyReleased
-//    String input = txtBotName.getText();
-//    bwheadless.setBotName(input);
-//    String inputCorrected = bwheadless.getBotName();
-//    if (!input.equals(inputCorrected)) {
-//      txtBotName.setText(inputCorrected);
-//      if (this.caretPosition > 0 && this.caretPosition < inputCorrected.length()) {
-//        txtBotName.setCaretPosition(this.caretPosition);
-//      } else {
-//        txtBotName.setCaretPosition(inputCorrected.length());
-//      }
-//    }
+    JTextField txt = this.view.getTextFieldBotName();
+    int caret = txt.getCaretPosition();
+    String botName = txt.getText();
+    String botNameFixed = Starcraft.cleanProfileName(botName);
+    if (AdakiteUtils.isNullOrEmpty(botNameFixed)) {
+      botNameFixed = BWHeadless.DEFAULT_BOT_NAME;
+      caret = botNameFixed.length();
+    }
+    if (botName.equalsIgnoreCase(botNameFixed)) {
+//      System.out.println("Bot name: " + botName);
+    } else {
+      if (caret < 0) {
+        caret = 0;
+      } else if (caret >= botNameFixed.length()) {
+        caret = botNameFixed.length();
+      } else {
+        caret--;
+      }
+      txt.setText(botNameFixed);
+      txt.setCaretPosition(caret);
+//      System.out.println("Fixed bot name: " + botNameFixed);
+    }
+    this.bwheadless.setBotName(botNameFixed);
   }
 
   /* ************************************************************ */

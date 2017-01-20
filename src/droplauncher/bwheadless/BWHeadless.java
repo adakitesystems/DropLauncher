@@ -39,6 +39,7 @@ import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
 import java.io.File;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -171,7 +172,13 @@ public class BWHeadless {
   }
 
   public boolean setBotName(String botName) {
-    this.botName = Starcraft.cleanProfileName(botName);
+    String cleaned = Starcraft.cleanProfileName(botName);
+    this.botName = cleaned;
+    if (!botName.equalsIgnoreCase(cleaned)) {
+      if (CLASS_DEBUG) {
+        LOGGER.log(Level.INFO, "specified bot name was corrected");
+      }
+    }
     if (AdakiteUtils.isNullOrEmpty(this.botName)) {
       this.botName = DEFAULT_BOT_NAME;
     }

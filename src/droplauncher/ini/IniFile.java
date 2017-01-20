@@ -125,14 +125,12 @@ public class IniFile {
   }
 
   public void setVariable(String name, String key, String val) {
-    //DEBUG ---
     if (name == null || key == null || val == null) {
       if (CLASS_DEBUG) {
         LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject());
       }
       return;
     }
-    //---
 
     boolean sectionExists = this.sections.containsKey(name);
     boolean keyExists = false;
