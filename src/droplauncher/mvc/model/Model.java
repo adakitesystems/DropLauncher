@@ -61,16 +61,17 @@ public class Model {
   /* ************************************************************ */
 
   public void btnLaunchActionPerformed(ActionEvent evt) {
-    ReadyStatus status = this.bwheadless.getReadyStatus();
-    if (status != ReadyStatus.READY) {
-      this.view.showMessageBox(JOptionPane.ERROR_MESSAGE, "Not ready: " + status.toString());
-      return;
-    }
-    if (this.view.getButtonLaunch().getText().equalsIgnoreCase(LaunchButtonText.LAUNCH.toString())) {
-      this.view.getButtonLaunch().setText(LaunchButtonText.EJECT.toString());
-    } else if (this.view.getButtonLaunch().getText().equalsIgnoreCase(LaunchButtonText.EJECT.toString())) {
-      this.view.getButtonLaunch().setText(LaunchButtonText.LAUNCH.toString());
-    }
+//    ReadyStatus status = this.bwheadless.getReadyStatus();
+//    if (status != ReadyStatus.READY) {
+//      this.view.showMessageBox(JOptionPane.ERROR_MESSAGE, "Not ready: " + status.toString());
+//      return;
+//    }
+//    if (this.view.getButtonLaunch().getText().equalsIgnoreCase(LaunchButtonText.LAUNCH.toString())) {
+//      this.view.getButtonLaunch().setText(LaunchButtonText.EJECT.toString());
+//    } else if (this.view.getButtonLaunch().getText().equalsIgnoreCase(LaunchButtonText.EJECT.toString())) {
+//      this.view.getButtonLaunch().setText(LaunchButtonText.LAUNCH.toString());
+//    }
+    this.bwheadless.start();
   }
 
   public void btnStarcraftExeActionPerformed(ActionEvent evt) {

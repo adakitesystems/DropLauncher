@@ -38,7 +38,10 @@ import droplauncher.ini.IniFile;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
+import droplauncher.util.ProcessPipe;
+import droplauncher.util.Util;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,6 +62,8 @@ public class BWHeadless {
   public static final NetworkProvider DEFAULT_NETWORK_PROVIDER = NetworkProvider.LAN;
   public static final JoinMode DEFAULT_JOIN_MODE = JoinMode.JOIN;
 
+  private ProcessPipe pipe;
+
   private File starcraftExe; /* required */
   private File bwapiDll; /* required */
   private String botName; /* required */
@@ -71,6 +76,8 @@ public class BWHeadless {
   private IniFile ini;
 
   public BWHeadless() {
+    pipe = new ProcessPipe();
+
     this.starcraftExe = null;
     this.bwapiDll = null;
     this.botName = DEFAULT_BOT_NAME;
@@ -117,7 +124,26 @@ public class BWHeadless {
 
   public boolean start() {
     if (isReady()) {
+      if (this.pipe.isOpen()) {
+        stop();
+        return true;
+      }
       System.out.println("BWH: Ready");
+      ArrayList<String> args = new ArrayList<>();
+      args.add(Argument.STARCRAFT_EXE.toString());
+      args.add(getStarcraftExe().getAbsolutePath());
+      args.add(Argument.JOIN_GAME.toString());
+      args.add(Argument.BOT_NAME.toString());
+      args.add(getBotName());
+      args.add(Argument.BOT_RACE.toString());
+      args.add(getBotRace().toString());
+      args.add(Argument.LOAD_DLL.toString());
+      args.add(getBwapiDll().getAbsolutePath());
+      args.add(Argument.ENABLE_LAN.toString());
+      args.add(Argument.STARCRAFT_INSTALL_PATH.toString());
+      args.add("C:\\StarCraft");
+      String[] cmdArgs = Util.toStringArray(args);
+      this.pipe.open(new File("bwheadless.exe"), cmdArgs);
       return true;
     } else {
       System.out.println("BWH: Not Ready");
@@ -127,6 +153,7 @@ public class BWHeadless {
 
   public void stop() {
     System.out.println("BWH: Stop");
+    this.pipe.close();
   }
 
   public IniFile getIniFile() {
