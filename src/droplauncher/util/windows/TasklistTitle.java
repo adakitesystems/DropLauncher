@@ -1,5 +1,10 @@
 package droplauncher.util.windows;
 
+/**
+ * Enum class containing column headers for output of "tasklist.exe" in
+ * combination of using
+ * {@link droplauncher.util.windows.Tasklist#DEFAULT_TASKLIST_ARGS}.
+ */
 public enum TasklistTitle {
 
   IMAGE_NAME("Image Name"),

@@ -9,6 +9,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+/**
+ * Class for running a program and logging its output. The specified program
+ * should successfully terminate itself after writing to stdout.
+ */
 public class SimpleProcess {
 
   private static final Logger LOGGER = Logger.getLogger(SimpleProcess.class.getName());

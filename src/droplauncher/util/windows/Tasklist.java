@@ -9,6 +9,10 @@ import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
+/**
+ * Class for getting and storing a list of processes using
+ * the Windows Tasklist program.
+ */
 public class Tasklist {
 
   private static final Logger LOGGER = Logger.getLogger(Tasklist.class.getName());
