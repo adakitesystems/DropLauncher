@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
- * Class for storing an entire file in memory as an ArrayList of String objects
- * for each line.
+ * Class for storing an entire plain text file in memory as an ArrayList of
+ * String objects for each line.
  */
 public class MemoryFile  {
 
