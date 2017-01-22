@@ -1,9 +1,16 @@
+/*
+TODO: Rename class to TaskTracker or something to do with tracking new tasks.
+*/
+
 package droplauncher.util.windows;
 
 import droplauncher.util.Constants;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+/**
+ * Class for tracking newly created tasks in the Windows Tasklist.
+ */
 public class TaskManager {
 
   private static final Logger LOGGER = Logger.getLogger(TaskManager.class.getName());
@@ -21,12 +28,31 @@ public class TaskManager {
     update();
   }
 
+  public Tasklist getCurrentTasklist() {
+    return this.currentTasklist;
+  }
+
+  public Tasklist getPreviousTasklist() {
+    return this.previousTasklist;
+  }
+
+  public ArrayList<Task> getNewTasks() {
+    return this.newTasks;
+  }
+
+  /**
+   * Updates both the current and previous tasklists.
+   */
   public void update() {
     this.previousTasklist.update();
     this.currentTasklist.update();
   }
 
-  public void updateNewTasks() {
+  /**
+   * Updates the current tasklist and compares it against the previous
+   * tasklist to determine which currently running tasks are new.
+   */
+  public void scanForNewTasks() {
     this.newTasks.clear();
 
     this.currentTasklist.update();
