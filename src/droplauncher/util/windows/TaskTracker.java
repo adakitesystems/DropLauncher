@@ -1,7 +1,3 @@
-/*
-TODO: Rename class to TaskTracker or something to do with tracking new tasks.
-*/
-
 package droplauncher.util.windows;
 
 import droplauncher.util.Constants;
