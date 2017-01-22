@@ -25,8 +25,8 @@ public class MVC {
     this.model = new Model();
     this.view = new View();
 
-    this.view.setModel(model);
-    this.model.setView(view);
+    this.view.setModel(this.model);
+    this.model.setView(this.view);
 
     this.view.update();
   }
