@@ -22,11 +22,20 @@ public class Tasklist {
   public static String[] DEFAULT_TASKLIST_ARGS = {"/v"};
 
   public static File TASKKILL_EXE = new File("C:\\Windows\\System32\\taskkill.exe");
+  public static String[] DEFAULT_TASKKILL_ARGS = {"/f", "/pid"}; /* /PID requires a second string */
 
   private ArrayList<Task> tasks;
 
   public Tasklist() {
     this.tasks = new ArrayList<>();
+  }
+
+  public void kill(String pid) {
+    String[] args = new String[DEFAULT_TASKKILL_ARGS.length + 1];
+    System.arraycopy(DEFAULT_TASKKILL_ARGS, 0, args, 0, DEFAULT_TASKKILL_ARGS.length);
+    args[args.length - 1] = pid;
+    SimpleProcess process = new SimpleProcess();
+    process.run(TASKKILL_EXE, args);
   }
 
   /**
