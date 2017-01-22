@@ -11,16 +11,16 @@ import java.util.logging.Logger;
 /**
  * Class for tracking newly created tasks in the Windows Tasklist.
  */
-public class TaskManager {
+public class TaskTracker {
 
-  private static final Logger LOGGER = Logger.getLogger(TaskManager.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(TaskTracker.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
   private Tasklist previousTasklist;
   private Tasklist currentTasklist;
   private ArrayList<Task> newTasks;
 
-  public TaskManager() {
+  public TaskTracker() {
     this.previousTasklist = new Tasklist();
     this.currentTasklist = new Tasklist();
     this.newTasks = new ArrayList<>();
