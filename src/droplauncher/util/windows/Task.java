@@ -28,6 +28,18 @@ public class Task {
     this.windowTitle = "";
   }
 
+  public Task(Task task) {
+    this.imageName = task.getImageName();
+    this.pid = task.getPID();
+    this.sessionName = task.getSessionName();
+    this.sessionNumber = task.getSessionNumber();
+    this.memUsage = task.getMemUsage();
+    this.status = task.getStatus();
+    this.username = task.getUsername();
+    this.cpuTime = task.getCpuTime();
+    this.windowTitle = task.getWindowTitle();
+  }
+
   public String getImageName() {
     return this.imageName;
   }
