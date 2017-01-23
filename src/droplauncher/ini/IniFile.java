@@ -21,8 +21,6 @@ import java.util.logging.Logger;
 /**
  * Class for manipulating a Windows INI file while attemping to preserve
  * the file's original variables and comments.
- *
- * @author user1
  */
 public class IniFile {
 

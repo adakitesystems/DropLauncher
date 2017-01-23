@@ -14,14 +14,6 @@ public class MVC {
   private View view;
 
   public MVC() {
-    init();
-  }
-
-  public MVC(String[] args) {
-    init();
-  }
-
-  private void init() {
     this.model = new Model();
     this.view = new View();
 

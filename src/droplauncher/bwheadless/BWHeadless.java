@@ -42,7 +42,6 @@ import droplauncher.util.ProcessPipe;
 import droplauncher.util.Util;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -73,10 +72,10 @@ public class BWHeadless {
   private NetworkProvider networkProvider; /* required */
   private JoinMode joinMode; /* required */
 
-  private IniFile ini;
+  private IniFile iniFile;
 
   public BWHeadless() {
-    pipe = new ProcessPipe();
+    this.pipe = new ProcessPipe();
 
     this.starcraftExe = null;
     this.bwapiDll = null;
@@ -87,7 +86,7 @@ public class BWHeadless {
     this.networkProvider = DEFAULT_NETWORK_PROVIDER;
     this.joinMode = DEFAULT_JOIN_MODE;
 
-    this.ini = null;
+    this.iniFile = null;
   }
 
   public boolean isReady() {
@@ -124,10 +123,12 @@ public class BWHeadless {
 
   public boolean start() {
     if (isReady()) {
+      //DEBUG ---
       if (this.pipe.isOpen()) {
         stop();
         return true;
       }
+      //---
       System.out.println("BWH: Ready");
       ArrayList<String> args = new ArrayList<>();
       args.add(Argument.STARCRAFT_EXE.toString());
@@ -157,147 +158,130 @@ public class BWHeadless {
   }
 
   public IniFile getIniFile() {
-    return this.ini;
+    return this.iniFile;
   }
 
-  public void setIniFile(IniFile ini) {
-    this.ini = ini;
+  public void setIniFile(IniFile iniFile) {
+    this.iniFile = iniFile;
   }
 
   public File getStarcraftExe() {
     return this.starcraftExe;
   }
 
-  public boolean setStarcraftExe(File starcraftExe) {
+  public void setStarcraftExe(File starcraftExe) {
     if (!(new FileOperation(starcraftExe)).doesFileExist()) {
       this.starcraftExe = null;
       updateSettingsFile(PredefinedVariable.STARCRAFT_EXE.toString(), "");
-      return false;
+    } else {
+      this.starcraftExe = starcraftExe;
+      updateSettingsFile(PredefinedVariable.STARCRAFT_EXE.toString(), this.starcraftExe.getAbsolutePath());
     }
-    this.starcraftExe = starcraftExe;
-    updateSettingsFile(PredefinedVariable.STARCRAFT_EXE.toString(), this.starcraftExe.getAbsolutePath());
-    return true;
   }
 
   public File getBwapiDll() {
     return this.bwapiDll;
   }
 
-  public boolean setBwapiDll(File bwapiDll) {
+  public void setBwapiDll(File bwapiDll) {
     if (!(new FileOperation(bwapiDll)).doesFileExist()) {
       this.bwapiDll = null;
       updateSettingsFile(PredefinedVariable.BWAPI_DLL.toString(), "");
-      return false;
+    } else {
+      this.bwapiDll = bwapiDll;
+      updateSettingsFile(PredefinedVariable.BWAPI_DLL.toString(), this.bwapiDll.getAbsolutePath());
     }
-    this.bwapiDll = bwapiDll;
-    updateSettingsFile(PredefinedVariable.BWAPI_DLL.toString(), this.bwapiDll.getAbsolutePath());
-    return true;
   }
 
   public String getBotName() {
     return this.botName;
   }
 
-  public boolean setBotName(String botName) {
+  public void setBotName(String botName) {
     String cleaned = Starcraft.cleanProfileName(botName);
     this.botName = cleaned;
-    if (!botName.equalsIgnoreCase(cleaned)) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Level.INFO, "specified bot name was corrected");
-      }
-    }
     if (AdakiteUtils.isNullOrEmpty(this.botName)) {
       this.botName = DEFAULT_BOT_NAME;
     }
     updateSettingsFile(PredefinedVariable.BOT_NAME.toString(), this.botName);
-    return true;
   }
 
   public File getBotDll() {
     return this.botDll;
   }
 
-  public boolean setBotDll(File botDll) {
-    if (!(new FileOperation(botDll)).doesFileExist()) {
-      this.botClient = null;
-      this.botDll = null;
-      updateSettingsFile(PredefinedVariable.BOT_CLIENT.toString(), "");
-      updateSettingsFile(PredefinedVariable.BOT_DLL.toString(), "");
-      return false;
-    }
+  public void setBotDll(File botDll) {
     this.botClient = null;
-    this.botDll = botDll;
     updateSettingsFile(PredefinedVariable.BOT_CLIENT.toString(), "");
-    updateSettingsFile(PredefinedVariable.BOT_DLL.toString(), this.botDll.getAbsolutePath());
-    return true;
+
+    if (!(new FileOperation(botDll)).doesFileExist()) {
+      this.botDll = null;
+      updateSettingsFile(PredefinedVariable.BOT_DLL.toString(), "");
+    } else {
+      this.botDll = botDll;
+      updateSettingsFile(PredefinedVariable.BOT_DLL.toString(), this.botDll.getAbsolutePath());
+    }
   }
 
   public File getBotClient() {
     return this.botClient;
   }
 
-  public boolean setBotClient(File botClient) {
+  public void setBotClient(File botClient) {
+    this.botDll = null;
+    updateSettingsFile(PredefinedVariable.BOT_DLL.toString(), "");
+
     if (!(new FileOperation(botClient)).doesFileExist()) {
       this.botClient = null;
-      this.botDll = null;
       updateSettingsFile(PredefinedVariable.BOT_CLIENT.toString(), "");
-      updateSettingsFile(PredefinedVariable.BOT_DLL.toString(), "");
-      return false;
+    } else {
+      this.botClient = botClient;
+      updateSettingsFile(PredefinedVariable.BOT_CLIENT.toString(), this.botClient.getAbsolutePath());
     }
-    this.botDll = null;
-    this.botClient = botClient;
-    updateSettingsFile(PredefinedVariable.BOT_DLL.toString(), "");
-    updateSettingsFile(PredefinedVariable.BOT_CLIENT.toString(), this.botClient.getAbsolutePath());
-    return true;
   }
 
   public Race getBotRace() {
     return this.botRace;
   }
 
-  public boolean setBotRace(Race botRace) {
+  public void setBotRace(Race botRace) {
     if (botRace == null) {
       this.botRace = DEFAULT_BOT_RACE;
-      updateSettingsFile(PredefinedVariable.BOT_RACE.toString(), this.botRace.toString());
-      return false;
+    } else {
+      this.botRace = botRace;
     }
-    this.botRace = botRace;
     updateSettingsFile(PredefinedVariable.BOT_RACE.toString(), this.botRace.toString());
-    return true;
   }
 
   public NetworkProvider getNetworkProvider() {
     return this.networkProvider;
   }
 
-  public boolean setNetworkProvider(NetworkProvider networkProvider) {
+  public void setNetworkProvider(NetworkProvider networkProvider) {
     if (networkProvider == null) {
       this.networkProvider = DEFAULT_NETWORK_PROVIDER;
-      updateSettingsFile(PredefinedVariable.NETWORK_PROVIDER.toString(), this.networkProvider.toString());
-      return false;
+    } else {
+      this.networkProvider = networkProvider;
     }
-    this.networkProvider = networkProvider;
     updateSettingsFile(PredefinedVariable.NETWORK_PROVIDER.toString(), this.networkProvider.toString());
-    return true;
   }
 
   public JoinMode getJoinMode() {
     return this.joinMode;
   }
 
-  public boolean setJoinMode(JoinMode joinMode) {
+  public void setJoinMode(JoinMode joinMode) {
     if (joinMode == null) {
       this.joinMode = DEFAULT_JOIN_MODE;
       updateSettingsFile(PredefinedVariable.JOIN_MODE.toString(), this.joinMode.toString());
-      return false;
+    } else {
+      this.joinMode = joinMode;
+      updateSettingsFile(PredefinedVariable.JOIN_MODE.toString(), this.joinMode.toString());
     }
-    this.joinMode = joinMode;
-    updateSettingsFile(PredefinedVariable.JOIN_MODE.toString(), this.joinMode.toString());
-    return true;
   }
 
   private void updateSettingsFile(String name, String key, String val) {
-    this.ini.setVariable(name, key, val);
+    this.iniFile.setVariable(name, key, val);
   }
 
   private void updateSettingsFile(String key, String val) {

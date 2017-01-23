@@ -5,9 +5,7 @@ import adakite.utils.AdakiteUtils;
 import adakite.utils.FileOperation;
 import droplauncher.mvc.view.View;
 import droplauncher.bwheadless.BWHeadless;
-import droplauncher.bwheadless.ReadyStatus;
 import droplauncher.ini.IniFile;
-import droplauncher.mvc.view.LaunchButtonText;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
@@ -18,7 +16,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -71,7 +68,9 @@ public class Model {
 //    } else if (this.view.getButtonLaunch().getText().equalsIgnoreCase(LaunchButtonText.EJECT.toString())) {
 //      this.view.getButtonLaunch().setText(LaunchButtonText.LAUNCH.toString());
 //    }
+    //DEBUG ---
     this.bwheadless.start();
+    //---
   }
 
   public void btnStarcraftExeActionPerformed(ActionEvent evt) {
@@ -89,6 +88,9 @@ public class Model {
   }
 
   public void filesDropped(File[] files) {
+    /* Parse all objects dropped into a complete list of files dropped since
+       dropping a directory does NOT include all subdirectories and
+       files by default. */
     ArrayList<File> fileList = new ArrayList<>();
     for (File file : files) {
       if (file.isDirectory()) {
@@ -105,6 +107,7 @@ public class Model {
       }
     }
 
+    /* Process all files. */
     for (File file : fileList) {
       String ext = Util.getFileExtension(file);
       if (ext != null) {
@@ -143,11 +146,6 @@ public class Model {
 
   public void rbRaceZergActionPerformed(ActionEvent evt) {
     this.bwheadless.setBotRace(Race.ZERG);
-  }
-
-  //TODO: Delete
-  public void txtBotNameKeyPressed(KeyEvent evt) {
-
   }
 
   public void txtBotNameKeyReleased(KeyEvent evt) {

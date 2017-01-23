@@ -1,5 +1,6 @@
 package droplauncher.mvc.view;
 
+import adakite.utils.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.model.Model;
 import droplauncher.util.Constants;
@@ -8,6 +9,7 @@ import java.io.File;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -135,9 +137,6 @@ public class View extends JFrame {
     });
 
     txtBotName.addKeyListener(new java.awt.event.KeyAdapter() {
-      public void keyPressed(java.awt.event.KeyEvent evt) {
-        txtBotNameKeyPressed(evt);
-      }
       public void keyReleased(java.awt.event.KeyEvent evt) {
         txtBotNameKeyReleased(evt);
       }
@@ -298,37 +297,31 @@ public class View extends JFrame {
 
   public void update() {
     /* StarCraft.exe */
-    if (this.model.getBWHeadless().getStarcraftExe() != null) {
-      this.lblStarcraftExeText.setText(this.model.getBWHeadless().getStarcraftExe().getAbsolutePath());
-    } else {
-      this.lblStarcraftExeText.setText("");
-    }
+    setText(this.lblStarcraftExeText, this.model.getBWHeadless().getStarcraftExe().getAbsolutePath());
 
     if (this.model.getBWHeadless().getBwapiDll() != null) {
       /* BWAPI.dll */
-      this.lblBwapiDllText.setText(this.model.getBWHeadless().getBwapiDll().getName());
+      setText(this.lblBwapiDllText, this.model.getBWHeadless().getBwapiDll().getName());
       /* BWAPI.dll version */
-      this.lblBwapiDllVersionText.setText(BWAPI.getBwapiVersion(this.model.getBWHeadless().getBwapiDll()));
+      setText(this.lblBwapiDllVersionText, BWAPI.getBwapiVersion(this.model.getBWHeadless().getBwapiDll()));
     } else {
-      this.lblBwapiDllText.setText("");
-      this.lblBwapiDllVersionText.setText("");
+      setText(this.lblBwapiDllText, "");
+      setText(this.lblBwapiDllVersionText, "");
     }
 
     /* Bot file */
     if (this.model.getBWHeadless().getBotDll() != null) {
-      this.lblBotFileText.setText(this.model.getBWHeadless().getBotDll().getName());
+      /* .dll */
+      setText(this.lblBotFileText, this.model.getBWHeadless().getBotDll().getName());
     } else if (this.model.getBWHeadless().getBotClient() != null) {
-      this.lblBotFileText.setText(this.model.getBWHeadless().getBotClient().getName());
+      /* Client */
+      setText(this.lblBotFileText, this.model.getBWHeadless().getBotClient().getName());
     } else {
-      this.lblBotFileText.setText("");
+      setText(this.lblBotFileText, "");
     }
 
     /* Bot name */
-    if (this.model.getBWHeadless().getBotName() != null) {
-      this.txtBotName.setText(this.model.getBWHeadless().getBotName());
-    } else {
-      this.txtBotName.setText("");
-    }
+    setText(this.txtBotName, this.model.getBWHeadless().getBotName());
 
     /* Bot race */
     switch (this.model.getBWHeadless().getBotRace()) {
@@ -343,9 +336,23 @@ public class View extends JFrame {
         break;
       case RANDOM:
         this.rbRaceRandom.setSelected(true);
+        break;
       default:
         this.rbRaceTerran.setSelected(true);
         break;
+    }
+  }
+
+  private void setText(JComponent component, String str) {
+    if (AdakiteUtils.isNullOrEmpty(str)) {
+      str = "";
+    }
+    if (component instanceof JTextField) {
+      JTextField tf = (JTextField) component;
+      tf.setText(str);
+    } else if (component instanceof JLabel) {
+      JLabel l = (JLabel) component;
+      l.setText(str);
     }
   }
 
@@ -381,10 +388,6 @@ public class View extends JFrame {
   private void txtBotNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBotNameKeyReleased
     this.model.txtBotNameKeyReleased(evt);
   }//GEN-LAST:event_txtBotNameKeyReleased
-
-  private void txtBotNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBotNameKeyPressed
-    this.model.txtBotNameKeyPressed(evt);
-  }//GEN-LAST:event_txtBotNameKeyPressed
 
   private void btnStarcraftExeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStarcraftExeActionPerformed
     this.model.btnStarcraftExeActionPerformed(evt);

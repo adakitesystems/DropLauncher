@@ -22,9 +22,9 @@ public class StreamGobbler extends Thread {
   @Override
   public void run() {
     try {
-      br = new BufferedReader(new InputStreamReader(is));
+      this.br = new BufferedReader(new InputStreamReader(this.is));
       String line;
-      while ((line = br.readLine()) != null) {
+      while ((line = this.br.readLine()) != null) {
         System.out.println(line);
       }
     } catch (Exception ex) {
