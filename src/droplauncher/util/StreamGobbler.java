@@ -1,5 +1,6 @@
 package droplauncher.util;
 
+import adakite.debugging.Debugging;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,7 +29,7 @@ public class StreamGobbler extends Thread {
         System.out.println(line);
       }
     } catch (Exception ex) {
-      LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+      LOGGER.log(Debugging.getLogLevel(), null, ex);
     }
   }
 

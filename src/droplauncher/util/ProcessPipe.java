@@ -53,7 +53,7 @@ public class ProcessPipe {
   public boolean open(File file, String[] args) {
     if (file == null) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject("file"));
+        LOGGER.log(Debugging.getLogLevel(), Debugging.nullObject("file"));
       }
       return false;
     }
@@ -87,7 +87,7 @@ public class ProcessPipe {
       return true;
     } catch (Exception ex) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+        LOGGER.log(Debugging.getLogLevel(), null, ex);
       }
     }
 
@@ -125,7 +125,7 @@ public class ProcessPipe {
       return true;
     } catch (Exception ex) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+        LOGGER.log(Debugging.getLogLevel(), null, ex);
       }
     }
     return false;

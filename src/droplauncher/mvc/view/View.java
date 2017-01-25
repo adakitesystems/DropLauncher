@@ -1,5 +1,6 @@
 package droplauncher.mvc.view;
 
+import adakite.debugging.Debugging;
 import adakite.utils.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.model.Model;
@@ -37,7 +38,7 @@ public class View extends JFrame {
       }
     } catch (Exception ex) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+        LOGGER.log(Debugging.getLogLevel(), null, ex);
       }
     }
 

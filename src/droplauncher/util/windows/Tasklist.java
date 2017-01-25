@@ -1,5 +1,6 @@
 package droplauncher.util.windows;
 
+import adakite.debugging.Debugging;
 import adakite.utils.AdakiteUtils;
 import droplauncher.util.Constants;
 import droplauncher.util.SimpleProcess;
@@ -80,7 +81,7 @@ public class Tasklist {
     }
     if (index >= process.getLog().size()) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "error parsing Tasklist output");
+        LOGGER.log(Debugging.getLogLevel(), "error parsing Tasklist output");
       }
       return false;
     }
@@ -108,7 +109,7 @@ public class Tasklist {
       ArrayList<String> tokens = tokenizeTaskEntry(line, colLengths);
       if (tokens.size() < TasklistTitle.values().length) {
         if (CLASS_DEBUG) {
-          LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "error parsing task entry line");
+          LOGGER.log(Debugging.getLogLevel(), "error parsing task entry line");
         }
         return false;
       }

@@ -40,7 +40,7 @@ public class Model {
       this.ini.open(DROP_LAUNCHER_INI);
       this.bwheadless.readSettingsFile(this.ini);
     } catch (Exception ex) {
-      LOGGER.log(Debugging.DEFAULT_LOG_LEVEL, null, ex);
+      LOGGER.log(Debugging.getLogLevel(), null, ex);
     }
   }
 
