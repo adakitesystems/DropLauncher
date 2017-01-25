@@ -32,7 +32,6 @@ A tool to start StarCraft: Brood War as a console application, with no graphics,
 
 package droplauncher.bwheadless;
 
-import adakite.debugging.Debugging;
 import adakite.utils.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.ini.IniFile;

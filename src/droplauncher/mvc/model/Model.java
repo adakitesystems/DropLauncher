@@ -1,6 +1,5 @@
 package droplauncher.mvc.model;
 
-import adakite.debugging.Debugging;
 import adakite.utils.AdakiteUtils;
 import droplauncher.mvc.view.View;
 import droplauncher.bwheadless.BWHeadless;
@@ -8,12 +7,9 @@ import droplauncher.ini.IniFile;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
-import droplauncher.util.Util;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;

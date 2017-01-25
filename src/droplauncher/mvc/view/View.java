@@ -1,6 +1,5 @@
 package droplauncher.mvc.view;
 
-import adakite.debugging.Debugging;
 import adakite.utils.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.model.Model;
