@@ -3,6 +3,7 @@ package droplauncher.mvc.view;
 import adakite.utils.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.model.Model;
+import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import filedrop.FileDrop;
 import java.io.File;
@@ -324,22 +325,24 @@ public class View extends JFrame {
     setText(this.txtBotName, this.model.getBWHeadless().getBotName());
 
     /* Bot race */
-    switch (this.model.getBWHeadless().getBotRace()) {
-      case TERRAN:
-        this.rbRaceTerran.setSelected(true);
-        break;
-      case ZERG:
-        this.rbRaceZerg.setSelected(true);
-        break;
-      case PROTOSS:
-        this.rbRaceProtoss.setSelected(true);
-        break;
-      case RANDOM:
-        this.rbRaceRandom.setSelected(true);
-        break;
-      default:
-        this.rbRaceTerran.setSelected(true);
-        break;
+    Race race = this.model.getBWHeadless().getBotRace();
+    if (race != null) {
+      switch (race) {
+        case TERRAN:
+          this.rbRaceTerran.setSelected(true);
+          break;
+        case ZERG:
+          this.rbRaceZerg.setSelected(true);
+          break;
+        case PROTOSS:
+          this.rbRaceProtoss.setSelected(true);
+          break;
+        case RANDOM:
+          this.rbRaceRandom.setSelected(true);
+          break;
+      }
+    } else {
+      this.rbRaceTerran.setSelected(true);
     }
   }
 

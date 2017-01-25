@@ -34,6 +34,7 @@ package droplauncher.bwheadless;
 
 import adakite.utils.AdakiteUtils;
 import adakite.utils.FileOperation;
+import droplauncher.bwapi.BWAPI;
 import droplauncher.ini.IniFile;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
@@ -41,7 +42,13 @@ import droplauncher.util.Constants;
 import droplauncher.util.ProcessPipe;
 import droplauncher.util.Util;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -102,7 +109,6 @@ public class BWHeadless {
       return ReadyStatus.BWAPI_DLL;
     } else if (AdakiteUtils.isNullOrEmpty(this.botName, true)
         || this.botName.length() > Starcraft.MAX_PROFILE_NAME_LENGTH) {
-      //TODO: Also check for invalid characters.
       return ReadyStatus.BOT_NAME;
     } else if (
         (this.botDll == null || !(new FileOperation(this.botDll).doesFileExist()))
@@ -130,21 +136,32 @@ public class BWHeadless {
       }
       //---
       System.out.println("BWH: Ready");
-      ArrayList<String> args = new ArrayList<>();
-      args.add(Argument.STARCRAFT_EXE.toString());
-      args.add(getStarcraftExe().getAbsolutePath());
-      args.add(Argument.JOIN_GAME.toString());
-      args.add(Argument.BOT_NAME.toString());
-      args.add(getBotName());
-      args.add(Argument.BOT_RACE.toString());
-      args.add(getBotRace().toString());
-      args.add(Argument.LOAD_DLL.toString());
-      args.add(getBwapiDll().getAbsolutePath());
-      args.add(Argument.ENABLE_LAN.toString());
-      args.add(Argument.STARCRAFT_INSTALL_PATH.toString());
-      args.add("C:\\StarCraft");
-      String[] cmdArgs = Util.toStringArray(args);
-      this.pipe.open(new File("bwheadless.exe"), cmdArgs);
+      //DEBUG ---
+      String starcraftDir = new FileOperation(starcraftExe).getParentDirectory().getAbsolutePath();
+      IniFile bwapiIni = new IniFile();
+      bwapiIni.open(new File(starcraftDir + File.separator + BWAPI.BWAPI_DATA_INI));
+      bwapiIni.setVariable("ai", "ai", "bwapi-data/AI/" + getBotDll().getName());
+      try {
+        Files.copy(getBotDll().toPath(), new File(starcraftDir + File.separator + BWAPI.BWAPI_DATA_AI_DIR + File.separator + getBotDll().getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+      } catch (IOException ex) {
+        Logger.getLogger(BWHeadless.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      //---
+//      ArrayList<String> args = new ArrayList<>();
+//      args.add(Argument.STARCRAFT_EXE.toString());
+//      args.add(getStarcraftExe().getAbsolutePath());
+//      args.add(Argument.JOIN_GAME.toString());
+//      args.add(Argument.BOT_NAME.toString());
+//      args.add(getBotName());
+//      args.add(Argument.BOT_RACE.toString());
+//      args.add(getBotRace().toString());
+//      args.add(Argument.LOAD_DLL.toString());
+//      args.add(getBwapiDll().getAbsolutePath());
+//      args.add(Argument.ENABLE_LAN.toString());
+//      args.add(Argument.STARCRAFT_INSTALL_PATH.toString());
+//      args.add("C:\\StarCraft");
+//      String[] cmdArgs = Util.toStringArray(args);
+//      this.pipe.open(new File("bwheadless.exe"), cmdArgs);
       return true;
     } else {
       System.out.println("BWH: Not Ready");

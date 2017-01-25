@@ -44,6 +44,10 @@ public class IniFile {
     return this.sections;
   }
 
+  public File getFile() {
+    return this.memoryFile.getFile();
+  }
+
   /**
    * Clears relevant class members and, specifically, the HashMap object
    * which contains the Section objects. Always adds a section with no
@@ -129,6 +133,8 @@ public class IniFile {
       }
       return;
     }
+
+    enableVariable(name, key);
 
     boolean sectionExists = this.sections.containsKey(name);
     boolean keyExists = false;
