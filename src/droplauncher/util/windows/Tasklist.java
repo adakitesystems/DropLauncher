@@ -81,7 +81,7 @@ public class Tasklist {
     }
     if (index >= process.getLog().size()) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Debugging.getLogLevel(), "error parsing Tasklist output");
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "error parsing Tasklist output");
       }
       return false;
     }
@@ -109,7 +109,7 @@ public class Tasklist {
       ArrayList<String> tokens = tokenizeTaskEntry(line, colLengths);
       if (tokens.size() < TasklistTitle.values().length) {
         if (CLASS_DEBUG) {
-          LOGGER.log(Debugging.getLogLevel(), "error parsing task entry line");
+          LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "error parsing task entry line");
         }
         return false;
       }

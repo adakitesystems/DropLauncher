@@ -38,7 +38,9 @@ public class Util {
   public static String[] toStringArray(ArrayList<String> arrlist) {
     int len = (arrlist == null) ? 0 : arrlist.size();
     if (len < 1) {
-      LOGGER.log(Debugging.getLogLevel(), Debugging.nullObject("null or empty list"));
+      if (CLASS_DEBUG) {
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject("null or empty list"));
+      }
       return null;
     }
     String[] arr = new String[len];

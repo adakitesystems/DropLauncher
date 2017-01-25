@@ -38,7 +38,7 @@ public class View extends JFrame {
       }
     } catch (Exception ex) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Debugging.getLogLevel(), null, ex);
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
       }
     }
 

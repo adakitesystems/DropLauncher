@@ -29,7 +29,9 @@ public class StreamGobbler extends Thread {
         System.out.println(line);
       }
     } catch (Exception ex) {
-      LOGGER.log(Debugging.getLogLevel(), null, ex);
+      if (CLASS_DEBUG) {
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+      }
     }
   }
 

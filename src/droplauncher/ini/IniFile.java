@@ -65,7 +65,7 @@ public class IniFile {
 
     if (file == null) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Debugging.getLogLevel(), Debugging.nullObject());
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject());
       }
       return false;
     }
@@ -73,7 +73,7 @@ public class IniFile {
     /* Create a copy of the file into a MemoryFile object. */
     if (!this.memoryFile.open(file)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Debugging.getLogLevel(), Debugging.openFail(file));
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.openFail(file));
       }
       return false;
     }
@@ -130,7 +130,7 @@ public class IniFile {
   public void setVariable(String name, String key, String val) {
     if (name == null || key == null || val == null) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Debugging.getLogLevel(), Debugging.nullObject());
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject());
       }
       return;
     }
@@ -139,7 +139,7 @@ public class IniFile {
       enableVariable(name, key);
     } catch (Exception ex) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Debugging.getLogLevel(), Debugging.operationFail("enableVariable"));
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.operationFail("enableVariable"));
       }
     }
 

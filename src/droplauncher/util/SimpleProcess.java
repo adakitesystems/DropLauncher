@@ -33,12 +33,12 @@ public class SimpleProcess {
 
     if (file == null) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Debugging.getLogLevel(), Debugging.nullObject("file"));
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject("file"));
       }
       return false;
     } else if (!AdakiteUtils.fileExists(file.toPath())) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Debugging.getLogLevel(), Debugging.fileDoesNotExist(file));
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.fileDoesNotExist(file));
       }
       return false;
     }
@@ -64,7 +64,7 @@ public class SimpleProcess {
       }
     } catch (Exception ex) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Debugging.getLogLevel(), null, ex);
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
       }
       return false;
     }

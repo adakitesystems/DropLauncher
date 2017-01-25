@@ -51,7 +51,7 @@ public class MemoryFile  {
     ReadFile rf = new ReadFile();
     if (!rf.open(this.file)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Debugging.getLogLevel(), Debugging.openFail(file));
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.openFail(file));
       }
       clear();
       return false;
@@ -68,7 +68,7 @@ public class MemoryFile  {
   public boolean dumpToFile(File file) {
     if (file == null) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Debugging.getLogLevel(), Debugging.nullObject());
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject());
       }
       return false;
     }
@@ -76,7 +76,7 @@ public class MemoryFile  {
     WriteFile wf = new WriteFile();
     if (!wf.open(file)) {
       if (CLASS_DEBUG) {
-        LOGGER.log(Debugging.getLogLevel(), Debugging.openFail(file));
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.openFail(file));
       }
       return false;
     }

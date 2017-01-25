@@ -1,5 +1,7 @@
 package droplauncher.util;
 
+import java.util.logging.Level;
+
 /**
  * Utility class for global constants.
  */
@@ -12,6 +14,7 @@ public class Constants {
 
   /* Logging */
   public static final boolean DEBUG = true;
+  public static final Level DEFAULT_LOG_LEVEL = Level.SEVERE;
 
   private Constants() {}
 
