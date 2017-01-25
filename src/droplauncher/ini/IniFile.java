@@ -16,6 +16,7 @@ import droplauncher.util.MemoryFile;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -59,7 +60,7 @@ public class IniFile {
     this.sections.put(SectionName.NONE.toString(), new Section());
   }
 
-  public boolean open(File file) {
+  public boolean open(File file) throws Exception {
     clear();
 
     if (file == null) {
@@ -134,7 +135,13 @@ public class IniFile {
       return;
     }
 
-    enableVariable(name, key);
+    try {
+      enableVariable(name, key);
+    } catch (Exception ex) {
+      if (CLASS_DEBUG) {
+        LOGGER.log(Debugging.DEFAULT_LOG_LEVEL, Debugging.operationFail("enableVariable"));
+      }
+    }
 
     boolean sectionExists = this.sections.containsKey(name);
     boolean keyExists = false;
@@ -269,7 +276,7 @@ public class IniFile {
     return ret;
   }
 
-  public boolean enableVariable(String name, String key) {
+  public boolean enableVariable(String name, String key) throws Exception {
     if (this.sections.containsKey(name)) {
       int sectionIndex = getSectionIndex(name);
       /* Section exists. */
@@ -302,7 +309,7 @@ public class IniFile {
     return false;
   }
 
-  public void disableVariable(String name, String key) {
+  public void disableVariable(String name, String key) throws Exception {
     int keyIndex = getKeyIndex(name, key);
     if (keyIndex < 0) {
       /* Key not found. */
@@ -316,7 +323,7 @@ public class IniFile {
     reload();
   }
 
-  private void reload() {
+  private void reload() throws Exception {
     File file = new File(this.memoryFile.getFile().getAbsolutePath());
     open(file);
   }

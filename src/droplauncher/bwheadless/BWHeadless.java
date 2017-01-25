@@ -32,22 +32,18 @@ A tool to start StarCraft: Brood War as a console application, with no graphics,
 
 package droplauncher.bwheadless;
 
+import adakite.debugging.Debugging;
 import adakite.utils.AdakiteUtils;
-import adakite.utils.FileOperation;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.ini.IniFile;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
 import droplauncher.util.ProcessPipe;
-import droplauncher.util.Util;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -102,17 +98,17 @@ public class BWHeadless {
 
   public ReadyStatus getReadyStatus() {
     if (this.starcraftExe == null
-        || !(new FileOperation(this.starcraftExe).doesFileExist())) {
+        || !AdakiteUtils.fileExists(this.starcraftExe.toPath())) {
       return ReadyStatus.STARTCRAFT_EXE;
     } else if (this.bwapiDll == null
-        || !(new FileOperation(this.bwapiDll).doesFileExist())) {
+        || !AdakiteUtils.fileExists(this.bwapiDll.toPath())) {
       return ReadyStatus.BWAPI_DLL;
     } else if (AdakiteUtils.isNullOrEmpty(this.botName, true)
         || this.botName.length() > Starcraft.MAX_PROFILE_NAME_LENGTH) {
       return ReadyStatus.BOT_NAME;
     } else if (
-        (this.botDll == null || !(new FileOperation(this.botDll).doesFileExist()))
-        && (this.botClient == null || !(new FileOperation(this.botClient).doesFileExist()))
+        (this.botDll == null || !AdakiteUtils.fileExists(this.botDll.toPath())
+        && (this.botClient == null || !AdakiteUtils.fileExists(this.botClient.toPath())))
     ) {
       /* If both the bot DLL and bot client fields are missing. */
       return ReadyStatus.BOT_FILE;
@@ -137,9 +133,15 @@ public class BWHeadless {
       //---
       System.out.println("BWH: Ready");
       //DEBUG ---
-      String starcraftDir = new FileOperation(starcraftExe).getParentDirectory().getAbsolutePath();
+      String starcraftDir = AdakiteUtils.getParentDirectory(starcraftExe.toPath()).toAbsolutePath().toString();
       IniFile bwapiIni = new IniFile();
-      bwapiIni.open(new File(starcraftDir + File.separator + BWAPI.BWAPI_DATA_INI));
+      try {
+        bwapiIni.open(new File(starcraftDir + File.separator + BWAPI.BWAPI_DATA_INI));
+      } catch (Exception ex) {
+        if (CLASS_DEBUG) {
+          LOGGER.log(Debugging.DEFAULT_LOG_LEVEL, null, ex);
+        }
+      }
       bwapiIni.setVariable("ai", "ai", "bwapi-data/AI/" + getBotDll().getName());
       try {
         Files.copy(getBotDll().toPath(), new File(starcraftDir + File.separator + BWAPI.BWAPI_DATA_AI_DIR + File.separator + getBotDll().getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -187,7 +189,7 @@ public class BWHeadless {
   }
 
   public void setStarcraftExe(File starcraftExe) {
-    if (!(new FileOperation(starcraftExe)).doesFileExist()) {
+    if (!AdakiteUtils.fileExists(starcraftExe.toPath())) {
       this.starcraftExe = null;
       updateSettingsFile(PredefinedVariable.STARCRAFT_EXE.toString(), "");
     } else {
@@ -201,7 +203,7 @@ public class BWHeadless {
   }
 
   public void setBwapiDll(File bwapiDll) {
-    if (!(new FileOperation(bwapiDll)).doesFileExist()) {
+    if (!AdakiteUtils.fileExists(bwapiDll.toPath())) {
       this.bwapiDll = null;
       updateSettingsFile(PredefinedVariable.BWAPI_DLL.toString(), "");
     } else {
@@ -231,7 +233,7 @@ public class BWHeadless {
     this.botClient = null;
     updateSettingsFile(PredefinedVariable.BOT_CLIENT.toString(), "");
 
-    if (!(new FileOperation(botDll)).doesFileExist()) {
+    if (!AdakiteUtils.fileExists(botDll.toPath())) {
       this.botDll = null;
       updateSettingsFile(PredefinedVariable.BOT_DLL.toString(), "");
     } else {
@@ -248,7 +250,7 @@ public class BWHeadless {
     this.botDll = null;
     updateSettingsFile(PredefinedVariable.BOT_DLL.toString(), "");
 
-    if (!(new FileOperation(botClient)).doesFileExist()) {
+    if (!AdakiteUtils.fileExists(botClient.toPath())) {
       this.botClient = null;
       updateSettingsFile(PredefinedVariable.BOT_CLIENT.toString(), "");
     } else {
@@ -298,7 +300,13 @@ public class BWHeadless {
   }
 
   private void updateSettingsFile(String name, String key, String val) {
-    this.iniFile.setVariable(name, key, val);
+    try {
+      this.iniFile.setVariable(name, key, val);
+    } catch (Exception ex) {
+      if (CLASS_DEBUG) {
+        LOGGER.log(Debugging.DEFAULT_LOG_LEVEL, null, ex);
+      }
+    }
   }
 
   private void updateSettingsFile(String key, String val) {

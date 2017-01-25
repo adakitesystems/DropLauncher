@@ -1,7 +1,7 @@
 package droplauncher.util;
 
 import adakite.debugging.Debugging;
-import adakite.utils.FileOperation;
+import adakite.utils.AdakiteUtils;
 import adakite.utils.ReadFile;
 import adakite.utils.WriteFile;
 import java.io.File;
@@ -38,7 +38,7 @@ public class MemoryFile  {
     return this.lines;
   }
 
-  public boolean open(File file) {
+  public boolean open(File file) throws Exception {
     clear();
 
     if (file == null) {
@@ -46,13 +46,7 @@ public class MemoryFile  {
     }
 
     this.file = file;
-    if (!(new FileOperation(file).doesFileExist()) && !(new FileOperation(file).createFile())) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.createFail(file));
-      }
-      clear();
-      return false;
-    }
+    AdakiteUtils.createFile(file.toPath());
 
     ReadFile rf = new ReadFile();
     if (!rf.open(this.file)) {

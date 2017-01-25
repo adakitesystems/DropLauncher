@@ -1,7 +1,7 @@
 package droplauncher.util;
 
 import adakite.debugging.Debugging;
-import adakite.utils.FileOperation;
+import adakite.utils.AdakiteUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -36,7 +36,7 @@ public class SimpleProcess {
         LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject("file"));
       }
       return false;
-    } else if (!(new FileOperation(file).doesFileExist())) {
+    } else if (!AdakiteUtils.fileExists(file.toPath())) {
       if (CLASS_DEBUG) {
         LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.fileDoesNotExist(file));
       }

@@ -2,7 +2,6 @@ package droplauncher.mvc.model;
 
 import adakite.debugging.Debugging;
 import adakite.utils.AdakiteUtils;
-import adakite.utils.FileOperation;
 import droplauncher.mvc.view.View;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.ini.IniFile;
@@ -14,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
@@ -36,12 +36,11 @@ public class Model {
     this.ini = new IniFile();
 
     this.bwheadless.setIniFile(this.ini);
-    if (this.ini.open(DROP_LAUNCHER_INI)) {
+    try {
+      this.ini.open(DROP_LAUNCHER_INI);
       this.bwheadless.readSettingsFile(this.ini);
-    } else {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.openFail(DROP_LAUNCHER_INI));
-      }
+    } catch (Exception ex) {
+      LOGGER.log(Debugging.DEFAULT_LOG_LEVEL, null, ex);
     }
   }
 
@@ -88,48 +87,48 @@ public class Model {
   }
 
   public void filesDropped(File[] files) {
-    /* Parse all objects dropped into a complete list of files dropped since
-       dropping a directory does NOT include all subdirectories and
-       files by default. */
-    ArrayList<File> fileList = new ArrayList<>();
-    for (File file : files) {
-      if (file.isDirectory()) {
-        File[] tmpList = new FileOperation(file).getDirectoryContents();
-        for (File tmpFile : tmpList) {
-          fileList.add(tmpFile);
-        }
-      } else if (file.isFile()) {
-        fileList.add(file);
-      } else {
-        if (CLASS_DEBUG) {
-          LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "Unknown file dropped: " + file.getAbsolutePath());
-        }
-      }
-    }
-
-    /* Process all files. */
-    for (File file : fileList) {
-      String ext = Util.getFileExtension(file);
-      if (ext != null) {
-        if (ext.equalsIgnoreCase("dll")) {
-          if (file.getName().equalsIgnoreCase("BWAPI.dll")) {
-            this.bwheadless.setBwapiDll(file);
-          } else {
-            this.bwheadless.setBotDll(file);
-          }
-        } else if (ext.equalsIgnoreCase("exe")) {
-          this.bwheadless.setBotClient(file);
-        } else if (ext.equalsIgnoreCase("jar")) {
-          this.bwheadless.setBotClient(file);
-        } else {
-          /* If file extension is not recognized, ignore file. */
-        }
-      } else {
-        /* If no file extension is detected, ignore file. */
-      }
-    }
-
-    this.view.update();
+//    /* Parse all objects dropped into a complete list of files dropped since
+//       dropping a directory does NOT include all subdirectories and
+//       files by default. */
+//    ArrayList<File> fileList = new ArrayList<>();
+//    for (File file : files) {
+//      if (file.isDirectory()) {
+//        File[] tmpList = new FileOperation(file).getDirectoryContents();
+//        for (File tmpFile : tmpList) {
+//          fileList.add(tmpFile);
+//        }
+//      } else if (file.isFile()) {
+//        fileList.add(file);
+//      } else {
+//        if (CLASS_DEBUG) {
+//          LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "Unknown file dropped: " + file.getAbsolutePath());
+//        }
+//      }
+//    }
+//
+//    /* Process all files. */
+//    for (File file : fileList) {
+//      String ext = Util.getFileExtension(file);
+//      if (ext != null) {
+//        if (ext.equalsIgnoreCase("dll")) {
+//          if (file.getName().equalsIgnoreCase("BWAPI.dll")) {
+//            this.bwheadless.setBwapiDll(file);
+//          } else {
+//            this.bwheadless.setBotDll(file);
+//          }
+//        } else if (ext.equalsIgnoreCase("exe")) {
+//          this.bwheadless.setBotClient(file);
+//        } else if (ext.equalsIgnoreCase("jar")) {
+//          this.bwheadless.setBotClient(file);
+//        } else {
+//          /* If file extension is not recognized, ignore file. */
+//        }
+//      } else {
+//        /* If no file extension is detected, ignore file. */
+//      }
+//    }
+//
+//    this.view.update();
   }
 
   public void rbRaceProtossActionPerformed(ActionEvent evt) {
