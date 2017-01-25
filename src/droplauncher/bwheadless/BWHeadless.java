@@ -136,12 +136,12 @@ public class BWHeadless {
       IniFile bwapiIni = new IniFile();
       try {
         bwapiIni.open(new File(starcraftDir + File.separator + BWAPI.BWAPI_DATA_INI));
-      } catch (Exception ex) {
+        bwapiIni.setVariable("ai", "ai", "bwapi-data/AI/" + getBotDll().getName());
+      } catch (IOException ex) {
         if (CLASS_DEBUG) {
           LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
         }
       }
-      bwapiIni.setVariable("ai", "ai", "bwapi-data/AI/" + getBotDll().getName());
       try {
         Files.copy(getBotDll().toPath(), new File(starcraftDir + File.separator + BWAPI.BWAPI_DATA_AI_DIR + File.separator + getBotDll().getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
       } catch (IOException ex) {
