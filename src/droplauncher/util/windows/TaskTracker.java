@@ -47,8 +47,10 @@ public class TaskTracker {
   /**
    * Updates the current tasklist and compares it against the previous
    * tasklist to determine which currently running tasks are new.
+   *
+   * @param updatePreviousTasks whether to update the previous tasklist.
    */
-  public void scanForNewTasks() {
+  public void updateNewTasks(boolean updatePreviousTasks) {
     this.newTasks.clear();
 
     this.currentTasklist.update();
@@ -67,9 +69,20 @@ public class TaskTracker {
       }
     }
 
-    if (this.newTasks.size() > 0) {
+    if (updatePreviousTasks && this.newTasks.size() > 0) {
       this.previousTasklist.update();
     }
+  }
+
+  /**
+   * Updates the current tasklist and compares it against the previous
+   * tasklist to determine which currently running tasks are new. Note:
+   * this call does NOT update the previous tasklist.
+   *
+   * @see #updateNewTasks(boolean)
+   */
+  public void updateNewTasks() {
+    updateNewTasks(false);
   }
 
 }
