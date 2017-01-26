@@ -184,13 +184,13 @@ public class IniFile {
     this.memoryFile.dumpToFile();
   }
 
-  public boolean enableVariable(String name, String key) throws IOException {
+  public void enableVariable(String name, String key) throws IOException {
     if (this.sections.containsKey(name)) {
       int sectionIndex = getSectionIndex(name);
       /* Section exists. */
       if (this.sections.get(name).getKeys().containsKey(key)) {
         /* Variable is enabled already. */
-        return true;
+        return;
       } else {
         /* Variable needs to be uncommented. */
         for (int i = sectionIndex; i < this.memoryFile.getLines().size(); i++) {
@@ -205,16 +205,10 @@ public class IniFile {
             this.memoryFile.getLines().set(i, line);
             this.memoryFile.dumpToFile();
             reload();
-            return true;
           }
         }
       }
-    } else {
-      /* Section does not exist. */
-      return false;
     }
-    /* The disabled variable was not found. */
-    return false;
   }
 
   public void disableVariable(String name, String key) throws IOException {
