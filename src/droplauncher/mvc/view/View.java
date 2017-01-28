@@ -298,7 +298,9 @@ public class View extends JFrame {
 
   public void update() {
     /* StarCraft.exe */
-    setText(this.lblStarcraftExeText, this.model.getBWHeadless().getStarcraftExe().getAbsolutePath());
+    if (this.model.getBWHeadless().getStarcraftExe() != null) {
+      setText(this.lblStarcraftExeText, this.model.getBWHeadless().getStarcraftExe().getAbsolutePath());
+    }
 
     if (this.model.getBWHeadless().getBwapiDll() != null) {
       /* BWAPI.dll */
@@ -342,7 +344,7 @@ public class View extends JFrame {
           break;
       }
     } else {
-      this.rbRaceTerran.setSelected(true);
+      unselectRaces();
     }
   }
 
@@ -357,6 +359,13 @@ public class View extends JFrame {
       JLabel l = (JLabel) component;
       l.setText(str);
     }
+  }
+
+  private void unselectRaces() {
+    this.rbRaceTerran.setSelected(false);
+    this.rbRaceZerg.setSelected(false);
+    this.rbRaceProtoss.setSelected(false);
+    this.rbRaceRandom.setSelected(false);
   }
 
   /* ************************************************************ */

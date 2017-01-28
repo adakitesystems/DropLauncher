@@ -12,21 +12,16 @@ package droplauncher.ini;
 import adakite.debugging.Debugging;
 import adakite.utils.AdakiteUtils;
 import adakite.utils.MemoryFile;
-import droplauncher.util.Constants;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 /**
  * Class for manipulating a Windows INI file while attemping to preserve
  * the file's original variables and comments.
  */
 public class IniFile {
-
-  private static final Logger LOGGER = Logger.getLogger(IniFile.class.getName());
-  private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
   public static final String FILE_EXTENSION = ".ini";
   public static final String VARIABLE_DELIMITER = "=";
@@ -60,15 +55,8 @@ public class IniFile {
     this.sections.put(SectionName.NONE.toString(), new Section());
   }
 
-  public boolean open(File file) throws IOException {
+  public void open(File file) throws IOException {
     clear();
-
-    if (file == null) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject());
-      }
-      return false;
-    }
 
     /* Create a copy of the file into a MemoryFile object. */
     this.memoryFile.open(file);
@@ -118,16 +106,17 @@ public class IniFile {
         this.sections.get(currSection).getKeys().put(key, val);
       }
     }
-
-    return true;
   }
 
   public void setVariable(String name, String key, String val) throws IOException {
-    if (name == null || key == null || val == null) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject());
-      }
-      return;
+    if (name == null) {
+      name = "";
+    }
+    if (AdakiteUtils.isNullOrEmpty(val, true)) {
+      throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("key"));
+    }
+    if (val == null) {
+      val = "";
     }
 
     enableVariable(name, key);
@@ -185,6 +174,13 @@ public class IniFile {
   }
 
   public void enableVariable(String name, String key) throws IOException {
+    if (name == null) {
+      name = "";
+    }
+    if (AdakiteUtils.isNullOrEmpty(key, true)) {
+      throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("key"));
+    }
+
     if (this.sections.containsKey(name)) {
       int sectionIndex = getSectionIndex(name);
       /* Section exists. */
@@ -212,6 +208,13 @@ public class IniFile {
   }
 
   public void disableVariable(String name, String key) throws IOException {
+    if (name == null) {
+      name = "";
+    }
+    if (AdakiteUtils.isNullOrEmpty(key, true)) {
+      throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("key"));
+    }
+
     int keyIndex = getKeyIndex(name, key);
     if (keyIndex < 0) {
       /* Key not found. */
@@ -226,6 +229,13 @@ public class IniFile {
   }
 
   public String getValue(String name, String key) {
+    if (name == null) {
+      name = "";
+    }
+    if (AdakiteUtils.isNullOrEmpty(key, true)) {
+      throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("key"));
+    }
+
     if (this.sections.containsKey(name)
         && this.sections.get(name).getKeys().containsKey(key)) {
       return this.sections.get(name).getKeys().get(key);
@@ -235,6 +245,10 @@ public class IniFile {
   }
 
   private int getSectionIndex(String name) {
+    if (AdakiteUtils.isNullOrEmpty(name) && this.memoryFile.getLines().size() > 0) {
+      return 0;
+    }
+
     for (int i = 0; i < this.memoryFile.getLines().size(); i++) {
       String line = this.memoryFile.getLines().get(i);
       line = line.trim();
@@ -242,10 +256,18 @@ public class IniFile {
         return i;
       }
     }
+
     return -1;
   }
 
   private int getKeyIndex(String name, String key) {
+    if (name == null) {
+      name = "";
+    }
+    if (AdakiteUtils.isNullOrEmpty(key, true)) {
+      throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("key"));
+    }
+
     int sectionIndex = getSectionIndex(name);
     if (sectionIndex < 0) {
       return -1;
@@ -258,14 +280,11 @@ public class IniFile {
         return i;
       }
     }
+
     return -1;
   }
 
   public static String removeComment(String line) {
-    if (AdakiteUtils.isNullOrEmpty(line)) {
-      return "";
-    }
-
     String ret = line.trim();
 
     int commentIndex = ret.indexOf(COMMENT_DELIMITER);
@@ -281,17 +300,17 @@ public class IniFile {
   /**
    * Scans the specified string for a comment and returns that string.
    *
-   * @param line specified string to scan
+   * @param str specified string to scan
    * @return
    *     the comment if present,
    *     otherwise null
    */
-  public static String getComment(String line) {
-    if (AdakiteUtils.isNullOrEmpty(line)) {
-      return null;
+  public static String getComment(String str) {
+    if (AdakiteUtils.isNullOrEmpty(str)) {
+      throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("line"));
     }
 
-    String ret = line.trim();
+    String ret = str.trim();
 
     int commentIndex = ret.indexOf(COMMENT_DELIMITER);
     if (commentIndex < 0) {
