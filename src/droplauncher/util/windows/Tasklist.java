@@ -100,7 +100,7 @@ public class Tasklist {
     /* Parse remaining lines. */
     for (int i = index; i < process.getLog().size(); i++) {
       String line = process.getLog().get(i);
-      if (AdakiteUtils.isNullOrEmpty(line)) {
+      if (AdakiteUtils.isNullOrEmpty(line, true)) {
         continue;
       }
 

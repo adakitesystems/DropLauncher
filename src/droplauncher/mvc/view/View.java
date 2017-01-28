@@ -349,7 +349,7 @@ public class View extends JFrame {
   }
 
   private void setText(JComponent component, String str) {
-    if (AdakiteUtils.isNullOrEmpty(str)) {
+    if (AdakiteUtils.isNullOrEmpty(str, true)) {
       str = "";
     }
     if (component instanceof JTextField) {

@@ -245,7 +245,7 @@ public class IniFile {
   }
 
   private int getSectionIndex(String name) {
-    if (AdakiteUtils.isNullOrEmpty(name) && this.memoryFile.getLines().size() > 0) {
+    if (AdakiteUtils.isNullOrEmpty(name, true) && this.memoryFile.getLines().size() > 0) {
       return 0;
     }
 
@@ -285,6 +285,10 @@ public class IniFile {
   }
 
   public static String removeComment(String line) {
+    if (AdakiteUtils.isNullOrEmpty(line, true)) {
+      return "";
+    }
+
     String ret = line.trim();
 
     int commentIndex = ret.indexOf(COMMENT_DELIMITER);
@@ -306,7 +310,7 @@ public class IniFile {
    *     otherwise null
    */
   public static String getComment(String str) {
-    if (AdakiteUtils.isNullOrEmpty(str)) {
+    if (AdakiteUtils.isNullOrEmpty(str, true)) {
       throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("line"));
     }
 
