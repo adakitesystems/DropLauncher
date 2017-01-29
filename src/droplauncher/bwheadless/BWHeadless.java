@@ -42,6 +42,8 @@ import droplauncher.util.ProcessPipe;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,24 +57,21 @@ public class BWHeadless {
   private static final Logger LOGGER = Logger.getLogger(BWHeadless.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
-//  public static final File BW_HEADLESS_EXE = new File("bwheadless.exe");
+  public static final String BW_HEADLESS_EXE = "bwheadless.exe";
   public static final String BW_HEADLESS_INI_SECTION = "bwheadless";
 
   public static final String DEFAULT_BOT_NAME = "BOT";
-  public static final Race DEFAULT_BOT_RACE = null;
+  public static final Race DEFAULT_BOT_RACE = Race.NONE;
   public static final NetworkProvider DEFAULT_NETWORK_PROVIDER = NetworkProvider.LAN;
   public static final JoinMode DEFAULT_JOIN_MODE = JoinMode.JOIN;
 
   private ProcessPipe pipe;
 
-  /*
-  TODO: Change types to String.
-  */
-  private File starcraftExe; /* required */
-  private File bwapiDll; /* required */
+  private String starcraftExe; /* required */
+  private String bwapiDll; /* required */
   private String botName; /* required */
-  private File botDll; /* required only when client is absent */
-  private File botClient; /* *.exe or *.jar, required only when DLL is absent  */
+  private String botDll; /* required only when client is absent */
+  private String botClient; /* *.exe or *.jar, required only when DLL is absent  */
   private Race botRace; /* required */
   private NetworkProvider networkProvider; /* required */
   private JoinMode joinMode; /* required */
@@ -87,7 +86,7 @@ public class BWHeadless {
     this.botName = DEFAULT_BOT_NAME;
     this.botDll = null;
     this.botClient = null;
-    this.botRace = null;
+    this.botRace = DEFAULT_BOT_RACE;
     this.networkProvider = DEFAULT_NETWORK_PROVIDER;
     this.joinMode = DEFAULT_JOIN_MODE;
 
@@ -98,23 +97,27 @@ public class BWHeadless {
     return (getReadyStatus() == ReadyStatus.READY);
   }
 
+  /*
+  TODO: Possibly remove or improve this.
+  TODO: Redo this.
+  */
   public ReadyStatus getReadyStatus() {
-    if (this.starcraftExe == null
-        || !AdakiteUtils.fileExists(this.starcraftExe.toPath())) {
+    if (AdakiteUtils.isNullOrEmpty(this.starcraftExe, true)
+        || !AdakiteUtils.fileExists(Paths.get(this.starcraftExe))) {
       return ReadyStatus.STARTCRAFT_EXE;
-    } else if (this.bwapiDll == null
-        || !AdakiteUtils.fileExists(this.bwapiDll.toPath())) {
+    } else if (AdakiteUtils.isNullOrEmpty(this.bwapiDll, true)
+        || !AdakiteUtils.fileExists(Paths.get(this.bwapiDll))) {
       return ReadyStatus.BWAPI_DLL;
     } else if (AdakiteUtils.isNullOrEmpty(this.botName, true)
         || this.botName.length() > Starcraft.MAX_PROFILE_NAME_LENGTH) {
       return ReadyStatus.BOT_NAME;
     } else if (
-        (this.botDll == null || !AdakiteUtils.fileExists(this.botDll.toPath())
-        && (this.botClient == null || !AdakiteUtils.fileExists(this.botClient.toPath())))
+        (AdakiteUtils.isNullOrEmpty(this.botDll, true) || !AdakiteUtils.fileExists(Paths.get(this.botDll)))
+        && (AdakiteUtils.isNullOrEmpty(this.botClient, true) || !AdakiteUtils.fileExists(Paths.get(this.botClient)))
     ) {
       /* If both the bot DLL and bot client fields are missing. */
       return ReadyStatus.BOT_FILE;
-    } else if (this.botRace == null) {
+    } else if (this.botRace == null || this.botRace == Race.NONE) {
       return ReadyStatus.BOT_RACE;
     } else if (this.networkProvider == null) {
       return ReadyStatus.NETWORK_PROVIDER;
@@ -135,18 +138,19 @@ public class BWHeadless {
       //---
       System.out.println("BWH: Ready");
       //DEBUG ---
-      String starcraftDir = AdakiteUtils.getParentDirectory(starcraftExe.toPath()).toAbsolutePath().toString();
+      Path parent = AdakiteUtils.getParentDirectory(Paths.get(this.starcraftExe));
+      String starcraftDir = parent.toAbsolutePath().toString();
       IniFile bwapiIni = new IniFile();
       try {
         bwapiIni.open(new File(starcraftDir + File.separator + BWAPI.BWAPI_DATA_INI));
-        bwapiIni.setVariable("ai", "ai", "bwapi-data/AI/" + getBotDll().getName());
+        bwapiIni.setVariable("ai", "ai", "bwapi-data/AI/" + getBotDll());
       } catch (IOException ex) {
         if (CLASS_DEBUG) {
           LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
         }
       }
       try {
-        Files.copy(getBotDll().toPath(), new File(starcraftDir + File.separator + BWAPI.BWAPI_DATA_AI_DIR + File.separator + getBotDll().getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(Paths.get(getBotDll()), Paths.get(starcraftDir + File.separator + BWAPI.BWAPI_DATA_AI_DIR + File.separator + getBotDll()), StandardCopyOption.REPLACE_EXISTING);
       } catch (IOException ex) {
         Logger.getLogger(BWHeadless.class.getName()).log(Level.SEVERE, null, ex);
       }
@@ -186,22 +190,22 @@ public class BWHeadless {
     this.iniFile = iniFile;
   }
 
-  public File getStarcraftExe() {
+  public String getStarcraftExe() {
     return this.starcraftExe;
   }
 
-  public void setStarcraftExe(File starcraftExe) {
+  public void setStarcraftExe(String starcraftExe) {
     this.starcraftExe = starcraftExe;
-    updateSettingsFile(PredefinedVariable.STARCRAFT_EXE.toString(), this.starcraftExe.getAbsolutePath());
+    updateSettingsFile(PredefinedVariable.STARCRAFT_EXE.toString(), this.starcraftExe);
   }
 
-  public File getBwapiDll() {
+  public String getBwapiDll() {
     return this.bwapiDll;
   }
 
-  public void setBwapiDll(File bwapiDll) {
+  public void setBwapiDll(String bwapiDll) {
     this.bwapiDll = bwapiDll;
-    updateSettingsFile(PredefinedVariable.BWAPI_DLL.toString(), this.bwapiDll.getAbsolutePath());
+    updateSettingsFile(PredefinedVariable.BWAPI_DLL.toString(), this.bwapiDll);
   }
 
   public String getBotName() {
@@ -217,40 +221,44 @@ public class BWHeadless {
     updateSettingsFile(PredefinedVariable.BOT_NAME.toString(), this.botName);
   }
 
-  public File getBotDll() {
+  public String getBotDll() {
     return this.botDll;
   }
 
-  public void setBotDll(File botDll) {
+  public void setBotDll(String botDll) {
+    /* Since we are loading a new bot DLL, remove the selected race
+       to avoid confusion with the old bot's race. */
     setBotRace(DEFAULT_BOT_RACE);
+
+    /* Disable any previous bot clients. */
     this.botClient = null;
     updateSettingsFile(PredefinedVariable.BOT_CLIENT.toString(), "");
 
+    /* Set bot DLL. */
     this.botDll = botDll;
-    String name = AdakiteUtils.removeFileExtension(this.botDll.getName());
+    String name = AdakiteUtils.removeFileExtension(this.botDll);
     setBotName(name);
-    updateSettingsFile(PredefinedVariable.BOT_DLL.toString(), this.botDll.getAbsolutePath());
+    updateSettingsFile(PredefinedVariable.BOT_DLL.toString(), this.botDll);
   }
 
-  public File getBotClient() {
+  public String getBotClient() {
     return this.botClient;
   }
 
-  public void setBotClient(File botClient) {
+  public void setBotClient(String botClient) {
+    /* Since we are setting a new bot client, remove the selected race
+       to avoid confusion with the old bot's race. */
     setBotRace(DEFAULT_BOT_RACE);
+
+    /* Disable any previous bot DLL. */
     this.botDll = null;
     updateSettingsFile(PredefinedVariable.BOT_DLL.toString(), "");
 
-    if (!AdakiteUtils.fileExists(botClient.toPath())) {
-      this.botClient = null;
-      setBotName(DEFAULT_BOT_NAME);
-      updateSettingsFile(PredefinedVariable.BOT_CLIENT.toString(), "");
-    } else {
-      this.botClient = botClient;
-      String name = AdakiteUtils.removeFileExtension(this.botClient.getName());
-      setBotName(name);
-      updateSettingsFile(PredefinedVariable.BOT_CLIENT.toString(), this.botClient.getAbsolutePath());
-    }
+    /* Set bot client. */
+    this.botClient = botClient;
+    String name = AdakiteUtils.removeFileExtension(this.botClient);
+    setBotName(name);
+    updateSettingsFile(PredefinedVariable.BOT_CLIENT.toString(), this.botClient);
   }
 
   public Race getBotRace() {
@@ -295,15 +303,12 @@ public class BWHeadless {
   }
 
   public void readSettingsFile(IniFile ini) {
-    if (ini == null) {
-      return;
-    }
     String val;
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.STARCRAFT_EXE.toString()))) {
-      setStarcraftExe(new File(val));
+      setStarcraftExe(val);
     }
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BWAPI_DLL.toString()))) {
-      setBwapiDll(new File(val));
+      setBwapiDll(val);
     }
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BOT_NAME.toString()))) {
       setBotName(val);
@@ -311,10 +316,10 @@ public class BWHeadless {
       setBotName(DEFAULT_BOT_NAME);
     }
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BOT_DLL.toString()))) {
-      setBotDll(new File(val));
+      setBotDll(val);
     }
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BOT_CLIENT.toString()))) {
-      setBotClient(new File(val));
+      setBotClient(val);
     }
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BOT_RACE.toString()))) {
       if (val.equalsIgnoreCase(Race.TERRAN.toString())) {
@@ -326,28 +331,34 @@ public class BWHeadless {
       } else if(val.equalsIgnoreCase((Race.RANDOM.toString()))) {
         setBotRace(Race.RANDOM);
       } else {
+        /* Unrecognized Race. */
         setBotRace(DEFAULT_BOT_RACE);
       }
     } else {
+      /* Race wasn't set. */
       setBotRace(DEFAULT_BOT_RACE);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.NETWORK_PROVIDER.toString()))) {
+    if (AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.NETWORK_PROVIDER.toString()))) {
       if (val.equalsIgnoreCase(NetworkProvider.LAN.toString())) {
         setNetworkProvider(NetworkProvider.LAN);
       } else {
+        /* Unrecognized NetworkProvider. */
         setNetworkProvider(DEFAULT_NETWORK_PROVIDER);
       }
     } else {
-//      setNetworkProvider(DEFAULT_NETWORK_PROVIDER);
+      /* NetworkProvider wasn't set. */
+      setNetworkProvider(DEFAULT_NETWORK_PROVIDER);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.JOIN_MODE.toString()))) {
+    if (AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.JOIN_MODE.toString()))) {
       if (val.equalsIgnoreCase(JoinMode.JOIN.toString())) {
         setJoinMode(JoinMode.JOIN);
       } else {
+        /* Unrecognized JoinMode. */
         setJoinMode(DEFAULT_JOIN_MODE);
       }
     } else {
-//      setJoinMode(DEFAULT_JOIN_MODE);
+      /* JoinMode wasn't set. */
+      setJoinMode(DEFAULT_JOIN_MODE);
     }
   }
 

@@ -112,7 +112,7 @@ public class IniFile {
     if (name == null) {
       name = "";
     }
-    if (AdakiteUtils.isNullOrEmpty(val, true)) {
+    if (AdakiteUtils.isNullOrEmpty(key, true)) {
       throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("key"));
     }
     if (val == null) {
@@ -240,7 +240,7 @@ public class IniFile {
         && this.sections.get(name).getKeys().containsKey(key)) {
       return this.sections.get(name).getKeys().get(key);
     } else {
-      return null;
+      return "";
     }
   }
 

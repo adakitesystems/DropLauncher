@@ -7,6 +7,7 @@ import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import filedrop.FileDrop;
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -299,14 +300,14 @@ public class View extends JFrame {
   public void update() {
     /* StarCraft.exe */
     if (this.model.getBWHeadless().getStarcraftExe() != null) {
-      setText(this.lblStarcraftExeText, this.model.getBWHeadless().getStarcraftExe().getAbsolutePath());
+      setText(this.lblStarcraftExeText, this.model.getBWHeadless().getStarcraftExe());
     }
 
     if (this.model.getBWHeadless().getBwapiDll() != null) {
       /* BWAPI.dll */
-      setText(this.lblBwapiDllText, this.model.getBWHeadless().getBwapiDll().getName());
+      setText(this.lblBwapiDllText, this.model.getBWHeadless().getBwapiDll());
       /* BWAPI.dll version */
-      setText(this.lblBwapiDllVersionText, BWAPI.getBwapiVersion(this.model.getBWHeadless().getBwapiDll()));
+      setText(this.lblBwapiDllVersionText, BWAPI.getBwapiVersion(new File(this.model.getBWHeadless().getBwapiDll())));
     } else {
       setText(this.lblBwapiDllText, "");
       setText(this.lblBwapiDllVersionText, "");
@@ -315,10 +316,10 @@ public class View extends JFrame {
     /* Bot file */
     if (this.model.getBWHeadless().getBotDll() != null) {
       /* .dll */
-      setText(this.lblBotFileText, this.model.getBWHeadless().getBotDll().getName());
+      setText(this.lblBotFileText, this.model.getBWHeadless().getBotDll());
     } else if (this.model.getBWHeadless().getBotClient() != null) {
       /* Client */
-      setText(this.lblBotFileText, this.model.getBWHeadless().getBotClient().getName());
+      setText(this.lblBotFileText, this.model.getBWHeadless().getBotClient());
     } else {
       setText(this.lblBotFileText, "");
     }
@@ -328,7 +329,7 @@ public class View extends JFrame {
 
     /* Bot race */
     Race race = this.model.getBWHeadless().getBotRace();
-    if (race != null) {
+    if (race != null && race != Race.NONE) {
       switch (race) {
         case TERRAN:
           this.rbRaceTerran.setSelected(true);
@@ -342,9 +343,11 @@ public class View extends JFrame {
         case RANDOM:
           this.rbRaceRandom.setSelected(true);
           break;
+        default:
+          break;
       }
     } else {
-      unselectRaces();
+      clearRaceSelection();
     }
   }
 
@@ -361,11 +364,8 @@ public class View extends JFrame {
     }
   }
 
-  private void unselectRaces() {
-    this.rbRaceTerran.setSelected(false);
-    this.rbRaceZerg.setSelected(false);
-    this.rbRaceProtoss.setSelected(false);
-    this.rbRaceRandom.setSelected(false);
+  private void clearRaceSelection() {
+    this.btngrpRace.clearSelection();
   }
 
   /* ************************************************************ */

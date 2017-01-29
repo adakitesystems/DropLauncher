@@ -7,9 +7,14 @@ import droplauncher.ini.IniFile;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
+import droplauncher.util.Util;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
@@ -76,55 +81,61 @@ public class Model {
     if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
       File file = fc.getSelectedFile();
       if (file != null) {
-        this.bwheadless.setStarcraftExe(file);
-        this.view.getLabelStarcraftExeText().setText(this.bwheadless.getStarcraftExe().getAbsolutePath());
+        this.bwheadless.setStarcraftExe(file.getAbsolutePath());
+        this.view.getLabelStarcraftExeText().setText(this.bwheadless.getStarcraftExe());
       }
     }
   }
 
   public void filesDropped(File[] files) {
-//    /* Parse all objects dropped into a complete list of files dropped since
-//       dropping a directory does NOT include all subdirectories and
-//       files by default. */
-//    ArrayList<File> fileList = new ArrayList<>();
-//    for (File file : files) {
-//      if (file.isDirectory()) {
-//        File[] tmpList = new FileOperation(file).getDirectoryContents();
-//        for (File tmpFile : tmpList) {
-//          fileList.add(tmpFile);
-//        }
-//      } else if (file.isFile()) {
-//        fileList.add(file);
-//      } else {
-//        if (CLASS_DEBUG) {
-//          LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "Unknown file dropped: " + file.getAbsolutePath());
-//        }
-//      }
-//    }
-//
-//    /* Process all files. */
-//    for (File file : fileList) {
-//      String ext = Util.getFileExtension(file);
-//      if (ext != null) {
-//        if (ext.equalsIgnoreCase("dll")) {
-//          if (file.getName().equalsIgnoreCase("BWAPI.dll")) {
-//            this.bwheadless.setBwapiDll(file);
-//          } else {
-//            this.bwheadless.setBotDll(file);
-//          }
-//        } else if (ext.equalsIgnoreCase("exe")) {
-//          this.bwheadless.setBotClient(file);
-//        } else if (ext.equalsIgnoreCase("jar")) {
-//          this.bwheadless.setBotClient(file);
-//        } else {
-//          /* If file extension is not recognized, ignore file. */
-//        }
-//      } else {
-//        /* If no file extension is detected, ignore file. */
-//      }
-//    }
-//
-//    this.view.update();
+    /* Parse all objects dropped into a complete list of files dropped since
+       dropping a directory does NOT include all subdirectories and
+       files by default. */
+    ArrayList<File> fileList = new ArrayList<>();
+    for (File file : files) {
+      if (file.isDirectory()) {
+        try {
+          Path[] tmpList = AdakiteUtils.getDirectoryContents(file.toPath(), true);
+          for (Path tmpPath : tmpList) {
+            fileList.add(tmpPath.toFile());
+          }
+        } catch (IOException ex) {
+          if (CLASS_DEBUG) {
+            LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+          }
+        }
+      } else if (file.isFile()) {
+        fileList.add(file);
+      } else {
+        if (CLASS_DEBUG) {
+          LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "Unknown file dropped: " + file.getAbsolutePath());
+        }
+      }
+    }
+
+    /* Process all files. */
+    for (File file : fileList) {
+      String ext = AdakiteUtils.getFileExtension(file);
+      if (ext != null) {
+        if (ext.equalsIgnoreCase("dll")) {
+          if (file.getName().equalsIgnoreCase("BWAPI.dll")) {
+            this.bwheadless.setBwapiDll(file.getAbsolutePath());
+          } else {
+            this.bwheadless.setBotDll(file.getAbsolutePath());
+          }
+        } else if (ext.equalsIgnoreCase("exe")) {
+          this.bwheadless.setBotClient(file.getAbsolutePath());
+        } else if (ext.equalsIgnoreCase("jar")) {
+          this.bwheadless.setBotClient(file.getAbsolutePath());
+        } else {
+          /* If file extension is not recognized, ignore file. */
+        }
+      } else {
+        /* If no file extension is detected, ignore file. */
+      }
+    }
+
+    this.view.update();
   }
 
   public void rbRaceProtossActionPerformed(ActionEvent evt) {
@@ -152,9 +163,7 @@ public class Model {
       botNameFixed = BWHeadless.DEFAULT_BOT_NAME;
       caret = botNameFixed.length();
     }
-    if (botName.equalsIgnoreCase(botNameFixed)) {
-//      System.out.println("Bot name: " + botName);
-    } else {
+    if (!botName.equalsIgnoreCase(botNameFixed)) {
       if (caret < 0) {
         caret = 0;
       } else if (caret >= botNameFixed.length()) {
@@ -164,7 +173,6 @@ public class Model {
       }
       txt.setText(botNameFixed);
       txt.setCaretPosition(caret);
-//      System.out.println("Fixed bot name: " + botNameFixed);
     }
     this.bwheadless.setBotName(botNameFixed);
   }
