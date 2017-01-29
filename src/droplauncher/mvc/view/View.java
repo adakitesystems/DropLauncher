@@ -299,13 +299,13 @@ public class View extends JFrame {
 
   public void update() {
     /* StarCraft.exe */
-    if (this.model.getBWHeadless().getStarcraftExe() != null) {
+    if (!AdakiteUtils.isNullOrEmpty(this.model.getBWHeadless().getStarcraftExe(), true)) {
       setText(this.lblStarcraftExeText, this.model.getBWHeadless().getStarcraftExe());
     }
 
-    if (this.model.getBWHeadless().getBwapiDll() != null) {
+    if (!AdakiteUtils.isNullOrEmpty(this.model.getBWHeadless().getBwapiDll(), true)) {
       /* BWAPI.dll */
-      setText(this.lblBwapiDllText, this.model.getBWHeadless().getBwapiDll());
+      setText(this.lblBwapiDllText, new File(this.model.getBWHeadless().getBwapiDll()).getName());
       /* BWAPI.dll version */
       setText(this.lblBwapiDllVersionText, BWAPI.getBwapiVersion(new File(this.model.getBWHeadless().getBwapiDll())));
     } else {
@@ -314,12 +314,12 @@ public class View extends JFrame {
     }
 
     /* Bot file */
-    if (this.model.getBWHeadless().getBotDll() != null) {
+    if (!AdakiteUtils.isNullOrEmpty(this.model.getBWHeadless().getBotDll(), true)) {
       /* .dll */
-      setText(this.lblBotFileText, this.model.getBWHeadless().getBotDll());
-    } else if (this.model.getBWHeadless().getBotClient() != null) {
+      setText(this.lblBotFileText, new File(this.model.getBWHeadless().getBotDll()).getName());
+    } else if (!AdakiteUtils.isNullOrEmpty(this.model.getBWHeadless().getBotClient(), true)) {
       /* Client */
-      setText(this.lblBotFileText, this.model.getBWHeadless().getBotClient());
+      setText(this.lblBotFileText, new File(this.model.getBWHeadless().getBotClient()).getName());
     } else {
       setText(this.lblBotFileText, "");
     }

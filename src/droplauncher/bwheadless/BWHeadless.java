@@ -226,17 +226,13 @@ public class BWHeadless {
   }
 
   public void setBotDll(String botDll) {
-    /* Since we are loading a new bot DLL, remove the selected race
-       to avoid confusion with the old bot's race. */
-    setBotRace(DEFAULT_BOT_RACE);
-
     /* Disable any previous bot clients. */
     this.botClient = null;
     updateSettingsFile(PredefinedVariable.BOT_CLIENT.toString(), "");
 
     /* Set bot DLL. */
     this.botDll = botDll;
-    String name = AdakiteUtils.removeFileExtension(this.botDll);
+    String name = AdakiteUtils.removeFileExtension(new File(this.botDll).getName());
     setBotName(name);
     updateSettingsFile(PredefinedVariable.BOT_DLL.toString(), this.botDll);
   }
@@ -246,17 +242,13 @@ public class BWHeadless {
   }
 
   public void setBotClient(String botClient) {
-    /* Since we are setting a new bot client, remove the selected race
-       to avoid confusion with the old bot's race. */
-    setBotRace(DEFAULT_BOT_RACE);
-
     /* Disable any previous bot DLL. */
     this.botDll = null;
     updateSettingsFile(PredefinedVariable.BOT_DLL.toString(), "");
 
     /* Set bot client. */
     this.botClient = botClient;
-    String name = AdakiteUtils.removeFileExtension(this.botClient);
+    String name = AdakiteUtils.removeFileExtension(new File(this.botClient).getName());
     setBotName(name);
     updateSettingsFile(PredefinedVariable.BOT_CLIENT.toString(), this.botClient);
   }

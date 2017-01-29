@@ -119,11 +119,14 @@ public class Model {
           if (file.getName().equalsIgnoreCase("BWAPI.dll")) {
             this.bwheadless.setBwapiDll(file.getAbsolutePath());
           } else {
+            this.bwheadless.setBotRace(BWHeadless.DEFAULT_BOT_RACE);
             this.bwheadless.setBotDll(file.getAbsolutePath());
           }
         } else if (ext.equalsIgnoreCase("exe")) {
+          this.bwheadless.setBotRace(BWHeadless.DEFAULT_BOT_RACE);
           this.bwheadless.setBotClient(file.getAbsolutePath());
         } else if (ext.equalsIgnoreCase("jar")) {
+          this.bwheadless.setBotRace(BWHeadless.DEFAULT_BOT_RACE);
           this.bwheadless.setBotClient(file.getAbsolutePath());
         } else {
           /* If file extension is not recognized, ignore file. */
