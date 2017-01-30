@@ -176,7 +176,11 @@ public class BWHeadless {
     /* Configure BWAPI INI file. */
     IniFile bwapiIni = new IniFile();
     bwapiIni.open(Paths.get(starcraftDir + File.separator + BWAPI.BWAPI_DATA_INI).toFile());
-    bwapiIni.setVariable("ai", "ai", BWAPI.BWAPI_DATA_AI_DIR + File.separator + Paths.get(this.botDll).getFileName().toString());
+    bwapiIni.setVariable(
+        "ai",
+        "ai",
+        BWAPI.BWAPI_DATA_AI_DIR + File.separator + Paths.get(this.botDll).getFileName().toString()
+    );
 //    bwapiIni.disableVariable("ai", "ai_dbg");
 //    bwapiIni.setVariable("auto_menu", "pause_dbg", "OFF");
 
@@ -186,11 +190,18 @@ public class BWHeadless {
     if (!AdakiteUtils.isNullOrEmpty(this.botDll)) {
       /* Copy DLL to bwapi-data directory. */
       src = Paths.get(this.botDll);
-      dest = Paths.get(starcraftDir + File.separator + BWAPI.BWAPI_DATA_AI_DIR + File.separator + Paths.get(this.botDll).getFileName().toString());
+      dest = Paths.get(
+          starcraftDir + File.separator +
+          BWAPI.BWAPI_DATA_AI_DIR + File.separator +
+          Paths.get(this.botDll).getFileName().toString()
+      );
     } else if (!AdakiteUtils.isNullOrEmpty(this.botClient)) {
       /* Copy client to StarCraft root directory. */
       src = Paths.get(this.botClient);
-      dest = Paths.get(starcraftDir + File.separator + BWAPI.BWAPI_DATA_AI_DIR + File.separator + Paths.get(this.botClient).getFileName().toString());
+      dest = Paths.get(starcraftDir + File.separator +
+          BWAPI.BWAPI_DATA_AI_DIR + File.separator +
+          Paths.get(this.botClient).getFileName().toString()
+      );
     }
     Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
   }
