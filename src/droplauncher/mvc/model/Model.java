@@ -3,7 +3,9 @@ package droplauncher.mvc.model;
 import adakite.utils.AdakiteUtils;
 import droplauncher.mvc.view.View;
 import droplauncher.bwheadless.BWHeadless;
+import droplauncher.bwheadless.ReadyStatus;
 import droplauncher.ini.IniFile;
+import droplauncher.mvc.view.LaunchButtonText;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
@@ -16,6 +18,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -103,19 +106,17 @@ public class Model {
   }
 
   public void btnLaunchActionPerformed(ActionEvent evt) {
-//    ReadyStatus status = this.bwheadless.getReadyStatus();
-//    if (status != ReadyStatus.READY) {
-//      this.view.showMessageBox(JOptionPane.ERROR_MESSAGE, "Not ready: " + status.toString());
-//      return;
-//    }
-//    if (this.view.getButtonLaunch().getText().equalsIgnoreCase(LaunchButtonText.LAUNCH.toString())) {
-//      this.view.getButtonLaunch().setText(LaunchButtonText.EJECT.toString());
-//    } else if (this.view.getButtonLaunch().getText().equalsIgnoreCase(LaunchButtonText.EJECT.toString())) {
-//      this.view.getButtonLaunch().setText(LaunchButtonText.LAUNCH.toString());
-//    }
-    //DEBUG ---
+    ReadyStatus status = this.bwheadless.getReadyStatus();
+    if (status != ReadyStatus.READY) {
+      this.view.showMessageBox(JOptionPane.ERROR_MESSAGE, "Not ready: " + status.toString());
+      return;
+    }
+    if (this.view.getButtonLaunch().getText().equalsIgnoreCase(LaunchButtonText.LAUNCH.toString())) {
+      this.view.getButtonLaunch().setText(LaunchButtonText.EJECT.toString());
+    } else if (this.view.getButtonLaunch().getText().equalsIgnoreCase(LaunchButtonText.EJECT.toString())) {
+      this.view.getButtonLaunch().setText(LaunchButtonText.LAUNCH.toString());
+    }
     this.bwheadless.start();
-    //---
   }
 
   public void btnStarcraftExeActionPerformed(ActionEvent evt) {
