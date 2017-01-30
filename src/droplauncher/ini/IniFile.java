@@ -192,7 +192,8 @@ public class IniFile {
         /* Variable needs to be uncommented. */
         for (int i = sectionIndex; i < this.memoryFile.getLines().size(); i++) {
           String line = this.memoryFile.getLines().get(i);
-          if (line.contains(COMMENT_DELIMITER)
+          line = line.trim();
+          if (line.startsWith(COMMENT_DELIMITER)
               && line.contains(key)
               && line.contains(VARIABLE_DELIMITER)
               && line.indexOf(COMMENT_DELIMITER) < line.indexOf(key)
