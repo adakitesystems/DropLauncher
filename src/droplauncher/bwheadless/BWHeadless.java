@@ -45,7 +45,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -181,7 +180,7 @@ public class BWHeadless {
         "ai",
         BWAPI.BWAPI_DATA_AI_DIR + File.separator + Paths.get(this.botDll).getFileName().toString()
     );
-//    bwapiIni.disableVariable("ai", "ai_dbg");
+    bwapiIni.disableVariable("ai", "ai_dbg");
 //    bwapiIni.setVariable("auto_menu", "pause_dbg", "OFF");
 
     /* Copy bot files to StarCraft directory. */
