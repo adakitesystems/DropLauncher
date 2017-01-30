@@ -341,16 +341,18 @@ public class View extends JFrame {
     /* StarCraft.exe */
     if (!AdakiteUtils.isNullOrEmpty(this.model.getBWHeadless().getStarcraftExe(), true)) {
       setText(this.lblStarcraftExeText, this.model.getBWHeadless().getStarcraftExe());
+    } else {
+      setText(this.lblStarcraftExeText, "");
     }
 
     if (!AdakiteUtils.isNullOrEmpty(this.model.getBWHeadless().getBwapiDll(), true)) {
       /* BWAPI.dll */
-      setText(this.lblBwapiDllText, new File(this.model.getBWHeadless().getBwapiDll()).getName());
+      setText(this.lblBwapiDllText, "OK");
       /* BWAPI.dll version */
       setText(this.lblBwapiDllVersionText, BWAPI.getBwapiVersion(new File(this.model.getBWHeadless().getBwapiDll())));
     } else {
-      setText(this.lblBwapiDllText, "");
-      setText(this.lblBwapiDllVersionText, "");
+      setText(this.lblBwapiDllText, "-");
+      setText(this.lblBwapiDllVersionText, "-");
     }
 
     /* Bot file */
@@ -361,7 +363,7 @@ public class View extends JFrame {
       /* Client */
       setText(this.lblBotFileText, new File(this.model.getBWHeadless().getBotClient()).getName());
     } else {
-      setText(this.lblBotFileText, "");
+      setText(this.lblBotFileText, "-");
     }
 
     /* Bot name */
