@@ -9,6 +9,7 @@ import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -51,9 +52,55 @@ public class Model {
     return this.bwheadless;
   }
 
+  /**
+   * Reads a dropped or selected file which is meant for the
+   * bwheadless.exe process and sets the appropiate settings.
+   *
+   * @param file specified file to process
+   */
+  private void processFile(File file) {
+    String ext = AdakiteUtils.getFileExtension(file);
+    if (ext != null) {
+      if (ext.equalsIgnoreCase("dll")) {
+        if (file.getName().equalsIgnoreCase("BWAPI.dll")) {
+          this.bwheadless.setBwapiDll(file.getAbsolutePath());
+        } else {
+          this.bwheadless.setBotRace(BWHeadless.DEFAULT_BOT_RACE);
+          this.bwheadless.setBotDll(file.getAbsolutePath());
+        }
+      } else if (ext.equalsIgnoreCase("exe")) {
+        this.bwheadless.setBotRace(BWHeadless.DEFAULT_BOT_RACE);
+        this.bwheadless.setBotClient(file.getAbsolutePath());
+      } else if (ext.equalsIgnoreCase("jar")) {
+        this.bwheadless.setBotRace(BWHeadless.DEFAULT_BOT_RACE);
+        this.bwheadless.setBotClient(file.getAbsolutePath());
+      } else {
+        /* If file extension is not recognized, ignore file. */
+      }
+    } else {
+      /* If no file extension is detected, ignore file. */
+    }
+  }
+
   /* ************************************************************ */
   /* Events from View */
   /* ************************************************************ */
+
+  public void boxDropFilesMouseClicked(MouseEvent evt) {
+    JFileChooser fc = new JFileChooser();
+    fc.setAcceptAllFileFilterUsed(false);
+    fc.setMultiSelectionEnabled(true);
+    fc.setFileFilter(new FileNameExtensionFilter("All supported files (*.dll, *.exe)", "dll", "exe"));
+    if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
+      File[] fileList = fc.getSelectedFiles();
+      if (fileList != null && fileList.length > 0) {
+        for (File file : fileList) {
+          processFile(file);
+        }
+      }
+      this.view.update();
+    }
+  }
 
   public void btnLaunchActionPerformed(ActionEvent evt) {
 //    ReadyStatus status = this.bwheadless.getReadyStatus();
@@ -72,9 +119,10 @@ public class Model {
   }
 
   public void btnStarcraftExeActionPerformed(ActionEvent evt) {
-    //TODO: Only accept StarCraft.exe file selection. Might need to remove "All files" filter as well.
+    //TODO: Only accept StarCraft.exe file selection.
     //TODO: Guess StarCraft directory or read from registry.
     JFileChooser fc = new JFileChooser(new File("C:\\StarCraft"));
+    fc.setAcceptAllFileFilterUsed(false);
     fc.setFileFilter(new FileNameExtensionFilter("*.exe", "exe"));
     if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
       File file = fc.getSelectedFile();
@@ -113,27 +161,7 @@ public class Model {
 
     /* Process all files. */
     for (File file : fileList) {
-      String ext = AdakiteUtils.getFileExtension(file);
-      if (ext != null) {
-        if (ext.equalsIgnoreCase("dll")) {
-          if (file.getName().equalsIgnoreCase("BWAPI.dll")) {
-            this.bwheadless.setBwapiDll(file.getAbsolutePath());
-          } else {
-            this.bwheadless.setBotRace(BWHeadless.DEFAULT_BOT_RACE);
-            this.bwheadless.setBotDll(file.getAbsolutePath());
-          }
-        } else if (ext.equalsIgnoreCase("exe")) {
-          this.bwheadless.setBotRace(BWHeadless.DEFAULT_BOT_RACE);
-          this.bwheadless.setBotClient(file.getAbsolutePath());
-        } else if (ext.equalsIgnoreCase("jar")) {
-          this.bwheadless.setBotRace(BWHeadless.DEFAULT_BOT_RACE);
-          this.bwheadless.setBotClient(file.getAbsolutePath());
-        } else {
-          /* If file extension is not recognized, ignore file. */
-        }
-      } else {
-        /* If no file extension is detected, ignore file. */
-      }
+      processFile(file);
     }
 
     this.view.update();
@@ -177,13 +205,5 @@ public class Model {
     }
     this.bwheadless.setBotName(botNameFixed);
   }
-
-  /* ************************************************************ */
-  /* Events to View */
-  /* ************************************************************ */
-
-  //...
-
-  /* ************************************************************ */
 
 }

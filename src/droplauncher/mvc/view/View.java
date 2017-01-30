@@ -1,3 +1,8 @@
+/*
+TODO: Save JFileChooser path after selecting files and load next time a
+JFileChooser is displayed.
+*/
+
 package droplauncher.mvc.view;
 
 import adakite.utils.AdakiteUtils;
@@ -7,7 +12,7 @@ import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import filedrop.FileDrop;
 import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -27,7 +32,11 @@ public class View extends JFrame {
 
   private Model model;
 
+  private String jFileChooserDirectory;
+
   public View() {
+    this.jFileChooserDirectory = "";
+
     /* Set the Nimbus look and feel. */
     try {
       for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -97,7 +106,13 @@ public class View extends JFrame {
     boxDropFiles.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     boxDropFiles.setText("Drop bot files here");
     boxDropFiles.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+    boxDropFiles.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
     boxDropFiles.setOpaque(true);
+    boxDropFiles.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        boxDropFilesMouseClicked(evt);
+      }
+    });
 
     btnLaunch.setText("Launch");
     btnLaunch.addActionListener(new java.awt.event.ActionListener() {
@@ -285,7 +300,21 @@ public class View extends JFrame {
   public JTextField getTextFieldBotName() { return this.txtBotName; }
 
   public int showFileChooser(JFileChooser fc) {
-    return fc.showOpenDialog(this);
+    /* Load previous directory. */
+    if (!AdakiteUtils.isNullOrEmpty(this.jFileChooserDirectory)
+        && AdakiteUtils.directoryExists(Paths.get(this.jFileChooserDirectory))) {
+      fc.setCurrentDirectory(new File(this.jFileChooserDirectory));
+    }
+
+    int status = fc.showOpenDialog(fc);
+
+    /* Save current directory. */
+    String currentDirectory = fc.getCurrentDirectory().getAbsolutePath();
+    if (!AdakiteUtils.isNullOrEmpty(currentDirectory)) {
+      this.jFileChooserDirectory = currentDirectory;
+    }
+
+    return status;
   }
 
   public void showMessageBox(int messageType, String str) {
@@ -404,6 +433,10 @@ public class View extends JFrame {
   private void btnStarcraftExeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStarcraftExeActionPerformed
     this.model.btnStarcraftExeActionPerformed(evt);
   }//GEN-LAST:event_btnStarcraftExeActionPerformed
+
+  private void boxDropFilesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boxDropFilesMouseClicked
+    this.model.boxDropFilesMouseClicked(evt);
+  }//GEN-LAST:event_boxDropFilesMouseClicked
 
   /* ************************************************************ */
   /*
