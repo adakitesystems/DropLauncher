@@ -202,6 +202,7 @@ public class IniFile {
             this.memoryFile.getLines().set(i, line);
             this.memoryFile.dumpToFile();
             reload();
+            break;
           }
         }
       }
@@ -277,7 +278,8 @@ public class IniFile {
       String line = this.memoryFile.getLines().get(i);
       line = line.trim();
       line = removeComment(line);
-      if (line.startsWith(key) && line.contains(VARIABLE_DELIMITER)) {
+      if ((line.startsWith(key + " ") || line.startsWith(key + VARIABLE_DELIMITER))
+          && line.contains(VARIABLE_DELIMITER)) {
         return i;
       }
     }
