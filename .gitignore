@@ -1,7 +1,7 @@
 # Ignore AdakiteLibrary for now
 lib/adakite*
 
-# Ignore misc files.
+# Misc files
 *.ini
 *.cfg
 *.txt

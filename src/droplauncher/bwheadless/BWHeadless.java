@@ -198,7 +198,8 @@ public class BWHeadless {
     } else if (!AdakiteUtils.isNullOrEmpty(this.botClient)) {
       /* Copy client to StarCraft root directory. */
       src = Paths.get(this.botClient);
-      dest = Paths.get(starcraftDir + File.separator +
+      dest = Paths.get(
+          starcraftDir + File.separator +
           BWAPI.BWAPI_DATA_AI_DIR + File.separator +
           Paths.get(this.botClient).getFileName().toString()
       );
