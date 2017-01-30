@@ -5,6 +5,7 @@ can be changed but the file cannot be modified?
 Since the file relies on a MemoryFile object and the MemoryFile object
 checks the file before writing, it should be OK? Double check. Determine if there
 is a better course of action.
+TODO: Use Path objects instead of File objects.
 */
 
 package droplauncher.ini;
