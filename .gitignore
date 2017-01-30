@@ -1,16 +1,11 @@
-# Git commit files
-commit.txt
-diff.txt
-
 # Ignore AdakiteLibrary for now
 lib/adakite*
-
-bwheadless.exe
 
 # Ignore misc files.
 *.ini
 *.cfg
 *.txt
+*.exe
 
 # NetBeans
 build/*
