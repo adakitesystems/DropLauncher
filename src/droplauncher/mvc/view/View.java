@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileSystemView;
 
 public class View extends JFrame {
 
@@ -300,10 +301,20 @@ public class View extends JFrame {
   public JTextField getTextFieldBotName() { return this.txtBotName; }
 
   public int showFileChooser(JFileChooser fc) {
-    /* Load previous directory. */
+    /* Default directory */
     if (!AdakiteUtils.isNullOrEmpty(this.jFileChooserDirectory)
         && AdakiteUtils.directoryExists(Paths.get(this.jFileChooserDirectory))) {
+      /* Load previous directory. */
       fc.setCurrentDirectory(new File(this.jFileChooserDirectory));
+    } else {
+      /* Load user's home directory (Desktop on Windows) as the default directory. */
+      FileSystemView fsv = FileSystemView.getFileSystemView();
+      fsv.getRoots();
+      String desktopDirectory = fsv.getHomeDirectory().getAbsolutePath();
+      if (!AdakiteUtils.isNullOrEmpty(desktopDirectory)
+          && AdakiteUtils.directoryExists(Paths.get(desktopDirectory))) {
+        fc.setCurrentDirectory(new File(desktopDirectory));
+      }
     }
 
     int status = fc.showOpenDialog(fc);
