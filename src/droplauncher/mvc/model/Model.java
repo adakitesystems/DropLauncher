@@ -3,12 +3,16 @@ package droplauncher.mvc.model;
 import adakite.utils.AdakiteUtils;
 import droplauncher.mvc.view.View;
 import droplauncher.bwheadless.BWHeadless;
+import droplauncher.bwheadless.KillableTask;
 import droplauncher.bwheadless.ReadyStatus;
 import droplauncher.ini.IniFile;
 import droplauncher.mvc.view.LaunchButtonText;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
+import droplauncher.util.windows.Task;
+import droplauncher.util.windows.TaskTracker;
+import droplauncher.util.windows.Tasklist;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -33,10 +37,12 @@ public class Model {
 
   private BWHeadless bwheadless;
   private IniFile iniFile;
+  private TaskTracker taskTracker;
 
   public Model() {
     this.bwheadless = new BWHeadless();
     this.iniFile = new IniFile();
+    this.taskTracker = new TaskTracker();
 
     this.bwheadless.setIniFile(this.iniFile);
     try {
@@ -112,8 +118,20 @@ public class Model {
       return;
     }
     if (this.bwheadless.isRunning()) {
+      this.taskTracker.updateNewTasks();
+      ArrayList<Task> tasks = this.taskTracker.getNewTasks();
+      Tasklist tasklist = new Tasklist();
+      for (Task task : tasks) {
+        for (KillableTask kt : KillableTask.values()) {
+          if (task.getImageName().equalsIgnoreCase(kt.toString())) {
+            tasklist.kill(task.getPID());
+            break;
+          }
+        }
+      }
       this.bwheadless.stop();
     } else {
+      this.taskTracker.update();
       this.bwheadless.start();
     }
     this.view.update();

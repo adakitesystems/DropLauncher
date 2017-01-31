@@ -20,8 +20,6 @@ public class TaskTracker {
     this.previousTasklist = new Tasklist();
     this.currentTasklist = new Tasklist();
     this.newTasks = new ArrayList<>();
-
-    update();
   }
 
   public Tasklist getCurrentTasklist() {
