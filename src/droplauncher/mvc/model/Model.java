@@ -85,7 +85,8 @@ public class Model {
         this.bwheadless.setBotRace(BWHeadless.DEFAULT_BOT_RACE);
         this.bwheadless.setBotClient(file.getAbsolutePath());
       } else {
-        /* If file extension is not recognized, ignore file. */
+        /* If file extension is not recognized, treat as a config/misc file. */
+        this.bwheadless.getMiscFiles().add(Paths.get(file.getAbsolutePath()));
       }
     } else {
       /* If no file extension is detected, ignore file. */

@@ -46,6 +46,8 @@ public class BWHeadless {
   private NetworkProvider networkProvider; /* required */
   private JoinMode joinMode; /* required */
 
+  private ArrayList<Path> miscFiles;
+
   private IniFile iniFile;
 
   public BWHeadless() {
@@ -61,7 +63,13 @@ public class BWHeadless {
     this.networkProvider = DEFAULT_NETWORK_PROVIDER;
     this.joinMode = DEFAULT_JOIN_MODE;
 
+    this.miscFiles = new ArrayList<>();
+
     this.iniFile = null;
+  }
+
+  public ArrayList<Path> getMiscFiles() {
+    return this.miscFiles;
   }
 
   public boolean isReady() {
@@ -175,15 +183,15 @@ public class BWHeadless {
     if (!AdakiteUtils.isNullOrEmpty(this.botDll)) {
       /* Prepare to copy DLL to bwapi-data directory. */
       src = Paths.get(this.botDll);
-      dest = Paths.get(starcraftDirectory + File.separator +
-          BWAPI.BWAPI_DATA_AI_DIR + File.separator +
+      dest = Paths.get(starcraftDirectory,
+          BWAPI.BWAPI_DATA_AI_DIR,
           Paths.get(this.botDll).getFileName().toString()
       );
       this.botDll = dest.toAbsolutePath().toString();
     } else if (!AdakiteUtils.isNullOrEmpty(this.botClient)) {
       /* Prepare to copy client to StarCraft root directory. */
       src = Paths.get(this.botClient);
-      dest = Paths.get(starcraftDirectory + File.separator +
+      dest = Paths.get(starcraftDirectory,
           Paths.get(this.botClient).getFileName().toString()
       );
       this.botClient = dest.toAbsolutePath().toString();
@@ -191,6 +199,19 @@ public class BWHeadless {
     /* Copy. */
     AdakiteUtils.createDirectory(dest.getParent());
     Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+
+    /* Copy misc files to common paths. */
+    Path readPath = Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_DIR_READ);
+    Path writePath = Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_DIR_WRITE);
+    Path aiPath = Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_AI_DIR);
+    AdakiteUtils.createDirectory(readPath);
+    AdakiteUtils.createDirectory(writePath);
+    AdakiteUtils.createDirectory(aiPath);
+    for (Path path : this.miscFiles) {
+      Files.copy(path, Paths.get(readPath.toAbsolutePath().toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
+      Files.copy(path, Paths.get(writePath.toAbsolutePath().toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
+      Files.copy(path, Paths.get(aiPath.toAbsolutePath().toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
+    }
   }
 
   public IniFile getIniFile() {

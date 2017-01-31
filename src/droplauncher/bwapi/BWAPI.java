@@ -8,6 +8,8 @@ public class BWAPI {
   public static final String BWAPI_DATA_DIR = "bwapi-data";
   public static final String BWAPI_DATA_AI_DIR = BWAPI_DATA_DIR + File.separator + "AI";
   public static final String BWAPI_DATA_INI = BWAPI_DATA_DIR + File.separator + "bwapi.ini";
+  public static final String BWAPI_DATA_DIR_READ = BWAPI_DATA_DIR + File.separator + "read";
+  public static final String BWAPI_DATA_DIR_WRITE = BWAPI_DATA_DIR + File.separator + "write";
   public static final String BWAPI_DLL_UNKNOWN = "Unknown";
 
   private BWAPI() {}
