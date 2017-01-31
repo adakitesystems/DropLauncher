@@ -6,7 +6,6 @@ import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.KillableTask;
 import droplauncher.bwheadless.ReadyStatus;
 import droplauncher.ini.IniFile;
-import droplauncher.mvc.view.LaunchButtonText;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;

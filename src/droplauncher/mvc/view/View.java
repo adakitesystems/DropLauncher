@@ -93,8 +93,15 @@ public class View extends JFrame {
     lblStarcraftExe = new javax.swing.JLabel();
     btnStarcraftExe = new javax.swing.JButton();
     lblStarcraftExeText = new javax.swing.JLabel();
+    mnuMain = new javax.swing.JMenuBar();
+    mnuFile = new javax.swing.JMenu();
+    mnuFileExit = new javax.swing.JMenuItem();
+    mnuHelp = new javax.swing.JMenu();
+    mnuHelpAbout = new javax.swing.JMenuItem();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    setAutoRequestFocus(false);
+    setResizable(false);
 
     boxDropFiles.setBackground(new java.awt.Color(0, 53, 137));
     boxDropFiles.setFont(new java.awt.Font("sansserif", 0, 18)); // NOI18N
@@ -181,6 +188,22 @@ public class View extends JFrame {
 
     lblStarcraftExeText.setText(" ");
 
+    mnuFile.setText("File");
+
+    mnuFileExit.setText("Exit");
+    mnuFile.add(mnuFileExit);
+
+    mnuMain.add(mnuFile);
+
+    mnuHelp.setText("Help");
+
+    mnuHelpAbout.setText("About");
+    mnuHelp.add(mnuHelpAbout);
+
+    mnuMain.add(mnuHelp);
+
+    setJMenuBar(mnuMain);
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
@@ -246,7 +269,7 @@ public class View extends JFrame {
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(lblBotFile)
           .addComponent(lblBotFileText))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
         .addComponent(lblBotName)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -488,6 +511,11 @@ public class View extends JFrame {
   private javax.swing.JLabel lblBwapiDllVersionText;
   private javax.swing.JLabel lblStarcraftExe;
   private javax.swing.JLabel lblStarcraftExeText;
+  private javax.swing.JMenu mnuFile;
+  private javax.swing.JMenuItem mnuFileExit;
+  private javax.swing.JMenu mnuHelp;
+  private javax.swing.JMenuItem mnuHelpAbout;
+  private javax.swing.JMenuBar mnuMain;
   private javax.swing.JRadioButton rbRaceProtoss;
   private javax.swing.JRadioButton rbRaceRandom;
   private javax.swing.JRadioButton rbRaceTerran;
