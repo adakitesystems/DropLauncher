@@ -1,8 +1,3 @@
-/*
-TODO: Save JFileChooser path after selecting files and load next time a
-JFileChooser is displayed.
-*/
-
 package droplauncher.mvc.view;
 
 import adakite.utils.AdakiteUtils;
@@ -390,6 +385,13 @@ public class View extends JFrame {
       }
     } else {
       clearRaceSelection();
+    }
+
+    /* Launch button */
+    if (this.model.getBWHeadless().isRunning()) {
+      this.btnLaunch.setText(LaunchButtonText.EJECT.toString());
+    } else {
+      this.btnLaunch.setText(LaunchButtonText.LAUNCH.toString());
     }
   }
 

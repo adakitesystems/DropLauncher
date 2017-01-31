@@ -111,12 +111,12 @@ public class Model {
       this.view.showMessageBox(JOptionPane.ERROR_MESSAGE, "Not ready: " + status.toString());
       return;
     }
-    if (this.view.getButtonLaunch().getText().equalsIgnoreCase(LaunchButtonText.LAUNCH.toString())) {
-      this.view.getButtonLaunch().setText(LaunchButtonText.EJECT.toString());
-    } else if (this.view.getButtonLaunch().getText().equalsIgnoreCase(LaunchButtonText.EJECT.toString())) {
-      this.view.getButtonLaunch().setText(LaunchButtonText.LAUNCH.toString());
+    if (this.bwheadless.isRunning()) {
+      this.bwheadless.stop();
+    } else {
+      this.bwheadless.start();
     }
-    this.bwheadless.start();
+    this.view.update();
   }
 
   public void btnStarcraftExeActionPerformed(ActionEvent evt) {
