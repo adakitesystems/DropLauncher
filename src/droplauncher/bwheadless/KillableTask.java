@@ -6,7 +6,8 @@ public enum KillableTask {
   CONHOST_EXE("conhost.exe"),
   STARCRAFT_EXE("StarCraft.exe"),
   TASKLIST_EXE("tasklist.exe"),
-  DLLHOST_EXE("dllhost.exe")
+  DLLHOST_EXE("dllhost.exe"),
+  JAVA_EXE("java.exe")
   ;
 
   private String str;

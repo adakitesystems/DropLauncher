@@ -148,6 +148,10 @@ public class BWHeadless {
       ArrayList<String> cargs = new ArrayList<>(); /* client arguments */
       cargs.add("/c");
       cargs.add("start");
+      if (AdakiteUtils.getFileExtension(new File(this.botClient)).equalsIgnoreCase("jar")) {
+        cargs.add("C:\\ProgramData\\Oracle\\Java\\javapath\\java.exe");
+        cargs.add("-jar");
+      }
       cargs.add(this.botClient);
       String[] cargsArray = Util.toStringArray(cargs);
       this.botPipe.open(new File("C:\\Windows\\System32\\cmd.exe"), cargsArray, starcraftDirectory);
@@ -259,6 +263,7 @@ public class BWHeadless {
 
   public void setBotDll(String botDll) {
     /* Disable any previous bot clients. */
+    this.miscFiles.clear();
     this.botClient = null;
     updateSettingsFile(PredefinedVariable.BOT_CLIENT.toString(), "");
 
@@ -275,6 +280,7 @@ public class BWHeadless {
 
   public void setBotClient(String botClient) {
     /* Disable any previous bot DLL. */
+    this.miscFiles.clear();
     this.botDll = null;
     updateSettingsFile(PredefinedVariable.BOT_DLL.toString(), "");
 
