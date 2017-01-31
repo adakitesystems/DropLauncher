@@ -32,16 +32,16 @@ public class Model {
   private View view;
 
   private BWHeadless bwheadless;
-  private IniFile ini;
+  private IniFile iniFile;
 
   public Model() {
     this.bwheadless = new BWHeadless();
-    this.ini = new IniFile();
+    this.iniFile = new IniFile();
 
-    this.bwheadless.setIniFile(this.ini);
+    this.bwheadless.setIniFile(this.iniFile);
     try {
-      this.ini.open(DROP_LAUNCHER_INI);
-      this.bwheadless.readSettingsFile(this.ini);
+      this.iniFile.open(DROP_LAUNCHER_INI);
+      this.bwheadless.readSettingsFile(this.iniFile);
     } catch (Exception ex) {
       LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
     }
