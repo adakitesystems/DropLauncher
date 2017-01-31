@@ -180,11 +180,15 @@ public class BWHeadless {
     /* Configure BWAPI INI file. */
     IniFile bwapiIni = new IniFile();
     bwapiIni.open(Paths.get(starcraftDir + File.separator + BWAPI.BWAPI_DATA_INI).toFile());
-    bwapiIni.setVariable(
-        "ai",
-        "ai",
-        BWAPI.BWAPI_DATA_AI_DIR + File.separator + Paths.get(this.botDll).getFileName().toString()
-    );
+    if (!AdakiteUtils.isNullOrEmpty(this.botDll)) {
+      bwapiIni.setVariable(
+          "ai",
+          "ai",
+          BWAPI.BWAPI_DATA_AI_DIR + File.separator + Paths.get(this.botDll).getFileName().toString()
+      );
+    } else {
+      bwapiIni.disableVariable("ai", "ai");
+    }
     bwapiIni.disableVariable("ai", "ai_dbg");
 
     /* Copy bot files to StarCraft directory. */

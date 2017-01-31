@@ -112,16 +112,13 @@ public class Model {
   }
 
   public void btnLaunchActionPerformed(ActionEvent evt) {
-    ReadyStatus status = this.bwheadless.getReadyStatus();
-    if (status != ReadyStatus.READY) {
-      this.view.showMessageBox(JOptionPane.ERROR_MESSAGE, "Not ready: " + status.toString());
-      return;
-    }
     if (this.bwheadless.isRunning()) {
+      /* Kill new tasks that were started with bwheadless. */
       this.taskTracker.updateNewTasks();
       ArrayList<Task> tasks = this.taskTracker.getNewTasks();
       Tasklist tasklist = new Tasklist();
       for (Task task : tasks) {
+        /* Only kill tasks whose names match known associated tasks. */
         for (KillableTask kt : KillableTask.values()) {
           if (task.getImageName().equalsIgnoreCase(kt.toString())) {
             tasklist.kill(task.getPID());
@@ -131,8 +128,14 @@ public class Model {
       }
       this.bwheadless.stop();
     } else {
-      this.taskTracker.update();
-      this.bwheadless.start();
+      /* Start bwheadless. */
+      ReadyStatus status = this.bwheadless.getReadyStatus();
+      if (status != ReadyStatus.READY) {
+        this.view.showMessageBox(JOptionPane.ERROR_MESSAGE, "Not ready: " + status.toString());
+      } else {
+        this.taskTracker.update();
+        this.bwheadless.start();
+      }
     }
     this.view.update();
   }
