@@ -169,11 +169,11 @@ public class BWHeadless {
     }
     bwapiIni.disableVariable("ai", "ai_dbg");
 
-    /* Copy bot files to StarCraft directory. */
+    /* Prepare to copy bot files to StarCraft directory. */
     Path src = null;
     Path dest = null;
     if (!AdakiteUtils.isNullOrEmpty(this.botDll)) {
-      /* Copy DLL to bwapi-data directory. */
+      /* Prepare to copy DLL to bwapi-data directory. */
       src = Paths.get(this.botDll);
       dest = Paths.get(starcraftDirectory + File.separator +
           BWAPI.BWAPI_DATA_AI_DIR + File.separator +
@@ -181,13 +181,15 @@ public class BWHeadless {
       );
       this.botDll = dest.toAbsolutePath().toString();
     } else if (!AdakiteUtils.isNullOrEmpty(this.botClient)) {
-      /* Copy client to StarCraft root directory. */
+      /* Prepare to copy client to StarCraft root directory. */
       src = Paths.get(this.botClient);
       dest = Paths.get(starcraftDirectory + File.separator +
           Paths.get(this.botClient).getFileName().toString()
       );
       this.botClient = dest.toAbsolutePath().toString();
     }
+    /* Copy. */
+    AdakiteUtils.createDirectory(dest.getParent());
     Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
   }
 
