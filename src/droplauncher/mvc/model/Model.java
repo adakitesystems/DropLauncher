@@ -99,6 +99,7 @@ public class Model {
 
   public void boxDropFilesMouseClicked(MouseEvent evt) {
     JFileChooser fc = new JFileChooser();
+    fc.setDialogTitle("Select bot files ...");
     fc.setAcceptAllFileFilterUsed(false);
     fc.setMultiSelectionEnabled(true);
     fc.setFileFilter(new FileNameExtensionFilter("All supported files (*.dll, *.exe)", "dll", "exe"));
@@ -149,6 +150,7 @@ public class Model {
     //TODO: Only accept StarCraft.exe file selection.
     //TODO: Guess StarCraft directory or read from registry.
     JFileChooser fc = new JFileChooser(new File("C:\\StarCraft"));
+    fc.setDialogTitle("Select StarCraft.exe ...");
     fc.setAcceptAllFileFilterUsed(false);
     fc.setFileFilter(new FileNameExtensionFilter("*.exe", "exe"));
     if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
