@@ -1,35 +1,3 @@
-/*
-> bwheadless.exe --help
-Usage: bwheadless.exe [option]...
-A tool to start StarCraft: Brood War as a console application, with no graphics, sound or user input.
-
-  -e, --exe         The exe file to launch. Default 'StarCraft.exe'.
-  -h, --host        Host a game instead of joining.
-  -j, --join        Join instead of hosting. The first game that is found
-                    will be joined.
-  -n, --name NAME   The player name. Default 'playername'.
-  -g, --game NAME   The game name when hosting. Defaults to the player name.
-                    If this option is specified when joining, then only games
-                    with the specified name will be joined.
-  -m, --map FILE    The map to use when hosting.
-  -r, --race RACE   Zerg/Terran/Protoss/Random/Z/T/P/R (case insensitive).
-  -l, --dll DLL     Load DLL into StarCraft. This option can be
-                    specified multiple times to load multiple dlls.
-      --networkprovider NAME  Use the specified network provider.
-                              'UDPN' is LAN (UDP), 'SMEM' is Local PC (provided
-                              by BWAPI). Others are provided by .snp files and
-                              may or may not work. Default SMEM.
-      --lan         Sets the network provider to LAN (UDP).
-      --localpc     Sets the network provider to Local PC (this is default).
-      --lan-sendto IP  Overrides the IP that UDP packets are sent to. This
-                       can be used together with --lan to connect to a
-                       specified IP-address instead of broadcasting for games
-                       on LAN (The ports used is 6111 and 6112).
-      --installpath PATH  Overrides the InstallPath value that would usually
-                          be read from the registry. This is used by BWAPI to
-                          locate bwapi-data/bwapi.ini.
-*/
-
 package droplauncher.bwheadless;
 
 import adakite.utils.AdakiteUtils;
@@ -66,7 +34,8 @@ public class BWHeadless {
   public static final NetworkProvider DEFAULT_NETWORK_PROVIDER = NetworkProvider.LAN;
   public static final JoinMode DEFAULT_JOIN_MODE = JoinMode.JOIN;
 
-  private ProcessPipe pipe;
+  private ProcessPipe bwheadlessPipe;
+  private ProcessPipe botPipe;
 
   private String starcraftExe; /* required */
   private String bwapiDll; /* required */
@@ -80,7 +49,8 @@ public class BWHeadless {
   private IniFile iniFile;
 
   public BWHeadless() {
-    this.pipe = new ProcessPipe();
+    this.bwheadlessPipe = new ProcessPipe();
+    this.botPipe = new ProcessPipe();
 
     this.starcraftExe = null;
     this.bwapiDll = null;
@@ -130,15 +100,11 @@ public class BWHeadless {
   }
 
   public boolean isRunning() {
-    return this.pipe.isOpen();
+    return this.bwheadlessPipe.isOpen();
   }
 
   public void start() {
-    if (!isReady()) {
-      System.out.println("BWH: Not Ready");
-      return;
-    } else if (isRunning()) {
-      System.out.println("BWH: already running");
+    if (isRunning() || !isReady()) {
       return;
     }
 
@@ -148,38 +114,50 @@ public class BWHeadless {
       LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
     }
 
-    System.out.println("BWH: Ready");
+    String starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.starcraftExe)).toAbsolutePath().toString();
 
-    ArrayList<String> args = new ArrayList<>();
-    args.add(Argument.STARCRAFT_EXE.toString());
-    args.add(getStarcraftExe());
-    args.add(Argument.JOIN_GAME.toString());
-    args.add(Argument.BOT_NAME.toString());
-    args.add(getBotName());
-    args.add(Argument.BOT_RACE.toString());
-    args.add(getBotRace().toString());
-    args.add(Argument.LOAD_DLL.toString());
-    args.add(getBwapiDll());
-    args.add(Argument.ENABLE_LAN.toString());
-    args.add(Argument.STARCRAFT_INSTALL_PATH.toString());
-    args.add("C:\\StarCraft");
-    String[] cmdArgs = Util.toStringArray(args);
-    this.pipe.open(new File("bwheadless.exe"), cmdArgs);
+    /* Compile bwheadless arguments. */
+    ArrayList<String> bargs = new ArrayList<>(); /* bot arguments */
+    bargs.add(Argument.STARCRAFT_EXE.toString());
+    bargs.add(getStarcraftExe());
+    bargs.add(Argument.JOIN_GAME.toString());
+    bargs.add(Argument.BOT_NAME.toString());
+    bargs.add(getBotName());
+    bargs.add(Argument.BOT_RACE.toString());
+    bargs.add(getBotRace().toString());
+    bargs.add(Argument.LOAD_DLL.toString());
+    bargs.add(getBwapiDll());
+    bargs.add(Argument.ENABLE_LAN.toString());
+    bargs.add(Argument.STARCRAFT_INSTALL_PATH.toString());
+    bargs.add(starcraftDirectory);
+    String[] bargsArray = Util.toStringArray(bargs);
+
+    /* Start bwheadless. */
+    this.bwheadlessPipe.open(new File(BW_HEADLESS_EXE), bargsArray, starcraftDirectory);
+
+    /* Start bot client in a command prompt. */
+    if (!AdakiteUtils.isNullOrEmpty(this.botClient)) {
+      ArrayList<String> cargs = new ArrayList<>(); /* client arguments */
+      cargs.add("/c");
+      cargs.add("start");
+      cargs.add(this.botClient);
+      String[] cargsArray = Util.toStringArray(cargs);
+      this.botPipe.open(new File("C:\\Windows\\System32\\cmd.exe"), cargsArray, starcraftDirectory);
+    }
   }
 
   public void stop() {
-    System.out.println("BWH: Stop");
-    this.pipe.close();
+    this.bwheadlessPipe.close();
   }
 
   private void configureBwapi() throws IOException {
     /* Determine StarCraft directory from StarCraft.exe path. */
-    String starcraftDir =
+    String starcraftDirectory =
         AdakiteUtils.getParentDirectory(Paths.get(this.starcraftExe)).toAbsolutePath().toString();
 
     /* Configure BWAPI INI file. */
     IniFile bwapiIni = new IniFile();
-    bwapiIni.open(Paths.get(starcraftDir + File.separator + BWAPI.BWAPI_DATA_INI).toFile());
+    bwapiIni.open(Paths.get(starcraftDirectory + File.separator + BWAPI.BWAPI_DATA_INI).toFile());
     if (!AdakiteUtils.isNullOrEmpty(this.botDll)) {
       bwapiIni.setVariable(
           "ai",
@@ -197,19 +175,18 @@ public class BWHeadless {
     if (!AdakiteUtils.isNullOrEmpty(this.botDll)) {
       /* Copy DLL to bwapi-data directory. */
       src = Paths.get(this.botDll);
-      dest = Paths.get(
-          starcraftDir + File.separator +
+      dest = Paths.get(starcraftDirectory + File.separator +
           BWAPI.BWAPI_DATA_AI_DIR + File.separator +
           Paths.get(this.botDll).getFileName().toString()
       );
+      this.botDll = dest.toAbsolutePath().toString();
     } else if (!AdakiteUtils.isNullOrEmpty(this.botClient)) {
       /* Copy client to StarCraft root directory. */
       src = Paths.get(this.botClient);
-      dest = Paths.get(
-          starcraftDir + File.separator +
-          BWAPI.BWAPI_DATA_AI_DIR + File.separator +
+      dest = Paths.get(starcraftDirectory + File.separator +
           Paths.get(this.botClient).getFileName().toString()
       );
+      this.botClient = dest.toAbsolutePath().toString();
     }
     Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
   }

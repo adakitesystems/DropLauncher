@@ -1,6 +1,7 @@
 package droplauncher.util;
 
 import adakite.debugging.Debugging;
+import adakite.utils.AdakiteUtils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
@@ -50,7 +52,17 @@ public class ProcessPipe {
     return this.isOpen;
   }
 
-  public boolean open(File file, String[] args) {
+  /**
+   * Open a pipe to the specified program.
+   *
+   * @param file specified program
+   * @param args arguments to include during invocation
+   * @param cwd current working directory
+   * @return
+   *     true if pipe was opened successfully,
+   *     otherwise false
+   */
+  public boolean open(File file, String[] args, String cwd) {
     if (file == null) {
       if (CLASS_DEBUG) {
         LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject("file"));
@@ -70,7 +82,14 @@ public class ProcessPipe {
 
       this.file = file;
       command[0] = this.file.getAbsolutePath();
-      this.process = new ProcessBuilder(command).start();
+      if (!AdakiteUtils.isNullOrEmpty(cwd)) {
+        /* Set current working directory for the new process. */
+        ProcessBuilder pb = new ProcessBuilder(command);
+        pb.directory(Paths.get(cwd).toFile());
+        this.process = pb.start();
+      } else {
+        this.process = new ProcessBuilder(command).start();
+      }
 
       this.is = this.process.getInputStream();
       this.br = new BufferedReader(new InputStreamReader(this.is));
@@ -96,6 +115,16 @@ public class ProcessPipe {
     return false;
   }
 
+  /**
+   * @see #open(File, String[], String)
+   */
+  public boolean open(File file, String[] args) {
+    return open(file, args, null);
+  }
+
+  /**
+   * @see #open(File, String[], String)
+   */
   public boolean open(File file) {
     return open(file, null);
   }

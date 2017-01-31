@@ -19,6 +19,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -120,7 +121,10 @@ public class Model {
       for (Task task : tasks) {
         /* Only kill tasks whose names match known associated tasks. */
         for (KillableTask kt : KillableTask.values()) {
-          if (task.getImageName().equalsIgnoreCase(kt.toString())) {
+          if (task.getImageName().equalsIgnoreCase(kt.toString())
+              || (!AdakiteUtils.isNullOrEmpty(this.bwheadless.getBotClient())
+                && task.getImageName().equalsIgnoreCase(Paths.get(this.bwheadless.getBotClient()).getFileName().toString()))
+          ) {
             tasklist.kill(task.getPID());
             break;
           }
