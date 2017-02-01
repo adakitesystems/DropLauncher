@@ -3,6 +3,7 @@ package droplauncher.bwheadless;
 public enum ReadyStatus {
 
   READY("Ready"),
+  BWHEADLESS_EXE("bwheadless.exe"),
   STARTCRAFT_EXE("StarCraft.exe"),
   BWAPI_DLL("BWAPI.dll"),
   BOT_NAME("Bot Name"),

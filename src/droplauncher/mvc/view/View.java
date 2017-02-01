@@ -210,6 +210,11 @@ public class View extends JFrame {
     mnuHelp.setText("Help");
 
     mnuHelpAbout.setText("About");
+    mnuHelpAbout.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        mnuHelpAboutActionPerformed(evt);
+      }
+    });
     mnuHelp.add(mnuHelpAbout);
 
     mnuMain.add(mnuHelp);
@@ -491,6 +496,10 @@ public class View extends JFrame {
   private void mnuFileExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileExitActionPerformed
     this.model.mnuFileExitActionPerformed(evt);
   }//GEN-LAST:event_mnuFileExitActionPerformed
+
+  private void mnuHelpAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuHelpAboutActionPerformed
+    this.model.mnuHelpAboutActionPerformed(evt);
+  }//GEN-LAST:event_mnuHelpAboutActionPerformed
 
   /* ************************************************************ */
   /*

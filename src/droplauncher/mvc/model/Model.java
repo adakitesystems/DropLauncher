@@ -236,6 +236,19 @@ public class Model {
     closeProgram();
   }
 
+  public void mnuHelpAboutActionPerformed(ActionEvent evt) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(Constants.PROGRAM_NAME).append(System.lineSeparator())
+        .append(System.lineSeparator())
+        .append("Version: " + Constants.PROGRAM_VERSION).append(System.lineSeparator())
+        .append("Author: " + Constants.PROGRAM_AUTHOR).append(System.lineSeparator())
+        .append("Source: " + Constants.PROGRAM_GITHUB).append(System.lineSeparator())
+        .append(System.lineSeparator())
+        .append("License: " + Constants.PROGRAM_LICENSE).append(System.lineSeparator())
+        .append(Constants.PROGRAM_LICENSE_LINK).append(System.lineSeparator());
+    this.view.showMessageBox(JOptionPane.INFORMATION_MESSAGE, sb.toString());
+  }
+
   public void rbRaceProtossActionPerformed(ActionEvent evt) {
     this.bwheadless.setBotRace(Race.PROTOSS);
   }

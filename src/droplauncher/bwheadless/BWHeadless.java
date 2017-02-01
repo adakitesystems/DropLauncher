@@ -54,8 +54,8 @@ public class BWHeadless {
   private static final Logger LOGGER = Logger.getLogger(BWHeadless.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
-  public static final String BW_HEADLESS_EXE = "bwheadless.exe";
-  public static final String BW_HEADLESS_INI_SECTION = "bwheadless";
+  public static final String BWHEADLESS_EXE = "bwheadless.exe";
+  public static final String BWHEADLESS_INI_SECTION = "bwheadless";
 
   public static final String DEFAULT_BOT_NAME = "BOT";
   public static final Race DEFAULT_BOT_RACE = Race.NONE;
@@ -112,12 +112,10 @@ public class BWHeadless {
     return (getReadyStatus() == ReadyStatus.READY);
   }
 
-  /*
-  TODO: Possibly remove or improve this.
-  TODO: Redo this.
-  */
   public ReadyStatus getReadyStatus() {
-    if (AdakiteUtils.isNullOrEmpty(this.starcraftExe, true)
+    if (!AdakiteUtils.fileExists(Paths.get(BWHEADLESS_EXE))) {
+      return ReadyStatus.BWHEADLESS_EXE;
+    } else if (AdakiteUtils.isNullOrEmpty(this.starcraftExe, true)
         || !AdakiteUtils.fileExists(Paths.get(this.starcraftExe))) {
       return ReadyStatus.STARTCRAFT_EXE;
     } else if (AdakiteUtils.isNullOrEmpty(this.bwapiDll, true)
@@ -177,7 +175,7 @@ public class BWHeadless {
     String[] bargsArray = Util.toStringArray(bargs);
 
     /* Start bwheadless. */
-    this.bwheadlessPipe.open(Paths.get(BW_HEADLESS_EXE), bargsArray, starcraftDirectory);
+    this.bwheadlessPipe.open(Paths.get(BWHEADLESS_EXE), bargsArray, starcraftDirectory);
 
     /* Start bot client in a command prompt. */
     if (!AdakiteUtils.isNullOrEmpty(this.botClient)) {
@@ -367,29 +365,29 @@ public class BWHeadless {
   }
 
   private void updateSettingsFile(String key, String val) {
-    updateSettingsFile(BW_HEADLESS_INI_SECTION, key, val);
+    updateSettingsFile(BWHEADLESS_INI_SECTION, key, val);
   }
 
   public void readSettingsFile(IniFile ini) {
     String val;
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.STARCRAFT_EXE.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.STARCRAFT_EXE.toString()))) {
       setStarcraftExe(val);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BWAPI_DLL.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.BWAPI_DLL.toString()))) {
       setBwapiDll(val);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BOT_NAME.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.BOT_NAME.toString()))) {
       setBotName(val);
     } else {
       setBotName(DEFAULT_BOT_NAME);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BOT_DLL.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.BOT_DLL.toString()))) {
       setBotDll(val);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BOT_CLIENT.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.BOT_CLIENT.toString()))) {
       setBotClient(val);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.BOT_RACE.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.BOT_RACE.toString()))) {
       if (val.equalsIgnoreCase(Race.TERRAN.toString())) {
         setBotRace(Race.TERRAN);
       } else if (val.equalsIgnoreCase(Race.ZERG.toString())) {
@@ -406,7 +404,7 @@ public class BWHeadless {
       /* Race wasn't set. */
       setBotRace(DEFAULT_BOT_RACE);
     }
-    if (AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.NETWORK_PROVIDER.toString()))) {
+    if (AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.NETWORK_PROVIDER.toString()))) {
       if (val.equalsIgnoreCase(NetworkProvider.LAN.toString())) {
         setNetworkProvider(NetworkProvider.LAN);
       } else {
@@ -417,7 +415,7 @@ public class BWHeadless {
       /* NetworkProvider wasn't set. */
       setNetworkProvider(DEFAULT_NETWORK_PROVIDER);
     }
-    if (AdakiteUtils.isNullOrEmpty(val = ini.getValue(BW_HEADLESS_INI_SECTION, PredefinedVariable.JOIN_MODE.toString()))) {
+    if (AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.JOIN_MODE.toString()))) {
       if (val.equalsIgnoreCase(JoinMode.JOIN.toString())) {
         setJoinMode(JoinMode.JOIN);
       } else {
