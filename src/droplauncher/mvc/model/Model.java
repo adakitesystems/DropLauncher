@@ -59,10 +59,6 @@ public class Model {
     }
   }
 
-  public Path getJavaPath() {
-    return this.javaPath;
-  }
-
   public void setView(View view) {
     this.view = view;
   }
