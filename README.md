@@ -12,5 +12,6 @@ Designed to be a simple tool to aid players in setting up and playing 1v1 StarCr
 Between 2017-02-05 and 2017-02-11.
 
 ## Pending actions before Release
+* Check code for errors or missing dependencies.
 * Complete a few in-house tests.
 * Create an installer for binary distribution.
