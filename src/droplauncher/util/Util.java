@@ -1,7 +1,6 @@
 package droplauncher.util;
 
 import adakite.debugging.Debugging;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 

@@ -12,10 +12,8 @@ package droplauncher.ini;
 import adakite.debugging.Debugging;
 import adakite.utils.AdakiteUtils;
 import adakite.utils.MemoryFile;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -57,7 +55,7 @@ public class IniFile {
     clear();
 
     /* Create a copy of the file into a MemoryFile object. */
-    this.memoryFile.open(path.toFile());
+    this.memoryFile.open(path);
 
     /* Parse sections and variables into the class HashMap object. */
     String currSection = SectionName.NONE.toString();
@@ -331,7 +329,7 @@ public class IniFile {
   }
 
   private void reload() throws IOException {
-    open(this.memoryFile.getFile().toPath());
+    open(this.memoryFile.getPath());
   }
 
 }

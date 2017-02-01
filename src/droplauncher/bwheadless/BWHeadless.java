@@ -148,7 +148,7 @@ public class BWHeadless {
       ArrayList<String> cargs = new ArrayList<>(); /* client arguments */
       cargs.add("/c");
       cargs.add("start");
-      if (AdakiteUtils.getFileExtension(new File(this.botClient)).equalsIgnoreCase("jar")) {
+      if (AdakiteUtils.getFileExtension(Paths.get(this.botClient)).equalsIgnoreCase("jar")) {
         cargs.add("C:\\ProgramData\\Oracle\\Java\\javapath\\java.exe");
         cargs.add("-jar");
       }

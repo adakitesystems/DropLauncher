@@ -68,7 +68,7 @@ public class Model {
    * @param path specified file to process
    */
   private void processFile(Path path) {
-    String ext = AdakiteUtils.getFileExtension(path.toFile());
+    String ext = AdakiteUtils.getFileExtension(path);
     if (ext != null) {
       if (ext.equalsIgnoreCase("dll")) {
         if (path.getFileName().toString().equalsIgnoreCase("BWAPI.dll")) {

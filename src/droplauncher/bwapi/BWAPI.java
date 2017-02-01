@@ -25,7 +25,7 @@ public class BWAPI {
    *     otherwise error string
    */
   public static String getBwapiVersion(Path path) {
-    String checksum = MD5Checksum.get(path.toFile());
+    String checksum = MD5Checksum.get(path);
     String version;
 
     if (checksum.equals(Checksum.BWAPI_DLL_374.toString())) {
