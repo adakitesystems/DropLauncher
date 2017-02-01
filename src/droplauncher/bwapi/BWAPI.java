@@ -2,6 +2,7 @@ package droplauncher.bwapi;
 
 import adakite.md5sum.MD5Checksum;
 import java.io.File;
+import java.nio.file.Path;
 
 public class BWAPI {
 
@@ -16,19 +17,15 @@ public class BWAPI {
 
   /**
    * Returns the BWAPI version for the specified file. This parameter
-   * should be a "BWAPI.dll" file.
+   * should be the path to a "BWAPI.dll" file.
    *
-   * @param file specified file
+   * @param path specified file
    * @return
    *     the BWAPI version if known,
    *     otherwise error string
    */
-  public static String getBwapiVersion(File file) {
-    if (file == null) {
-      return BWAPI_DLL_UNKNOWN;
-    }
-
-    String checksum = MD5Checksum.get(file);
+  public static String getBwapiVersion(Path path) {
+    String checksum = MD5Checksum.get(path.toFile());
     String version;
 
     if (checksum.equals(Checksum.BWAPI_DLL_374.toString())) {

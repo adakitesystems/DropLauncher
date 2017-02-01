@@ -367,7 +367,7 @@ public class View extends JFrame {
       /* BWAPI.dll */
       setText(this.lblBwapiDllText, "OK");
       /* BWAPI.dll version */
-      setText(this.lblBwapiDllVersionText, BWAPI.getBwapiVersion(new File(this.model.getBWHeadless().getBwapiDll())));
+      setText(this.lblBwapiDllVersionText, BWAPI.getBwapiVersion(Paths.get(this.model.getBWHeadless().getBwapiDll())));
     } else {
       setText(this.lblBwapiDllText, "-");
       setText(this.lblBwapiDllVersionText, "-");
