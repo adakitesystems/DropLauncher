@@ -46,7 +46,8 @@ public class TaskTracker {
    * Updates the current tasklist and compares it against the previous
    * tasklist to determine which currently running tasks are new.
    *
-   * @param updatePreviousTasks whether to update the previous tasklist.
+   * @param updatePreviousTasks whether to update the previous
+   *     tasklist after comparison
    */
   public void updateNewTasks(boolean updatePreviousTasks) {
     this.newTasks.clear();

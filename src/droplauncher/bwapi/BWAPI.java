@@ -4,6 +4,9 @@ import adakite.md5sum.MD5Checksum;
 import java.io.File;
 import java.nio.file.Path;
 
+/**
+ * Utilities and constants class for BWAPI.
+ */
 public class BWAPI {
 
   public static final String BWAPI_DATA_DIR = "bwapi-data";

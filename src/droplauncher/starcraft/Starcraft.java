@@ -3,7 +3,7 @@ package droplauncher.starcraft;
 import adakite.utils.AdakiteUtils;
 
 /**
- * Utility class for StarCraft.
+ * Utilities and constants class for StarCraft.
  */
 public class Starcraft {
 

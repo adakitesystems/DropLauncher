@@ -4,6 +4,9 @@ import adakite.debugging.Debugging;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+/**
+ * Utilities and constants class for DropLauncher.
+ */
 public class Util {
 
   private static final Logger LOGGER = Logger.getLogger(Util.class.getName());

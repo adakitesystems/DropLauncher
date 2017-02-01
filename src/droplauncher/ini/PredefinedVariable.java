@@ -1,5 +1,8 @@
 package droplauncher.ini;
 
+/**
+ * Enum for INI keys related to this program.
+ */
 public enum PredefinedVariable {
 
   JAVA_EXE("java_exe")

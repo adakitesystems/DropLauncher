@@ -1,5 +1,8 @@
 package droplauncher.bwapi;
 
+/**
+ * Enum for BWAPI.dll MD5 checksums.
+ */
 public enum Checksum {
 
   BWAPI_DLL_374 ("6e940dc6acc76b6e459b39a9cdd466ae"),

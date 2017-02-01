@@ -2,6 +2,9 @@ package droplauncher.ini;
 
 import java.util.HashMap;
 
+/**
+ * Container class for sections of an INI file.
+ */
 public class Section {
 
   private String name;

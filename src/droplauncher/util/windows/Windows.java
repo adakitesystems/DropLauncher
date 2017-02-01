@@ -1,9 +1,11 @@
 package droplauncher.util.windows;
 
-import adakite.utils.AdakiteUtils;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Constants class for Windows-related programs and variables.
+ */
 public class Windows {
 
   public static Path WINDOWS_DIR = Paths.get("C:\\Windows");
@@ -23,20 +25,5 @@ public class Windows {
   public static Path PROGRAM_FILES_DIR_32 = Paths.get("C:\\Program Files (x86)");
 
   private Windows() {}
-
-  public static boolean checkSystem(SystemProperty property) {
-    switch (property) {
-      case BIT_ARCH_32:
-        return !AdakiteUtils.directoryExists(PROGRAM_FILES_DIR_32);
-      case BIT_ARCH_64:
-        return AdakiteUtils.directoryExists(PROGRAM_FILES_DIR_32);
-      case JAVA_PATH_FOUND:
-        return AdakiteUtils.fileExists(JAVA_EXE);
-      case WINDOWS:
-        return AdakiteUtils.directoryExists(WINDOWS_DIR);
-      default:
-        return false;
-    }
-  }
 
 }

@@ -3,7 +3,7 @@ package droplauncher.util;
 import java.util.logging.Level;
 
 /**
- * Utility class for global constants.
+ * Constants class for global constants.
  */
 public class Constants {
 

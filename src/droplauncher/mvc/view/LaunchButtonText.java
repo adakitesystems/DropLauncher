@@ -1,5 +1,8 @@
 package droplauncher.mvc.view;
 
+/**
+ * Enum for the launch button text states.
+ */
 public enum LaunchButtonText {
 
   LAUNCH("Launch"),
@@ -16,5 +19,5 @@ public enum LaunchButtonText {
   public String toString() {
     return this.str;
   }
-  
+
 }

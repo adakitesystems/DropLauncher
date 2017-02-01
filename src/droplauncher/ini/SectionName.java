@@ -1,5 +1,8 @@
 package droplauncher.ini;
 
+/**
+ * Enum for predefined INI section names.
+ */
 public enum SectionName {
 
   NONE("")

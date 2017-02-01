@@ -51,6 +51,12 @@ public class IniFile {
     this.sections.put(SectionName.NONE.toString(), new Section());
   }
 
+  /**
+   * Opens the specified INI file and parses its variables.
+   *
+   * @param path specified path to the INI file
+   * @throws IOException
+   */
   public void open(Path path) throws IOException {
     clear();
 
@@ -104,6 +110,14 @@ public class IniFile {
     }
   }
 
+  /**
+   * Sets the specified variable and immediately writes the changes to disk.
+   *
+   * @param name specified section name
+   * @param key specified key
+   * @param val specified value
+   * @throws IOException
+   */
   public void setVariable(String name, String key, String val) throws IOException {
     if (name == null) {
       name = "";
@@ -169,6 +183,14 @@ public class IniFile {
     this.memoryFile.dumpToFile();
   }
 
+  /**
+   * If the sepcified variable is present in the INI file but disabled via
+   * a comment character, it will be enabled by removing the comment character.
+   *
+   * @param name specified section name
+   * @param key specified key
+   * @throws IOException
+   */
   public void enableVariable(String name, String key) throws IOException {
     if (name == null) {
       name = "";
@@ -205,6 +227,15 @@ public class IniFile {
     }
   }
 
+  /**
+   * If the sepcified variable is present in the INI file and enabled,
+   * it will be disabled by adding a comment character to the beginning of
+   * the line.
+   *
+   * @param name specified section name
+   * @param key specified key
+   * @throws IOException
+   */
   public void disableVariable(String name, String key) throws IOException {
     if (name == null) {
       name = "";
@@ -226,6 +257,14 @@ public class IniFile {
     reload();
   }
 
+  /**
+   * Returns the value assoicated with the specified INI section and key.
+   *
+   * @param name specified section name
+   * @param key specified key
+   * @return
+   *     the value assoicated with the specified INI section and key
+   */
   public String getValue(String name, String key) {
     if (name == null) {
       name = "";
@@ -242,6 +281,13 @@ public class IniFile {
     }
   }
 
+  /**
+   * Returns the section line index.
+   *
+   * @param name specified section name
+   * @return
+   *     the section line index
+   */
   private int getSectionIndex(String name) {
     if (AdakiteUtils.isNullOrEmpty(name, true) && this.memoryFile.getLines().size() > 0) {
       return 0;
@@ -258,6 +304,14 @@ public class IniFile {
     return -1;
   }
 
+  /**
+   * Returns the key line index.
+   *
+   * @param name specified section name
+   * @param key specified key
+   * @return
+   *     the key line index
+   */
   private int getKeyIndex(String name, String key) {
     if (name == null) {
       name = "";
@@ -283,6 +337,13 @@ public class IniFile {
     return -1;
   }
 
+  /**
+   * Returns the specified string excluding a comment if present.
+   *
+   * @param line specified string to scan
+   * @return
+   *     the specified string excluding a comment if present
+   */
   public static String removeComment(String line) {
     if (AdakiteUtils.isNullOrEmpty(line, true)) {
       return "";
@@ -328,6 +389,12 @@ public class IniFile {
     return ret;
   }
 
+  /**
+   * Re-opens the INI file and reads its values after clearing.
+   *
+   * @see #open(java.nio.file.Path)
+   * @throws IOException
+   */
   private void reload() throws IOException {
     open(this.memoryFile.getPath());
   }

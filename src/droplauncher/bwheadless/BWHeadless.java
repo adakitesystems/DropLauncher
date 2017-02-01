@@ -24,6 +24,9 @@ import java.util.logging.Logger;
  */
 public class BWHeadless {
 
+  /**
+   * Enum for INI keys related to bwheadless.
+   */
   public enum PredefinedVariable {
 
     STARCRAFT_EXE("starcraft_exe"),
@@ -60,11 +63,12 @@ public class BWHeadless {
   public static final String DEFAULT_BOT_NAME = "BOT";
   public static final Race DEFAULT_BOT_RACE = Race.NONE;
   public static final NetworkProvider DEFAULT_NETWORK_PROVIDER = NetworkProvider.LAN;
-  public static final JoinMode DEFAULT_JOIN_MODE = JoinMode.JOIN;
+  public static final ConnectMode DEFAULT_JOIN_MODE = ConnectMode.JOIN;
 
   private ProcessPipe bwheadlessPipe;
   private ProcessPipe botPipe;
 
+  //TODO: Use Path objects for files.
   private String starcraftExe; /* required */
   private String bwapiDll; /* required */
   private String botName; /* required */
@@ -72,7 +76,7 @@ public class BWHeadless {
   private String botClient; /* *.exe or *.jar, required only when DLL is absent  */
   private Race botRace; /* required */
   private NetworkProvider networkProvider; /* required */
-  private JoinMode joinMode; /* required */
+  private ConnectMode joinMode; /* required */
 
   private ArrayList<Path> miscFiles;
 
@@ -104,14 +108,35 @@ public class BWHeadless {
     return this.miscFiles;
   }
 
+  public Path getJavaPath() {
+    return this.javaPath;
+  }
+
   public void setJavaPath(Path path) {
     this.javaPath = path;
   }
 
+  /**
+   * Tests if the program has sufficient information to run bwheadless.
+   *
+   * @see #getReadyStatus()
+   * @return
+   *     true if ready,
+   *     otherwise false
+   */
   public boolean isReady() {
     return (getReadyStatus() == ReadyStatus.READY);
   }
 
+  /**
+   * Returns a response depending on whether the program is ready
+   * to run bwheadless.
+   *
+   * @return
+   *     {@link ReadyStatus#READY} if ready,
+   *     otherwise the corresponding value that is preventing status
+   *     from being ready. E.g. {@link ReadyStatus#STARTCRAFT_EXE}
+   */
   public ReadyStatus getReadyStatus() {
     if (!AdakiteUtils.fileExists(Paths.get(BWHEADLESS_EXE))) {
       return ReadyStatus.BWHEADLESS_EXE;
@@ -141,10 +166,20 @@ public class BWHeadless {
     }
   }
 
+  /**
+   * Tests is the pipe is open between this program and bwheadless.
+   *
+   * @return
+   *     true if the pipe is open,
+   *     otherwise false
+   */
   public boolean isRunning() {
     return this.bwheadlessPipe.isOpen();
   }
 
+  /**
+   * Attempts to start bwheadless after configuring and checking settings.
+   */
   public void start() {
     if (isRunning() || !isReady()) {
       return;
@@ -198,6 +233,11 @@ public class BWHeadless {
     this.bwheadlessPipe.close();
   }
 
+  /**
+   * Configures BWAPI settings and related files.
+   *
+   * @throws IOException
+   */
   private void configureBwapi() throws IOException {
     /* Determine StarCraft directory from StarCraft.exe path. */
     String starcraftDirectory =
@@ -345,15 +385,25 @@ public class BWHeadless {
     updateSettingsFile(PredefinedVariable.NETWORK_PROVIDER.toString(), this.networkProvider.toString());
   }
 
-  public JoinMode getJoinMode() {
+  public ConnectMode getConnectMode() {
     return this.joinMode;
   }
 
-  public void setJoinMode(JoinMode joinMode) {
+  public void setConnectMode(ConnectMode joinMode) {
     this.joinMode = joinMode;
     updateSettingsFile(PredefinedVariable.JOIN_MODE.toString(), this.joinMode.toString());
   }
 
+  /**
+   * Sets the specified variable and updates the class INI file.
+   *
+   * Catches and reports all exceptions thrown by
+   * {@link droplauncher.ini.IniFile#setVariable(java.lang.String, java.lang.String, java.lang.String)}.
+   *
+   * @param name specified section name
+   * @param key specified key
+   * @param val specified value
+   */
   private void updateSettingsFile(String name, String key, String val) {
     try {
       this.iniFile.setVariable(name, key, val);
@@ -364,30 +414,44 @@ public class BWHeadless {
     }
   }
 
+  /**
+   * Sets the specified variable and updates the class INI file. The default
+   * section name is {@link #BWHEADLESS_INI_SECTION}.
+   *
+   * @param key specified key
+   * @param val specified value
+   *
+   * @see #updateSettingsFile(java.lang.String, java.lang.String, java.lang.String)
+   */
   private void updateSettingsFile(String key, String val) {
     updateSettingsFile(BWHEADLESS_INI_SECTION, key, val);
   }
 
-  public void readSettingsFile(IniFile ini) {
+  /**
+   * Reads the specified IniFile and sets class member variables accordingly.
+   *
+   * @param iniFile specified IniFile object
+   */
+  public void readSettingsFile(IniFile iniFile) {
     String val;
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.STARCRAFT_EXE.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = iniFile.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.STARCRAFT_EXE.toString()))) {
       setStarcraftExe(val);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.BWAPI_DLL.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = iniFile.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.BWAPI_DLL.toString()))) {
       setBwapiDll(val);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.BOT_NAME.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = iniFile.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.BOT_NAME.toString()))) {
       setBotName(val);
     } else {
       setBotName(DEFAULT_BOT_NAME);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.BOT_DLL.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = iniFile.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.BOT_DLL.toString()))) {
       setBotDll(val);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.BOT_CLIENT.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = iniFile.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.BOT_CLIENT.toString()))) {
       setBotClient(val);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.BOT_RACE.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = iniFile.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.BOT_RACE.toString()))) {
       if (val.equalsIgnoreCase(Race.TERRAN.toString())) {
         setBotRace(Race.TERRAN);
       } else if (val.equalsIgnoreCase(Race.ZERG.toString())) {
@@ -404,7 +468,7 @@ public class BWHeadless {
       /* Race wasn't set. */
       setBotRace(DEFAULT_BOT_RACE);
     }
-    if (AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.NETWORK_PROVIDER.toString()))) {
+    if (AdakiteUtils.isNullOrEmpty(val = iniFile.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.NETWORK_PROVIDER.toString()))) {
       if (val.equalsIgnoreCase(NetworkProvider.LAN.toString())) {
         setNetworkProvider(NetworkProvider.LAN);
       } else {
@@ -415,16 +479,16 @@ public class BWHeadless {
       /* NetworkProvider wasn't set. */
       setNetworkProvider(DEFAULT_NETWORK_PROVIDER);
     }
-    if (AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.JOIN_MODE.toString()))) {
-      if (val.equalsIgnoreCase(JoinMode.JOIN.toString())) {
-        setJoinMode(JoinMode.JOIN);
+    if (AdakiteUtils.isNullOrEmpty(val = iniFile.getValue(BWHEADLESS_INI_SECTION, PredefinedVariable.JOIN_MODE.toString()))) {
+      if (val.equalsIgnoreCase(ConnectMode.JOIN.toString())) {
+        setConnectMode(ConnectMode.JOIN);
       } else {
         /* Unrecognized JoinMode. */
-        setJoinMode(DEFAULT_JOIN_MODE);
+        setConnectMode(DEFAULT_JOIN_MODE);
       }
     } else {
       /* JoinMode wasn't set. */
-      setJoinMode(DEFAULT_JOIN_MODE);
+      setConnectMode(DEFAULT_JOIN_MODE);
     }
   }
 

@@ -8,8 +8,9 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
- * Class for running a program and logging its output. The specified program
- * should successfully terminate itself after writing to stdout.
+ * Class for running a program and logging its output. This class does not
+ * handle errors such that if the specified program does not successfully
+ * terminate itself.
  */
 public class SimpleProcess {
 

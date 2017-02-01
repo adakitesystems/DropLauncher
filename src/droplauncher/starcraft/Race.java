@@ -1,5 +1,8 @@
 package droplauncher.starcraft;
 
+/**
+ * Enum for races in StarCraft.
+ */
 public enum Race {
 
   TERRAN("Terran"),

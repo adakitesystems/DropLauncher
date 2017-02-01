@@ -3,6 +3,9 @@ package droplauncher.mvc.view;
 import filedrop.FileDrop;
 import java.io.File;
 
+/**
+ * Listener class for FileDrop components.
+ */
 public class FileDropListener implements FileDrop.Listener {
 
   private View view;

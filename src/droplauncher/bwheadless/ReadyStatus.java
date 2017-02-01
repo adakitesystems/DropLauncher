@@ -1,5 +1,8 @@
 package droplauncher.bwheadless;
 
+/**
+ * Enum for reporting the launch status of bwheadless.
+ */
 public enum ReadyStatus {
 
   READY("Ready"),
