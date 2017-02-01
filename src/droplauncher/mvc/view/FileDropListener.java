@@ -7,6 +7,8 @@ public class FileDropListener implements FileDrop.Listener {
 
   private View view;
 
+  private FileDropListener() {}
+
   public FileDropListener(View view) {
     this.view = view;
   }

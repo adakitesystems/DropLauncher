@@ -59,6 +59,17 @@ public class Model {
     }
   }
 
+  private void closeProgram() {
+    if (this.bwheadless.isRunning()) {
+      closeBWHeadless();
+    }
+    System.exit(0);
+  }
+
+  public void closeView() {
+    closeProgram();
+  }
+
   public void setView(View view) {
     this.view = view;
   }
@@ -110,6 +121,37 @@ public class Model {
     }
   }
 
+  private void startBWHeadless() {
+    /* Start bwheadless. */
+    ReadyStatus status = this.bwheadless.getReadyStatus();
+    if (status != ReadyStatus.READY) {
+      this.view.showMessageBox(JOptionPane.ERROR_MESSAGE, "Not ready: " + status.toString());
+    } else {
+      this.taskTracker.update();
+      this.bwheadless.start();
+    }
+  }
+
+  private void closeBWHeadless() {
+    /* Kill new tasks that were started with bwheadless. */
+    this.taskTracker.updateNewTasks();
+    ArrayList<Task> tasks = this.taskTracker.getNewTasks();
+    Tasklist tasklist = new Tasklist();
+    for (Task task : tasks) {
+      /* Only kill tasks whose names match known associated tasks. */
+      for (KillableTask kt : KillableTask.values()) {
+        if (task.getImageName().equalsIgnoreCase(kt.toString())
+            || (!AdakiteUtils.isNullOrEmpty(this.bwheadless.getBotClient())
+              && task.getImageName().equalsIgnoreCase(Paths.get(this.bwheadless.getBotClient()).getFileName().toString()))
+        ) {
+          tasklist.kill(task.getPID());
+          break;
+        }
+      }
+    }
+    this.bwheadless.stop();
+  }
+
   /* ************************************************************ */
   /* Events from View */
   /* ************************************************************ */
@@ -133,32 +175,9 @@ public class Model {
 
   public void btnLaunchActionPerformed(ActionEvent evt) {
     if (this.bwheadless.isRunning()) {
-      /* Kill new tasks that were started with bwheadless. */
-      this.taskTracker.updateNewTasks();
-      ArrayList<Task> tasks = this.taskTracker.getNewTasks();
-      Tasklist tasklist = new Tasklist();
-      for (Task task : tasks) {
-        /* Only kill tasks whose names match known associated tasks. */
-        for (KillableTask kt : KillableTask.values()) {
-          if (task.getImageName().equalsIgnoreCase(kt.toString())
-              || (!AdakiteUtils.isNullOrEmpty(this.bwheadless.getBotClient())
-                && task.getImageName().equalsIgnoreCase(Paths.get(this.bwheadless.getBotClient()).getFileName().toString()))
-          ) {
-            tasklist.kill(task.getPID());
-            break;
-          }
-        }
-      }
-      this.bwheadless.stop();
+      closeBWHeadless();
     } else {
-      /* Start bwheadless. */
-      ReadyStatus status = this.bwheadless.getReadyStatus();
-      if (status != ReadyStatus.READY) {
-        this.view.showMessageBox(JOptionPane.ERROR_MESSAGE, "Not ready: " + status.toString());
-      } else {
-        this.taskTracker.update();
-        this.bwheadless.start();
-      }
+      startBWHeadless();
     }
     this.view.update();
   }
@@ -211,6 +230,10 @@ public class Model {
     }
 
     this.view.update();
+  }
+
+  public void mnuFileExitActionPerformed(ActionEvent evt) {
+    closeProgram();
   }
 
   public void rbRaceProtossActionPerformed(ActionEvent evt) {
