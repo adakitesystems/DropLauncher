@@ -31,7 +31,7 @@ public class Model {
   private static final Logger LOGGER = Logger.getLogger(Model.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
-  public static final File DROP_LAUNCHER_INI = new File("droplauncher.ini");
+  public static final String DROP_LAUNCHER_INI = "droplauncher.ini";
 
   private View view;
 
@@ -46,7 +46,7 @@ public class Model {
 
     this.bwheadless.setIniFile(this.iniFile);
     try {
-      this.iniFile.open(DROP_LAUNCHER_INI);
+      this.iniFile.open(Paths.get(DROP_LAUNCHER_INI));
       this.bwheadless.readSettingsFile(this.iniFile);
     } catch (Exception ex) {
       LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);

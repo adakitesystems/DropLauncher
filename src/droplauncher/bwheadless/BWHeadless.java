@@ -169,7 +169,7 @@ public class BWHeadless {
 
     /* Configure BWAPI INI file. */
     IniFile bwapiIni = new IniFile();
-    bwapiIni.open(Paths.get(starcraftDirectory + File.separator + BWAPI.BWAPI_DATA_INI).toFile());
+    bwapiIni.open(Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_INI));
     if (!AdakiteUtils.isNullOrEmpty(this.botDll)) {
       bwapiIni.setVariable(
           "ai",

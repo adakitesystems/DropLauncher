@@ -5,7 +5,6 @@ can be changed but the file cannot be modified?
 Since the file relies on a MemoryFile object and the MemoryFile object
 checks the file before writing, it should be OK? Double check. Determine if there
 is a better course of action.
-TODO: Use Path objects instead of File objects.
 */
 
 package droplauncher.ini;
@@ -15,6 +14,8 @@ import adakite.utils.AdakiteUtils;
 import adakite.utils.MemoryFile;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -41,10 +42,6 @@ public class IniFile {
     return this.sections;
   }
 
-  public File getFile() {
-    return this.memoryFile.getFile();
-  }
-
   /**
    * Clears relevant class members and, specifically, the HashMap object
    * which contains the Section objects. Always adds a section with no
@@ -56,11 +53,11 @@ public class IniFile {
     this.sections.put(SectionName.NONE.toString(), new Section());
   }
 
-  public void open(File file) throws IOException {
+  public void open(Path path) throws IOException {
     clear();
 
     /* Create a copy of the file into a MemoryFile object. */
-    this.memoryFile.open(file);
+    this.memoryFile.open(path.toFile());
 
     /* Parse sections and variables into the class HashMap object. */
     String currSection = SectionName.NONE.toString();
@@ -334,8 +331,7 @@ public class IniFile {
   }
 
   private void reload() throws IOException {
-    File file = new File(this.memoryFile.getFile().getAbsolutePath());
-    open(file);
+    open(this.memoryFile.getFile().toPath());
   }
 
 }
