@@ -65,27 +65,27 @@ public class Model {
    * Reads a dropped or selected file which is meant for the
    * bwheadless.exe process and sets the appropiate settings.
    *
-   * @param file specified file to process
+   * @param path specified file to process
    */
-  private void processFile(File file) {
-    String ext = AdakiteUtils.getFileExtension(file);
+  private void processFile(Path path) {
+    String ext = AdakiteUtils.getFileExtension(path.toFile());
     if (ext != null) {
       if (ext.equalsIgnoreCase("dll")) {
-        if (file.getName().equalsIgnoreCase("BWAPI.dll")) {
-          this.bwheadless.setBwapiDll(file.getAbsolutePath());
+        if (path.getFileName().toString().equalsIgnoreCase("BWAPI.dll")) {
+          this.bwheadless.setBwapiDll(path.toAbsolutePath().toString());
         } else {
           this.bwheadless.setBotRace(BWHeadless.DEFAULT_BOT_RACE);
-          this.bwheadless.setBotDll(file.getAbsolutePath());
+          this.bwheadless.setBotDll(path.toAbsolutePath().toString());
         }
       } else if (ext.equalsIgnoreCase("exe")) {
         this.bwheadless.setBotRace(BWHeadless.DEFAULT_BOT_RACE);
-        this.bwheadless.setBotClient(file.getAbsolutePath());
+        this.bwheadless.setBotClient(path.toAbsolutePath().toString());
       } else if (ext.equalsIgnoreCase("jar")) {
         this.bwheadless.setBotRace(BWHeadless.DEFAULT_BOT_RACE);
-        this.bwheadless.setBotClient(file.getAbsolutePath());
+        this.bwheadless.setBotClient(path.toAbsolutePath().toString());
       } else {
         /* If file extension is not recognized, treat as a config/misc file. */
-        this.bwheadless.getMiscFiles().add(Paths.get(file.getAbsolutePath()));
+        this.bwheadless.getMiscFiles().add(path);
       }
     } else {
       /* If no file extension is detected, ignore file. */
@@ -106,7 +106,7 @@ public class Model {
       File[] fileList = fc.getSelectedFiles();
       if (fileList != null && fileList.length > 0) {
         for (File file : fileList) {
-          processFile(file);
+          processFile(file.toPath());
         }
       }
       this.view.update();
@@ -165,13 +165,13 @@ public class Model {
     /* Parse all objects dropped into a complete list of files dropped since
        dropping a directory does NOT include all subdirectories and
        files by default. */
-    ArrayList<File> fileList = new ArrayList<>();
+    ArrayList<Path> fileList = new ArrayList<>();
     for (File file : files) {
       if (file.isDirectory()) {
         try {
           Path[] tmpList = AdakiteUtils.getDirectoryContents(file.toPath(), true);
           for (Path tmpPath : tmpList) {
-            fileList.add(tmpPath.toFile());
+            fileList.add(tmpPath);
           }
         } catch (IOException ex) {
           if (CLASS_DEBUG) {
@@ -179,7 +179,7 @@ public class Model {
           }
         }
       } else if (file.isFile()) {
-        fileList.add(file);
+        fileList.add(file.toPath());
       } else {
         if (CLASS_DEBUG) {
           LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "Unknown file dropped: " + file.getAbsolutePath());
@@ -188,8 +188,8 @@ public class Model {
     }
 
     /* Process all files. */
-    for (File file : fileList) {
-      processFile(file);
+    for (Path path : fileList) {
+      processFile(path);
     }
 
     this.view.update();
