@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -28,20 +29,8 @@ public class SimpleProcess {
     return this.log;
   }
 
-  public boolean run(File file, String[] args) {
+  public void run(Path path, String[] args) {
     this.log.clear();
-
-    if (file == null) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject("file"));
-      }
-      return false;
-    } else if (!AdakiteUtils.fileExists(file.toPath())) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.fileDoesNotExist(file));
-      }
-      return false;
-    }
 
     try {
       String[] command;
@@ -52,7 +41,7 @@ public class SimpleProcess {
         System.arraycopy(args, 0, command, 1, args.length);
       }
 
-      command[0] = file.getAbsolutePath();
+      command[0] = path.toAbsolutePath().toString();
       Process process = new ProcessBuilder(command).start();
 
       InputStream is = process.getInputStream();
@@ -66,10 +55,7 @@ public class SimpleProcess {
       if (CLASS_DEBUG) {
         LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
       }
-      return false;
     }
-
-    return true;
   }
 
 }
