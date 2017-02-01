@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.logging.Logger;
@@ -24,7 +25,7 @@ public class ProcessPipe {
 
   public static final double DEFAULT_READ_TIMEOUT = (double)0.25; /* seconds */
 
-  private File file;
+  private Path path;
   private String[] args;
   private Process process;
   private InputStream is;
@@ -36,7 +37,7 @@ public class ProcessPipe {
   private boolean isOpen;
 
   public ProcessPipe() {
-    this.file = null;
+    this.path = null;
     this.args = null;
     this.process = null;
     this.is = null;
@@ -55,15 +56,15 @@ public class ProcessPipe {
   /**
    * Open a pipe to the specified program.
    *
-   * @param file specified program
+   * @param path specified program
    * @param args arguments to include during invocation
    * @param cwd current working directory
    * @return
    *     true if pipe was opened successfully,
    *     otherwise false
    */
-  public boolean open(File file, String[] args, String cwd) {
-    if (file == null) {
+  public boolean open(Path path, String[] args, String cwd) {
+    if (path == null) {
       if (CLASS_DEBUG) {
         LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject("file"));
       }
@@ -80,8 +81,8 @@ public class ProcessPipe {
         System.arraycopy(this.args, 0, command, 1, this.args.length);
       }
 
-      this.file = file;
-      command[0] = this.file.getAbsolutePath();
+      this.path = path;
+      command[0] = this.path.toAbsolutePath().toString();
       if (!AdakiteUtils.isNullOrEmpty(cwd)) {
         /* Set current working directory for the new process. */
         ProcessBuilder pb = new ProcessBuilder(command);
@@ -116,17 +117,17 @@ public class ProcessPipe {
   }
 
   /**
-   * @see #open(File, String[], String)
+   * @see #open(java.nio.file.Path, java.lang.String[], java.lang.String)
    */
-  public boolean open(File file, String[] args) {
-    return open(file, args, null);
+  public boolean open(Path path, String[] args) {
+    return open(path, args, null);
   }
 
   /**
-   * @see #open(File, String[], String)
+   * @see #open(java.nio.file.Path, java.lang.String[], java.lang.String) 
    */
-  public boolean open(File file) {
-    return open(file, null);
+  public boolean open(Path path) {
+    return open(path, null);
   }
 
   /**

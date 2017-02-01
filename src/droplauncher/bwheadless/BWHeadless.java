@@ -141,7 +141,7 @@ public class BWHeadless {
     String[] bargsArray = Util.toStringArray(bargs);
 
     /* Start bwheadless. */
-    this.bwheadlessPipe.open(new File(BW_HEADLESS_EXE), bargsArray, starcraftDirectory);
+    this.bwheadlessPipe.open(Paths.get(BW_HEADLESS_EXE), bargsArray, starcraftDirectory);
 
     /* Start bot client in a command prompt. */
     if (!AdakiteUtils.isNullOrEmpty(this.botClient)) {
@@ -154,7 +154,7 @@ public class BWHeadless {
       }
       cargs.add(this.botClient);
       String[] cargsArray = Util.toStringArray(cargs);
-      this.botPipe.open(new File("C:\\Windows\\System32\\cmd.exe"), cargsArray, starcraftDirectory);
+      this.botPipe.open(Paths.get("C:\\Windows\\System32\\cmd.exe"), cargsArray, starcraftDirectory);
     }
   }
 
