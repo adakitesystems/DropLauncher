@@ -3,7 +3,6 @@ package droplauncher.util.windows;
 import adakite.utils.AdakiteUtils;
 import droplauncher.util.Constants;
 import droplauncher.util.SimpleProcess;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.StringTokenizer;
@@ -18,12 +17,6 @@ public class Tasklist {
   private static final Logger LOGGER = Logger.getLogger(Tasklist.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
-  public static File TASKLIST_EXE = new File("C:\\Windows\\System32\\tasklist.exe");
-  public static String[] DEFAULT_TASKLIST_ARGS = {"/v"};
-
-  public static File TASKKILL_EXE = new File("C:\\Windows\\System32\\taskkill.exe");
-  public static String[] DEFAULT_TASKKILL_ARGS = {"/f", "/pid"}; /* /PID requires a second string */
-
   private ArrayList<Task> tasks;
 
   public Tasklist() {
@@ -31,11 +24,11 @@ public class Tasklist {
   }
 
   public void kill(String pid) {
-    String[] args = new String[DEFAULT_TASKKILL_ARGS.length + 1];
-    System.arraycopy(DEFAULT_TASKKILL_ARGS, 0, args, 0, DEFAULT_TASKKILL_ARGS.length);
+    String[] args = new String[Windows.DEFAULT_TASKKILL_ARGS.length + 1];
+    System.arraycopy(Windows.DEFAULT_TASKKILL_ARGS, 0, args, 0, Windows.DEFAULT_TASKKILL_ARGS.length);
     args[args.length - 1] = pid;
     SimpleProcess process = new SimpleProcess();
-    process.run(TASKKILL_EXE, args);
+    process.run(Windows.TASKKILL_EXE.toFile(), args);
   }
 
   /**
@@ -68,7 +61,7 @@ public class Tasklist {
     this.tasks.clear();
 
     SimpleProcess process = new SimpleProcess();
-    process.run(TASKLIST_EXE, DEFAULT_TASKLIST_ARGS);
+    process.run(Windows.TASKLIST_EXE.toFile(), Windows.DEFAULT_TASKLIST_ARGS);
 
     /* Find beginning of process list. */
     int index;
