@@ -6,12 +6,14 @@ import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.KillableTask;
 import droplauncher.bwheadless.ReadyStatus;
 import droplauncher.ini.IniFile;
+import droplauncher.ini.PredefinedVariable;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
 import droplauncher.util.windows.Task;
 import droplauncher.util.windows.TaskTracker;
 import droplauncher.util.windows.Tasklist;
+import droplauncher.util.windows.Windows;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -39,18 +41,26 @@ public class Model {
   private IniFile iniFile;
   private TaskTracker taskTracker;
 
+  private Path javaPath;
+
   public Model() {
     this.bwheadless = new BWHeadless();
     this.iniFile = new IniFile();
     this.taskTracker = new TaskTracker();
+    this.javaPath = null;
 
     this.bwheadless.setIniFile(this.iniFile);
     try {
       this.iniFile.open(Paths.get(DROP_LAUNCHER_INI));
       this.bwheadless.readSettingsFile(this.iniFile);
+      readSettingsFile(this.iniFile);
     } catch (Exception ex) {
       LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
     }
+  }
+
+  public Path getJavaPath() {
+    return this.javaPath;
   }
 
   public void setView(View view) {
@@ -89,6 +99,18 @@ public class Model {
       }
     } else {
       /* If no file extension is detected, ignore file. */
+    }
+  }
+
+  public void readSettingsFile(IniFile ini) throws IOException {
+    String val;
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue("droplauncher", PredefinedVariable.JAVA_EXE.toString()))
+        && AdakiteUtils.fileExists(Paths.get(val))) {
+      this.javaPath = Paths.get(val);
+      this.bwheadless.setJavaPath(this.javaPath);
+    } else {
+      this.iniFile.setVariable("droplauncher", PredefinedVariable.JAVA_EXE.toString(), Windows.JAVA_EXE.toAbsolutePath().toString());
+      this.bwheadless.setJavaPath(this.javaPath);
     }
   }
 

@@ -8,6 +8,7 @@ import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
 import droplauncher.util.ProcessPipe;
 import droplauncher.util.Util;
+import droplauncher.util.windows.Windows;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,6 +23,33 @@ import java.util.logging.Logger;
  * bwheadless.exe process.
  */
 public class BWHeadless {
+
+  public enum PredefinedVariable {
+
+    STARCRAFT_EXE("starcraft_exe"),
+    BWAPI_DLL("bwapi_dll"),
+    BOT_NAME("bot_name"),
+    BOT_DLL("bot_dll"),
+    BOT_CLIENT("bot_client"),
+    BOT_RACE("bot_race"),
+    NETWORK_PROVIDER("network"),
+    JOIN_MODE("join_mode"),
+    GAME_NAME("game_name"),
+    MAP("map")
+    ;
+
+    private String str;
+
+    private PredefinedVariable(String str) {
+      this.str = str;
+    }
+
+    @Override
+    public String toString() {
+      return this.str;
+    }
+
+  }
 
   private static final Logger LOGGER = Logger.getLogger(BWHeadless.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
@@ -50,6 +78,8 @@ public class BWHeadless {
 
   private IniFile iniFile;
 
+  private Path javaPath;
+
   public BWHeadless() {
     this.bwheadlessPipe = new ProcessPipe();
     this.botPipe = new ProcessPipe();
@@ -66,10 +96,16 @@ public class BWHeadless {
     this.miscFiles = new ArrayList<>();
 
     this.iniFile = null;
+
+    this.javaPath = null;
   }
 
   public ArrayList<Path> getMiscFiles() {
     return this.miscFiles;
+  }
+
+  public void setJavaPath(Path path) {
+    this.javaPath = path;
   }
 
   public boolean isReady() {
@@ -149,12 +185,14 @@ public class BWHeadless {
       cargs.add("/c");
       cargs.add("start");
       if (AdakiteUtils.getFileExtension(Paths.get(this.botClient)).equalsIgnoreCase("jar")) {
-        cargs.add("C:\\ProgramData\\Oracle\\Java\\javapath\\java.exe");
-        cargs.add("-jar");
+        cargs.add(this.javaPath.toAbsolutePath().toString());
+        for (String arg : Windows.DEFAULT_JAR_ARGS) {
+          cargs.add(arg);
+        }
       }
       cargs.add(this.botClient);
       String[] cargsArray = Util.toStringArray(cargs);
-      this.botPipe.open(Paths.get("C:\\Windows\\System32\\cmd.exe"), cargsArray, starcraftDirectory);
+      this.botPipe.open(Windows.CMD_EXE, cargsArray, starcraftDirectory);
     }
   }
 
