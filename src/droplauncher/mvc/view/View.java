@@ -3,6 +3,7 @@ package droplauncher.mvc.view;
 import adakite.utils.AdakiteUtils;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.starcraft.Race;
+import droplauncher.util.Constants;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -12,7 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class View implements EventHandler<ActionEvent> {
@@ -26,6 +26,7 @@ public class View implements EventHandler<ActionEvent> {
   private Label lblBwapiVersionText;
   private Label lblBotFile;
   private Label lblBotFileText;
+  private Label lblBotName;
   private TextField txtBotName;
   private ChoiceBox<String> cbRace;
   private Button btnLaunch;
@@ -48,47 +49,66 @@ public class View implements EventHandler<ActionEvent> {
 
   private void initComponents() {
     this.lblBwapiVersion = new Label("BWAPI:");
-    this.lblBwapiVersionText = new Label("lblBwapiVersionText");
+    this.lblBwapiVersionText = new Label("-");
     this.lblBotFile = new Label("Bot File:");
-    this.lblBotFileText = new Label("lblBotFileText");
-    this.txtBotName = new TextField("txtBotName");
+    this.lblBotFileText = new Label("-");
+    this.lblBotName = new Label("Bot name (max 24 characaters):");
+    this.txtBotName = new TextField("");
     this.cbRace = new ChoiceBox<>();
-    this.btnLaunch = new Button(LaunchButtonText.LAUNCH.toString());
-    this.txtDropArea = new TextField();
-
     this.cbRace.getItems().add(Race.TERRAN.toString());
     this.cbRace.getItems().add(Race.ZERG.toString());
     this.cbRace.getItems().add(Race.PROTOSS.toString());
     this.cbRace.getItems().add(Race.RANDOM.toString());
-    setText(cbRace, Race.ZERG.toString());
-    this.txtDropArea.setMinWidth(300);
-    this.txtDropArea.setMinHeight(200);
+    this.btnLaunch = new Button(LaunchButtonText.LAUNCH.toString());
+    this.btnLaunch.setMinWidth(200);
+    this.btnLaunch.setMinHeight(40);
+    this.txtDropArea = new TextField();
+    this.txtDropArea.setMinWidth(150);
+    this.txtDropArea.setMinHeight(150);
 
     CustomGridPane fileGridPane = new CustomGridPane();
     fileGridPane.add(this.lblBwapiVersion);
     fileGridPane.add(this.lblBwapiVersionText, true);
     fileGridPane.add(this.lblBotFile);
     fileGridPane.add(this.lblBotFileText, true);
-    fileGridPane.setGap(GAP, GAP);
+    fileGridPane.setGaps(GAP, GAP);
     fileGridPane.pack();
 
+    CustomGridPane botNameGridPane = new CustomGridPane();
+    botNameGridPane.add(this.lblBotName, true);
+    botNameGridPane.add(this.txtBotName, true);
+    botNameGridPane.setGaps(2, 2);
+    botNameGridPane.pack();
+
     CustomGridPane botGridPane = new CustomGridPane();
-    botGridPane.add(this.txtBotName, true);
+    botGridPane.add(botNameGridPane.get(), true);
     botGridPane.add(this.cbRace, true);
     botGridPane.add(this.btnLaunch, true);
-    botGridPane.setGap(GAP, GAP);
+    botGridPane.setGaps(GAP, GAP);
     botGridPane.pack();
+
+    CustomGridPane txtDropGridPane = new CustomGridPane();
+    txtDropGridPane.add(this.txtDropArea, true);
+    txtDropGridPane.setGaps(GAP, GAP);
+    txtDropGridPane.pack();
+
+    CustomGridPane botAreaGridPane = new CustomGridPane();
+    botAreaGridPane.add(txtDropGridPane.get());
+    botAreaGridPane.add(botGridPane.get());
+    botAreaGridPane.setGaps(GAP, GAP);
+    botAreaGridPane.pack();
 
     CustomGridPane mainGridPane = new CustomGridPane();
     mainGridPane.add(fileGridPane.get(), true);
-    mainGridPane.add(botGridPane.get(), true);
+    mainGridPane.add(botAreaGridPane.get(), true);
     mainGridPane.get().setPadding(new Insets(TOP_PADDING, LEFT_PADDING, BOTTOM_PADDING, RIGHT_PADDING));
-    mainGridPane.setGap(GAP, GAP);
+    mainGridPane.setGaps(GAP, GAP);
     mainGridPane.pack();
 
     this.scene = new Scene(mainGridPane.get());
 
-    this.stage.setTitle("This is my title");
+    this.stage.setResizable(false);
+    this.stage.setTitle(Constants.PROGRAM_TITLE);
     this.stage.setScene(this.scene);
   }
 
@@ -98,46 +118,6 @@ public class View implements EventHandler<ActionEvent> {
     initComponents();
 
     this.stage.show();
-
-//
-//    this.label = new Label("[label here]");
-//    this.label.setText("[label text]");
-//
-//    this.button = new Button();
-//    this.button.setText("Button text here");
-//    this.button.setOnAction(this);
-//
-//    this.button2 = new Button();
-//    this.button2.setText("Button text here again");
-//    this.button2.setOnAction(this);
-//
-////    VBox layout = new VBox(20);
-////    layout.getChildren().addAll(this.button, this.button2);
-////    scene = new Scene(layout, 500, 300);
-//
-//    int val = 30;
-//    GridPane grid = new GridPane();
-//    grid.setPadding(new Insets(val, val, val, val));
-////    grid.setVgap(0);
-////    grid.setHgap(0);
-//    GridPane.setConstraints(this.label, 2, 0);
-//    GridPane.setConstraints(this.button, 0, 0);
-//    GridPane.setConstraints(this.button2, 1, 0);
-//    GridPane.setConstraints(grid, 0, 3);
-//
-//    grid.getChildren().addAll(
-//        this.label,
-//        this.button,
-//        this.button2
-//    );
-//
-//    this.scene = new Scene(grid, 500, 300);
-//
-//    this.stage.setTitle("This is my title");
-//    this.stage.setScene(scene);
-//    this.stage.show();
-
-    this.stage = primaryStage;
 
     update();
   }
