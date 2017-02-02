@@ -1,6 +1,11 @@
+/*
+TODO: Rename file to "BotModule.java".
+*/
+
 package droplauncher.bwheadless;
 
 import adakite.utils.AdakiteUtils;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -36,13 +41,13 @@ public class BotFile {
     return this.type;
   }
 
-  public String getPath() {
-    return this.path;
+  public Path getPath() {
+    return Paths.get(this.path);
   }
 
   public void setPath(String path) {
     this.path = path;
-    String ext = AdakiteUtils.getFileExtension(Paths.get(this.path)).toLowerCase();
+    String ext = AdakiteUtils.getFileExtension(getPath()).toLowerCase();
     if (ext.equals("dll")) {
       this.type = Type.DLL;
     } else if (ext.equals("exe") || ext.equals("jar")) {
@@ -50,6 +55,15 @@ public class BotFile {
     } else {
       this.type = Type.UNKNOWN;
     }
+  }
+
+  public void setPath(Path path) {
+    setPath(path.toAbsolutePath().toString());
+  }
+
+  @Override
+  public String toString() {
+    return this.path;
   }
 
 }

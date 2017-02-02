@@ -3,6 +3,7 @@ package droplauncher.mvc.model;
 import adakite.utils.AdakiteUtils;
 import droplauncher.mvc.view.View;
 import droplauncher.bwheadless.BWHeadless;
+import droplauncher.bwheadless.BotFile;
 import droplauncher.bwheadless.KillableTask;
 import droplauncher.bwheadless.ReadyStatus;
 import droplauncher.ini.IniFile;
@@ -98,27 +99,23 @@ public class Model {
    * @param path specified file to process
    */
   private void processFile(Path path) {
-    String ext = AdakiteUtils.getFileExtension(path);
-    if (ext != null) {
-      if (ext.equalsIgnoreCase("dll")) {
+    String ext = AdakiteUtils.getFileExtension(path).toLowerCase();
+    if (!AdakiteUtils.isNullOrEmpty(ext)) {
+      if (ext.equals("dll") || ext.equals("exe") || ext.equals("jar")) {
         if (path.getFileName().toString().equalsIgnoreCase("BWAPI.dll")) {
+          /* BWAPI.dll */
           this.bwheadless.setBwapiDll(path.toAbsolutePath().toString());
         } else {
-          this.bwheadless.setBotRace(BWHeadless.DEFAULT_BOT_RACE);
-          this.bwheadless.setBotDll(path.toAbsolutePath().toString());
+          /* Bot module */
+          this.bwheadless.setBotModule(path.toAbsolutePath().toString());
         }
-      } else if (ext.equalsIgnoreCase("exe")) {
-        this.bwheadless.setBotRace(BWHeadless.DEFAULT_BOT_RACE);
-        this.bwheadless.setBotClient(path.toAbsolutePath().toString());
-      } else if (ext.equalsIgnoreCase("jar")) {
-        this.bwheadless.setBotRace(BWHeadless.DEFAULT_BOT_RACE);
-        this.bwheadless.setBotClient(path.toAbsolutePath().toString());
       } else {
-        /* If file extension is not recognized, treat as a config/misc file. */
+        /* Possibly a config file */
         this.bwheadless.getMiscFiles().add(path);
       }
     } else {
-      /* If no file extension is detected, ignore file. */
+      /* Unrecognized file */
+      /* Do nothing. */
     }
   }
 
@@ -150,16 +147,18 @@ public class Model {
     this.taskTracker.updateNewTasks();
     ArrayList<Task> tasks = this.taskTracker.getNewTasks();
     Tasklist tasklist = new Tasklist();
+    boolean isClient = this.bwheadless.getBotModule().getType() == BotFile.Type.CLIENT;
+    String botModuleName = this.bwheadless.getBotModule().getPath().getFileName().toString();
     for (Task task : tasks) {
+      /* Kill bot module. */
+      if (isClient && task.getImageName().equalsIgnoreCase(botModuleName)) {
+        tasklist.kill(task.getPID());
+        continue;
+      }
       /* Only kill tasks whose names match known associated tasks. */
       for (KillableTask kt : KillableTask.values()) {
-        if (task.getImageName().equalsIgnoreCase(kt.toString())
-            || (!AdakiteUtils.isNullOrEmpty(this.bwheadless.getBotClient())
-              && task.getImageName().equalsIgnoreCase(Paths.get(this.bwheadless.getBotClient()).getFileName().toString()))
-        ) {
-          tasklist.kill(task.getPID());
-          break;
-        }
+        tasklist.kill(task.getPID());
+        break;
       }
     }
     this.bwheadless.stop();

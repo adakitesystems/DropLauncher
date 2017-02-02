@@ -1,6 +1,7 @@
 package droplauncher.mvc.controller;
 
 import adakite.utils.AdakiteUtils;
+import droplauncher.bwheadless.BotFile;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Race;
@@ -35,16 +36,8 @@ public class Controller {
     return this.model.getBWHeadless().getBwapiDll();
   }
 
-  public String getBotFile() {
-    String botFile;
-    if (!AdakiteUtils.isNullOrEmpty(this.model.getBWHeadless().getBotDll())) {
-      botFile = this.model.getBWHeadless().getBotDll();
-    } else if (!AdakiteUtils.isNullOrEmpty(this.model.getBWHeadless().getBotClient())) {
-      botFile = this.model.getBWHeadless().getBotClient();
-    } else {
-      botFile = "";
-    }
-    return botFile;
+  public BotFile getBotModule() {
+    return this.model.getBWHeadless().getBotModule();
   }
 
   public String getBotName() {
