@@ -18,7 +18,7 @@ public class CloseViewListener extends WindowAdapter {
 
   @Override
   public void windowClosing(WindowEvent e) {
-    this.view.closeView();
+//    this.view.closeView();
   }
 
 }

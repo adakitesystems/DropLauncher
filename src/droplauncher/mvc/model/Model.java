@@ -125,7 +125,7 @@ public class Model {
     /* Start bwheadless. */
     ReadyStatus status = this.bwheadless.getReadyStatus();
     if (status != ReadyStatus.READY) {
-      this.view.showMessageBox(JOptionPane.ERROR_MESSAGE, "Not ready: " + status.toString());
+//      this.view.showMessageBox(JOptionPane.ERROR_MESSAGE, "Not ready: " + status.toString());
     } else {
       this.taskTracker.update();
       this.bwheadless.start();
@@ -162,15 +162,15 @@ public class Model {
     fc.setAcceptAllFileFilterUsed(false);
     fc.setMultiSelectionEnabled(true);
     fc.setFileFilter(new FileNameExtensionFilter("All supported files (*.dll, *.exe)", "dll", "exe"));
-    if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
-      File[] fileList = fc.getSelectedFiles();
-      if (fileList != null && fileList.length > 0) {
-        for (File file : fileList) {
-          processFile(file.toPath());
-        }
-      }
-      this.view.update();
-    }
+//    if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
+//      File[] fileList = fc.getSelectedFiles();
+//      if (fileList != null && fileList.length > 0) {
+//        for (File file : fileList) {
+//          processFile(file.toPath());
+//        }
+//      }
+//      this.view.update();
+//    }
   }
 
   public void btnLaunchActionPerformed(ActionEvent evt) {
@@ -189,13 +189,13 @@ public class Model {
     fc.setDialogTitle("Select StarCraft.exe ...");
     fc.setAcceptAllFileFilterUsed(false);
     fc.setFileFilter(new FileNameExtensionFilter("*.exe", "exe"));
-    if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
-      File file = fc.getSelectedFile();
-      if (file != null) {
-        this.bwheadless.setStarcraftExe(file.getAbsolutePath());
-        this.view.getLabelStarcraftExeText().setText(this.bwheadless.getStarcraftExe());
-      }
-    }
+//    if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
+//      File file = fc.getSelectedFile();
+//      if (file != null) {
+//        this.bwheadless.setStarcraftExe(file.getAbsolutePath());
+//        this.view.getLabelStarcraftExeText().setText(this.bwheadless.getStarcraftExe());
+//      }
+//    }
   }
 
   public void filesDropped(File[] files) {
@@ -246,7 +246,7 @@ public class Model {
         .append(System.lineSeparator())
         .append("License: " + Constants.PROGRAM_LICENSE).append(System.lineSeparator())
         .append(Constants.PROGRAM_LICENSE_LINK).append(System.lineSeparator());
-    this.view.showMessageBox(JOptionPane.INFORMATION_MESSAGE, sb.toString());
+//    this.view.showMessageBox(JOptionPane.INFORMATION_MESSAGE, sb.toString());
   }
 
   public void rbRaceProtossActionPerformed(ActionEvent evt) {
@@ -266,26 +266,26 @@ public class Model {
   }
 
   public void txtBotNameKeyReleased(KeyEvent evt) {
-    JTextField txt = this.view.getTextFieldBotName();
-    int caret = txt.getCaretPosition();
-    String botName = txt.getText();
-    String botNameFixed = Starcraft.cleanProfileName(botName);
-    if (AdakiteUtils.isNullOrEmpty(botNameFixed)) {
-      botNameFixed = BWHeadless.DEFAULT_BOT_NAME;
-      caret = botNameFixed.length();
-    }
-    if (!botName.equalsIgnoreCase(botNameFixed)) {
-      if (caret < 0) {
-        caret = 0;
-      } else if (caret >= botNameFixed.length()) {
-        caret = botNameFixed.length();
-      } else {
-        caret--;
-      }
-      txt.setText(botNameFixed);
-      txt.setCaretPosition(caret);
-    }
-    this.bwheadless.setBotName(botNameFixed);
+//    JTextField txt = this.view.getTextFieldBotName();
+//    int caret = txt.getCaretPosition();
+//    String botName = txt.getText();
+//    String botNameFixed = Starcraft.cleanProfileName(botName);
+//    if (AdakiteUtils.isNullOrEmpty(botNameFixed)) {
+//      botNameFixed = BWHeadless.DEFAULT_BOT_NAME;
+//      caret = botNameFixed.length();
+//    }
+//    if (!botName.equalsIgnoreCase(botNameFixed)) {
+//      if (caret < 0) {
+//        caret = 0;
+//      } else if (caret >= botNameFixed.length()) {
+//        caret = botNameFixed.length();
+//      } else {
+//        caret--;
+//      }
+//      txt.setText(botNameFixed);
+//      txt.setCaretPosition(caret);
+//    }
+//    this.bwheadless.setBotName(botNameFixed);
   }
 
 }

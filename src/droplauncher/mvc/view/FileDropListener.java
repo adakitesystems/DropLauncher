@@ -18,7 +18,7 @@ public class FileDropListener implements FileDrop.Listener {
 
   @Override
   public void filesDropped(File[] files) {
-    this.view.filesDropped(files);
+//    this.view.filesDropped(files);
   }
 
 }
