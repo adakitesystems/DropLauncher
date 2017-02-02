@@ -4,7 +4,6 @@ import adakite.utils.AdakiteUtils;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Race;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 
 public class Controller {
@@ -14,10 +13,6 @@ public class Controller {
 
   public Controller() {
 
-  }
-
-  public SimpleStringProperty botRankProperty() {
-    return this.model.botRankProperty();
   }
 
   public void setModel(Model model) {
