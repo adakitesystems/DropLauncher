@@ -8,7 +8,6 @@ import droplauncher.bwheadless.ReadyStatus;
 import droplauncher.ini.IniFile;
 import droplauncher.ini.PredefinedVariable;
 import droplauncher.starcraft.Race;
-import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
 import droplauncher.util.windows.Task;
 import droplauncher.util.windows.TaskTracker;
@@ -23,9 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.logging.Logger;
+import javafx.beans.property.SimpleStringProperty;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Model {
@@ -43,11 +41,14 @@ public class Model {
 
   private Path javaPath;
 
+  private SimpleStringProperty botRank;
+
   public Model() {
     this.bwheadless = new BWHeadless();
     this.iniFile = new IniFile();
     this.taskTracker = new TaskTracker();
     this.javaPath = null;
+    this.botRank = new SimpleStringProperty();
 
     this.bwheadless.setIniFile(this.iniFile);
     try {
@@ -59,16 +60,28 @@ public class Model {
     }
   }
 
-  private void closeProgram() {
-    if (this.bwheadless.isRunning()) {
-      closeBWHeadless();
-    }
-    System.exit(0);
+  public String getBotRank() {
+    return this.botRank.get();
   }
 
-  public void closeView() {
-    closeProgram();
+  public void setBotRank(String str) {
+    this.botRank.set(str);
   }
+
+  public SimpleStringProperty botRankProperty() {
+    return this.botRank;
+  }
+
+//  private void closeProgram() {
+//    if (this.bwheadless.isRunning()) {
+//      stopBWHeadless();
+//    }
+//    System.exit(0);
+//  }
+
+//  public void closeView() {
+//    closeProgram();
+//  }
 
   public void setView(View view) {
     this.view = view;
@@ -121,7 +134,7 @@ public class Model {
     }
   }
 
-  private void startBWHeadless() {
+  public void startBWHeadless() {
     /* Start bwheadless. */
     ReadyStatus status = this.bwheadless.getReadyStatus();
     if (status != ReadyStatus.READY) {
@@ -132,7 +145,7 @@ public class Model {
     }
   }
 
-  private void closeBWHeadless() {
+  public void stopBWHeadless() {
     /* Kill new tasks that were started with bwheadless. */
     this.taskTracker.updateNewTasks();
     ArrayList<Task> tasks = this.taskTracker.getNewTasks();
@@ -156,116 +169,116 @@ public class Model {
   /* Events from View */
   /* ************************************************************ */
 
-  public void boxDropFilesMouseClicked(MouseEvent evt) {
-    JFileChooser fc = new JFileChooser();
-    fc.setDialogTitle("Select bot files ...");
-    fc.setAcceptAllFileFilterUsed(false);
-    fc.setMultiSelectionEnabled(true);
-    fc.setFileFilter(new FileNameExtensionFilter("All supported files (*.dll, *.exe)", "dll", "exe"));
-//    if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
-//      File[] fileList = fc.getSelectedFiles();
-//      if (fileList != null && fileList.length > 0) {
-//        for (File file : fileList) {
-//          processFile(file.toPath());
+//  public void boxDropFilesMouseClicked(MouseEvent evt) {
+//    JFileChooser fc = new JFileChooser();
+//    fc.setDialogTitle("Select bot files ...");
+//    fc.setAcceptAllFileFilterUsed(false);
+//    fc.setMultiSelectionEnabled(true);
+//    fc.setFileFilter(new FileNameExtensionFilter("All supported files (*.dll, *.exe)", "dll", "exe"));
+////    if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
+////      File[] fileList = fc.getSelectedFiles();
+////      if (fileList != null && fileList.length > 0) {
+////        for (File file : fileList) {
+////          processFile(file.toPath());
+////        }
+////      }
+////      this.view.update();
+////    }
+//  }
+
+//  public void btnLaunchActionPerformed(ActionEvent evt) {
+//    if (this.bwheadless.isRunning()) {
+//      stopBWHeadless();
+//    } else {
+//      startBWHeadless();
+//    }
+////    this.view.update();
+//  }
+
+//  public void btnStarcraftExeActionPerformed(ActionEvent evt) {
+//    //TODO: Only accept StarCraft.exe file selection.
+//    //TODO: Guess StarCraft directory or read from registry.
+//    JFileChooser fc = new JFileChooser(new File("C:\\StarCraft"));
+//    fc.setDialogTitle("Select StarCraft.exe ...");
+//    fc.setAcceptAllFileFilterUsed(false);
+//    fc.setFileFilter(new FileNameExtensionFilter("*.exe", "exe"));
+////    if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
+////      File file = fc.getSelectedFile();
+////      if (file != null) {
+////        this.bwheadless.setStarcraftExe(file.getAbsolutePath());
+////        this.view.getLabelStarcraftExeText().setText(this.bwheadless.getStarcraftExe());
+////      }
+////    }
+//  }
+
+//  public void filesDropped(File[] files) {
+//    /* Parse all objects dropped into a complete list of files dropped since
+//       dropping a directory does NOT include all subdirectories and
+//       files by default. */
+//    ArrayList<Path> fileList = new ArrayList<>();
+//    for (File file : files) {
+//      if (file.isDirectory()) {
+//        try {
+//          Path[] tmpList = AdakiteUtils.getDirectoryContents(file.toPath(), true);
+//          for (Path tmpPath : tmpList) {
+//            fileList.add(tmpPath);
+//          }
+//        } catch (IOException ex) {
+//          if (CLASS_DEBUG) {
+//            LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+//          }
+//        }
+//      } else if (file.isFile()) {
+//        fileList.add(file.toPath());
+//      } else {
+//        if (CLASS_DEBUG) {
+//          LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "Unknown file dropped: " + file.getAbsolutePath());
 //        }
 //      }
-//      this.view.update();
 //    }
-  }
-
-  public void btnLaunchActionPerformed(ActionEvent evt) {
-    if (this.bwheadless.isRunning()) {
-      closeBWHeadless();
-    } else {
-      startBWHeadless();
-    }
-    this.view.update();
-  }
-
-  public void btnStarcraftExeActionPerformed(ActionEvent evt) {
-    //TODO: Only accept StarCraft.exe file selection.
-    //TODO: Guess StarCraft directory or read from registry.
-    JFileChooser fc = new JFileChooser(new File("C:\\StarCraft"));
-    fc.setDialogTitle("Select StarCraft.exe ...");
-    fc.setAcceptAllFileFilterUsed(false);
-    fc.setFileFilter(new FileNameExtensionFilter("*.exe", "exe"));
-//    if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
-//      File file = fc.getSelectedFile();
-//      if (file != null) {
-//        this.bwheadless.setStarcraftExe(file.getAbsolutePath());
-//        this.view.getLabelStarcraftExeText().setText(this.bwheadless.getStarcraftExe());
-//      }
+//
+//    /* Process all files. */
+//    for (Path path : fileList) {
+//      processFile(path);
 //    }
-  }
+//
+////    this.view.update();
+//  }
 
-  public void filesDropped(File[] files) {
-    /* Parse all objects dropped into a complete list of files dropped since
-       dropping a directory does NOT include all subdirectories and
-       files by default. */
-    ArrayList<Path> fileList = new ArrayList<>();
-    for (File file : files) {
-      if (file.isDirectory()) {
-        try {
-          Path[] tmpList = AdakiteUtils.getDirectoryContents(file.toPath(), true);
-          for (Path tmpPath : tmpList) {
-            fileList.add(tmpPath);
-          }
-        } catch (IOException ex) {
-          if (CLASS_DEBUG) {
-            LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
-          }
-        }
-      } else if (file.isFile()) {
-        fileList.add(file.toPath());
-      } else {
-        if (CLASS_DEBUG) {
-          LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "Unknown file dropped: " + file.getAbsolutePath());
-        }
-      }
-    }
+//  public void mnuFileExitActionPerformed(ActionEvent evt) {
+//    closeProgram();
+//  }
 
-    /* Process all files. */
-    for (Path path : fileList) {
-      processFile(path);
-    }
+//  public void mnuHelpAboutActionPerformed(ActionEvent evt) {
+//    StringBuilder sb = new StringBuilder();
+//    sb.append(Constants.PROGRAM_NAME).append(System.lineSeparator())
+//        .append(System.lineSeparator())
+//        .append("Version: " + Constants.PROGRAM_VERSION).append(System.lineSeparator())
+//        .append("Author: " + Constants.PROGRAM_AUTHOR).append(System.lineSeparator())
+//        .append("Source: " + Constants.PROGRAM_GITHUB).append(System.lineSeparator())
+//        .append(System.lineSeparator())
+//        .append("License: " + Constants.PROGRAM_LICENSE).append(System.lineSeparator())
+//        .append(Constants.PROGRAM_LICENSE_LINK).append(System.lineSeparator());
+////    this.view.showMessageBox(JOptionPane.INFORMATION_MESSAGE, sb.toString());
+//  }
 
-    this.view.update();
-  }
+//  public void rbRaceProtossActionPerformed(ActionEvent evt) {
+//    this.bwheadless.setBotRace(Race.PROTOSS);
+//  }
 
-  public void mnuFileExitActionPerformed(ActionEvent evt) {
-    closeProgram();
-  }
+//  public void rbRaceRandomActionPerformed(ActionEvent evt) {
+//    this.bwheadless.setBotRace(Race.RANDOM);
+//  }
 
-  public void mnuHelpAboutActionPerformed(ActionEvent evt) {
-    StringBuilder sb = new StringBuilder();
-    sb.append(Constants.PROGRAM_NAME).append(System.lineSeparator())
-        .append(System.lineSeparator())
-        .append("Version: " + Constants.PROGRAM_VERSION).append(System.lineSeparator())
-        .append("Author: " + Constants.PROGRAM_AUTHOR).append(System.lineSeparator())
-        .append("Source: " + Constants.PROGRAM_GITHUB).append(System.lineSeparator())
-        .append(System.lineSeparator())
-        .append("License: " + Constants.PROGRAM_LICENSE).append(System.lineSeparator())
-        .append(Constants.PROGRAM_LICENSE_LINK).append(System.lineSeparator());
-//    this.view.showMessageBox(JOptionPane.INFORMATION_MESSAGE, sb.toString());
-  }
+//  public void rbRaceTerranActionPerformed(ActionEvent evt) {
+//    this.bwheadless.setBotRace(Race.TERRAN);
+//  }
 
-  public void rbRaceProtossActionPerformed(ActionEvent evt) {
-    this.bwheadless.setBotRace(Race.PROTOSS);
-  }
+//  public void rbRaceZergActionPerformed(ActionEvent evt) {
+//    this.bwheadless.setBotRace(Race.ZERG);
+//  }
 
-  public void rbRaceRandomActionPerformed(ActionEvent evt) {
-    this.bwheadless.setBotRace(Race.RANDOM);
-  }
-
-  public void rbRaceTerranActionPerformed(ActionEvent evt) {
-    this.bwheadless.setBotRace(Race.TERRAN);
-  }
-
-  public void rbRaceZergActionPerformed(ActionEvent evt) {
-    this.bwheadless.setBotRace(Race.ZERG);
-  }
-
-  public void txtBotNameKeyReleased(KeyEvent evt) {
+//  public void txtBotNameKeyReleased(KeyEvent evt) {
 //    JTextField txt = this.view.getTextFieldBotName();
 //    int caret = txt.getCaretPosition();
 //    String botName = txt.getText();
@@ -286,6 +299,6 @@ public class Model {
 //      txt.setCaretPosition(caret);
 //    }
 //    this.bwheadless.setBotName(botNameFixed);
-  }
+//  }
 
 }
