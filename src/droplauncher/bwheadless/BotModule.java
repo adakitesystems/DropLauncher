@@ -1,7 +1,3 @@
-/*
-TODO: Rename file to "BotModule.java".
-*/
-
 package droplauncher.bwheadless;
 
 import adakite.utils.AdakiteUtils;
@@ -11,7 +7,7 @@ import java.nio.file.Paths;
 /**
  * Container class for bot DLL or EXE files.
  */
-public class BotFile {
+public class BotModule {
 
   public enum Type {
     DLL,
@@ -22,12 +18,12 @@ public class BotFile {
   private Type type;
   private String path;
 
-  public BotFile() {
+  public BotModule() {
     init();
     this.path = "";
   }
 
-  public BotFile(String path) {
+  public BotModule(String path) {
     init();
     setPath(path);
   }

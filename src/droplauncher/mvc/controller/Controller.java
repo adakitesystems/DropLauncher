@@ -1,7 +1,7 @@
 package droplauncher.mvc.controller;
 
 import adakite.utils.AdakiteUtils;
-import droplauncher.bwheadless.BotFile;
+import droplauncher.bwheadless.BotModule;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Race;
@@ -36,7 +36,7 @@ public class Controller {
     return this.model.getBWHeadless().getBwapiDll();
   }
 
-  public BotFile getBotModule() {
+  public BotModule getBotModule() {
     return this.model.getBWHeadless().getBotModule();
   }
 

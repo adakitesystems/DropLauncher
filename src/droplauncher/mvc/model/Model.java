@@ -3,7 +3,7 @@ package droplauncher.mvc.model;
 import adakite.utils.AdakiteUtils;
 import droplauncher.mvc.view.View;
 import droplauncher.bwheadless.BWHeadless;
-import droplauncher.bwheadless.BotFile;
+import droplauncher.bwheadless.BotModule;
 import droplauncher.bwheadless.KillableTask;
 import droplauncher.bwheadless.ReadyStatus;
 import droplauncher.ini.IniFile;
@@ -147,7 +147,7 @@ public class Model {
     this.taskTracker.updateNewTasks();
     ArrayList<Task> tasks = this.taskTracker.getNewTasks();
     Tasklist tasklist = new Tasklist();
-    boolean isClient = this.bwheadless.getBotModule().getType() == BotFile.Type.CLIENT;
+    boolean isClient = this.bwheadless.getBotModule().getType() == BotModule.Type.CLIENT;
     String botModuleName = this.bwheadless.getBotModule().getPath().getFileName().toString();
     for (Task task : tasks) {
       /* Kill bot module. */
