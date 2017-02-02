@@ -55,6 +55,7 @@ public class BWHeadless {
 
   private static final Logger LOGGER = Logger.getLogger(BWHeadless.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
+  private static final boolean SET_DEBUG = true;
 
   public static final String BWHEADLESS_EXE = "bwheadless.exe";
   public static final String BWHEADLESS_INI_SECTION = "bwheadless";
@@ -312,6 +313,10 @@ public class BWHeadless {
   public void setBwapiDll(String bwapiDll) {
     this.bwapiDll = bwapiDll;
     updateSettingsFile(PredefinedVariable.BWAPI_DLL.toString(), this.bwapiDll);
+
+    if (SET_DEBUG) {
+      System.out.println("setBwapiDll = " + bwapiDll);
+    }
   }
 
   public String getBotName() {
@@ -325,6 +330,10 @@ public class BWHeadless {
       this.botName = DEFAULT_BOT_NAME;
     }
     updateSettingsFile(PredefinedVariable.BOT_NAME.toString(), this.botName);
+
+    if (SET_DEBUG) {
+      System.out.println("setBotName = " + botName);
+    }
   }
 
   public BotModule getBotModule() {
@@ -333,11 +342,14 @@ public class BWHeadless {
 
   public void setBotModule(String botModule) {
     this.miscFiles.clear();
-    setBotRace(Race.NONE);
     this.botModule.setPath(botModule);
     String name = AdakiteUtils.removeFileExtension(this.botModule.getPath().getFileName().toString());
     setBotName(name);
     updateSettingsFile(PredefinedVariable.BOT_MODULE.toString(), this.botModule.toString());
+
+    if (SET_DEBUG) {
+      System.out.println("setBotModule = " + botModule);
+    }
   }
 
   public Race getBotRace() {
@@ -347,6 +359,10 @@ public class BWHeadless {
   public void setBotRace(Race botRace) {
     this.botRace = botRace;
     updateSettingsFile(PredefinedVariable.BOT_RACE.toString(), this.botRace.toString());
+
+    if (SET_DEBUG) {
+      System.out.println("setBotRace = " + botRace.toString());
+    }
   }
 
   public NetworkProvider getNetworkProvider() {
@@ -356,15 +372,23 @@ public class BWHeadless {
   public void setNetworkProvider(NetworkProvider networkProvider) {
     this.networkProvider = networkProvider;
     updateSettingsFile(PredefinedVariable.NETWORK_PROVIDER.toString(), this.networkProvider.toString());
+
+    if (SET_DEBUG) {
+      System.out.println("setNetworkProvider = " + networkProvider.toString());
+    }
   }
 
   public ConnectMode getConnectMode() {
     return this.joinMode;
   }
 
-  public void setConnectMode(ConnectMode joinMode) {
-    this.joinMode = joinMode;
+  public void setConnectMode(ConnectMode connectMode) {
+    this.joinMode = connectMode;
     updateSettingsFile(PredefinedVariable.JOIN_MODE.toString(), this.joinMode.toString());
+
+    if (SET_DEBUG) {
+      System.out.println("setConnectMode = " + connectMode.toString());
+    }
   }
 
   /**
