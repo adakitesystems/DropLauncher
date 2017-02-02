@@ -29,6 +29,7 @@ public class View implements EventHandler<ActionEvent> {
   private TextField txtBotName;
   private ChoiceBox<String> cbRace;
   private Button btnLaunch;
+  private TextField txtDropArea;
 
   private static final int PADDING = 20;
   private static final int TOP_PADDING = PADDING;
@@ -46,7 +47,6 @@ public class View implements EventHandler<ActionEvent> {
   }
 
   private void initComponents() {
-
     this.lblBwapiVersion = new Label("BWAPI:");
     this.lblBwapiVersionText = new Label("lblBwapiVersionText");
     this.lblBotFile = new Label("Bot File:");
@@ -54,46 +54,42 @@ public class View implements EventHandler<ActionEvent> {
     this.txtBotName = new TextField("txtBotName");
     this.cbRace = new ChoiceBox<>();
     this.btnLaunch = new Button(LaunchButtonText.LAUNCH.toString());
-
-//    this.btnLaunch.setMinWidth(this.btnLaunch.getWidth() + 500);
-//    this.btnLaunch.set
-//    System.out.println(this.btnLaunch.getWidth());
+    this.txtDropArea = new TextField();
 
     this.cbRace.getItems().add(Race.TERRAN.toString());
     this.cbRace.getItems().add(Race.ZERG.toString());
     this.cbRace.getItems().add(Race.PROTOSS.toString());
     this.cbRace.getItems().add(Race.RANDOM.toString());
-//    this.cbRace.setValue(Race.TERRAN.toString());
     setText(cbRace, Race.ZERG.toString());
+    this.txtDropArea.setMinWidth(300);
+    this.txtDropArea.setMinHeight(200);
 
-    GridPane mainGridPane = new GridPane();
-    mainGridPane.setPadding(new Insets(TOP_PADDING, LEFT_PADDING, BOTTOM_PADDING, RIGHT_PADDING));
-    mainGridPane.setVgap(GAP);
-    mainGridPane.setHgap(GAP);
+    CustomGridPane fileGridPane = new CustomGridPane();
+    fileGridPane.add(this.lblBwapiVersion);
+    fileGridPane.add(this.lblBwapiVersionText, true);
+    fileGridPane.add(this.lblBotFile);
+    fileGridPane.add(this.lblBotFileText, true);
+    fileGridPane.setGap(GAP, GAP);
+    fileGridPane.pack();
 
-    GridPane.setConstraints(this.lblBwapiVersion, 0, 0);
-    GridPane.setConstraints(this.lblBwapiVersionText, 1, 0);
-    GridPane.setConstraints(this.lblBotFile, 0, 1);
-    GridPane.setConstraints(this.lblBotFileText, 1, 1);
-    GridPane.setConstraints(this.txtBotName, 0, 2);
-    GridPane.setConstraints(this.cbRace, 0, 3);
-    GridPane.setConstraints(this.btnLaunch, 0, 4);
+    CustomGridPane botGridPane = new CustomGridPane();
+    botGridPane.add(this.txtBotName, true);
+    botGridPane.add(this.cbRace, true);
+    botGridPane.add(this.btnLaunch, true);
+    botGridPane.setGap(GAP, GAP);
+    botGridPane.pack();
 
+    CustomGridPane mainGridPane = new CustomGridPane();
+    mainGridPane.add(fileGridPane.get(), true);
+    mainGridPane.add(botGridPane.get(), true);
+    mainGridPane.get().setPadding(new Insets(TOP_PADDING, LEFT_PADDING, BOTTOM_PADDING, RIGHT_PADDING));
+    mainGridPane.setGap(GAP, GAP);
+    mainGridPane.pack();
 
-    mainGridPane.getChildren().addAll(
-        this.lblBotFile,
-        this.lblBotFileText,
-        this.lblBwapiVersion,
-        this.lblBwapiVersionText,
-        this.txtBotName,
-        this.cbRace,
-        this.btnLaunch
-    );
-
-    this.scene = new Scene(mainGridPane);
+    this.scene = new Scene(mainGridPane.get());
 
     this.stage.setTitle("This is my title");
-    this.stage.setScene(scene);
+    this.stage.setScene(this.scene);
   }
 
   public void start(Stage primaryStage) {
