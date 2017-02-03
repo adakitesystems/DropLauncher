@@ -155,7 +155,7 @@ public class BWHeadless {
     } else if (this.networkProvider == null) {
       return ReadyStatus.NETWORK_PROVIDER;
     } else if (this.joinMode == null) {
-      return ReadyStatus.JOIN_MODE;
+      return ReadyStatus.CONNECT_MODE;
     } else {
       return ReadyStatus.READY;
     }

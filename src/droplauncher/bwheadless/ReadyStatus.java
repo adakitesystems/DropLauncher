@@ -6,14 +6,14 @@ package droplauncher.bwheadless;
 public enum ReadyStatus {
 
   READY("Ready"),
-  BWHEADLESS_EXE("bwheadless.exe"),
-  STARTCRAFT_EXE("StarCraft.exe"),
-  BWAPI_DLL("BWAPI.dll"),
-  BOT_NAME("Bot Name"),
-  BOT_FILE("Bot DLL/EXE"),
-  BOT_RACE("Bot Race"),
-  NETWORK_PROVIDER("Network Provider"),
-  JOIN_MODE("Join Mode")
+  BWHEADLESS_EXE("unable to read/locate bwheadless.exe"),
+  STARTCRAFT_EXE("unable to read/locate StarCraft.exe"),
+  BWAPI_DLL("unable to read/locate BWAPI.dll"),
+  BOT_NAME("invalid bot name"),
+  BOT_FILE("unable to read/locate bot file (*.dll, *.exe, *.jar, etc.)"),
+  BOT_RACE("invalid bot race"),
+  NETWORK_PROVIDER("invalid network provider"),
+  CONNECT_MODE("invalid connect mode")
   ;
 
   public String name;

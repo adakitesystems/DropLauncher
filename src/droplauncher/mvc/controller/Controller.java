@@ -5,12 +5,16 @@ import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BotModule;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.LaunchButtonText;
+import droplauncher.mvc.view.SimpleAlert;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Race;
+import droplauncher.util.Util;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class Controller {
 
@@ -107,15 +111,27 @@ public class Controller {
 
   public void btnLaunchClicked() {
     if (!this.model.getBWHeadless().isRunning()) {
-      this.view.btnLaunchEnabled(false);
-      new Thread(() -> {
-        startBWHeadless();
-        Platform.runLater(() -> {
-          this.view.btnLaunchSetText(LaunchButtonText.EJECT.toString());
-          this.view.btnLaunchEnabled(true);
-        });
-      }).start();
+      if (!this.model.getBWHeadless().isReady()) {
+        /* Display error message. */
+        new SimpleAlert().showAndWait(
+            AlertType.ERROR,
+            "Not Ready",
+            "The program is not ready due to the following error: " + Util.newline(2) +
+            this.model.getBWHeadless().getReadyStatus().toString()
+        );
+      } else {
+        /* Start bwheadless. */
+        this.view.btnLaunchEnabled(false);
+        new Thread(() -> {
+          startBWHeadless();
+          Platform.runLater(() -> {
+            this.view.btnLaunchSetText(LaunchButtonText.EJECT.toString());
+            this.view.btnLaunchEnabled(true);
+          });
+        }).start();
+      }
     } else {
+      /* Stop bwheadless. */
       this.view.btnLaunchEnabled(false);
       new Thread(() -> {
         stopBWHeadless();
