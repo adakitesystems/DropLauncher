@@ -325,6 +325,10 @@ public class BWHeadless {
 
   public void setBotName(String botName) {
     String cleaned = Starcraft.cleanProfileName(botName);
+    if (cleaned.equals(this.botName)) {
+      return;
+    }
+    
     this.botName = cleaned;
     if (AdakiteUtils.isNullOrEmpty(this.botName)) {
       this.botName = DEFAULT_BOT_NAME;
@@ -332,7 +336,7 @@ public class BWHeadless {
     updateSettingsFile(PredefinedVariable.BOT_NAME.toString(), this.botName);
 
     if (SET_DEBUG) {
-      System.out.println("setBotName = " + botName);
+      System.out.println("setBotName = " + this.botName);
     }
   }
 

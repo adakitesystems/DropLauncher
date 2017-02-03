@@ -7,7 +7,6 @@ import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Race;
 import java.nio.file.Paths;
-import javafx.event.ActionEvent;
 
 public class Controller {
 
@@ -26,12 +25,20 @@ public class Controller {
     this.view = view;
   }
 
-  public void handle(ActionEvent event) {
-    updateView();
+  private void startBWHeadless() {
+    this.model.startBWHeadless();
   }
 
-  public void updateView() {
-    this.view.update();
+  private void stopBWHeadless() {
+    this.model.stopBWHeadless();
+  }
+
+  /* ************************************************************ */
+  /* Events for a view */
+  /* ************************************************************ */
+
+  public BotModule getBotModule() {
+    return this.model.getBWHeadless().getBotModule();
   }
 
   public String getBwapiDllVersion() {
@@ -44,10 +51,6 @@ public class Controller {
     }
   }
 
-  public BotModule getBotModule() {
-    return this.model.getBWHeadless().getBotModule();
-  }
-
   public String getBotName() {
     return this.model.getBWHeadless().getBotName();
   }
@@ -56,12 +59,29 @@ public class Controller {
     return this.model.getBWHeadless().getBotRace();
   }
 
-  private void startBWHeadless() {
-    this.model.startBWHeadless();
+  /* ************************************************************ */
+  /* Events from a view */
+  /* ************************************************************ */
+
+  public void botRaceChanged(String str) {
+    if (str.equals(Race.TERRAN.toString())) {
+      this.model.getBWHeadless().setBotRace(Race.TERRAN);
+    } else if (str.equals(Race.ZERG.toString())) {
+      this.model.getBWHeadless().setBotRace(Race.ZERG);
+    } else if (str.equals(Race.PROTOSS.toString())) {
+      this.model.getBWHeadless().setBotRace(Race.PROTOSS);
+    } else if (str.equals(Race.RANDOM.toString())) {
+      this.model.getBWHeadless().setBotRace(Race.RANDOM);
+    }
   }
 
-  private void stopBWHeadless() {
-    this.model.stopBWHeadless();
+  public void botNameChanged(String str) {
+    this.model.getBWHeadless().setBotName(str);
+    this.view.update();
+  }
+
+  public void launchButtonPressed() {
+
   }
 
 }

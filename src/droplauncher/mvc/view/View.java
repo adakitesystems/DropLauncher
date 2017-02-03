@@ -1,13 +1,11 @@
 package droplauncher.mvc.view;
 
 import adakite.utils.AdakiteUtils;
-import droplauncher.bwapi.BWAPI;
+import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.starcraft.Race;
+import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
-import java.nio.file.Paths;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -17,7 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class View implements EventHandler<ActionEvent> {
+public class View {
 
   private Controller controller;
 
@@ -67,6 +65,16 @@ public class View implements EventHandler<ActionEvent> {
     this.txtDropArea = new TextField();
     this.txtDropArea.setMinWidth(150);
     this.txtDropArea.setMinHeight(150);
+
+    this.txtBotName.setOnKeyReleased(e -> {
+      this.controller.botNameChanged(this.txtBotName.getText());
+    });
+    this.cbRace.setOnAction(e -> {
+      this.controller.botRaceChanged(this.cbRace.getValue());
+    });
+    this.btnLaunch.setOnAction(e -> {
+      this.controller.launchButtonPressed();
+    });
 
     CustomGridPane fileGridPane = new CustomGridPane();
     fileGridPane.add(this.lblBotFile);
@@ -124,18 +132,24 @@ public class View implements EventHandler<ActionEvent> {
     update();
   }
 
-  @Override
-  public void handle(ActionEvent event) {
-//    if (event.getSource() == this.button) {
-//      System.out.println("button clicked");
-//    }
-//    this.controller.handle(event);
-  }
-
   public void update() {
     setText(this.lblBwapiVersionText, this.controller.getBwapiDllVersion());
+
     setText(this.lblBotFileText, this.controller.getBotModule().getPath().getFileName().toString());
-    setText(this.txtBotName, this.controller.getBotName());
+
+    String displayBotName = this.txtBotName.getText();
+    String internalBotName = this.controller.getBotName();
+    int caret = txtBotName.getCaretPosition();
+    if (!displayBotName.equals(internalBotName)) {
+      if (caret >= internalBotName.length()) {
+        caret = internalBotName.length();
+      } else if (caret > 1) {
+        caret--;
+      }
+      setText(this.txtBotName, internalBotName);
+      txtBotName.positionCaret(caret);
+    }
+
     setText(this.cbRace, this.controller.getBotRace().toString());
   }
 
