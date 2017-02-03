@@ -1,9 +1,11 @@
 package droplauncher.mvc.view;
 
 import adakite.utils.AdakiteUtils;
+import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
+import java.nio.file.Paths;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -67,10 +69,10 @@ public class View implements EventHandler<ActionEvent> {
     this.txtDropArea.setMinHeight(150);
 
     CustomGridPane fileGridPane = new CustomGridPane();
-    fileGridPane.add(this.lblBwapiVersion);
-    fileGridPane.add(this.lblBwapiVersionText, true);
     fileGridPane.add(this.lblBotFile);
     fileGridPane.add(this.lblBotFileText, true);
+    fileGridPane.add(this.lblBwapiVersion);
+    fileGridPane.add(this.lblBwapiVersionText, true);
     fileGridPane.setGaps(GAP, GAP);
     fileGridPane.pack();
 
@@ -131,7 +133,10 @@ public class View implements EventHandler<ActionEvent> {
   }
 
   public void update() {
-
+    setText(this.lblBwapiVersionText, this.controller.getBwapiDllVersion());
+    setText(this.lblBotFileText, this.controller.getBotModule().getPath().getFileName().toString());
+    setText(this.txtBotName, this.controller.getBotName());
+    setText(this.cbRace, this.controller.getBotRace().toString());
   }
 
   private void setText(Node node, String str) {
@@ -148,6 +153,9 @@ public class View implements EventHandler<ActionEvent> {
     } else if (node instanceof ChoiceBox) {
       ChoiceBox choiceBox = (ChoiceBox) node;
       choiceBox.setValue(str);
+    } else if (node instanceof TextField) {
+      TextField textField = (TextField) node;
+      textField.setText(str);
     }
   }
 

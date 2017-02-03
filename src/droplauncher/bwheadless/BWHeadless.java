@@ -343,8 +343,6 @@ public class BWHeadless {
   public void setBotModule(String botModule) {
     this.miscFiles.clear();
     this.botModule.setPath(botModule);
-    String name = AdakiteUtils.removeFileExtension(this.botModule.getPath().getFileName().toString());
-    setBotName(name);
     updateSettingsFile(PredefinedVariable.BOT_MODULE.toString(), this.botModule.toString());
 
     if (SET_DEBUG) {

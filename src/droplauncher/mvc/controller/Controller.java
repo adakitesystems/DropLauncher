@@ -1,10 +1,12 @@
 package droplauncher.mvc.controller;
 
 import adakite.utils.AdakiteUtils;
+import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BotModule;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Race;
+import java.nio.file.Paths;
 import javafx.event.ActionEvent;
 
 public class Controller {
@@ -32,8 +34,14 @@ public class Controller {
     this.view.update();
   }
 
-  public String getBwapiDll() {
-    return this.model.getBWHeadless().getBwapiDll();
+  public String getBwapiDllVersion() {
+    String dll = this.model.getBWHeadless().getBwapiDll();
+    if (AdakiteUtils.isNullOrEmpty(dll)) {
+      return "";
+    } else {
+      String version = BWAPI.getBwapiVersion(Paths.get(dll));
+      return version;
+    }
   }
 
   public BotModule getBotModule() {
