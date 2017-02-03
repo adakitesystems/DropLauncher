@@ -6,7 +6,13 @@ import droplauncher.bwheadless.BotModule;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Race;
+import java.io.File;
 import java.nio.file.Paths;
+import java.util.List;
+import javafx.event.EventHandler;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 
 public class Controller {
 
@@ -62,6 +68,27 @@ public class Controller {
   /* ************************************************************ */
   /* Events from a view */
   /* ************************************************************ */
+
+  public void mnuFileSelectBotFilesClicked() {
+    
+  }
+
+  public void mnuFileExitClicked() {
+
+  }
+
+  public void mnuEditSettingsClicked() {
+
+  }
+
+  public void mnuHelpAboutClicked() {
+
+  }
+
+  public void filesDropped(List<File> files) {
+    this.model.filesDropped(files);
+    this.view.update();
+  }
 
   public void botRaceChanged(String str) {
     if (str.equals(Race.TERRAN.toString())) {

@@ -35,7 +35,7 @@ public class BWHeadless {
     BOT_MODULE("bot_module"),
     BOT_RACE("bot_race"),
     NETWORK_PROVIDER("network"),
-    JOIN_MODE("join_mode"),
+    JOIN_MODE("connect_mode"),
     GAME_NAME("game_name"),
     MAP("map")
     ;
@@ -61,14 +61,13 @@ public class BWHeadless {
   public static final String BWHEADLESS_INI_SECTION = "bwheadless";
 
   public static final String DEFAULT_BOT_NAME = "BOT";
-  public static final Race DEFAULT_BOT_RACE = Race.NONE;
+  public static final Race DEFAULT_BOT_RACE = Race.RANDOM;
   public static final NetworkProvider DEFAULT_NETWORK_PROVIDER = NetworkProvider.LAN;
   public static final ConnectMode DEFAULT_JOIN_MODE = ConnectMode.JOIN;
 
   private ProcessPipe bwheadlessPipe;
   private ProcessPipe botPipe;
 
-  //TODO: Use Path objects for files.
   private String starcraftExe; /* required */
   private String bwapiDll; /* required */
   private String botName; /* required */
@@ -304,6 +303,10 @@ public class BWHeadless {
   public void setStarcraftExe(String starcraftExe) {
     this.starcraftExe = starcraftExe;
     updateSettingsFile(PredefinedVariable.STARCRAFT_EXE.toString(), this.starcraftExe);
+
+    if (SET_DEBUG) {
+      System.out.println("setStarcraftExe = " + this.starcraftExe);
+    }
   }
 
   public String getBwapiDll() {
@@ -328,7 +331,7 @@ public class BWHeadless {
     if (cleaned.equals(this.botName)) {
       return;
     }
-    
+
     this.botName = cleaned;
     if (AdakiteUtils.isNullOrEmpty(this.botName)) {
       this.botName = DEFAULT_BOT_NAME;

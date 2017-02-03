@@ -8,15 +8,18 @@ import droplauncher.bwheadless.KillableTask;
 import droplauncher.bwheadless.ReadyStatus;
 import droplauncher.ini.IniFile;
 import droplauncher.ini.PredefinedVariable;
+import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import droplauncher.util.windows.Task;
 import droplauncher.util.windows.TaskTracker;
 import droplauncher.util.windows.Tasklist;
 import droplauncher.util.windows.Windows;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -101,6 +104,8 @@ public class Model {
         } else {
           /* Bot module */
           this.bwheadless.setBotModule(path.toAbsolutePath().toString());
+          this.bwheadless.setBotName(AdakiteUtils.removeFileExtension(path.getFileName().toString()));
+          this.bwheadless.setBotRace(Race.RANDOM);
         }
       } else {
         /* Possibly a config file */
@@ -203,39 +208,37 @@ public class Model {
 ////    }
 //  }
 
-//  public void filesDropped(File[] files) {
-//    /* Parse all objects dropped into a complete list of files dropped since
-//       dropping a directory does NOT include all subdirectories and
-//       files by default. */
-//    ArrayList<Path> fileList = new ArrayList<>();
-//    for (File file : files) {
-//      if (file.isDirectory()) {
-//        try {
-//          Path[] tmpList = AdakiteUtils.getDirectoryContents(file.toPath(), true);
-//          for (Path tmpPath : tmpList) {
-//            fileList.add(tmpPath);
-//          }
-//        } catch (IOException ex) {
-//          if (CLASS_DEBUG) {
-//            LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
-//          }
-//        }
-//      } else if (file.isFile()) {
-//        fileList.add(file.toPath());
-//      } else {
-//        if (CLASS_DEBUG) {
-//          LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "Unknown file dropped: " + file.getAbsolutePath());
-//        }
-//      }
-//    }
-//
-//    /* Process all files. */
-//    for (Path path : fileList) {
-//      processFile(path);
-//    }
-//
-////    this.view.update();
-//  }
+  public void filesDropped(List<File> files) {
+    /* Parse all objects dropped into a complete list of files dropped since
+       dropping a directory does NOT include all subdirectories and
+       files by default. */
+    ArrayList<Path> fileList = new ArrayList<>();
+    for (File file : files) {
+      if (file.isDirectory()) {
+        try {
+          Path[] tmpList = AdakiteUtils.getDirectoryContents(file.toPath(), true);
+          for (Path tmpPath : tmpList) {
+            fileList.add(tmpPath);
+          }
+        } catch (IOException ex) {
+          if (CLASS_DEBUG) {
+            LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+          }
+        }
+      } else if (file.isFile()) {
+        fileList.add(file.toPath());
+      } else {
+        if (CLASS_DEBUG) {
+          LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "Unknown file dropped: " + file.getAbsolutePath());
+        }
+      }
+    }
+
+    /* Process all files. */
+    for (Path path : fileList) {
+      processFile(path);
+    }
+  }
 
 //  public void mnuFileExitActionPerformed(ActionEvent evt) {
 //    closeProgram();

@@ -1,26 +1,41 @@
 package droplauncher.mvc.view;
 
 import adakite.utils.AdakiteUtils;
-import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.starcraft.Race;
-import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-public class View {
+public class View implements EventHandler<DragEvent>  {
 
   private Controller controller;
 
   private Stage stage;
   private Scene scene;
+
+  private MenuBar menuBar;
+  private Menu fileMenu;
+  private Menu editMenu;
+  private Menu helpMenu;
 
   private Label lblBwapiVersion;
   private Label lblBwapiVersionText;
@@ -33,11 +48,12 @@ public class View {
   private TextField txtDropArea;
 
   private static final int PADDING = 20;
-  private static final int TOP_PADDING = PADDING;
+  private static final int TOP_PADDING = PADDING - 12;
   private static final int BOTTOM_PADDING = PADDING;
   private static final int LEFT_PADDING = PADDING;
   private static final int RIGHT_PADDING = PADDING;
   private static final int GAP = 10;
+  private static final int LABEL_TEXT_SPACING = 4;
 
   public View() {
 
@@ -47,8 +63,35 @@ public class View {
     this.controller = controller;
   }
 
+  private void initMenus() {
+    MenuItem mnuFileSelectBotFiles = new MenuItem(MenuText.SELECT_BOT_FILES.toString());
+    mnuFileSelectBotFiles.setOnAction(e -> this.controller.mnuFileSelectBotFilesClicked());
+    MenuItem mnuFileExit = new MenuItem(MenuText.EXIT.toString());
+    mnuFileExit.setOnAction(e -> this.controller.mnuFileExitClicked());
+    this.fileMenu = new Menu(MenuText.FILE.toString());
+    this.fileMenu.getItems().add(mnuFileSelectBotFiles);
+    this.fileMenu.getItems().add(mnuFileExit);
+
+    MenuItem mnuEditSettings = new MenuItem(MenuText.SETTINGS.toString());
+    mnuEditSettings.setOnAction(e -> this.controller.mnuEditSettingsClicked());
+    this.editMenu = new Menu(MenuText.EDIT.toString());
+    this.editMenu.getItems().add(mnuEditSettings);
+
+    MenuItem mnuHelpAbout = new MenuItem(MenuText.ABOUT.toString());
+    mnuHelpAbout.setOnAction(e -> this.controller.mnuHelpAboutClicked());
+    this.helpMenu = new Menu(MenuText.HELP.toString());
+    this.helpMenu.getItems().add(new MenuItem(MenuText.ABOUT.toString()));
+
+    this.menuBar = new MenuBar();
+    this.menuBar.getMenus().add(this.fileMenu);
+    this.menuBar.getMenus().add(this.editMenu);
+    this.menuBar.getMenus().add(this.helpMenu);
+  }
+
   private void initComponents() {
-    this.lblBwapiVersion = new Label("BWAPI:");
+    initMenus();
+
+    this.lblBwapiVersion = new Label("BWAPI.dll Version:");
     this.lblBwapiVersionText = new Label("-");
     this.lblBotFile = new Label("Bot File:");
     this.lblBotFileText = new Label("-");
@@ -66,21 +109,27 @@ public class View {
     this.txtDropArea.setMinWidth(150);
     this.txtDropArea.setMinHeight(150);
 
-    this.txtBotName.setOnKeyReleased(e -> {
-      this.controller.botNameChanged(this.txtBotName.getText());
-    });
+    this.txtBotName.setOnKeyReleased(e -> this.controller.botNameChanged(this.txtBotName.getText()));
     this.cbRace.setOnAction(e -> {
-      this.controller.botRaceChanged(this.cbRace.getValue());
+      String previous = this.controller.getBotRace().toString();
+      String current = this.cbRace.getValue();
+      if (!current.equals(previous)) {
+        this.controller.botRaceChanged(current);
+      }
     });
-    this.btnLaunch.setOnAction(e -> {
-      this.controller.launchButtonPressed();
-    });
+    this.btnLaunch.setOnAction(e -> this.controller.launchButtonPressed());
 
     CustomGridPane fileGridPane = new CustomGridPane();
-    fileGridPane.add(this.lblBotFile);
-    fileGridPane.add(this.lblBotFileText, true);
-    fileGridPane.add(this.lblBwapiVersion);
-    fileGridPane.add(this.lblBwapiVersionText, true);
+    HBox hboxBotFile = new HBox();
+    hboxBotFile.getChildren().add(this.lblBotFile);
+    hboxBotFile.getChildren().add(this.lblBotFileText);
+    hboxBotFile.setSpacing(LABEL_TEXT_SPACING);
+    fileGridPane.add(hboxBotFile, true);
+    HBox hboxBwapiVersion = new HBox();
+    hboxBwapiVersion.getChildren().add(this.lblBwapiVersion);
+    hboxBwapiVersion.getChildren().add(this.lblBwapiVersionText);
+    hboxBwapiVersion.setSpacing(LABEL_TEXT_SPACING);
+    fileGridPane.add(hboxBwapiVersion, true);
     fileGridPane.setGaps(GAP, GAP);
     fileGridPane.pack();
 
@@ -97,25 +146,32 @@ public class View {
     botGridPane.setGaps(GAP, GAP);
     botGridPane.pack();
 
-    CustomGridPane txtDropGridPane = new CustomGridPane();
-    txtDropGridPane.add(this.txtDropArea, true);
-    txtDropGridPane.setGaps(GAP, GAP);
-    txtDropGridPane.pack();
+//    CustomGridPane txtDropGridPane = new CustomGridPane();
+//    txtDropGridPane.add(this.txtDropArea, true);
+//    txtDropGridPane.setGaps(GAP, GAP);
+//    txtDropGridPane.pack();
 
     CustomGridPane botAreaGridPane = new CustomGridPane();
-    botAreaGridPane.add(txtDropGridPane.get());
+//    botAreaGridPane.add(txtDropGridPane.get());
     botAreaGridPane.add(botGridPane.get());
     botAreaGridPane.setGaps(GAP, GAP);
     botAreaGridPane.pack();
 
     CustomGridPane mainGridPane = new CustomGridPane();
+    mainGridPane.add(this.menuBar, true);
     mainGridPane.add(fileGridPane.get(), true);
     mainGridPane.add(botAreaGridPane.get(), true);
     mainGridPane.get().setPadding(new Insets(TOP_PADDING, LEFT_PADDING, BOTTOM_PADDING, RIGHT_PADDING));
     mainGridPane.setGaps(GAP, GAP);
     mainGridPane.pack();
 
-    this.scene = new Scene(mainGridPane.get());
+    BorderPane borderPane = new BorderPane();
+    borderPane.setTop(this.menuBar);
+    borderPane.setCenter(mainGridPane.get());
+
+    this.scene = new Scene(borderPane);
+    this.scene.setOnDragOver(this);
+    this.scene.setOnDragDropped(this);
 
     this.stage.setResizable(false);
     this.stage.setTitle(Constants.PROGRAM_TITLE);
@@ -170,6 +226,27 @@ public class View {
     } else if (node instanceof TextField) {
       TextField textField = (TextField) node;
       textField.setText(str);
+    }
+  }
+
+  @Override
+  public void handle(DragEvent event) {
+    if (event.getEventType() == DragEvent.DRAG_OVER) {
+      if (event.getDragboard().hasFiles()) {
+        event.acceptTransferModes(TransferMode.COPY);
+      }
+      event.consume();
+    } else if (event.getEventType() == DragEvent.DRAG_DROPPED) {
+      boolean isTransferDone = false;
+      List<File> files = new ArrayList<>();
+      Dragboard dragBoard = event.getDragboard();
+      if (dragBoard.hasFiles()) {
+        isTransferDone = true;
+        files = dragBoard.getFiles();
+      }
+      event.setDropCompleted(isTransferDone);
+      event.consume();
+      this.controller.filesDropped(files);
     }
   }
 
