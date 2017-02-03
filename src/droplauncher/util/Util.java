@@ -12,6 +12,8 @@ public class Util {
   private static final Logger LOGGER = Logger.getLogger(Util.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
+  public static final String NEWLINE = System.lineSeparator();
+
   private Util() {}
 
   /**
@@ -35,6 +37,17 @@ public class Util {
       arr[i] = arrlist.get(i);
     }
     return arr;
+  }
+
+  public static String newline(int n) {
+    if (n < 1) {
+      return "";
+    }
+    StringBuilder sb = new StringBuilder(n);
+    for (int i = 0; i < n; i++) {
+      sb.append(NEWLINE);
+    }
+    return sb.toString();
   }
 
 }
