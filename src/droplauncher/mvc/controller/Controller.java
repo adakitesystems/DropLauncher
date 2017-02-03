@@ -10,6 +10,7 @@ import droplauncher.starcraft.Race;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
+import javafx.application.Platform;
 
 public class Controller {
 
@@ -104,13 +105,25 @@ public class Controller {
     this.view.update();
   }
 
-  public void launchButtonPressed() {
+  public void btnLaunchClicked() {
     if (!this.model.getBWHeadless().isRunning()) {
-      this.view.setLaunchButtonText(LaunchButtonText.EJECT.toString());
-      this.model.startBWHeadless();
+      this.view.btnLaunchEnabled(false);
+      new Thread(() -> {
+        this.model.startBWHeadless();
+        Platform.runLater(() -> {
+          this.view.btnLaunchSetText(LaunchButtonText.EJECT.toString());
+          this.view.btnLaunchEnabled(true);
+        });
+      }).start();
     } else {
-      this.view.setLaunchButtonText(LaunchButtonText.LAUNCH.toString());
-      this.model.stopBWHeadless();
+      this.view.btnLaunchEnabled(false);
+      new Thread(() -> {
+        this.model.stopBWHeadless();
+        Platform.runLater(() -> {
+          this.view.btnLaunchSetText(LaunchButtonText.LAUNCH.toString());
+          this.view.btnLaunchEnabled(true);
+        });
+      }).start();
     }
   }
 

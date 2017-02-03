@@ -117,7 +117,7 @@ public class View implements EventHandler<DragEvent>  {
         this.controller.botRaceChanged(current);
       }
     });
-    this.btnLaunch.setOnAction(e -> this.controller.launchButtonPressed());
+    this.btnLaunch.setOnAction(e -> this.controller.btnLaunchClicked());
 
     CustomGridPane fileGridPane = new CustomGridPane();
     HBox hboxBotFile = new HBox();
@@ -230,8 +230,12 @@ public class View implements EventHandler<DragEvent>  {
     }
   }
 
-  public void setLaunchButtonText(String str) {
+  public void btnLaunchSetText(String str) {
     setText(this.btnLaunch, str);
+  }
+
+  public void btnLaunchEnabled(boolean enabled) {
+    this.btnLaunch.setDisable(!enabled);
   }
 
   @Override

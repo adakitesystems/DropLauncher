@@ -1,7 +1,6 @@
 package droplauncher.mvc.model;
 
 import adakite.utils.AdakiteUtils;
-import droplauncher.mvc.view.View;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotModule;
 import droplauncher.bwheadless.KillableTask;
@@ -30,8 +29,6 @@ public class Model {
 
   public static final String DROP_LAUNCHER_INI = "droplauncher.ini";
 
-  private View view;
-
   private BWHeadless bwheadless;
   private IniFile iniFile;
   private TaskTracker taskTracker;
@@ -57,18 +54,6 @@ public class Model {
     }
   }
 
-  public String getBotRank() {
-    return this.botRank.get();
-  }
-
-  public void setBotRank(String str) {
-    this.botRank.set(str);
-  }
-
-  public SimpleStringProperty botRankProperty() {
-    return this.botRank;
-  }
-
 //  private void closeProgram() {
 //    if (this.bwheadless.isRunning()) {
 //      stopBWHeadless();
@@ -79,10 +64,6 @@ public class Model {
 //  public void closeView() {
 //    closeProgram();
 //  }
-
-  public void setView(View view) {
-    this.view = view;
-  }
 
   public BWHeadless getBWHeadless() {
     return this.bwheadless;
