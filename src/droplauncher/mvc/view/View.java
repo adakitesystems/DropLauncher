@@ -207,6 +207,7 @@ public class View implements EventHandler<DragEvent>  {
     }
 
     setText(this.cbRace, this.controller.getBotRace().toString());
+
   }
 
   private void setText(Node node, String str) {
@@ -227,6 +228,10 @@ public class View implements EventHandler<DragEvent>  {
       TextField textField = (TextField) node;
       textField.setText(str);
     }
+  }
+
+  public void setLaunchButtonText(String str) {
+    setText(this.btnLaunch, str);
   }
 
   @Override

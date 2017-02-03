@@ -4,15 +4,12 @@ import adakite.utils.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BotModule;
 import droplauncher.mvc.model.Model;
+import droplauncher.mvc.view.LaunchButtonText;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Race;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
-import javafx.event.EventHandler;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
 
 public class Controller {
 
@@ -70,7 +67,7 @@ public class Controller {
   /* ************************************************************ */
 
   public void mnuFileSelectBotFilesClicked() {
-    
+
   }
 
   public void mnuFileExitClicked() {
@@ -108,7 +105,13 @@ public class Controller {
   }
 
   public void launchButtonPressed() {
-
+    if (!this.model.getBWHeadless().isRunning()) {
+      this.view.setLaunchButtonText(LaunchButtonText.EJECT.toString());
+      this.model.startBWHeadless();
+    } else {
+      this.view.setLaunchButtonText(LaunchButtonText.LAUNCH.toString());
+      this.model.stopBWHeadless();
+    }
   }
 
 }
