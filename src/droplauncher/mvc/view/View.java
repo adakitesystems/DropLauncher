@@ -45,7 +45,6 @@ public class View implements EventHandler<DragEvent>  {
   private TextField txtBotName;
   private ChoiceBox<String> cbRace;
   private Button btnLaunch;
-  private TextField txtDropArea;
 
   private static final int PADDING = 20;
   private static final int TOP_PADDING = PADDING - 12;
@@ -105,9 +104,6 @@ public class View implements EventHandler<DragEvent>  {
     this.btnLaunch = new Button(LaunchButtonText.LAUNCH.toString());
     this.btnLaunch.setMinWidth(200);
     this.btnLaunch.setMinHeight(40);
-    this.txtDropArea = new TextField();
-    this.txtDropArea.setMinWidth(150);
-    this.txtDropArea.setMinHeight(150);
 
     this.txtBotName.setOnKeyReleased(e -> this.controller.botNameChanged(this.txtBotName.getText()));
     this.cbRace.setOnAction(e -> {
@@ -146,13 +142,7 @@ public class View implements EventHandler<DragEvent>  {
     botGridPane.setGaps(GAP, GAP);
     botGridPane.pack();
 
-//    CustomGridPane txtDropGridPane = new CustomGridPane();
-//    txtDropGridPane.add(this.txtDropArea, true);
-//    txtDropGridPane.setGaps(GAP, GAP);
-//    txtDropGridPane.pack();
-
     CustomGridPane botAreaGridPane = new CustomGridPane();
-//    botAreaGridPane.add(txtDropGridPane.get());
     botAreaGridPane.add(botGridPane.get());
     botAreaGridPane.setGaps(GAP, GAP);
     botAreaGridPane.pack();

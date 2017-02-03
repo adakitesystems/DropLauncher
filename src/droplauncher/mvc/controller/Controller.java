@@ -109,7 +109,7 @@ public class Controller {
     if (!this.model.getBWHeadless().isRunning()) {
       this.view.btnLaunchEnabled(false);
       new Thread(() -> {
-        this.model.startBWHeadless();
+        startBWHeadless();
         Platform.runLater(() -> {
           this.view.btnLaunchSetText(LaunchButtonText.EJECT.toString());
           this.view.btnLaunchEnabled(true);
@@ -118,7 +118,7 @@ public class Controller {
     } else {
       this.view.btnLaunchEnabled(false);
       new Thread(() -> {
-        this.model.stopBWHeadless();
+        stopBWHeadless();
         Platform.runLater(() -> {
           this.view.btnLaunchSetText(LaunchButtonText.LAUNCH.toString());
           this.view.btnLaunchEnabled(true);
