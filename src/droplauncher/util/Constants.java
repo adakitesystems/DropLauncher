@@ -19,6 +19,9 @@ public class Constants {
   public static final boolean DEBUG = true;
   public static final Level DEFAULT_LOG_LEVEL = Level.SEVERE;
 
+  public static final String DROPLAUNCHER_INI = "droplauncher.ini";
+  public static final String DROPLAUNCHER_INI_SECTION = "droplauncher";
+
   private Constants() {}
 
 }
