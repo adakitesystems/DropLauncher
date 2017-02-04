@@ -1,8 +1,11 @@
 package droplauncher.util;
 
 import adakite.debugging.Debugging;
+import adakite.utils.AdakiteUtils;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.logging.Logger;
+import javax.swing.filechooser.FileSystemView;
 
 /**
  * Utilities and constants class for DropLauncher.
@@ -48,6 +51,18 @@ public class Util {
       sb.append(NEWLINE);
     }
     return sb.toString();
+  }
+
+  public static String getUserHomeDirectory() {
+    FileSystemView fsv = FileSystemView.getFileSystemView();
+    fsv.getRoots();
+    String desktopDirectory = fsv.getHomeDirectory().getAbsolutePath();
+    if (!AdakiteUtils.isNullOrEmpty(desktopDirectory)
+        && AdakiteUtils.directoryExists(Paths.get(desktopDirectory))) {
+      return desktopDirectory;
+    } else {
+      return null;
+    }
   }
 
 }
