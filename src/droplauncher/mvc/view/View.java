@@ -54,6 +54,8 @@ public class View implements EventHandler<DragEvent>  {
   private static final int GAP = 10;
   private static final int LABEL_TEXT_SPACING = 4;
 
+  private static final String EMPTY_LABEL = "-";
+
   public View() {
 
   }
@@ -91,9 +93,9 @@ public class View implements EventHandler<DragEvent>  {
     initMenus();
 
     this.lblBwapiVersion = new Label("BWAPI.dll Version:");
-    this.lblBwapiVersionText = new Label("-");
+    this.lblBwapiVersionText = new Label(EMPTY_LABEL);
     this.lblBotFile = new Label("Bot File:");
-    this.lblBotFileText = new Label("-");
+    this.lblBotFileText = new Label(EMPTY_LABEL);
     this.lblBotName = new Label("Bot name (max 24 characaters):");
     this.txtBotName = new TextField("");
     this.cbRace = new ChoiceBox<>();
@@ -197,7 +199,6 @@ public class View implements EventHandler<DragEvent>  {
     }
 
     setText(this.cbRace, this.controller.getBotRace().toString());
-
   }
 
   private void setText(Node node, String str) {

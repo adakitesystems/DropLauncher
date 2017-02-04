@@ -26,7 +26,7 @@ public enum ConnectMode {
   public static ConnectMode get(String str) {
     str = str.toLowerCase();
     for (ConnectMode val : ConnectMode.values()) {
-      if (str.equals(val.toString())) {
+      if (str.equals(val.toString().toLowerCase())) {
         return val;
       }
     }

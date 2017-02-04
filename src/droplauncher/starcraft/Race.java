@@ -28,7 +28,7 @@ public enum Race {
   public static Race get(String str) {
     str = str.toLowerCase();
     for (Race val : Race.values()) {
-      if (str.equals(val.toString())) {
+      if (str.equals(val.toString().toLowerCase())) {
         return val;
       }
     }

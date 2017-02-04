@@ -13,10 +13,9 @@ public enum SettingsKey {
   BOT_MODULE("bot_module"),
   BOT_RACE("bot_race"),
   NETWORK_PROVIDER("network"),
-  JOIN_MODE("connect_mode"),
+  CONNECT_MODE("connect_mode"),
   GAME_NAME("game_name"),
   MAP("map")
-  
   ;
 
   private String str;

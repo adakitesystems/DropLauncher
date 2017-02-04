@@ -1,5 +1,6 @@
 package droplauncher.bwheadless;
 
+import adakite.util.Settings;
 import adakite.utils.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.ini.IniFile;
@@ -35,59 +36,41 @@ public class BWHeadless {
   public static final String DEFAULT_BOT_NAME = "BOT";
   public static final Race DEFAULT_BOT_RACE = Race.RANDOM;
   public static final NetworkProvider DEFAULT_NETWORK_PROVIDER = NetworkProvider.LAN;
-  public static final ConnectMode DEFAULT_JOIN_MODE = ConnectMode.JOIN;
+  public static final ConnectMode DEFAULT_CONNECT_MODE = ConnectMode.JOIN;
 
   private ProcessPipe bwheadlessPipe;
   private ProcessPipe botPipe;
 
-  private String starcraftExe; /* required */
-  private String bwapiDll; /* required */
-  private String botName; /* required */
-  private BotModule botModule; /* required */
-  private Race botRace; /* required */
-  private NetworkProvider networkProvider; /* required */
-  private ConnectMode joinMode; /* required */
+  private BotModule botModule;
+  private Settings settings;
 
-  private ArrayList<Path> miscFiles;
+  private ArrayList<Path> extraBotFiles;
 
   private IniFile iniFile;
-
-  private Path javaPath;
 
   public BWHeadless() {
     this.bwheadlessPipe = new ProcessPipe();
     this.botPipe = new ProcessPipe();
 
-    this.starcraftExe = null;
-    this.bwapiDll = null;
-    this.botName = DEFAULT_BOT_NAME;
     this.botModule = new BotModule();
-    this.botRace = DEFAULT_BOT_RACE;
-    this.networkProvider = DEFAULT_NETWORK_PROVIDER;
-    this.joinMode = DEFAULT_JOIN_MODE;
 
-    this.miscFiles = new ArrayList<>();
+    this.settings = new Settings();
+    this.settings.set(SettingsKey.BOT_NAME.toString(), DEFAULT_BOT_NAME);
+    this.settings.set(SettingsKey.BOT_RACE.toString(), DEFAULT_BOT_RACE.toString());
+    this.settings.set(SettingsKey.NETWORK_PROVIDER.toString(), DEFAULT_NETWORK_PROVIDER.toString());
+    this.settings.set(SettingsKey.CONNECT_MODE.toString(), DEFAULT_CONNECT_MODE.toString());
+
+    this.extraBotFiles = new ArrayList<>();
 
     this.iniFile = null;
-
-    this.javaPath = null;
   }
 
-  public ArrayList<Path> getMiscFiles() {
-    return this.miscFiles;
+  public Settings getSettings() {
+    return this.settings;
   }
 
-  public Path getJavaPath() {
-    return this.javaPath;
-  }
-
-  public void setJavaPath(Path path) throws IOException {
-    this.javaPath = path;
-    this.iniFile.setVariable(
-        Constants.DROPLAUNCHER_INI_SECTION,
-        SettingsKey.JAVA_EXE.toString(),
-        this.javaPath.toAbsolutePath().toString()
-    );
+  public ArrayList<Path> getExtraBotFiles() {
+    return this.extraBotFiles;
   }
 
   /**
@@ -114,24 +97,23 @@ public class BWHeadless {
   public ReadyStatus getReadyStatus() {
     if (!AdakiteUtils.fileExists(Paths.get(BWHEADLESS_EXE))) {
       return ReadyStatus.BWHEADLESS_EXE;
-    } else if (AdakiteUtils.isNullOrEmpty(this.starcraftExe, true)
-        || !AdakiteUtils.fileExists(Paths.get(this.starcraftExe))) {
+    } else if (!this.settings.hasValue(SettingsKey.STARCRAFT_EXE.toString())
+        || !AdakiteUtils.fileExists(Paths.get(this.settings.getValue(SettingsKey.STARCRAFT_EXE.toString())))) {
       return ReadyStatus.STARTCRAFT_EXE;
-    } else if (AdakiteUtils.isNullOrEmpty(this.bwapiDll, true)
-        || !AdakiteUtils.fileExists(Paths.get(this.bwapiDll))) {
+    } else if (!this.settings.hasValue(SettingsKey.BWAPI_DLL.toString())
+        || !AdakiteUtils.fileExists(Paths.get(this.settings.getValue(SettingsKey.BWAPI_DLL.toString())))) {
       return ReadyStatus.BWAPI_DLL;
-    } else if (AdakiteUtils.isNullOrEmpty(this.botName, true)
-        || this.botName.length() > Starcraft.MAX_PROFILE_NAME_LENGTH) {
+    } else if (!this.settings.hasValue(SettingsKey.BOT_NAME.toString())) {
       return ReadyStatus.BOT_NAME;
     } else if (this.botModule.getType() == BotModule.Type.UNKNOWN
         || !AdakiteUtils.fileExists(this.botModule.getPath())) {
       /* If both the bot DLL and bot client fields are missing. */
       return ReadyStatus.BOT_FILE;
-    } else if (this.botRace == null) {
+    } else if (!this.settings.hasValue(SettingsKey.BOT_RACE.toString())) {
       return ReadyStatus.BOT_RACE;
-    } else if (this.networkProvider == null) {
+    } else if (!this.settings.hasValue(SettingsKey.NETWORK_PROVIDER.toString())) {
       return ReadyStatus.NETWORK_PROVIDER;
-    } else if (this.joinMode == null) {
+    } else if (!this.settings.hasValue(SettingsKey.CONNECT_MODE.toString())) {
       return ReadyStatus.CONNECT_MODE;
     } else {
       return ReadyStatus.READY;
@@ -163,19 +145,19 @@ public class BWHeadless {
       LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
     }
 
-    String starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.starcraftExe)).toAbsolutePath().toString();
+    String starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.settings.getValue(SettingsKey.STARCRAFT_EXE.toString()))).toAbsolutePath().toString();
 
     /* Compile bwheadless arguments. */
     ArrayList<String> bwargs = new ArrayList<>(); /* bwheadless arguments */
     bwargs.add(Argument.STARCRAFT_EXE.toString());
-    bwargs.add(getStarcraftExe());
+    bwargs.add(this.settings.getValue(SettingsKey.STARCRAFT_EXE.toString()));
     bwargs.add(Argument.JOIN_GAME.toString());
     bwargs.add(Argument.BOT_NAME.toString());
-    bwargs.add(getBotName());
+    bwargs.add(this.settings.getValue(SettingsKey.BOT_NAME.toString()));
     bwargs.add(Argument.BOT_RACE.toString());
-    bwargs.add(getBotRace().toString());
+    bwargs.add(this.settings.getValue(SettingsKey.BOT_RACE.toString()));
     bwargs.add(Argument.LOAD_DLL.toString());
-    bwargs.add(getBwapiDll());
+    bwargs.add(this.settings.getValue(SettingsKey.BWAPI_DLL.toString()));
     bwargs.add(Argument.ENABLE_LAN.toString());
     bwargs.add(Argument.STARCRAFT_INSTALL_PATH.toString());
     bwargs.add(starcraftDirectory);
@@ -194,7 +176,7 @@ public class BWHeadless {
         }
         clargs.add(this.botModule.getPath().toAbsolutePath().toString());
         String[] cargsArray = Util.toStringArray(clargs);
-        this.botPipe.open(this.javaPath, cargsArray, starcraftDirectory);
+        this.botPipe.open(Paths.get(this.settings.getValue(SettingsKey.JAVA_EXE.toString())), cargsArray, starcraftDirectory);
       } else if (AdakiteUtils.getFileExtension(this.botModule.getPath()).equalsIgnoreCase("exe")) {
         ArrayList<String> clargs = new ArrayList<>();
         clargs.add(this.botModule.toString());
@@ -215,8 +197,7 @@ public class BWHeadless {
    */
   private void configureBwapi() throws IOException {
     /* Determine StarCraft directory from StarCraft.exe path. */
-    String starcraftDirectory =
-        AdakiteUtils.getParentDirectory(Paths.get(this.starcraftExe)).toAbsolutePath().toString();
+    String starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.settings.getValue(SettingsKey.STARCRAFT_EXE.toString()))).toAbsolutePath().toString();
 
     /* Configure BWAPI INI file. */
     IniFile bwapiIni = new IniFile();
@@ -261,7 +242,7 @@ public class BWHeadless {
     AdakiteUtils.createDirectory(readPath);
     AdakiteUtils.createDirectory(writePath);
     AdakiteUtils.createDirectory(aiPath);
-    for (Path path : this.miscFiles) {
+    for (Path path : this.extraBotFiles) {
       Files.copy(path, Paths.get(readPath.toAbsolutePath().toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
       Files.copy(path, Paths.get(writePath.toAbsolutePath().toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
       Files.copy(path, Paths.get(aiPath.toAbsolutePath().toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
@@ -276,50 +257,39 @@ public class BWHeadless {
     this.iniFile = iniFile;
   }
 
-  public String getStarcraftExe() {
-    return this.starcraftExe;
-  }
-
   public void setStarcraftExe(String starcraftExe) {
-    this.starcraftExe = starcraftExe;
-    updateSettingsFile(SettingsKey.STARCRAFT_EXE.toString(), this.starcraftExe);
+    this.settings.set(SettingsKey.STARCRAFT_EXE.toString(), starcraftExe);
+    updateSettingsFile(SettingsKey.STARCRAFT_EXE.toString(), this.settings.getValue(SettingsKey.STARCRAFT_EXE.toString()));
 
     if (SET_DEBUG) {
-      System.out.println("setStarcraftExe = " + this.starcraftExe);
+      System.out.println("setStarcraftExe = " + this.settings.getValue(SettingsKey.STARCRAFT_EXE.toString()));
     }
-  }
-
-  public String getBwapiDll() {
-    return this.bwapiDll;
   }
 
   public void setBwapiDll(String bwapiDll) {
-    this.bwapiDll = bwapiDll;
-    updateSettingsFile(SettingsKey.BWAPI_DLL.toString(), this.bwapiDll);
+    this.settings.set(SettingsKey.BWAPI_DLL.toString(), bwapiDll);
+    updateSettingsFile(SettingsKey.BWAPI_DLL.toString(), this.settings.getValue(SettingsKey.BWAPI_DLL.toString()));
 
     if (SET_DEBUG) {
-      System.out.println("setBwapiDll = " + bwapiDll);
+      System.out.println("setBwapiDll = " + this.settings.getValue(SettingsKey.BWAPI_DLL.toString()));
     }
-  }
-
-  public String getBotName() {
-    return this.botName;
   }
 
   public void setBotName(String botName) {
     String cleaned = Starcraft.cleanProfileName(botName);
-    if (cleaned.equals(this.botName)) {
+    if (cleaned.equals(this.settings.getValue(SettingsKey.BOT_NAME.toString()))) {
       return;
     }
 
-    this.botName = cleaned;
-    if (AdakiteUtils.isNullOrEmpty(this.botName)) {
-      this.botName = DEFAULT_BOT_NAME;
+    if (AdakiteUtils.isNullOrEmpty(cleaned)) {
+      this.settings.set(SettingsKey.BOT_NAME.toString(), DEFAULT_BOT_NAME);
+    } else {
+      this.settings.set(SettingsKey.BOT_NAME.toString(), cleaned);
     }
-    updateSettingsFile(SettingsKey.BOT_NAME.toString(), this.botName);
+    updateSettingsFile(SettingsKey.BOT_NAME.toString(), this.settings.getValue(SettingsKey.BOT_NAME.toString()));
 
     if (SET_DEBUG) {
-      System.out.println("setBotName = " + this.botName);
+      System.out.println("setBotName = " + this.settings.getValue(SettingsKey.BOT_NAME.toString()));
     }
   }
 
@@ -328,7 +298,7 @@ public class BWHeadless {
   }
 
   public void setBotModule(String botModule) {
-    this.miscFiles.clear();
+    this.extraBotFiles.clear();
     this.botModule.setPath(botModule);
     updateSettingsFile(SettingsKey.BOT_MODULE.toString(), this.botModule.toString());
 
@@ -337,42 +307,30 @@ public class BWHeadless {
     }
   }
 
-  public Race getBotRace() {
-    return this.botRace;
-  }
-
   public void setBotRace(Race botRace) {
-    this.botRace = botRace;
-    updateSettingsFile(SettingsKey.BOT_RACE.toString(), this.botRace.toString());
+    this.settings.set(SettingsKey.BOT_RACE.toString(), botRace.toString());
+    updateSettingsFile(SettingsKey.BOT_RACE.toString(), this.settings.getValue(SettingsKey.BOT_RACE.toString()));
 
     if (SET_DEBUG) {
-      System.out.println("setBotRace = " + botRace.toString());
+      System.out.println("setBotRace = " + this.settings.getValue(SettingsKey.BOT_RACE.toString()));
     }
-  }
-
-  public NetworkProvider getNetworkProvider() {
-    return this.networkProvider;
   }
 
   public void setNetworkProvider(NetworkProvider networkProvider) {
-    this.networkProvider = networkProvider;
-    updateSettingsFile(SettingsKey.NETWORK_PROVIDER.toString(), this.networkProvider.toString());
+    this.settings.set(SettingsKey.NETWORK_PROVIDER.toString(), networkProvider.toString());
+    updateSettingsFile(SettingsKey.NETWORK_PROVIDER.toString(), this.settings.getValue(SettingsKey.NETWORK_PROVIDER.toString()));
 
     if (SET_DEBUG) {
-      System.out.println("setNetworkProvider = " + networkProvider.toString());
+      System.out.println("setNetworkProvider = " + this.settings.getValue(SettingsKey.NETWORK_PROVIDER.toString()));
     }
   }
 
-  public ConnectMode getConnectMode() {
-    return this.joinMode;
-  }
-
   public void setConnectMode(ConnectMode connectMode) {
-    this.joinMode = connectMode;
-    updateSettingsFile(SettingsKey.JOIN_MODE.toString(), this.joinMode.toString());
+    this.settings.set(SettingsKey.CONNECT_MODE.toString(), connectMode.toString());
+    updateSettingsFile(SettingsKey.CONNECT_MODE.toString(), this.settings.getValue(SettingsKey.CONNECT_MODE.toString()));
 
     if (SET_DEBUG) {
-      System.out.println("setConnectMode = " + connectMode.toString());
+      System.out.println("setConnectMode = " + this.settings.getValue(SettingsKey.CONNECT_MODE.toString()));
     }
   }
 
@@ -458,16 +416,16 @@ public class BWHeadless {
       /* NetworkProvider wasn't set. */
       setNetworkProvider(DEFAULT_NETWORK_PROVIDER);
     }
-    if (AdakiteUtils.isNullOrEmpty(val = iniFile.getValue(BWHEADLESS_INI_SECTION, SettingsKey.JOIN_MODE.toString()))) {
+    if (AdakiteUtils.isNullOrEmpty(val = iniFile.getValue(BWHEADLESS_INI_SECTION, SettingsKey.CONNECT_MODE.toString()))) {
       if (val.equalsIgnoreCase(ConnectMode.JOIN.toString())) {
         setConnectMode(ConnectMode.JOIN);
       } else {
         /* Unrecognized JoinMode. */
-        setConnectMode(DEFAULT_JOIN_MODE);
+        setConnectMode(DEFAULT_CONNECT_MODE);
       }
     } else {
       /* JoinMode wasn't set. */
-      setConnectMode(DEFAULT_JOIN_MODE);
+      setConnectMode(DEFAULT_CONNECT_MODE);
     }
   }
 

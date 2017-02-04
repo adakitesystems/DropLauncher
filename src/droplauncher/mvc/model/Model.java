@@ -65,7 +65,7 @@ public class Model {
 
   public void setJavaPath(Path javaPath) throws IOException {
     this.javaPath = javaPath;
-    this.bwheadless.setJavaPath(javaPath);
+    this.bwheadless.getSettings().set(SettingsKey.JAVA_EXE.toString(), javaPath.toAbsolutePath().toString());
   }
 
   public BWHeadless getBWHeadless() {
@@ -93,7 +93,7 @@ public class Model {
         }
       } else {
         /* Possibly a config file */
-        this.bwheadless.getMiscFiles().add(path);
+        this.bwheadless.getExtraBotFiles().add(path);
       }
     } else {
       /* Unrecognized file */
@@ -110,7 +110,7 @@ public class Model {
       setJavaPath(Paths.get(val));
     } else {
       this.iniFile.setVariable(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString(), Windows.DEFAULT_JAVA_EXE.toAbsolutePath().toString());
-      this.bwheadless.setJavaPath(this.javaPath);
+      this.bwheadless.getSettings().set(SettingsKey.JAVA_EXE.toString(), this.javaPath.toAbsolutePath().toString());
     }
   }
 

@@ -26,7 +26,7 @@ public enum NetworkProvider {
   public static NetworkProvider get(String str) {
     str = str.toLowerCase();
     for (NetworkProvider val : NetworkProvider.values()) {
-      if (str.equals(val.toString())) {
+      if (str.equals(val.toString().toLowerCase())) {
         return val;
       }
     }

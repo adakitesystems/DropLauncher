@@ -57,7 +57,7 @@ public class Controller {
   }
 
   public String getBwapiDllVersion() {
-    String dll = this.model.getBWHeadless().getBwapiDll();
+    String dll = this.model.getBWHeadless().getSettings().getValue(SettingsKey.BWAPI_DLL.toString());
     if (AdakiteUtils.isNullOrEmpty(dll)) {
       return "";
     } else {
@@ -67,11 +67,11 @@ public class Controller {
   }
 
   public String getBotName() {
-    return this.model.getBWHeadless().getBotName();
+    return this.model.getBWHeadless().getSettings().getValue(SettingsKey.BOT_NAME.toString());
   }
 
   public Race getBotRace() {
-    return this.model.getBWHeadless().getBotRace();
+    return Race.get(this.model.getBWHeadless().getSettings().getValue(SettingsKey.BOT_RACE.toString()));
   }
 
   /* ************************************************************ */
@@ -87,15 +87,17 @@ public class Controller {
   }
 
   public void mnuEditSettingsClicked() {
-    String starcraftExe = this.model.getBWHeadless().getStarcraftExe();
+    String starcraftExe = this.model.getBWHeadless().getSettings().getValue(SettingsKey.STARCRAFT_EXE.toString());
     if (AdakiteUtils.isNullOrEmpty(starcraftExe)) {
       starcraftExe = "";
     }
     String javaExe = this.model.getJavaPath().toString();
+    
     SettingsWindow window = new SettingsWindow();
     window.getSettings().set(SettingsKey.STARCRAFT_EXE.toString(), starcraftExe);
     window.getSettings().set(SettingsKey.JAVA_EXE.toString(), javaExe);
     window.showAndWait();
+
     this.model.getBWHeadless().setStarcraftExe(window.getSettings().getValue(SettingsKey.STARCRAFT_EXE.toString()));
     try {
       this.model.setJavaPath(Paths.get(window.getSettings().getValue(SettingsKey.JAVA_EXE.toString())));
