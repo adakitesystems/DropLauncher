@@ -1,9 +1,9 @@
 package droplauncher.mvc.view;
 
+import adakite.util.Settings;
+import droplauncher.util.SettingsKey;
 import droplauncher.util.Util;
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -35,35 +35,27 @@ public class SettingsWindow {
   private Label lblChangeJavaExeText;
   private Button btnChangeJavaExe;
 
-  private String starcraftExe;
-  private String javaExe;
+  private Settings settings;
 
-  private SettingsWindow() {}
+  public SettingsWindow() {
+    this.settings = new Settings();
+  }
 
-  public SettingsWindow(String starcraft, String java) {
-    this.starcraftExe = starcraft;
-    this.javaExe = java;
+  public Settings getSettings() {
+    return this.settings;
+  }
 
+  public SettingsWindow showAndWait() {
     this.chkKeepClientWindow = new CheckBox("Show log window for bot clients.");
 
     this.lblChangeStarcraftExe = new Label("StarCraft.exe:");
     this.btnChangeStarcraftExe = new Button("...");
-    this.lblChangeStarcraftExeText = new Label(this.starcraftExe);
+    this.lblChangeStarcraftExeText = new Label(this.settings.getValue(SettingsKey.STARCRAFT_EXE.toString()));
 
     this.lblChangeJavaExe = new Label("Java.exe:");
     this.btnChangeJavaExe = new Button("...");
-    this.lblChangeJavaExeText = new Label(this.javaExe);
-  }
+    this.lblChangeJavaExeText = new Label(this.settings.getValue(SettingsKey.JAVA_EXE.toString()));
 
-  public String getStarcraftPath() {
-    return this.starcraftExe;
-  }
-
-  public String getJavaPath() {
-    return this.javaExe;
-  }
-
-  public SettingsWindow showAndWait() {
     this.btnChangeStarcraftExe.setOnAction(e -> {
       FileChooser fc = new FileChooser();
       fc.getExtensionFilters().add(new ExtensionFilter("StarCraft.exe", "StarCraft.exe"));
@@ -74,8 +66,8 @@ public class SettingsWindow {
       }
       File file = fc.showOpenDialog(this.stage);
       if (file != null) {
-        this.starcraftExe = file.getAbsolutePath();
-        this.lblChangeStarcraftExeText.setText(this.starcraftExe);
+        this.settings.set(SettingsKey.STARCRAFT_EXE.toString(), file.getAbsolutePath());
+        this.lblChangeStarcraftExeText.setText(this.settings.getValue(SettingsKey.STARCRAFT_EXE.toString()));
       }
     });
     this.btnChangeJavaExe.setOnAction(e -> {
@@ -88,8 +80,8 @@ public class SettingsWindow {
       }
       File file = fc.showOpenDialog(this.stage);
       if (file != null) {
-        this.javaExe = file.getAbsolutePath();
-        this.lblChangeJavaExeText.setText(this.javaExe);
+        this.settings.set(SettingsKey.JAVA_EXE.toString(), file.getAbsolutePath());
+        this.lblChangeJavaExeText.setText(this.settings.getValue(SettingsKey.JAVA_EXE.toString()));
       }
     });
 

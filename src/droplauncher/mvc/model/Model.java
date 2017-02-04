@@ -6,9 +6,9 @@ import droplauncher.bwheadless.BotModule;
 import droplauncher.bwheadless.KillableTask;
 import droplauncher.bwheadless.ReadyStatus;
 import droplauncher.ini.IniFile;
-import droplauncher.ini.PredefinedVariable;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
+import droplauncher.util.SettingsKey;
 import droplauncher.util.windows.Task;
 import droplauncher.util.windows.TaskTracker;
 import droplauncher.util.windows.Tasklist;
@@ -20,7 +20,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import javafx.beans.property.SimpleStringProperty;
 
 public class Model {
 
@@ -104,13 +103,13 @@ public class Model {
 
   public void readSettingsFile(IniFile ini) throws IOException {
     String val;
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue("droplauncher", PredefinedVariable.JAVA_EXE.toString()))
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString()))
         && AdakiteUtils.fileExists(Paths.get(val))) {
 //      this.javaPath = Paths.get(val);
 //      this.bwheadless.setJavaPath(this.javaPath);
       setJavaPath(Paths.get(val));
     } else {
-      this.iniFile.setVariable("droplauncher", PredefinedVariable.JAVA_EXE.toString(), Windows.JAVA_EXE.toAbsolutePath().toString());
+      this.iniFile.setVariable(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString(), Windows.DEFAULT_JAVA_EXE.toAbsolutePath().toString());
       this.bwheadless.setJavaPath(this.javaPath);
     }
   }

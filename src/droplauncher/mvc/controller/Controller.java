@@ -10,12 +10,12 @@ import droplauncher.mvc.view.SimpleAlert;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
+import droplauncher.util.SettingsKey;
 import droplauncher.util.Util;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
@@ -92,14 +92,13 @@ public class Controller {
       starcraftExe = "";
     }
     String javaExe = this.model.getJavaPath().toString();
-    SettingsWindow window = new SettingsWindow(
-        starcraftExe,
-        javaExe
-    );
+    SettingsWindow window = new SettingsWindow();
+    window.getSettings().set(SettingsKey.STARCRAFT_EXE.toString(), starcraftExe);
+    window.getSettings().set(SettingsKey.JAVA_EXE.toString(), javaExe);
     window.showAndWait();
-    this.model.getBWHeadless().setStarcraftExe(window.getStarcraftPath());
+    this.model.getBWHeadless().setStarcraftExe(window.getSettings().getValue(SettingsKey.STARCRAFT_EXE.toString()));
     try {
-      this.model.setJavaPath(Paths.get(window.getJavaPath()));
+      this.model.setJavaPath(Paths.get(window.getSettings().getValue(SettingsKey.JAVA_EXE.toString())));
     } catch (IOException ex) {
       if (CLASS_DEBUG) {
         LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
