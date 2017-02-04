@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -47,7 +48,7 @@ public class View implements EventHandler<DragEvent>  {
   private Button btnLaunch;
 
   private static final int PADDING = 20;
-  private static final int TOP_PADDING = PADDING - 12;
+  private static final int TOP_PADDING = PADDING;
   private static final int BOTTOM_PADDING = PADDING;
   private static final int LEFT_PADDING = PADDING;
   private static final int RIGHT_PADDING = PADDING;
@@ -133,28 +134,23 @@ public class View implements EventHandler<DragEvent>  {
 
     CustomGridPane botNameGridPane = new CustomGridPane();
     botNameGridPane.add(this.lblBotName, true);
-    botNameGridPane.add(this.txtBotName, true);
-    botNameGridPane.setGaps(0, 2);
+    botNameGridPane.add(this.txtBotName);
+    botNameGridPane.add(this.cbRace, true);
+    botNameGridPane.setGaps(GAP, 2);
     botNameGridPane.pack();
 
-    CustomGridPane botGridPane = new CustomGridPane();
-    botGridPane.add(botNameGridPane.get(), true);
-    botGridPane.add(this.cbRace, true);
-    botGridPane.add(this.btnLaunch, true);
-    botGridPane.setGaps(GAP, GAP);
-    botGridPane.pack();
-
-    CustomGridPane botAreaGridPane = new CustomGridPane();
-    botAreaGridPane.add(botGridPane.get());
-    botAreaGridPane.setGaps(GAP, GAP);
-    botAreaGridPane.pack();
+    CustomGridPane btnLaunchGridPane = new CustomGridPane();
+    btnLaunchGridPane.add(this.btnLaunch, true);
+    btnLaunchGridPane.get().setAlignment(Pos.CENTER);
+    btnLaunchGridPane.pack();
 
     CustomGridPane mainGridPane = new CustomGridPane();
-    mainGridPane.add(this.menuBar, true);
     mainGridPane.add(fileGridPane.get(), true);
-    mainGridPane.add(botAreaGridPane.get(), true);
+    mainGridPane.add(botNameGridPane.get(), true);
+    mainGridPane.add(btnLaunchGridPane.get());
     mainGridPane.get().setPadding(new Insets(TOP_PADDING, LEFT_PADDING, BOTTOM_PADDING, RIGHT_PADDING));
     mainGridPane.setGaps(GAP, GAP);
+    mainGridPane.get().setAlignment(Pos.CENTER);
     mainGridPane.pack();
 
     BorderPane borderPane = new BorderPane();
