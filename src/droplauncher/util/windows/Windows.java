@@ -21,9 +21,6 @@ public class Windows {
   public static Path JAVA_EXE = Paths.get("C:\\ProgramData\\Oracle\\Java\\javapath\\java.exe");
   public static String[] DEFAULT_JAR_ARGS = {"-jar"};
 
-  public static Path PROGRAM_FILES_DIR = Paths.get("C:\\Program Files");
-  public static Path PROGRAM_FILES_DIR_32 = Paths.get("C:\\Program Files (x86)");
-
   private Windows() {}
 
 }
