@@ -69,6 +69,11 @@ public class BWHeadless {
     return this.settings;
   }
 
+  public void mergeSettings(Settings settings) {
+    settings.merge(this.settings);
+    this.settings = settings;
+  }
+
   public ArrayList<Path> getExtraBotFiles() {
     return this.extraBotFiles;
   }

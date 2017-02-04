@@ -91,21 +91,16 @@ public class Controller {
     if (AdakiteUtils.isNullOrEmpty(starcraftExe)) {
       starcraftExe = "";
     }
-    String javaExe = this.model.getJavaPath().toString();
-    
+
+    String javaExe = this.model.getSettings().getValue(SettingsKey.JAVA_EXE.toString());
+
     SettingsWindow window = new SettingsWindow();
     window.getSettings().set(SettingsKey.STARCRAFT_EXE.toString(), starcraftExe);
     window.getSettings().set(SettingsKey.JAVA_EXE.toString(), javaExe);
     window.showAndWait();
 
     this.model.getBWHeadless().setStarcraftExe(window.getSettings().getValue(SettingsKey.STARCRAFT_EXE.toString()));
-    try {
-      this.model.setJavaPath(Paths.get(window.getSettings().getValue(SettingsKey.JAVA_EXE.toString())));
-    } catch (IOException ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
-      }
-    }
+    this.model.setJavaPath(window.getSettings().getValue(SettingsKey.JAVA_EXE.toString()));
   }
 
   public void mnuHelpAboutClicked() {

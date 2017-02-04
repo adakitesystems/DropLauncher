@@ -1,5 +1,6 @@
 package droplauncher.mvc.model;
 
+import adakite.util.Settings;
 import adakite.utils.AdakiteUtils;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotModule;
@@ -30,20 +31,21 @@ public class Model {
   private IniFile iniFile;
   private TaskTracker taskTracker;
 
-  private Path javaPath;
+  private Settings settings;
 
   public Model() {
     this.bwheadless = new BWHeadless();
     this.iniFile = new IniFile();
     this.taskTracker = new TaskTracker();
-    this.javaPath = null;
+    this.settings = new Settings();
 
     this.bwheadless.setIniFile(this.iniFile);
     try {
       this.iniFile.open(Paths.get(Constants.DROPLAUNCHER_INI));
-      this.bwheadless.readSettingsFile(this.iniFile);
       readSettingsFile(this.iniFile);
-    } catch (Exception ex) {
+      this.bwheadless.mergeSettings(this.settings);
+      this.bwheadless.readSettingsFile(this.iniFile);
+    } catch (IOException ex) {
       LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
     }
   }
@@ -59,17 +61,30 @@ public class Model {
 //    closeProgram();
 //  }
 
-  public Path getJavaPath() {
-    return this.javaPath;
-  }
+//  public Path getJavaPath() {
+//    return this.javaPath;
+//  }
+//
+//  public void setJavaPath(Path javaPath) throws IOException {
+//    this.javaPath = javaPath;
+//    this.bwheadless.getSettings().set(SettingsKey.JAVA_EXE.toString(), javaPath.toAbsolutePath().toString());
+//  }
 
-  public void setJavaPath(Path javaPath) throws IOException {
-    this.javaPath = javaPath;
-    this.bwheadless.getSettings().set(SettingsKey.JAVA_EXE.toString(), javaPath.toAbsolutePath().toString());
+  public Settings getSettings() {
+    return this.settings;
   }
 
   public BWHeadless getBWHeadless() {
     return this.bwheadless;
+  }
+
+  public String getJavaPath() {
+    return this.settings.getValue(SettingsKey.JAVA_EXE.toString());
+  }
+
+  public void setJavaPath(String path) {
+    this.settings.set(SettingsKey.JAVA_EXE.toString(), path);
+    updateSettingsFile(SettingsKey.JAVA_EXE.toString(), path);
   }
 
   /**
@@ -101,16 +116,47 @@ public class Model {
     }
   }
 
-  public void readSettingsFile(IniFile ini) throws IOException {
+  /**
+   * Sets the specified variable and updates the class INI file.
+   *
+   * Catches and reports all exceptions thrown by
+   * {@link droplauncher.ini.IniFile#setVariable(java.lang.String, java.lang.String, java.lang.String)}.
+   *
+   * @param name specified section name
+   * @param key specified key
+   * @param val specified value
+   */
+  private void updateSettingsFile(String name, String key, String val) {
+    try {
+      this.iniFile.setVariable(name, key, val);
+    } catch (Exception ex) {
+      if (CLASS_DEBUG) {
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+      }
+    }
+  }
+
+  /**
+   * Sets the specified variable and updates the class INI file. The default
+   * section name is {@link droplauncher.util.Constants#DROPLAUNCHER_INI_SECTION}.
+   *
+   * @param key specified key
+   * @param val specified value
+   *
+   * @see #updateSettingsFile(java.lang.String, java.lang.String, java.lang.String)
+   */
+  private void updateSettingsFile(String key, String val) {
+    updateSettingsFile(Constants.DROPLAUNCHER_INI_SECTION, key, val);
+  }
+
+  public void readSettingsFile(IniFile ini) {
     String val;
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString()))
         && AdakiteUtils.fileExists(Paths.get(val))) {
-//      this.javaPath = Paths.get(val);
-//      this.bwheadless.setJavaPath(this.javaPath);
-      setJavaPath(Paths.get(val));
+      this.settings.set(SettingsKey.JAVA_EXE.toString(), val);
     } else {
-      this.iniFile.setVariable(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString(), Windows.DEFAULT_JAVA_EXE.toAbsolutePath().toString());
-      this.bwheadless.getSettings().set(SettingsKey.JAVA_EXE.toString(), this.javaPath.toAbsolutePath().toString());
+      this.settings.set(SettingsKey.JAVA_EXE.toString(), Windows.DEFAULT_JAVA_EXE.toAbsolutePath().toString());
+      updateSettingsFile(SettingsKey.JAVA_EXE.toString(), Windows.DEFAULT_JAVA_EXE.toAbsolutePath().toString());
     }
   }
 
@@ -166,15 +212,6 @@ public class Model {
 ////      }
 ////      this.view.update();
 ////    }
-//  }
-
-//  public void btnLaunchActionPerformed(ActionEvent evt) {
-//    if (this.bwheadless.isRunning()) {
-//      stopBWHeadless();
-//    } else {
-//      startBWHeadless();
-//    }
-////    this.view.update();
 //  }
 
   public void filesDropped(List<File> files) {
