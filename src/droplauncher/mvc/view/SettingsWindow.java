@@ -7,13 +7,11 @@ import droplauncher.util.SettingsKey;
 import droplauncher.util.Util;
 import java.io.File;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
@@ -48,7 +46,23 @@ public class SettingsWindow {
   }
 
   public SettingsWindow showAndWait() {
-    this.chkKeepClientWindow = new CheckBox("Show log window for bot clients.");
+    this.chkKeepClientWindow = new CheckBox("Show log window for executable bot clients (requires program restart)");
+    if (this.ini.hasValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.SHOW_LOG_WINDOW.toString())) {
+      if (this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.SHOW_LOG_WINDOW.toString()).equalsIgnoreCase(Boolean.TRUE.toString())) {
+        this.chkKeepClientWindow.setSelected(true);
+      } else {
+        this.chkKeepClientWindow.setSelected(false);
+      }
+    }
+    this.chkKeepClientWindow.setOnAction(e -> {
+      String val;
+      if (this.chkKeepClientWindow.isSelected()) {
+        val = Boolean.TRUE.toString();
+      } else {
+        val = Boolean.FALSE.toString();
+      }
+      this.ini.set(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.SHOW_LOG_WINDOW.toString(), val);
+    });
 
     this.lblChangeStarcraftExe = new Label("StarCraft.exe:");
     this.btnChangeStarcraftExe = new Button("...");

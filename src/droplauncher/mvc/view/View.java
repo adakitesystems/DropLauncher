@@ -1,5 +1,6 @@
 package droplauncher.mvc.view;
 
+import adakite.ini.INI;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.starcraft.Race;
@@ -18,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -46,6 +48,7 @@ public class View implements EventHandler<DragEvent>  {
   private TextField txtBotName;
   private ChoiceBox<String> cbRace;
   private Button btnLaunch;
+  private TextArea txtLogWindow;
 
   private static final int PADDING = 20;
   private static final int TOP_PADDING = PADDING;
@@ -57,12 +60,18 @@ public class View implements EventHandler<DragEvent>  {
 
   private static final String EMPTY_LABEL = "-";
 
+  private INI ini;
+
   public View() {
 
   }
 
   public void setController(Controller controller) {
     this.controller = controller;
+  }
+
+  public void setINI(INI ini) {
+    this.ini = ini;
   }
 
   private void initMenus() {
@@ -97,7 +106,7 @@ public class View implements EventHandler<DragEvent>  {
     this.lblBwapiVersionText = new Label(EMPTY_LABEL);
     this.lblBotFile = new Label("Bot File:");
     this.lblBotFileText = new Label(EMPTY_LABEL);
-    this.lblBotName = new Label("Bot name (max 24 characaters):");
+    this.lblBotName = new Label("Bot Name (max 24 characters):");
     this.txtBotName = new TextField("");
     this.cbRace = new ChoiceBox<>();
     this.cbRace.getItems().add(Race.TERRAN.toString());
@@ -107,6 +116,8 @@ public class View implements EventHandler<DragEvent>  {
     this.btnLaunch = new Button(LaunchButtonText.LAUNCH.toString());
     this.btnLaunch.setMinWidth(200);
     this.btnLaunch.setMinHeight(40);
+    this.txtLogWindow = new TextArea("");
+    this.txtLogWindow.setEditable(false);
 
     this.txtBotName.setOnKeyReleased(e -> this.controller.botNameChanged(this.txtBotName.getText()));
     this.cbRace.setOnAction(e -> {
@@ -139,15 +150,31 @@ public class View implements EventHandler<DragEvent>  {
     botNameGridPane.setGaps(GAP, 2);
     botNameGridPane.pack();
 
+    CustomGridPane botInfoGridPane = new CustomGridPane();
+    botInfoGridPane.add(fileGridPane.get(), true);
+    botInfoGridPane.add(botNameGridPane.get(), true);
+    botInfoGridPane.setGaps(GAP, GAP);
+    botInfoGridPane.get().setAlignment(Pos.CENTER);
+    botInfoGridPane.pack();
+
     CustomGridPane btnLaunchGridPane = new CustomGridPane();
     btnLaunchGridPane.add(this.btnLaunch, true);
     btnLaunchGridPane.get().setAlignment(Pos.CENTER);
+    btnLaunchGridPane.setGaps(GAP, GAP);
     btnLaunchGridPane.pack();
 
+    CustomGridPane txtLogWindowGridPane = new CustomGridPane();
+    if (this.controller.isEnabledLogWindow()) {
+      txtLogWindowGridPane.add(this.txtLogWindow);
+    }
+    txtLogWindowGridPane.setGaps(GAP, GAP);
+    txtLogWindowGridPane.get().setAlignment(Pos.CENTER);
+    txtLogWindowGridPane.pack();
+
     CustomGridPane mainGridPane = new CustomGridPane();
-    mainGridPane.add(fileGridPane.get(), true);
-    mainGridPane.add(botNameGridPane.get(), true);
-    mainGridPane.add(btnLaunchGridPane.get());
+    mainGridPane.add(botInfoGridPane.get(), true);
+    mainGridPane.add(btnLaunchGridPane.get(), true);
+    mainGridPane.add(txtLogWindowGridPane.get(), true);
     mainGridPane.get().setPadding(new Insets(TOP_PADDING, LEFT_PADDING, BOTTOM_PADDING, RIGHT_PADDING));
     mainGridPane.setGaps(GAP, GAP);
     mainGridPane.get().setAlignment(Pos.CENTER);
@@ -164,6 +191,10 @@ public class View implements EventHandler<DragEvent>  {
     this.stage.setResizable(false);
     this.stage.setTitle(Constants.PROGRAM_TITLE);
     this.stage.setScene(this.scene);
+  }
+
+  public TextArea getLogWindow() {
+    return this.txtLogWindow;
   }
 
   public void start(Stage primaryStage) {

@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.logging.Logger;
+import javafx.scene.control.TextArea;
 
 /**
  * Generic class for handling communication between the main program and
@@ -35,6 +36,8 @@ public class ProcessPipe {
   private StreamGobbler gobblerStderr;
   private boolean isOpen;
 
+  private TextArea txtLogWindow;
+
   public ProcessPipe() {
     this.path = null;
     this.args = null;
@@ -46,6 +49,12 @@ public class ProcessPipe {
     this.gobblerStdout = null;
     this.gobblerStderr = null;
     this.isOpen = false;
+
+    this.txtLogWindow = null;
+  }
+
+  public void setLogWindow(TextArea ta) {
+    this.txtLogWindow = ta;
   }
 
   public boolean isOpen() {
@@ -93,8 +102,8 @@ public class ProcessPipe {
 
       this.is = this.process.getInputStream();
       this.br = new BufferedReader(new InputStreamReader(this.is));
-      this.gobblerStdout = new StreamGobbler(this.process.getInputStream());
-      this.gobblerStderr = new StreamGobbler(this.process.getErrorStream());
+      this.gobblerStdout = new StreamGobbler(this.process.getInputStream(), this.txtLogWindow);
+      this.gobblerStderr = new StreamGobbler(this.process.getErrorStream(), this.txtLogWindow);
       this.gobblerStdout.start();
       this.gobblerStderr.start();
 

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TextArea;
 
 public class Controller {
 
@@ -29,7 +30,8 @@ public class Controller {
   private View view;
 
   public Controller() {
-
+    this.model = null;
+    this.view = null;
   }
 
   public void setModel(Model model) {
@@ -38,14 +40,20 @@ public class Controller {
 
   public void setView(View view) {
     this.view = view;
+    this.view.setINI(this.model.getINI());
   }
 
   private void startBWHeadless() {
+    this.model.getBWHeadless().setLogWindow(this.view.getLogWindow());
     this.model.startBWHeadless();
   }
 
   private void stopBWHeadless() {
     this.model.stopBWHeadless();
+  }
+
+  public TextArea getLogWindow() {
+    return this.view.getLogWindow();
   }
 
   /* ************************************************************ */
@@ -72,6 +80,11 @@ public class Controller {
 
   public Race getBotRace() {
     return Race.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.BWHEADLESS_INI_SECTION, SettingsKey.BOT_RACE.toString()));
+  }
+
+  public boolean isEnabledLogWindow() {
+    return (this.model.getINI().hasValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.SHOW_LOG_WINDOW.toString())
+        && this.model.getINI().getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.SHOW_LOG_WINDOW.toString()).equals(Boolean.TRUE.toString()));
   }
 
   /* ************************************************************ */

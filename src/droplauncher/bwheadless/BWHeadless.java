@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.logging.Logger;
+import javafx.scene.control.TextArea;
 
 /**
  * Class for handling execution and communication with the
@@ -46,6 +47,8 @@ public class BWHeadless {
 
   private ArrayList<Path> extraBotFiles;
 
+  private TextArea txtLogWindow;
+
   public BWHeadless() {
     this.ini = null;
 
@@ -55,6 +58,12 @@ public class BWHeadless {
     this.botModule = new BotModule();
 
     this.extraBotFiles = new ArrayList<>();
+
+    this.txtLogWindow = null;
+  }
+
+  public void setLogWindow(TextArea ta) {
+    this.txtLogWindow = ta;
   }
 
   public INI getINI() {
@@ -144,40 +153,41 @@ public class BWHeadless {
     String starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()))).toAbsolutePath().toString();
 
     /* Compile bwheadless arguments. */
-    ArrayList<String> bwargs = new ArrayList<>(); /* bwheadless arguments */
-    bwargs.add(Argument.STARCRAFT_EXE.toString());
-    bwargs.add(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()));
-    bwargs.add(Argument.JOIN_GAME.toString());
-    bwargs.add(Argument.BOT_NAME.toString());
-    bwargs.add(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BOT_NAME.toString()));
-    bwargs.add(Argument.BOT_RACE.toString());
-    bwargs.add(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BOT_RACE.toString()));
-    bwargs.add(Argument.LOAD_DLL.toString());
-    bwargs.add(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BWAPI_DLL.toString()));
-    bwargs.add(Argument.ENABLE_LAN.toString());
-    bwargs.add(Argument.STARCRAFT_INSTALL_PATH.toString());
-    bwargs.add(starcraftDirectory);
-    String[] bargsArray = Util.toStringArray(bwargs);
+    ArrayList<String> bwhArgs = new ArrayList<>(); /* bwheadless arguments */
+    bwhArgs.add(Argument.STARCRAFT_EXE.toString());
+    bwhArgs.add(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()));
+    bwhArgs.add(Argument.JOIN_GAME.toString());
+    bwhArgs.add(Argument.BOT_NAME.toString());
+    bwhArgs.add(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BOT_NAME.toString()));
+    bwhArgs.add(Argument.BOT_RACE.toString());
+    bwhArgs.add(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BOT_RACE.toString()));
+    bwhArgs.add(Argument.LOAD_DLL.toString());
+    bwhArgs.add(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BWAPI_DLL.toString()));
+    bwhArgs.add(Argument.ENABLE_LAN.toString());
+    bwhArgs.add(Argument.STARCRAFT_INSTALL_PATH.toString());
+    bwhArgs.add(starcraftDirectory);
+    String[] bwhArgsArray = Util.toStringArray(bwhArgs);
 
     /* Start bwheadless. */
-    this.bwheadlessPipe.open(Paths.get(BWHEADLESS_EXE), bargsArray, starcraftDirectory);
+    this.bwheadlessPipe.setLogWindow(this.txtLogWindow);
+    this.bwheadlessPipe.open(Paths.get(BWHEADLESS_EXE), bwhArgsArray, starcraftDirectory);
 
     //TODO: Pipe client output to a UI component.
     /* Start bot client in a command prompt. */
     if (this.botModule.getType() == BotModule.Type.CLIENT) {
+      this.botPipe.setLogWindow(this.txtLogWindow);
+      ArrayList<String> clArgs = new ArrayList<>();
       if (AdakiteUtils.getFileExtension(this.botModule.getPath()).equalsIgnoreCase("jar")) {
-        ArrayList<String> clargs = new ArrayList<>();
         for (String arg : Windows.DEFAULT_JAR_ARGS) {
-          clargs.add(arg);
+          clArgs.add(arg);
         }
-        clargs.add(this.botModule.getPath().toAbsolutePath().toString());
-        String[] cargsArray = Util.toStringArray(clargs);
+        clArgs.add(this.botModule.getPath().toAbsolutePath().toString());
+        String[] cargsArray = Util.toStringArray(clArgs);
         this.botPipe.open(Paths.get(this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString())), cargsArray, starcraftDirectory);
       } else if (AdakiteUtils.getFileExtension(this.botModule.getPath()).equalsIgnoreCase("exe")) {
-        ArrayList<String> clargs = new ArrayList<>();
-        clargs.add(this.botModule.toString());
-        String[] cargsArray = Util.toStringArray(clargs);
-        this.botPipe.open(Windows.CMD_EXE, cargsArray, starcraftDirectory);
+        clArgs.add(this.botModule.toString());
+        String[] clArgsArray = Util.toStringArray(clArgs);
+        this.botPipe.open(this.botModule.getPath().toAbsolutePath(), clArgsArray, starcraftDirectory);
       }
     }
   }
@@ -282,6 +292,7 @@ public class BWHeadless {
   public void setBotModule(String botModule) {
     this.extraBotFiles.clear();
     this.botModule.setPath(botModule);
+    this.ini.set(BWHEADLESS_INI_SECTION, SettingsKey.BOT_MODULE.toString(), botModule);
 
     if (SET_DEBUG) {
       System.out.println("setBotModule = " + botModule);
