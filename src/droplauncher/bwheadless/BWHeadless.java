@@ -172,7 +172,7 @@ public class BWHeadless {
         }
         clargs.add(this.botModule.getPath().toAbsolutePath().toString());
         String[] cargsArray = Util.toStringArray(clargs);
-        this.botPipe.open(Paths.get(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.JAVA_EXE.toString())), cargsArray, starcraftDirectory);
+        this.botPipe.open(Paths.get(this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString())), cargsArray, starcraftDirectory);
       } else if (AdakiteUtils.getFileExtension(this.botModule.getPath()).equalsIgnoreCase("exe")) {
         ArrayList<String> clargs = new ArrayList<>();
         clargs.add(this.botModule.toString());
