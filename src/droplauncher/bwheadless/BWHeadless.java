@@ -127,7 +127,7 @@ public class BWHeadless {
         || !AdakiteUtils.fileExists(this.botModule.getPath())) {
       /* If both the bot DLL and bot client fields are missing. */
       return ReadyStatus.BOT_FILE;
-    } else if (this.botRace == null || this.botRace == Race.NONE) {
+    } else if (this.botRace == null) {
       return ReadyStatus.BOT_RACE;
     } else if (this.networkProvider == null) {
       return ReadyStatus.NETWORK_PROVIDER;

@@ -1,7 +1,7 @@
 package droplauncher.starcraft;
 
 /**
- * Enum for races in StarCraft.
+ * Enum for race selections in StarCraft.
  */
 public enum Race {
 
@@ -9,18 +9,35 @@ public enum Race {
   PROTOSS("Protoss"),
   ZERG("Zerg"),
   RANDOM("Random"),
-  NONE("")
   ;
 
-  private String name;
+  private String str;
 
-  private Race(String name) {
-    this.name = name;
+  private Race(String str) {
+    this.str = str;
+  }
+
+  /**
+   * Returns the corresponding Race object.
+   *
+   * @param str specified string
+   * @return
+   *     the corresponding Race object,
+   *     otherwise null if no match was found
+   */
+  public static Race get(String str) {
+    str = str.toLowerCase();
+    for (Race val : Race.values()) {
+      if (str.equals(val.toString())) {
+        return val;
+      }
+    }
+    return null;
   }
 
   @Override
   public String toString() {
-    return this.name;
+    return this.str;
   }
 
 }

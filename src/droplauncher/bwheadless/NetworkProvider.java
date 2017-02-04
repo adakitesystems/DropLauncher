@@ -6,7 +6,36 @@ package droplauncher.bwheadless;
  */
 public enum NetworkProvider {
 
-  LAN
+  LAN("lan"),
   ;
+
+  private String str;
+
+  private NetworkProvider(String str) {
+    this.str = str;
+  }
+
+  /**
+   * Returns the corresponding NetworkProvider object.
+   *
+   * @param str specified string
+   * @return
+   *     the corresponding NetworkProvider object,
+   *     otherwise null if no match was found
+   */
+  public static NetworkProvider get(String str) {
+    str = str.toLowerCase();
+    for (NetworkProvider val : NetworkProvider.values()) {
+      if (str.equals(val.toString())) {
+        return val;
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public String toString() {
+    return this.str;
+  }
 
 }
