@@ -1,7 +1,6 @@
 package droplauncher.mvc.model;
 
-import adakite.util.Settings;
-import adakite.utils.AdakiteUtils;
+import adakite.util.AdakiteUtils;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotModule;
 import droplauncher.bwheadless.KillableTask;

@@ -1,6 +1,5 @@
 package droplauncher.mvc.view;
 
-import adakite.util.Settings;
 import droplauncher.util.SettingsKey;
 import droplauncher.util.Util;
 import java.io.File;

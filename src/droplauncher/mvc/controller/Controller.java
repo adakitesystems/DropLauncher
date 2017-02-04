@@ -1,6 +1,6 @@
 package droplauncher.mvc.controller;
 
-import adakite.utils.AdakiteUtils;
+import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BotModule;
 import droplauncher.mvc.model.Model;
@@ -13,7 +13,6 @@ import droplauncher.util.Constants;
 import droplauncher.util.SettingsKey;
 import droplauncher.util.Util;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Logger;

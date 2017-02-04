@@ -1,9 +1,7 @@
 package droplauncher.bwheadless;
 
-import adakite.util.Settings;
-import adakite.utils.AdakiteUtils;
+import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
-import droplauncher.ini.IniFile;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;

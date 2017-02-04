@@ -1,6 +1,6 @@
 package droplauncher.bwheadless;
 
-import adakite.utils.AdakiteUtils;
+import adakite.util.AdakiteUtils;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 

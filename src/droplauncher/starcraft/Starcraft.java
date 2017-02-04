@@ -1,6 +1,6 @@
 package droplauncher.starcraft;
 
-import adakite.utils.AdakiteUtils;
+import adakite.util.AdakiteUtils;
 
 /**
  * Utilities and constants class for StarCraft.

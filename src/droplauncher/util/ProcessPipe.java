@@ -1,7 +1,7 @@
 package droplauncher.util;
 
 import adakite.debugging.Debugging;
-import adakite.utils.AdakiteUtils;
+import adakite.util.AdakiteUtils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStream;

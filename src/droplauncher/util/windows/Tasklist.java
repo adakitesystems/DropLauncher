@@ -1,6 +1,6 @@
 package droplauncher.util.windows;
 
-import adakite.utils.AdakiteUtils;
+import adakite.util.AdakiteUtils;
 import droplauncher.util.Constants;
 import droplauncher.util.SimpleProcess;
 import java.util.ArrayList;
