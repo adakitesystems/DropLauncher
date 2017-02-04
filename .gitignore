@@ -1,6 +1,6 @@
 # Ignore AdakiteLibrary for now
 lib/adakite*
-src/adakite/util/Settings.java
+src/adakite/*
 
 # Misc files
 *.ini
