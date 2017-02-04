@@ -2,6 +2,7 @@ package droplauncher.mvc.controller;
 
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
+import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotModule;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.LaunchButtonText;
@@ -56,7 +57,7 @@ public class Controller {
   }
 
   public String getBwapiDllVersion() {
-    String dll = this.model.getBWHeadless().getSettings().getValue(SettingsKey.BWAPI_DLL.toString());
+    String dll = this.model.getBWHeadless().getINI().getValue(BWHeadless.BWHEADLESS_INI_SECTION, SettingsKey.BWAPI_DLL.toString());
     if (AdakiteUtils.isNullOrEmpty(dll)) {
       return "";
     } else {
@@ -66,11 +67,11 @@ public class Controller {
   }
 
   public String getBotName() {
-    return this.model.getBWHeadless().getSettings().getValue(SettingsKey.BOT_NAME.toString());
+    return this.model.getBWHeadless().getINI().getValue(BWHeadless.BWHEADLESS_INI_SECTION, SettingsKey.BOT_NAME.toString());
   }
 
   public Race getBotRace() {
-    return Race.get(this.model.getBWHeadless().getSettings().getValue(SettingsKey.BOT_RACE.toString()));
+    return Race.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.BWHEADLESS_INI_SECTION, SettingsKey.BOT_RACE.toString()));
   }
 
   /* ************************************************************ */
@@ -86,20 +87,8 @@ public class Controller {
   }
 
   public void mnuEditSettingsClicked() {
-    String starcraftExe = this.model.getBWHeadless().getSettings().getValue(SettingsKey.STARCRAFT_EXE.toString());
-    if (AdakiteUtils.isNullOrEmpty(starcraftExe)) {
-      starcraftExe = "";
-    }
-
-    String javaExe = this.model.getSettings().getValue(SettingsKey.JAVA_EXE.toString());
-
-    SettingsWindow window = new SettingsWindow();
-    window.getSettings().set(SettingsKey.STARCRAFT_EXE.toString(), starcraftExe);
-    window.getSettings().set(SettingsKey.JAVA_EXE.toString(), javaExe);
+    SettingsWindow window = new SettingsWindow(this.model.getINI());
     window.showAndWait();
-
-    this.model.getBWHeadless().setStarcraftExe(window.getSettings().getValue(SettingsKey.STARCRAFT_EXE.toString()));
-    this.model.setJavaPath(window.getSettings().getValue(SettingsKey.JAVA_EXE.toString()));
   }
 
   public void mnuHelpAboutClicked() {

@@ -1,5 +1,8 @@
 package droplauncher.mvc.view;
 
+import adakite.ini.INI;
+import droplauncher.bwheadless.BWHeadless;
+import droplauncher.util.Constants;
 import droplauncher.util.SettingsKey;
 import droplauncher.util.Util;
 import java.io.File;
@@ -34,14 +37,12 @@ public class SettingsWindow {
   private Label lblChangeJavaExeText;
   private Button btnChangeJavaExe;
 
-  private Settings settings;
+  private INI ini;
 
-  public SettingsWindow() {
-    this.settings = new Settings();
-  }
+  private SettingsWindow() {}
 
-  public Settings getSettings() {
-    return this.settings;
+  public SettingsWindow(INI ini) {
+    this.ini = ini;
   }
 
   public SettingsWindow showAndWait() {
@@ -49,11 +50,11 @@ public class SettingsWindow {
 
     this.lblChangeStarcraftExe = new Label("StarCraft.exe:");
     this.btnChangeStarcraftExe = new Button("...");
-    this.lblChangeStarcraftExeText = new Label(this.settings.getValue(SettingsKey.STARCRAFT_EXE.toString()));
+    this.lblChangeStarcraftExeText = new Label(this.ini.getValue(BWHeadless.BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()));
 
     this.lblChangeJavaExe = new Label("Java.exe:");
     this.btnChangeJavaExe = new Button("...");
-    this.lblChangeJavaExeText = new Label(this.settings.getValue(SettingsKey.JAVA_EXE.toString()));
+    this.lblChangeJavaExeText = new Label(this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString()));
 
     this.btnChangeStarcraftExe.setOnAction(e -> {
       FileChooser fc = new FileChooser();
@@ -65,8 +66,8 @@ public class SettingsWindow {
       }
       File file = fc.showOpenDialog(this.stage);
       if (file != null) {
-        this.settings.set(SettingsKey.STARCRAFT_EXE.toString(), file.getAbsolutePath());
-        this.lblChangeStarcraftExeText.setText(this.settings.getValue(SettingsKey.STARCRAFT_EXE.toString()));
+        this.ini.set(BWHeadless.BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString(), file.getAbsolutePath());
+        this.lblChangeStarcraftExeText.setText(this.ini.getValue(BWHeadless.BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()));
       }
     });
     this.btnChangeJavaExe.setOnAction(e -> {
@@ -79,8 +80,8 @@ public class SettingsWindow {
       }
       File file = fc.showOpenDialog(this.stage);
       if (file != null) {
-        this.settings.set(SettingsKey.JAVA_EXE.toString(), file.getAbsolutePath());
-        this.lblChangeJavaExeText.setText(this.settings.getValue(SettingsKey.JAVA_EXE.toString()));
+        this.ini.set(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString(), file.getAbsolutePath());
+        this.lblChangeJavaExeText.setText(this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString()));
       }
     });
 

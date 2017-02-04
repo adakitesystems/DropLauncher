@@ -1,11 +1,11 @@
 package droplauncher.mvc.model;
 
+import adakite.ini.INI;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotModule;
 import droplauncher.bwheadless.KillableTask;
 import droplauncher.bwheadless.ReadyStatus;
-import droplauncher.ini.IniFile;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import droplauncher.util.SettingsKey;
@@ -26,24 +26,20 @@ public class Model {
   private static final Logger LOGGER = Logger.getLogger(Model.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
+  private INI ini;
   private BWHeadless bwheadless;
-  private IniFile iniFile;
   private TaskTracker taskTracker;
 
-  private Settings settings;
-
   public Model() {
+    this.ini = new INI();
     this.bwheadless = new BWHeadless();
-    this.iniFile = new IniFile();
     this.taskTracker = new TaskTracker();
-    this.settings = new Settings();
 
-    this.bwheadless.setIniFile(this.iniFile);
+    this.bwheadless.setINI(this.ini);
     try {
-      this.iniFile.open(Paths.get(Constants.DROPLAUNCHER_INI));
-      readSettingsFile(this.iniFile);
-      this.bwheadless.mergeSettings(this.settings);
-      this.bwheadless.readSettingsFile(this.iniFile);
+      this.ini.open(Paths.get(Constants.DROPLAUNCHER_INI));
+      readSettingsFile(this.ini);
+      this.bwheadless.readSettingsFile(this.ini);
     } catch (IOException ex) {
       LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
     }
@@ -60,30 +56,12 @@ public class Model {
 //    closeProgram();
 //  }
 
-//  public Path getJavaPath() {
-//    return this.javaPath;
-//  }
-//
-//  public void setJavaPath(Path javaPath) throws IOException {
-//    this.javaPath = javaPath;
-//    this.bwheadless.getSettings().set(SettingsKey.JAVA_EXE.toString(), javaPath.toAbsolutePath().toString());
-//  }
-
-  public Settings getSettings() {
-    return this.settings;
+  public INI getINI() {
+    return this.ini;
   }
 
   public BWHeadless getBWHeadless() {
     return this.bwheadless;
-  }
-
-  public String getJavaPath() {
-    return this.settings.getValue(SettingsKey.JAVA_EXE.toString());
-  }
-
-  public void setJavaPath(String path) {
-    this.settings.set(SettingsKey.JAVA_EXE.toString(), path);
-    updateSettingsFile(SettingsKey.JAVA_EXE.toString(), path);
   }
 
   /**
@@ -115,55 +93,24 @@ public class Model {
     }
   }
 
-  /**
-   * Sets the specified variable and updates the class INI file.
-   *
-   * Catches and reports all exceptions thrown by
-   * {@link droplauncher.ini.IniFile#setVariable(java.lang.String, java.lang.String, java.lang.String)}.
-   *
-   * @param name specified section name
-   * @param key specified key
-   * @param val specified value
-   */
-  private void updateSettingsFile(String name, String key, String val) {
-    try {
-      this.iniFile.setVariable(name, key, val);
-    } catch (Exception ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
-      }
-    }
-  }
-
-  /**
-   * Sets the specified variable and updates the class INI file. The default
-   * section name is {@link droplauncher.util.Constants#DROPLAUNCHER_INI_SECTION}.
-   *
-   * @param key specified key
-   * @param val specified value
-   *
-   * @see #updateSettingsFile(java.lang.String, java.lang.String, java.lang.String)
-   */
-  private void updateSettingsFile(String key, String val) {
-    updateSettingsFile(Constants.DROPLAUNCHER_INI_SECTION, key, val);
-  }
-
-  public void readSettingsFile(IniFile ini) {
+  public void readSettingsFile(INI ini) {
     String val;
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString()))
         && AdakiteUtils.fileExists(Paths.get(val))) {
-      this.settings.set(SettingsKey.JAVA_EXE.toString(), val);
+      this.ini.set(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString(), val);
     } else {
-      this.settings.set(SettingsKey.JAVA_EXE.toString(), Windows.DEFAULT_JAVA_EXE.toAbsolutePath().toString());
-      updateSettingsFile(SettingsKey.JAVA_EXE.toString(), Windows.DEFAULT_JAVA_EXE.toAbsolutePath().toString());
+      this.ini.set(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString(), Windows.DEFAULT_JAVA_EXE.toAbsolutePath().toString());
     }
   }
 
+  //TODO: Delete error checking code. The Controller checks.
   public void startBWHeadless() {
     /* Start bwheadless. */
     ReadyStatus status = this.bwheadless.getReadyStatus();
     if (status != ReadyStatus.READY) {
-//      this.view.showMessageBox(JOptionPane.ERROR_MESSAGE, "Not ready: " + status.toString());
+      if (CLASS_DEBUG) {
+        System.out.println("Model: startBWHeadless: not ready: " + status.toString());
+      }
     } else {
       this.taskTracker.update();
       this.bwheadless.start();
@@ -196,6 +143,7 @@ public class Model {
   /* Events from View */
   /* ************************************************************ */
 
+  //TODO: Move this to the "Select bot files" menu option.
 //  public void boxDropFilesMouseClicked(MouseEvent evt) {
 //    JFileChooser fc = new JFileChooser();
 //    fc.setDialogTitle("Select bot files ...");
