@@ -3,6 +3,7 @@ package droplauncher.bwheadless;
 import adakite.utils.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.ini.IniFile;
+import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
@@ -16,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -109,8 +111,13 @@ public class BWHeadless {
     return this.javaPath;
   }
 
-  public void setJavaPath(Path path) {
+  public void setJavaPath(Path path) throws IOException {
     this.javaPath = path;
+    this.iniFile.setVariable(
+        Constants.DROPLAUNCHER_INI_SECTION,
+        droplauncher.ini.PredefinedVariable.JAVA_EXE.toString(),
+        this.javaPath.toAbsolutePath().toString()
+    );
   }
 
   /**
@@ -189,38 +196,41 @@ public class BWHeadless {
     String starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.starcraftExe)).toAbsolutePath().toString();
 
     /* Compile bwheadless arguments. */
-    ArrayList<String> bargs = new ArrayList<>(); /* bot arguments */
-    bargs.add(Argument.STARCRAFT_EXE.toString());
-    bargs.add(getStarcraftExe());
-    bargs.add(Argument.JOIN_GAME.toString());
-    bargs.add(Argument.BOT_NAME.toString());
-    bargs.add(getBotName());
-    bargs.add(Argument.BOT_RACE.toString());
-    bargs.add(getBotRace().toString());
-    bargs.add(Argument.LOAD_DLL.toString());
-    bargs.add(getBwapiDll());
-    bargs.add(Argument.ENABLE_LAN.toString());
-    bargs.add(Argument.STARCRAFT_INSTALL_PATH.toString());
-    bargs.add(starcraftDirectory);
-    String[] bargsArray = Util.toStringArray(bargs);
+    ArrayList<String> bwargs = new ArrayList<>(); /* bwheadless arguments */
+    bwargs.add(Argument.STARCRAFT_EXE.toString());
+    bwargs.add(getStarcraftExe());
+    bwargs.add(Argument.JOIN_GAME.toString());
+    bwargs.add(Argument.BOT_NAME.toString());
+    bwargs.add(getBotName());
+    bwargs.add(Argument.BOT_RACE.toString());
+    bwargs.add(getBotRace().toString());
+    bwargs.add(Argument.LOAD_DLL.toString());
+    bwargs.add(getBwapiDll());
+    bwargs.add(Argument.ENABLE_LAN.toString());
+    bwargs.add(Argument.STARCRAFT_INSTALL_PATH.toString());
+    bwargs.add(starcraftDirectory);
+    String[] bargsArray = Util.toStringArray(bwargs);
 
     /* Start bwheadless. */
     this.bwheadlessPipe.open(Paths.get(BWHEADLESS_EXE), bargsArray, starcraftDirectory);
 
+    //TODO: Pipe client output to a UI component.
     /* Start bot client in a command prompt. */
     if (this.botModule.getType() == BotModule.Type.CLIENT) {
-      ArrayList<String> cargs = new ArrayList<>(); /* client arguments */
-      cargs.add("/c");
-      cargs.add("start");
       if (AdakiteUtils.getFileExtension(this.botModule.getPath()).equalsIgnoreCase("jar")) {
-        cargs.add(this.javaPath.toAbsolutePath().toString());
+        ArrayList<String> clargs = new ArrayList<>();
         for (String arg : Windows.DEFAULT_JAR_ARGS) {
-          cargs.add(arg);
+          clargs.add(arg);
         }
+        clargs.add(this.botModule.getPath().toAbsolutePath().toString());
+        String[] cargsArray = Util.toStringArray(clargs);
+        this.botPipe.open(this.javaPath, cargsArray, starcraftDirectory);
+      } else if (AdakiteUtils.getFileExtension(this.botModule.getPath()).equalsIgnoreCase("exe")) {
+        ArrayList<String> clargs = new ArrayList<>();
+        clargs.add(this.botModule.toString());
+        String[] cargsArray = Util.toStringArray(clargs);
+        this.botPipe.open(Windows.CMD_EXE, cargsArray, starcraftDirectory);
       }
-      cargs.add(this.botModule.toString());
-      String[] cargsArray = Util.toStringArray(cargs);
-      this.botPipe.open(Windows.CMD_EXE, cargsArray, starcraftDirectory);
     }
   }
 

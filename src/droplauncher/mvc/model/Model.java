@@ -27,26 +27,21 @@ public class Model {
   private static final Logger LOGGER = Logger.getLogger(Model.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
-  public static final String DROP_LAUNCHER_INI = "droplauncher.ini";
-
   private BWHeadless bwheadless;
   private IniFile iniFile;
   private TaskTracker taskTracker;
 
   private Path javaPath;
 
-  private SimpleStringProperty botRank;
-
   public Model() {
     this.bwheadless = new BWHeadless();
     this.iniFile = new IniFile();
     this.taskTracker = new TaskTracker();
     this.javaPath = null;
-    this.botRank = new SimpleStringProperty();
 
     this.bwheadless.setIniFile(this.iniFile);
     try {
-      this.iniFile.open(Paths.get(DROP_LAUNCHER_INI));
+      this.iniFile.open(Paths.get(Constants.DROPLAUNCHER_INI));
       this.bwheadless.readSettingsFile(this.iniFile);
       readSettingsFile(this.iniFile);
     } catch (Exception ex) {
@@ -64,6 +59,15 @@ public class Model {
 //  public void closeView() {
 //    closeProgram();
 //  }
+
+  public Path getJavaPath() {
+    return this.javaPath;
+  }
+
+  public void setJavaPath(Path javaPath) throws IOException {
+    this.javaPath = javaPath;
+    this.bwheadless.setJavaPath(javaPath);
+  }
 
   public BWHeadless getBWHeadless() {
     return this.bwheadless;
@@ -102,8 +106,9 @@ public class Model {
     String val;
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue("droplauncher", PredefinedVariable.JAVA_EXE.toString()))
         && AdakiteUtils.fileExists(Paths.get(val))) {
-      this.javaPath = Paths.get(val);
-      this.bwheadless.setJavaPath(this.javaPath);
+//      this.javaPath = Paths.get(val);
+//      this.bwheadless.setJavaPath(this.javaPath);
+      setJavaPath(Paths.get(val));
     } else {
       this.iniFile.setVariable("droplauncher", PredefinedVariable.JAVA_EXE.toString(), Windows.JAVA_EXE.toAbsolutePath().toString());
       this.bwheadless.setJavaPath(this.javaPath);
@@ -171,22 +176,6 @@ public class Model {
 //      startBWHeadless();
 //    }
 ////    this.view.update();
-//  }
-
-//  public void btnStarcraftExeActionPerformed(ActionEvent evt) {
-//    //TODO: Only accept StarCraft.exe file selection.
-//    //TODO: Guess StarCraft directory or read from registry.
-//    JFileChooser fc = new JFileChooser(new File("C:\\StarCraft"));
-//    fc.setDialogTitle("Select StarCraft.exe ...");
-//    fc.setAcceptAllFileFilterUsed(false);
-//    fc.setFileFilter(new FileNameExtensionFilter("*.exe", "exe"));
-////    if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
-////      File file = fc.getSelectedFile();
-////      if (file != null) {
-////        this.bwheadless.setStarcraftExe(file.getAbsolutePath());
-////        this.view.getLabelStarcraftExeText().setText(this.bwheadless.getStarcraftExe());
-////      }
-////    }
 //  }
 
   public void filesDropped(List<File> files) {

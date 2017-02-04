@@ -5,18 +5,25 @@ import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BotModule;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.LaunchButtonText;
+import droplauncher.mvc.view.SettingsWindow;
 import droplauncher.mvc.view.SimpleAlert;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Race;
+import droplauncher.util.Constants;
 import droplauncher.util.Util;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 public class Controller {
+
+  private static final Logger LOGGER = Logger.getLogger(Controller.class.getName());
+  private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
   private Model model;
   private View view;
@@ -80,7 +87,24 @@ public class Controller {
   }
 
   public void mnuEditSettingsClicked() {
-
+    String starcraftExe = this.model.getBWHeadless().getStarcraftExe();
+    if (AdakiteUtils.isNullOrEmpty(starcraftExe)) {
+      starcraftExe = "";
+    }
+    String javaExe = this.model.getJavaPath().toString();
+    SettingsWindow window = new SettingsWindow(
+        starcraftExe,
+        javaExe
+    );
+    window.showAndWait();
+    this.model.getBWHeadless().setStarcraftExe(window.getStarcraftPath());
+    try {
+      this.model.setJavaPath(Paths.get(window.getJavaPath()));
+    } catch (IOException ex) {
+      if (CLASS_DEBUG) {
+        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+      }
+    }
   }
 
   public void mnuHelpAboutClicked() {

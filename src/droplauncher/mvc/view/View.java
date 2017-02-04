@@ -132,7 +132,7 @@ public class View implements EventHandler<DragEvent>  {
     CustomGridPane botNameGridPane = new CustomGridPane();
     botNameGridPane.add(this.lblBotName, true);
     botNameGridPane.add(this.txtBotName, true);
-    botNameGridPane.setGaps(2, 2);
+    botNameGridPane.setGaps(0, 2);
     botNameGridPane.pack();
 
     CustomGridPane botGridPane = new CustomGridPane();
