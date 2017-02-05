@@ -11,8 +11,8 @@ import javafx.scene.layout.GridPane;
 public class CustomGridPane {
 
   private GridPane gridPane;
-  private int column;
-  private int row;
+  private int column; /* current column cursor */
+  private int row; /* current row cursor */
   private ArrayList<Node> nodes;
 
   public CustomGridPane() {
@@ -26,17 +26,11 @@ public class CustomGridPane {
   }
 
   public GridPane get() {
-    return this.gridPane;
-  }
-
-  /**
-   * Packs all Node objects into the class GridPane object.
-   * Use {@link #get()} to retrieve it.
-   */
-  public void pack() {
+    this.gridPane.getChildren().clear();
     for (Node node : nodes) {
       this.gridPane.getChildren().add(node);
     }
+    return this.gridPane;
   }
 
   public int getColumn() {
@@ -67,6 +61,12 @@ public class CustomGridPane {
     }
   }
 
+  /**
+   * Adds the specified node to the class GridPane object.
+   *
+   * @param node specified node to add
+   * @see #add(javafx.scene.Node, boolean)
+   */
   public void add(Node node) {
     add(node, false);
   }

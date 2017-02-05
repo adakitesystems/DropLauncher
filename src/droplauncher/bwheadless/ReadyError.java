@@ -3,9 +3,9 @@ package droplauncher.bwheadless;
 /**
  * Enum for reporting the launch status of bwheadless.
  */
-public enum ReadyStatus {
+public enum ReadyError {
 
-  READY("Ready"),
+  NONE("OK"),
   BWHEADLESS_EXE("unable to read/locate bwheadless.exe"),
   STARTCRAFT_EXE("unable to read/locate StarCraft.exe"),
   BWAPI_DLL("unable to read/locate BWAPI.dll"),
@@ -18,7 +18,7 @@ public enum ReadyStatus {
 
   public String name;
 
-  private ReadyStatus(String name) {
+  private ReadyError(String name) {
     this.name = name;
   }
 

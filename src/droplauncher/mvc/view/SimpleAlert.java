@@ -6,7 +6,7 @@ import javafx.scene.control.Alert.AlertType;
 public class SimpleAlert {
 
   public SimpleAlert() {
-
+    /* Do nothing. */
   }
 
   public void showAndWait(AlertType alertType, String title, String msg) {

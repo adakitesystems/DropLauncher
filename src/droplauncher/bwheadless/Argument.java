@@ -1,7 +1,7 @@
 package droplauncher.bwheadless;
 
 /**
- * Enum for passable arguments to the bwheadless.exe process.
+ * Enum for passable arguments to bwheadless.
  */
 public enum Argument {
 

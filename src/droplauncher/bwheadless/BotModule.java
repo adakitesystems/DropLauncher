@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Container class for bot DLL or EXE files.
+ * Container class for bot files.
  */
 public class BotModule {
 

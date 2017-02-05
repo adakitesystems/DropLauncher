@@ -5,7 +5,7 @@ import adakite.util.AdakiteUtils;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotModule;
 import droplauncher.bwheadless.KillableTask;
-import droplauncher.bwheadless.ReadyStatus;
+import droplauncher.bwheadless.ReadyError;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import droplauncher.util.SettingsKey;
@@ -39,8 +39,8 @@ public class Model {
     this.bwheadless.setINI(this.ini);
     try {
       this.ini.open(Paths.get(Constants.DROPLAUNCHER_INI));
-      readSettingsFile(this.ini);
-      this.bwheadless.readSettingsFile(this.ini);
+      parseSettings(this.ini);
+      this.bwheadless.parseSettings(this.ini);
     } catch (IOException ex) {
       LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
     }
@@ -55,8 +55,8 @@ public class Model {
   }
 
   /**
-   * Reads a dropped or selected file which is meant for the
-   * bwheadless.exe process and sets the appropiate settings.
+   * Reads a dropped or selected file which is meant for bwheadless and
+   * sets the appropiate settings.
    *
    * @param path specified file to process
    */
@@ -74,7 +74,7 @@ public class Model {
           this.bwheadless.setBotRace(Race.RANDOM);
         }
       } else {
-        /* Possibly a config file */
+        /* Treat as a config file. */
         this.bwheadless.getExtraBotFiles().add(path);
       }
     } else {
@@ -83,7 +83,7 @@ public class Model {
     }
   }
 
-  public void readSettingsFile(INI ini) {
+  public void parseSettings(INI ini) {
     String val;
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString()))
         && AdakiteUtils.fileExists(Paths.get(val))) {
@@ -94,16 +94,8 @@ public class Model {
   }
 
   public void startBWHeadless() {
-    /* Start bwheadless. */
-    ReadyStatus status = this.bwheadless.getReadyStatus();
-    if (status != ReadyStatus.READY) {
-      if (CLASS_DEBUG) {
-        System.out.println("Model: startBWHeadless: not ready: " + status.toString());
-      }
-    } else {
-      this.taskTracker.update();
-      this.bwheadless.start();
-    }
+    this.taskTracker.update();
+    this.bwheadless.start();
   }
 
   public void stopBWHeadless() {
@@ -135,10 +127,6 @@ public class Model {
     }
     this.bwheadless.stop();
   }
-
-  /* ************************************************************ */
-  /* Events from View */
-  /* ************************************************************ */
 
   public void filesDropped(List<File> files) {
     /* Parse all objects dropped into a complete list of files dropped since

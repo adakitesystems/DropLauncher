@@ -19,13 +19,6 @@ import javafx.stage.Stage;
 
 public class SettingsWindow {
 
-  private static final int PADDING = 20;
-  private static final int TOP_PADDING = PADDING;
-  private static final int BOTTOM_PADDING = PADDING;
-  private static final int LEFT_PADDING = PADDING;
-  private static final int RIGHT_PADDING = PADDING;
-  private static final int GAP = 10;
-
   private Stage stage;
   private Scene scene;
 
@@ -108,16 +101,19 @@ public class SettingsWindow {
     fileSelectPane.add(this.lblChangeJavaExe);
     fileSelectPane.add(this.lblChangeJavaExeText);
     fileSelectPane.add(this.btnChangeJavaExe, true);
-    fileSelectPane.setGaps(GAP, GAP);
-    fileSelectPane.pack();
+    fileSelectPane.setGaps(View.DefaultSetting.GAP.getValue(), View.DefaultSetting.GAP.getValue());
 
     CustomGridPane mainGridPane = new CustomGridPane();
     mainGridPane.add(fileSelectPane.get(), true);
     mainGridPane.add(new Separator(), true);
     mainGridPane.add(this.chkKeepClientWindow, true);
-    mainGridPane.setGaps(GAP, GAP);
-    mainGridPane.get().setPadding(new Insets(TOP_PADDING, LEFT_PADDING, BOTTOM_PADDING, RIGHT_PADDING));
-    mainGridPane.pack();
+    mainGridPane.setGaps(View.DefaultSetting.GAP.getValue(), View.DefaultSetting.GAP.getValue());
+    mainGridPane.get().setPadding(new Insets(
+        View.DefaultSetting.TOP_PADDING.getValue(),
+        View.DefaultSetting.LEFT_PADDING.getValue(),
+        View.DefaultSetting.BOTTOM_PADDING.getValue(),
+        View.DefaultSetting.RIGHT_PADDING.getValue()
+    ));
 
     this.scene = new Scene(mainGridPane.get());
 

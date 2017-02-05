@@ -30,6 +30,31 @@ import javafx.stage.Stage;
 
 public class View implements EventHandler<DragEvent>  {
 
+  public enum DefaultSetting {
+
+    PADDING(20),
+    TOP_PADDING(PADDING.getValue()),
+    BOTTOM_PADDING(PADDING.getValue()),
+    LEFT_PADDING(PADDING.getValue()),
+    RIGHT_PADDING(PADDING.getValue()),
+    GAP(10),
+    LABEL_TEXT_SPACING(4)
+    ;
+
+    private int val;
+
+    private DefaultSetting(int val) {
+      this.val = val;
+    }
+
+    public int getValue() {
+      return this.val;
+    }
+
+  }
+
+  private static final String EMPTY_LABEL = "-";
+
   private Controller controller;
 
   private Stage stage;
@@ -50,20 +75,10 @@ public class View implements EventHandler<DragEvent>  {
   private Button btnLaunch;
   private TextArea txtLogWindow;
 
-  private static final int PADDING = 20;
-  private static final int TOP_PADDING = PADDING;
-  private static final int BOTTOM_PADDING = PADDING;
-  private static final int LEFT_PADDING = PADDING;
-  private static final int RIGHT_PADDING = PADDING;
-  private static final int GAP = 10;
-  private static final int LABEL_TEXT_SPACING = 4;
-
-  private static final String EMPTY_LABEL = "-";
-
   private INI ini;
 
   public View() {
-
+    /* Do nothing. */
   }
 
   public void setController(Controller controller) {
@@ -138,53 +153,52 @@ public class View implements EventHandler<DragEvent>  {
     HBox hboxBotFile = new HBox();
     hboxBotFile.getChildren().add(this.lblBotFile);
     hboxBotFile.getChildren().add(this.lblBotFileText);
-    hboxBotFile.setSpacing(LABEL_TEXT_SPACING);
+    hboxBotFile.setSpacing(DefaultSetting.LABEL_TEXT_SPACING.getValue());
     HBox hboxBwapiVersion = new HBox();
     hboxBwapiVersion.getChildren().add(this.lblBwapiVersion);
     hboxBwapiVersion.getChildren().add(this.lblBwapiVersionText);
-    hboxBwapiVersion.setSpacing(LABEL_TEXT_SPACING);
+    hboxBwapiVersion.setSpacing(DefaultSetting.LABEL_TEXT_SPACING.getValue());
     CustomGridPane fileGridPane = new CustomGridPane();
     fileGridPane.add(hboxBotFile, true);
     fileGridPane.add(hboxBwapiVersion, true);
-    fileGridPane.setGaps(GAP, GAP);
-    fileGridPane.pack();
+    fileGridPane.setGaps(DefaultSetting.GAP.getValue(), DefaultSetting.GAP.getValue());
 
     CustomGridPane botNameGridPane = new CustomGridPane();
     botNameGridPane.add(this.lblBotName, true);
     botNameGridPane.add(this.txtBotName);
     botNameGridPane.add(this.cbRace, true);
-    botNameGridPane.setGaps(GAP, 2);
-    botNameGridPane.pack();
+    botNameGridPane.setGaps(DefaultSetting.GAP.getValue(), 2);
 
     CustomGridPane botInfoGridPane = new CustomGridPane();
     botInfoGridPane.add(fileGridPane.get(), true);
     botInfoGridPane.add(botNameGridPane.get(), true);
-    botInfoGridPane.setGaps(GAP, GAP);
+    botInfoGridPane.setGaps(DefaultSetting.GAP.getValue(), DefaultSetting.GAP.getValue());
     botInfoGridPane.get().setAlignment(Pos.CENTER);
-    botInfoGridPane.pack();
 
     CustomGridPane btnLaunchGridPane = new CustomGridPane();
     btnLaunchGridPane.add(this.btnLaunch, true);
     btnLaunchGridPane.get().setAlignment(Pos.CENTER);
-    btnLaunchGridPane.setGaps(GAP, GAP);
-    btnLaunchGridPane.pack();
+    btnLaunchGridPane.setGaps(DefaultSetting.GAP.getValue(), DefaultSetting.GAP.getValue());
 
     CustomGridPane txtLogWindowGridPane = new CustomGridPane();
     if (this.controller.isEnabledLogWindow()) {
       txtLogWindowGridPane.add(this.txtLogWindow);
     }
-    txtLogWindowGridPane.setGaps(GAP, GAP);
+    txtLogWindowGridPane.setGaps(DefaultSetting.GAP.getValue(), DefaultSetting.GAP.getValue());
     txtLogWindowGridPane.get().setAlignment(Pos.CENTER);
-    txtLogWindowGridPane.pack();
 
     CustomGridPane mainGridPane = new CustomGridPane();
     mainGridPane.add(botInfoGridPane.get(), true);
     mainGridPane.add(btnLaunchGridPane.get(), true);
     mainGridPane.add(txtLogWindowGridPane.get(), true);
-    mainGridPane.get().setPadding(new Insets(TOP_PADDING, LEFT_PADDING, BOTTOM_PADDING, RIGHT_PADDING));
-    mainGridPane.setGaps(GAP, GAP);
+    mainGridPane.get().setPadding(new Insets(
+        DefaultSetting.TOP_PADDING.getValue(),
+        DefaultSetting.LEFT_PADDING.getValue(),
+        DefaultSetting.BOTTOM_PADDING.getValue(),
+        DefaultSetting.RIGHT_PADDING.getValue()
+    ));
+    mainGridPane.setGaps(DefaultSetting.GAP.getValue(), DefaultSetting.GAP.getValue());
     mainGridPane.get().setAlignment(Pos.CENTER);
-    mainGridPane.pack();
 
     BorderPane borderPane = new BorderPane();
     borderPane.setTop(this.menuBar);
@@ -240,7 +254,7 @@ public class View implements EventHandler<DragEvent>  {
 
   private void setText(Node node, String str) {
     if (AdakiteUtils.isNullOrEmpty(str)) {
-      str = "";
+      str = EMPTY_LABEL;
     }
 
     if (node instanceof Button) {

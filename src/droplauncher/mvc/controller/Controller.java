@@ -16,7 +16,6 @@ import droplauncher.util.Util;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextArea;
@@ -24,9 +23,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class Controller {
-
-  private static final Logger LOGGER = Logger.getLogger(Controller.class.getName());
-  private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
   private Model model;
   private View view;
@@ -43,10 +39,6 @@ public class Controller {
   public void setView(View view) {
     this.view = view;
     this.view.setINI(this.model.getINI());
-  }
-
-  public TextArea getLogWindow() {
-    return this.view.getLogWindow();
   }
 
   private void startBWHeadless() {
@@ -66,8 +58,12 @@ public class Controller {
   }
 
   /* ************************************************************ */
-  /* Events for a view */
+  /* Accessible data */
   /* ************************************************************ */
+
+  public TextArea getLogWindow() {
+    return this.view.getLogWindow();
+  }
 
   public BotModule getBotModule() {
     return this.model.getBWHeadless().getBotModule();
@@ -78,8 +74,7 @@ public class Controller {
     if (AdakiteUtils.isNullOrEmpty(dll)) {
       return "";
     } else {
-      String version = BWAPI.getBwapiVersion(Paths.get(dll));
-      return version;
+      return BWAPI.getBwapiVersion(Paths.get(dll));
     }
   }
 
@@ -97,7 +92,7 @@ public class Controller {
   }
 
   /* ************************************************************ */
-  /* Events from a view */
+  /* Events called by a view */
   /* ************************************************************ */
 
   public void mnuFileSelectBotFilesClicked(Stage stage) {
@@ -109,9 +104,8 @@ public class Controller {
     }
     List<File> files = fc.showOpenMultipleDialog(stage);
     if (files != null && files.size() > 0) {
-      this.model.filesDropped(files);
+      filesDropped(files);
     }
-    this.view.update();
   }
 
   public void mnuFileExitClicked(Stage stage) {
@@ -124,21 +118,10 @@ public class Controller {
   }
 
   public void mnuHelpAboutClicked() {
-    String msg =
-        Constants.PROGRAM_NAME + Util.newline()
-        + "Author: " + Constants.PROGRAM_AUTHOR + Util.newline()
-        + "Version: " + Constants.PROGRAM_VERSION + Util.newline(2)
-        + Constants.PROGRAM_DESC + Util.newline(2)
-        + "License: " + Constants.PROGRAM_LICENSE + Util.newline()
-        + Constants.PROGRAM_LICENSE_LINK + Util.newline(2)
-        + "Source:" + Util.newline()
-        + Constants.PROGRAM_GITHUB + Util.newline()
-        + Util.newline()
-        ;
     new SimpleAlert().showAndWait(
         AlertType.INFORMATION,
         Constants.PROGRAM_NAME,
-        msg
+        Constants.PROGRAM_ABOUT
     );
   }
 
@@ -172,7 +155,7 @@ public class Controller {
             AlertType.ERROR,
             "Not Ready",
             "The program is not ready due to the following error: " + Util.newline(2) +
-            this.model.getBWHeadless().getReadyStatus().toString()
+            this.model.getBWHeadless().getReadyError().toString()
         );
       } else {
         /* Start bwheadless. */
