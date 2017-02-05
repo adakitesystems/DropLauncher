@@ -46,17 +46,6 @@ public class Model {
     }
   }
 
-//  private void closeProgram() {
-//    if (this.bwheadless.isRunning()) {
-//      stopBWHeadless();
-//    }
-//    System.exit(0);
-//  }
-
-//  public void closeView() {
-//    closeProgram();
-//  }
-
   public INI getINI() {
     return this.ini;
   }

@@ -78,7 +78,10 @@ public class View implements EventHandler<DragEvent>  {
     MenuItem mnuFileSelectBotFiles = new MenuItem(MenuText.SELECT_BOT_FILES.toString());
     mnuFileSelectBotFiles.setOnAction(e -> this.controller.mnuFileSelectBotFilesClicked());
     MenuItem mnuFileExit = new MenuItem(MenuText.EXIT.toString());
-    mnuFileExit.setOnAction(e -> this.controller.mnuFileExitClicked());
+    mnuFileExit.setOnAction(e -> {
+      this.controller.mnuFileExitClicked(this.stage);
+      e.consume();
+    });
     this.fileMenu = new Menu(MenuText.FILE.toString());
     this.fileMenu.getItems().add(mnuFileSelectBotFiles);
     this.fileMenu.getItems().add(mnuFileExit);
@@ -188,6 +191,10 @@ public class View implements EventHandler<DragEvent>  {
     this.scene.setOnDragOver(this);
     this.scene.setOnDragDropped(this);
 
+    this.stage.setOnCloseRequest(e -> {
+      this.controller.closeProgramRequest(this.stage);
+      e.consume();
+    });
     this.stage.setResizable(false);
     this.stage.setTitle(Constants.PROGRAM_TITLE);
     this.stage.setScene(this.scene);

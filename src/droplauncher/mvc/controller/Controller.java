@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextArea;
+import javafx.stage.Stage;
 
 public class Controller {
 
@@ -43,6 +44,10 @@ public class Controller {
     this.view.setINI(this.model.getINI());
   }
 
+  public TextArea getLogWindow() {
+    return this.view.getLogWindow();
+  }
+
   private void startBWHeadless() {
     this.model.getBWHeadless().setLogWindow(this.view.getLogWindow());
     this.model.startBWHeadless();
@@ -52,8 +57,11 @@ public class Controller {
     this.model.stopBWHeadless();
   }
 
-  public TextArea getLogWindow() {
-    return this.view.getLogWindow();
+  public void closeProgramRequest(Stage stage) {
+    if (this.model.getBWHeadless().isRunning()) {
+      stopBWHeadless();
+    }
+    stage.close();
   }
 
   /* ************************************************************ */
@@ -95,8 +103,8 @@ public class Controller {
 
   }
 
-  public void mnuFileExitClicked() {
-
+  public void mnuFileExitClicked(Stage stage) {
+    closeProgramRequest(stage);
   }
 
   public void mnuEditSettingsClicked() {
