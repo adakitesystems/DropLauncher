@@ -20,16 +20,14 @@ public class StreamGobbler extends Thread {
 
   private TextArea txtLogWindow;
 
+  private String streamName;
+
   private StreamGobbler() {}
 
-  public StreamGobbler(InputStream is, TextArea ta) {
+  public StreamGobbler(String streamName, InputStream is, TextArea ta) {
+    this.streamName = streamName;
     this.is = is;
     this.txtLogWindow = ta;
-  }
-
-  public StreamGobbler(InputStream is) {
-    this.is = is;
-    this.txtLogWindow = null;
   }
 
   @Override
@@ -40,6 +38,9 @@ public class StreamGobbler extends Thread {
       while ((line = this.br.readLine()) != null) {
         if (line.startsWith("fps: ")) {
           continue;
+        }
+        if (!AdakiteUtils.isNullOrEmpty(streamName)) {
+          line = this.streamName + ": " + line;
         }
         if (this.txtLogWindow != null && this.txtLogWindow.isVisible()) {
           this.txtLogWindow.appendText(AdakiteUtils.NEWLINE + line);

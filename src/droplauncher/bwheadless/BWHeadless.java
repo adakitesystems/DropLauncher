@@ -170,7 +170,7 @@ public class BWHeadless {
 
     /* Start bwheadless. */
     this.bwheadlessPipe.setLogWindow(this.txtLogWindow);
-    this.bwheadlessPipe.open(Paths.get(BWHEADLESS_EXE), bwhArgsArray, starcraftDirectory);
+    this.bwheadlessPipe.open(Paths.get(BWHEADLESS_EXE), bwhArgsArray, starcraftDirectory, "bwh");
 
     //TODO: Pipe client output to a UI component.
     /* Start bot client in a command prompt. */
@@ -183,11 +183,11 @@ public class BWHeadless {
         }
         clArgs.add(this.botModule.getPath().toAbsolutePath().toString());
         String[] cargsArray = Util.toStringArray(clArgs);
-        this.botPipe.open(Paths.get(this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString())), cargsArray, starcraftDirectory);
+        this.botPipe.open(Paths.get(this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString())), cargsArray, starcraftDirectory, "client");
       } else if (AdakiteUtils.getFileExtension(this.botModule.getPath()).equalsIgnoreCase("exe")) {
         clArgs.add(this.botModule.toString());
         String[] clArgsArray = Util.toStringArray(clArgs);
-        this.botPipe.open(this.botModule.getPath().toAbsolutePath(), clArgsArray, starcraftDirectory);
+        this.botPipe.open(this.botModule.getPath().toAbsolutePath(), clArgsArray, starcraftDirectory, "client");
       }
     }
   }

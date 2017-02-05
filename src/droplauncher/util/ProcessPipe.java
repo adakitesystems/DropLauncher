@@ -71,7 +71,7 @@ public class ProcessPipe {
    *     true if pipe was opened successfully,
    *     otherwise false
    */
-  public boolean open(Path path, String[] args, String cwd) {
+  public boolean open(Path path, String[] args, String cwd, String streamName) {
     if (path == null) {
       if (CLASS_DEBUG) {
         LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject("file"));
@@ -102,8 +102,8 @@ public class ProcessPipe {
 
       this.is = this.process.getInputStream();
       this.br = new BufferedReader(new InputStreamReader(this.is));
-      this.gobblerStdout = new StreamGobbler(this.process.getInputStream(), this.txtLogWindow);
-      this.gobblerStderr = new StreamGobbler(this.process.getErrorStream(), this.txtLogWindow);
+      this.gobblerStdout = new StreamGobbler(streamName, this.process.getInputStream(), this.txtLogWindow);
+      this.gobblerStderr = new StreamGobbler(streamName, this.process.getErrorStream(), this.txtLogWindow);
       this.gobblerStdout.start();
       this.gobblerStderr.start();
 
@@ -122,20 +122,6 @@ public class ProcessPipe {
     this.isOpen = false;
 
     return false;
-  }
-
-  /**
-   * @see #open(java.nio.file.Path, java.lang.String[], java.lang.String)
-   */
-  public boolean open(Path path, String[] args) {
-    return open(path, args, null);
-  }
-
-  /**
-   * @see #open(java.nio.file.Path, java.lang.String[], java.lang.String)
-   */
-  public boolean open(Path path) {
-    return open(path, null);
   }
 
   /**
