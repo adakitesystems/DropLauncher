@@ -25,6 +25,7 @@ public class Model {
 
   private static final Logger LOGGER = Logger.getLogger(Model.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
+  private static final boolean KILL_DEBUG = false;
 
   private INI ini;
   private BWHeadless bwheadless;
@@ -103,7 +104,6 @@ public class Model {
     }
   }
 
-  //TODO: Delete error checking code. The Controller checks.
   public void startBWHeadless() {
     /* Start bwheadless. */
     ReadyStatus status = this.bwheadless.getReadyStatus();
@@ -126,14 +126,22 @@ public class Model {
     String botModuleName = this.bwheadless.getBotModule().getPath().getFileName().toString();
     for (Task task : tasks) {
       /* Kill bot module. */
-      if (isClient && task.getImageName().equalsIgnoreCase(botModuleName)) {
+      if (isClient && botModuleName.contains(task.getImageName())) {
+        if (KILL_DEBUG) {
+          System.out.println("Killing: " + task.getPID() + ":" + task.getImageName());
+        }
         tasklist.kill(task.getPID());
         continue;
       }
       /* Only kill tasks whose names match known associated tasks. */
       for (KillableTask kt : KillableTask.values()) {
-        tasklist.kill(task.getPID());
-        break;
+        if (kt.toString().equalsIgnoreCase(task.getImageName())) {
+          if (KILL_DEBUG) {
+            System.out.println("Killing: " + task.getPID() + ":" + task.getImageName());
+          }
+          tasklist.kill(task.getPID());
+          break;
+        }
       }
     }
     this.bwheadless.stop();

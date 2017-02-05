@@ -28,7 +28,7 @@ public class BWHeadless {
 
   private static final Logger LOGGER = Logger.getLogger(BWHeadless.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
-  private static final boolean SET_DEBUG = true;
+  private static final boolean SET_DEBUG = false;
 
   public static final String BWHEADLESS_EXE = "bwheadless.exe";
   public static final String BWHEADLESS_INI_SECTION = "bwheadless";
