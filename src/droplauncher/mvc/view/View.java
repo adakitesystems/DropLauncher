@@ -75,6 +75,7 @@ public class View implements EventHandler<DragEvent>  {
   }
 
   private void initMenus() {
+    /* File */
     MenuItem mnuFileSelectBotFiles = new MenuItem(MenuText.SELECT_BOT_FILES.toString());
     mnuFileSelectBotFiles.setOnAction(e -> this.controller.mnuFileSelectBotFilesClicked(this.stage));
     MenuItem mnuFileExit = new MenuItem(MenuText.EXIT.toString());
@@ -86,15 +87,17 @@ public class View implements EventHandler<DragEvent>  {
     this.fileMenu.getItems().add(mnuFileSelectBotFiles);
     this.fileMenu.getItems().add(mnuFileExit);
 
+    /* Edit */
     MenuItem mnuEditSettings = new MenuItem(MenuText.SETTINGS.toString());
     mnuEditSettings.setOnAction(e -> this.controller.mnuEditSettingsClicked());
     this.editMenu = new Menu(MenuText.EDIT.toString());
     this.editMenu.getItems().add(mnuEditSettings);
 
+    /* Help */
     MenuItem mnuHelpAbout = new MenuItem(MenuText.ABOUT.toString());
     mnuHelpAbout.setOnAction(e -> this.controller.mnuHelpAboutClicked());
     this.helpMenu = new Menu(MenuText.HELP.toString());
-    this.helpMenu.getItems().add(new MenuItem(MenuText.ABOUT.toString()));
+    this.helpMenu.getItems().add(mnuHelpAbout);
 
     this.menuBar = new MenuBar();
     this.menuBar.getMenus().add(this.fileMenu);

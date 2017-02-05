@@ -172,7 +172,6 @@ public class BWHeadless {
     this.bwheadlessPipe.setLogWindow(this.txtLogWindow);
     this.bwheadlessPipe.open(Paths.get(BWHEADLESS_EXE), bwhArgsArray, starcraftDirectory, "bwh");
 
-    //TODO: Pipe client output to a UI component.
     /* Start bot client in a command prompt. */
     if (this.botModule.getType() == BotModule.Type.CLIENT) {
       this.botPipe.setLogWindow(this.txtLogWindow);

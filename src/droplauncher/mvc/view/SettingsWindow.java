@@ -68,7 +68,7 @@ public class SettingsWindow {
     this.btnChangeStarcraftExe = new Button("...");
     this.lblChangeStarcraftExeText = new Label(this.ini.getValue(BWHeadless.BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()));
 
-    this.lblChangeJavaExe = new Label("Java.exe:");
+    this.lblChangeJavaExe = new Label("java.exe:");
     this.btnChangeJavaExe = new Button("...");
     this.lblChangeJavaExeText = new Label(this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString()));
 

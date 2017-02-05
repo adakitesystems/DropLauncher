@@ -2,6 +2,7 @@ package droplauncher.util;
 
 import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
+import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -15,7 +16,8 @@ public class Util {
   private static final Logger LOGGER = Logger.getLogger(Util.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
-  public static final String NEWLINE = System.lineSeparator();
+  private static final String NEWLINE = System.lineSeparator();
+  public static final String FILE_SEPARATOR = File.separator;
 
   private Util() {}
 
@@ -51,6 +53,10 @@ public class Util {
       sb.append(NEWLINE);
     }
     return sb.toString();
+  }
+
+  public static String newline() {
+    return NEWLINE;
   }
 
   public static String getUserHomeDirectory() {

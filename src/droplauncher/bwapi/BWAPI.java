@@ -1,7 +1,7 @@
 package droplauncher.bwapi;
 
 import adakite.md5sum.MD5Checksum;
-import java.io.File;
+import droplauncher.util.Util;
 import java.nio.file.Path;
 
 /**
@@ -10,10 +10,10 @@ import java.nio.file.Path;
 public class BWAPI {
 
   public static final String BWAPI_DATA_DIR = "bwapi-data";
-  public static final String BWAPI_DATA_AI_DIR = BWAPI_DATA_DIR + File.separator + "AI";
-  public static final String BWAPI_DATA_INI = BWAPI_DATA_DIR + File.separator + "bwapi.ini";
-  public static final String BWAPI_DATA_DIR_READ = BWAPI_DATA_DIR + File.separator + "read";
-  public static final String BWAPI_DATA_DIR_WRITE = BWAPI_DATA_DIR + File.separator + "write";
+  public static final String BWAPI_DATA_AI_DIR = BWAPI_DATA_DIR + Util.FILE_SEPARATOR + "AI";
+  public static final String BWAPI_DATA_INI = BWAPI_DATA_DIR + Util.FILE_SEPARATOR + "bwapi.ini";
+  public static final String BWAPI_DATA_DIR_READ = BWAPI_DATA_DIR + Util.FILE_SEPARATOR + "read";
+  public static final String BWAPI_DATA_DIR_WRITE = BWAPI_DATA_DIR + Util.FILE_SEPARATOR + "write";
   public static final String BWAPI_DLL_UNKNOWN = "Unknown";
 
   private BWAPI() {}
@@ -25,7 +25,7 @@ public class BWAPI {
    * @param path specified file
    * @return
    *     the BWAPI version if known,
-   *     otherwise error string
+   *     otherwise an unknown-type indication string
    */
   public static String getBwapiVersion(Path path) {
     String checksum = MD5Checksum.get(path);

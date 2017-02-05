@@ -124,7 +124,22 @@ public class Controller {
   }
 
   public void mnuHelpAboutClicked() {
-
+    String msg =
+        Constants.PROGRAM_NAME + Util.newline()
+        + "Author: " + Constants.PROGRAM_AUTHOR + Util.newline()
+        + "Version: " + Constants.PROGRAM_VERSION + Util.newline(2)
+        + Constants.PROGRAM_DESC + Util.newline(2)
+        + "License: " + Constants.PROGRAM_LICENSE + Util.newline()
+        + Constants.PROGRAM_LICENSE_LINK + Util.newline(2)
+        + "Source:" + Util.newline()
+        + Constants.PROGRAM_GITHUB + Util.newline()
+        + Util.newline()
+        ;
+    new SimpleAlert().showAndWait(
+        AlertType.INFORMATION,
+        Constants.PROGRAM_NAME,
+        msg
+    );
   }
 
   public void filesDropped(List<File> files) {
