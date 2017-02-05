@@ -15,35 +15,32 @@ public class StreamGobbler extends Thread {
   private static final Logger LOGGER = Logger.getLogger(StreamGobbler.class.getName());
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
-  private InputStream is;
-  private BufferedReader br;
-
+  private InputStream inputStream;
   private TextArea txtLogWindow;
-
   private String streamName;
 
   private StreamGobbler() {}
 
-  public StreamGobbler(String streamName, InputStream is, TextArea ta) {
+  public StreamGobbler(String streamName, InputStream inputStream, TextArea textArea) {
     this.streamName = streamName;
-    this.is = is;
-    this.txtLogWindow = ta;
+    this.inputStream = inputStream;
+    this.txtLogWindow = textArea;
   }
 
   @Override
   public void run() {
     try {
-      this.br = new BufferedReader(new InputStreamReader(this.is));
+      BufferedReader br = new BufferedReader(new InputStreamReader(this.inputStream));
       String line;
-      while ((line = this.br.readLine()) != null) {
+      while ((line = br.readLine()) != null) {
         if (line.startsWith("fps: ")) {
           continue;
         }
-        if (!AdakiteUtils.isNullOrEmpty(streamName)) {
+        if (!AdakiteUtils.isNullOrEmpty(this.streamName)) {
           line = this.streamName + ": " + line;
         }
         if (this.txtLogWindow != null && this.txtLogWindow.isVisible()) {
-          this.txtLogWindow.appendText(AdakiteUtils.NEWLINE + line);
+          this.txtLogWindow.appendText(Util.newline() + line);
         } else {
           System.out.println(line);
         }
