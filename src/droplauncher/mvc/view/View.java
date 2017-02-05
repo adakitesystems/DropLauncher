@@ -129,16 +129,16 @@ public class View implements EventHandler<DragEvent>  {
     });
     this.btnLaunch.setOnAction(e -> this.controller.btnLaunchClicked());
 
-    CustomGridPane fileGridPane = new CustomGridPane();
     HBox hboxBotFile = new HBox();
     hboxBotFile.getChildren().add(this.lblBotFile);
     hboxBotFile.getChildren().add(this.lblBotFileText);
     hboxBotFile.setSpacing(LABEL_TEXT_SPACING);
-    fileGridPane.add(hboxBotFile, true);
     HBox hboxBwapiVersion = new HBox();
     hboxBwapiVersion.getChildren().add(this.lblBwapiVersion);
     hboxBwapiVersion.getChildren().add(this.lblBwapiVersionText);
     hboxBwapiVersion.setSpacing(LABEL_TEXT_SPACING);
+    CustomGridPane fileGridPane = new CustomGridPane();
+    fileGridPane.add(hboxBotFile, true);
     fileGridPane.add(hboxBwapiVersion, true);
     fileGridPane.setGaps(GAP, GAP);
     fileGridPane.pack();
