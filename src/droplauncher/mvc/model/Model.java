@@ -140,24 +140,6 @@ public class Model {
   /* Events from View */
   /* ************************************************************ */
 
-  //TODO: Move this to the "Select bot files" menu option.
-//  public void boxDropFilesMouseClicked(MouseEvent evt) {
-//    JFileChooser fc = new JFileChooser();
-//    fc.setDialogTitle("Select bot files ...");
-//    fc.setAcceptAllFileFilterUsed(false);
-//    fc.setMultiSelectionEnabled(true);
-//    fc.setFileFilter(new FileNameExtensionFilter("All supported files (*.dll, *.exe)", "dll", "exe"));
-////    if (this.view.showFileChooser(fc) == JFileChooser.APPROVE_OPTION) {
-////      File[] fileList = fc.getSelectedFiles();
-////      if (fileList != null && fileList.length > 0) {
-////        for (File file : fileList) {
-////          processFile(file.toPath());
-////        }
-////      }
-////      this.view.update();
-////    }
-//  }
-
   public void filesDropped(List<File> files) {
     /* Parse all objects dropped into a complete list of files dropped since
        dropping a directory does NOT include all subdirectories and

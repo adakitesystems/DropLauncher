@@ -76,7 +76,7 @@ public class View implements EventHandler<DragEvent>  {
 
   private void initMenus() {
     MenuItem mnuFileSelectBotFiles = new MenuItem(MenuText.SELECT_BOT_FILES.toString());
-    mnuFileSelectBotFiles.setOnAction(e -> this.controller.mnuFileSelectBotFilesClicked());
+    mnuFileSelectBotFiles.setOnAction(e -> this.controller.mnuFileSelectBotFilesClicked(this.stage));
     MenuItem mnuFileExit = new MenuItem(MenuText.EXIT.toString());
     mnuFileExit.setOnAction(e -> {
       this.controller.mnuFileExitClicked(this.stage);

@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextArea;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class Controller {
@@ -99,8 +100,18 @@ public class Controller {
   /* Events from a view */
   /* ************************************************************ */
 
-  public void mnuFileSelectBotFilesClicked() {
-
+  public void mnuFileSelectBotFilesClicked(Stage stage) {
+    FileChooser fc = new FileChooser();
+    fc.setTitle("Select bot files ...");
+    String userDirectory = Util.getUserHomeDirectory();
+    if (userDirectory != null) {
+      fc.setInitialDirectory(new File(userDirectory));
+    }
+    List<File> files = fc.showOpenMultipleDialog(stage);
+    if (files != null && files.size() > 0) {
+      this.model.filesDropped(files);
+    }
+    this.view.update();
   }
 
   public void mnuFileExitClicked(Stage stage) {
