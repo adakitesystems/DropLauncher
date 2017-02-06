@@ -1,5 +1,5 @@
-# Ignore AdakiteLibrary for now
-lib/adakite*
+# Ignore libraries for now
+lib/*
 src/adakite/*
 
 # Misc files
