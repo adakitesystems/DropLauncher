@@ -20,6 +20,8 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -78,6 +80,13 @@ public class View implements EventHandler<DragEvent>  {
   private Button btnLaunch;
   private ConsoleOutput console;
 
+  private Image imgFile;
+  private Image imgFileBlank;
+  private Image imgFileExe;
+  private Image imgFileJar;
+  private Image imgFileDll;
+  private Image imgBwapi;
+
   private INI ini;
 
   public View() {
@@ -124,8 +133,18 @@ public class View implements EventHandler<DragEvent>  {
     this.menuBar.getStyleClass().add("dl-menustyle");
   }
 
+  private void initImages() {
+    this.imgFileBlank = new Image("droplauncher/mvc/view/themes/images/file-blank-56.png");
+    this.imgFileDll = new Image("droplauncher/mvc/view/themes/images/file-dll-56.png");
+    this.imgFileExe = new Image("droplauncher/mvc/view/themes/images/file-exe-56.png");
+    this.imgFileJar = new Image("droplauncher/mvc/view/themes/images/file-java-56.png");
+    this.imgFile = this.imgFileJar;
+    this.imgBwapi = new Image("droplauncher/mvc/view/themes/images/bwapi.png");
+  }
+
   private void initComponents() {
     initMenus();
+    initImages();
 
     this.lblBwapiVersion = new Label("BWAPI.dll Version:");
     this.lblBwapiVersionText = new Label(EMPTY_LABEL);
@@ -163,13 +182,17 @@ public class View implements EventHandler<DragEvent>  {
     this.btnLaunch.setOnAction(e -> this.controller.btnLaunchClicked());
 
     HBox hboxBotFile = new HBox();
+    hboxBotFile.getChildren().add(new ImageView(this.imgFile));
     hboxBotFile.getChildren().add(this.lblBotFile);
     hboxBotFile.getChildren().add(this.lblBotFileText);
     hboxBotFile.setSpacing(DefaultSetting.LABEL_TEXT_SPACING.getValue());
+    hboxBotFile.setAlignment(Pos.CENTER);
     HBox hboxBwapiVersion = new HBox();
+    hboxBwapiVersion.getChildren().add(new ImageView(this.imgBwapi));
     hboxBwapiVersion.getChildren().add(this.lblBwapiVersion);
     hboxBwapiVersion.getChildren().add(this.lblBwapiVersionText);
     hboxBwapiVersion.setSpacing(DefaultSetting.LABEL_TEXT_SPACING.getValue());
+    hboxBwapiVersion.setAlignment(Pos.CENTER);
     CustomGridPane fileGridPane = new CustomGridPane();
     fileGridPane.add(hboxBotFile, true);
     fileGridPane.add(hboxBwapiVersion, true);
