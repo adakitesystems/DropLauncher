@@ -56,6 +56,27 @@ public class Controller {
     stage.close();
   }
 
+  public void updateRaceChoiceBox() {
+    this.view.setText(this.view.getRaceChoiceBox(), getBotRace().toString());
+    this.view.getRaceChoiceBox().getStyleClass().removeAll();
+    switch (getBotRace()) {
+      case TERRAN:
+        this.view.getRaceChoiceBox().getStyleClass().add("terran-font");
+        break;
+      case ZERG:
+        this.view.getRaceChoiceBox().getStyleClass().add("zerg-font");
+        break;
+      case PROTOSS:
+        this.view.getRaceChoiceBox().getStyleClass().add("protoss-font");
+        break;
+      case RANDOM:
+        this.view.getRaceChoiceBox().getStyleClass().add("terran-font");
+        break;
+      default:
+        break;
+    }
+  }
+
   /* ************************************************************ */
   /* Accessible data */
   /* ************************************************************ */
@@ -139,6 +160,7 @@ public class Controller {
     } else if (str.equals(Race.RANDOM.toString())) {
       this.model.getBWHeadless().setBotRace(Race.RANDOM);
     }
+    updateRaceChoiceBox();
   }
 
   public void botNameChanged(String str) {
