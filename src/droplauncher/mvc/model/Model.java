@@ -19,6 +19,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import net.lingala.zip4j.core.ZipFile;
+import org.apache.commons.io.FileUtils;
 
 public class Model {
 
@@ -62,7 +64,28 @@ public class Model {
   private void processFile(Path path) {
     String ext = AdakiteUtils.getFileExtension(path).toLowerCase();
     if (!AdakiteUtils.isNullOrEmpty(ext)) {
-      if (ext.equals("dll") || ext.equals("exe") || ext.equals("jar")) {
+      if (ext.equals("zip")) {
+        try {
+          ZipFile zipFile = new ZipFile(path.toAbsolutePath().toString());
+          if (zipFile.isEncrypted()) {
+            return;
+          }
+          Path tmpDir = Paths.get(Constants.TEMP_DIRECTORY);
+          FileUtils.deleteDirectory(tmpDir.toFile());
+          AdakiteUtils.createDirectory(tmpDir);
+          zipFile.extractAll(tmpDir.toAbsolutePath().toString());
+          Path[] tmpList = AdakiteUtils.getDirectoryContents(tmpDir);
+          for (Path tmpPath : tmpList) {
+            if (!AdakiteUtils.directoryExists(tmpPath)) {
+              Path dest = tmpPath.getFileName();
+              FileUtils.copyFile(tmpPath.toFile(), dest.getFileName().toFile());
+              processFile(tmpPath);
+            }
+          }
+        } catch (Exception ex) {
+          return;
+        }
+      } else if (ext.equals("dll") || ext.equals("exe") || ext.equals("jar")) {
         if (path.getFileName().toString().equalsIgnoreCase("BWAPI.dll")) {
           /* BWAPI.dll */
           this.bwheadless.setBwapiDll(path.toAbsolutePath().toString());
