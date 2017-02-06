@@ -43,7 +43,7 @@ public class StreamGobbler extends Thread {
         }
         if (this.txtLogWindow != null && this.txtLogWindow.isVisible()) {
           Platform.runLater(() -> {
-            this.txtLogWindow.appendText(Util.newline() + this.line);
+            this.txtLogWindow.appendText(AdakiteUtils.newline() + this.line);
           });
         }
         System.out.println(this.line);

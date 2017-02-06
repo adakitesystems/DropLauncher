@@ -8,7 +8,6 @@ import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
 import droplauncher.util.ProcessPipe;
 import droplauncher.util.SettingsKey;
-import droplauncher.util.Util;
 import droplauncher.util.windows.Windows;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -167,7 +166,7 @@ public class BWHeadless {
     bwhArgs.add(Argument.ENABLE_LAN.toString());
     bwhArgs.add(Argument.STARCRAFT_INSTALL_PATH.toString());
     bwhArgs.add(starcraftDirectory);
-    String[] bwhArgsArray = Util.toStringArray(bwhArgs);
+    String[] bwhArgsArray = AdakiteUtils.toStringArray(bwhArgs);
 
     /* Start bwheadless. */
     this.bwheadlessPipe.setLogWindow(this.txtLogWindow);
@@ -182,11 +181,11 @@ public class BWHeadless {
           clArgs.add(arg);
         }
         clArgs.add(this.botModule.getPath().toAbsolutePath().toString());
-        String[] cargsArray = Util.toStringArray(clArgs);
+        String[] cargsArray = AdakiteUtils.toStringArray(clArgs);
         this.botPipe.open(Paths.get(this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString())), cargsArray, starcraftDirectory, CLIENT_STREAM_NAME);
       } else if (AdakiteUtils.getFileExtension(this.botModule.getPath()).equalsIgnoreCase("exe")) {
         clArgs.add(this.botModule.toString());
-        String[] clArgsArray = Util.toStringArray(clArgs);
+        String[] clArgsArray = AdakiteUtils.toStringArray(clArgs);
         this.botPipe.open(this.botModule.getPath().toAbsolutePath(), clArgsArray, starcraftDirectory, CLIENT_STREAM_NAME);
       }
     }
@@ -209,7 +208,7 @@ public class BWHeadless {
     INI bwapiIni = new INI();
     bwapiIni.open(Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_INI));
     if (this.botModule.getType() == BotModule.Type.DLL) {
-      bwapiIni.set("ai", "ai", BWAPI.BWAPI_DATA_AI_DIR + Util.FILE_SEPARATOR + this.botModule.getPath().getFileName().toString());
+      bwapiIni.set("ai", "ai", BWAPI.BWAPI_DATA_AI_DIR + AdakiteUtils.FILE_SEPARATOR + this.botModule.getPath().getFileName().toString());
     } else {
       bwapiIni.disableVariable("ai", "ai");
     }

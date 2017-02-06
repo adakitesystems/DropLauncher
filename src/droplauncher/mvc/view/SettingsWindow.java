@@ -1,10 +1,10 @@
 package droplauncher.mvc.view;
 
 import adakite.ini.INI;
+import adakite.util.AdakiteUtils;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.util.Constants;
 import droplauncher.util.SettingsKey;
-import droplauncher.util.Util;
 import java.io.File;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -69,7 +69,7 @@ public class SettingsWindow {
       FileChooser fc = new FileChooser();
       fc.getExtensionFilters().add(new ExtensionFilter("StarCraft.exe", "StarCraft.exe"));
       fc.setTitle("Select StarCraft.exe ...");
-      String userDirectory = Util.getUserHomeDirectory();
+      String userDirectory = AdakiteUtils.getUserHomeDirectory().toAbsolutePath().toString();
       if (userDirectory != null) {
         fc.setInitialDirectory(new File(userDirectory));
       }
@@ -83,7 +83,7 @@ public class SettingsWindow {
       FileChooser fc = new FileChooser();
       fc.getExtensionFilters().add(new ExtensionFilter("java.exe", "java.exe"));
       fc.setTitle("Select java.exe ...");
-      String userDirectory = Util.getUserHomeDirectory();
+      String userDirectory = AdakiteUtils.getUserHomeDirectory().toAbsolutePath().toString();
       if (userDirectory != null) {
         fc.setInitialDirectory(new File(userDirectory));
       }

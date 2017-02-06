@@ -12,7 +12,6 @@ import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import droplauncher.util.SettingsKey;
-import droplauncher.util.Util;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
@@ -98,7 +97,7 @@ public class Controller {
   public void mnuFileSelectBotFilesClicked(Stage stage) {
     FileChooser fc = new FileChooser();
     fc.setTitle("Select bot files ...");
-    String userDirectory = Util.getUserHomeDirectory();
+    String userDirectory = AdakiteUtils.getUserHomeDirectory().toAbsolutePath().toString();
     if (userDirectory != null) {
       fc.setInitialDirectory(new File(userDirectory));
     }
@@ -154,7 +153,7 @@ public class Controller {
         new SimpleAlert().showAndWait(
             AlertType.ERROR,
             "Not Ready",
-            "The program is not ready due to the following error: " + Util.newline(2) +
+            "The program is not ready due to the following error: " + AdakiteUtils.newline(2) +
             this.model.getBWHeadless().getReadyError().toString()
         );
       } else {
