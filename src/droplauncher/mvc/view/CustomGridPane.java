@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 
 /**
  * Container class for easier GridPane manipulation.
@@ -30,6 +31,7 @@ public class CustomGridPane {
     for (Node node : nodes) {
       this.gridPane.getChildren().add(node);
     }
+    this.gridPane.setMinWidth(Region.USE_PREF_SIZE);
     return this.gridPane;
   }
 

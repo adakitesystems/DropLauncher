@@ -25,6 +25,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 public class View implements EventHandler<DragEvent>  {
@@ -51,6 +52,9 @@ public class View implements EventHandler<DragEvent>  {
     }
 
   }
+
+  public static final String DEFAULT_CSS = "droplauncher/mvc/view/themes/droplauncher.css";
+//  public static final String NEUROPOL_FONT = "droplauncher/mvc/view/themes/neuropol.ttf";
 
   private static final String EMPTY_LABEL = "-";
 
@@ -117,6 +121,7 @@ public class View implements EventHandler<DragEvent>  {
     this.menuBar.getMenus().add(this.fileMenu);
     this.menuBar.getMenus().add(this.editMenu);
     this.menuBar.getMenus().add(this.helpMenu);
+    this.menuBar.getStyleClass().add("dl-menustyle");
   }
 
   private void initComponents() {
@@ -124,19 +129,28 @@ public class View implements EventHandler<DragEvent>  {
 
     this.lblBwapiVersion = new Label("BWAPI.dll Version:");
     this.lblBwapiVersionText = new Label(EMPTY_LABEL);
+    this.lblBwapiVersionText.setMinWidth(Region.USE_PREF_SIZE);
     this.lblBotFile = new Label("Bot File:");
     this.lblBotFileText = new Label(EMPTY_LABEL);
+    this.lblBotFileText.setMinWidth(Region.USE_PREF_SIZE);
     this.lblBotName = new Label("Bot Name (max 24 characters):");
     this.txtBotName = new TextField("");
+    this.txtBotName.setMinWidth(Region.USE_PREF_SIZE);
     this.cbRace = new ChoiceBox<>();
+    this.cbRace.setMinWidth(Region.USE_PREF_SIZE);
     this.cbRace.getItems().add(Race.TERRAN.toString());
     this.cbRace.getItems().add(Race.ZERG.toString());
     this.cbRace.getItems().add(Race.PROTOSS.toString());
     this.cbRace.getItems().add(Race.RANDOM.toString());
+    this.cbRace.getStyleClass().add("protoss-font");
     this.btnLaunch = new Button(LaunchButtonText.LAUNCH.toString());
     this.btnLaunch.setMinWidth(200);
     this.btnLaunch.setMinHeight(40);
+    this.btnLaunch.getStyleClass().add("launch-btn");
     this.console = new ConsoleOutput();
+    this.console.get().getStyleClass().add("console-output");
+    this.console.get().setMinWidth(500);
+    this.console.get().setMinHeight(300);
 
     this.txtBotName.setOnKeyReleased(e -> this.controller.botNameChanged(this.txtBotName.getText()));
     this.cbRace.setOnAction(e -> {
@@ -201,10 +215,15 @@ public class View implements EventHandler<DragEvent>  {
     BorderPane borderPane = new BorderPane();
     borderPane.setTop(this.menuBar);
     borderPane.setCenter(mainGridPane.get());
+    borderPane.setMinWidth(800);
+    borderPane.getStyleClass().add("dl-bp");
 
     this.scene = new Scene(borderPane);
     this.scene.setOnDragOver(this);
     this.scene.setOnDragDropped(this);
+//    this.scene.getStylesheets().add(getClass().getResource("themes/droplauncher.css").toString());
+//    this.scene.getStylesheets().add("droplauncher/mvc/view/themes/droplauncher.css");
+    this.scene.getStylesheets().add(DEFAULT_CSS);
 
     this.stage.setOnCloseRequest(e -> {
       this.controller.closeProgramRequest(this.stage);

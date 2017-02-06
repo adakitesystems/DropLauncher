@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
@@ -60,10 +61,12 @@ public class SettingsWindow {
     this.lblChangeStarcraftExe = new Label("StarCraft.exe:");
     this.btnChangeStarcraftExe = new Button("...");
     this.lblChangeStarcraftExeText = new Label(this.ini.getValue(BWHeadless.BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()));
+    this.lblChangeStarcraftExeText.setMinWidth(Region.USE_PREF_SIZE);
 
     this.lblChangeJavaExe = new Label("java.exe:");
     this.btnChangeJavaExe = new Button("...");
     this.lblChangeJavaExeText = new Label(this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString()));
+    this.lblChangeJavaExeText.setMinWidth(Region.USE_PREF_SIZE);
 
     this.btnChangeStarcraftExe.setOnAction(e -> {
       FileChooser fc = new FileChooser();
@@ -116,6 +119,7 @@ public class SettingsWindow {
     ));
 
     this.scene = new Scene(mainGridPane.get());
+    this.scene.getStylesheets().add(View.DEFAULT_CSS);
 
     this.stage = new Stage();
     this.stage.setTitle("Settings");
