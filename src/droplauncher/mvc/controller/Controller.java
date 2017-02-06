@@ -5,6 +5,7 @@ import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotModule;
 import droplauncher.mvc.model.Model;
+import droplauncher.mvc.view.ConsoleOutput;
 import droplauncher.mvc.view.LaunchButtonText;
 import droplauncher.mvc.view.SettingsWindow;
 import droplauncher.mvc.view.SimpleAlert;
@@ -17,7 +18,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -41,7 +41,7 @@ public class Controller {
   }
 
   private void startBWHeadless() {
-    this.model.getBWHeadless().setLogWindow(this.view.getLogWindow());
+    this.model.getBWHeadless().setConsoleOutput(this.view.getConsoleOutput());
     this.model.startBWHeadless();
   }
 
@@ -60,8 +60,8 @@ public class Controller {
   /* Accessible data */
   /* ************************************************************ */
 
-  public TextArea getLogWindow() {
-    return this.view.getLogWindow();
+  public ConsoleOutput getConsoleOutput() {
+    return this.view.getConsoleOutput();
   }
 
   public BotModule getBotModule() {

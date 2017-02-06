@@ -19,7 +19,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -73,7 +72,7 @@ public class View implements EventHandler<DragEvent>  {
   private TextField txtBotName;
   private ChoiceBox<String> cbRace;
   private Button btnLaunch;
-  private TextArea txtLogWindow;
+  private ConsoleOutput console;
 
   private INI ini;
 
@@ -137,8 +136,7 @@ public class View implements EventHandler<DragEvent>  {
     this.btnLaunch = new Button(LaunchButtonText.LAUNCH.toString());
     this.btnLaunch.setMinWidth(200);
     this.btnLaunch.setMinHeight(40);
-    this.txtLogWindow = new TextArea("");
-    this.txtLogWindow.setEditable(false);
+    this.console = new ConsoleOutput();
 
     this.txtBotName.setOnKeyReleased(e -> this.controller.botNameChanged(this.txtBotName.getText()));
     this.cbRace.setOnAction(e -> {
@@ -182,7 +180,7 @@ public class View implements EventHandler<DragEvent>  {
 
     CustomGridPane txtLogWindowGridPane = new CustomGridPane();
     if (this.controller.isEnabledLogWindow()) {
-      txtLogWindowGridPane.add(this.txtLogWindow);
+      txtLogWindowGridPane.add(this.console.get());
     }
     txtLogWindowGridPane.setGaps(DefaultSetting.GAP.getValue(), DefaultSetting.GAP.getValue());
     txtLogWindowGridPane.get().setAlignment(Pos.CENTER);
@@ -217,8 +215,8 @@ public class View implements EventHandler<DragEvent>  {
     this.stage.setScene(this.scene);
   }
 
-  public TextArea getLogWindow() {
-    return this.txtLogWindow;
+  public ConsoleOutput getConsoleOutput() {
+    return this.console;
   }
 
   public void start(Stage primaryStage) {

@@ -2,6 +2,7 @@ package droplauncher.util;
 
 import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
+import droplauncher.mvc.view.ConsoleOutput;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -12,7 +13,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.logging.Logger;
-import javafx.scene.control.TextArea;
 
 /**
  * Generic class for handling communication between the main program and
@@ -36,7 +36,7 @@ public class ProcessPipe {
   private StreamGobbler gobblerStderr;
   private boolean isOpen;
 
-  private TextArea txtLogWindow;
+  private ConsoleOutput consoleOutput;
 
   public ProcessPipe() {
     this.path = null;
@@ -50,11 +50,11 @@ public class ProcessPipe {
     this.gobblerStderr = null;
     this.isOpen = false;
 
-    this.txtLogWindow = null;
+    this.consoleOutput = null;
   }
 
-  public void setLogWindow(TextArea ta) {
-    this.txtLogWindow = ta;
+  public void setConsoleOutput(ConsoleOutput co) {
+    this.consoleOutput = co;
   }
 
   public boolean isOpen() {
@@ -102,8 +102,8 @@ public class ProcessPipe {
 
       this.is = this.process.getInputStream();
       this.br = new BufferedReader(new InputStreamReader(this.is));
-      this.gobblerStdout = new StreamGobbler(streamName, this.process.getInputStream(), this.txtLogWindow);
-      this.gobblerStderr = new StreamGobbler(streamName, this.process.getErrorStream(), this.txtLogWindow);
+      this.gobblerStdout = new StreamGobbler(streamName, this.process.getInputStream(), this.consoleOutput);
+      this.gobblerStderr = new StreamGobbler(streamName, this.process.getErrorStream(), this.consoleOutput);
       this.gobblerStdout.start();
       this.gobblerStderr.start();
 

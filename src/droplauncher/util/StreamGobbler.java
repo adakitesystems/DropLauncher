@@ -1,15 +1,14 @@
 package droplauncher.util;
 
 import adakite.util.AdakiteUtils;
+import droplauncher.mvc.view.ConsoleOutput;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
-import javafx.application.Platform;
-import javafx.scene.control.TextArea;
 
 /**
- * Class for ignoring output from an input stream.
+ * Class for consuming output from an input stream.
  */
 public class StreamGobbler extends Thread {
 
@@ -17,16 +16,16 @@ public class StreamGobbler extends Thread {
   private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
   private InputStream inputStream;
-  private TextArea txtLogWindow;
+  private ConsoleOutput consoleOutput;
   private String streamName;
   private String line;
 
   private StreamGobbler() {}
 
-  public StreamGobbler(String streamName, InputStream inputStream, TextArea textArea) {
+  public StreamGobbler(String streamName, InputStream inputStream, ConsoleOutput co) {
     this.streamName = streamName;
     this.inputStream = inputStream;
-    this.txtLogWindow = textArea;
+    this.consoleOutput = co;
     this.line = "";
   }
 
@@ -41,12 +40,9 @@ public class StreamGobbler extends Thread {
         if (!AdakiteUtils.isNullOrEmpty(this.streamName)) {
           this.line = this.streamName + ": " + line;
         }
-        if (this.txtLogWindow != null && this.txtLogWindow.isVisible()) {
-          Platform.runLater(() -> {
-            this.txtLogWindow.appendText(AdakiteUtils.newline() + this.line);
-          });
+        if (this.consoleOutput != null) {
+          this.consoleOutput.println(line);
         }
-        System.out.println(this.line);
       }
     } catch (Exception ex) {
       if (CLASS_DEBUG) {

@@ -3,6 +3,7 @@ package droplauncher.bwheadless;
 import adakite.ini.INI;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
+import droplauncher.mvc.view.ConsoleOutput;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.Constants;
@@ -16,7 +17,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-import javafx.scene.control.TextArea;
 
 /**
  * Class for handling execution and communication with bwheadless.
@@ -47,7 +47,7 @@ public class BWHeadless {
 
   private ArrayList<Path> extraBotFiles;
 
-  private TextArea txtLogWindow;
+  private ConsoleOutput consoleOutput;
 
   public BWHeadless() {
     this.ini = null;
@@ -59,11 +59,11 @@ public class BWHeadless {
 
     this.extraBotFiles = new ArrayList<>();
 
-    this.txtLogWindow = null;
+    this.consoleOutput = null;
   }
 
-  public void setLogWindow(TextArea ta) {
-    this.txtLogWindow = ta;
+  public void setConsoleOutput(ConsoleOutput co) {
+    this.consoleOutput = co;
   }
 
   public INI getINI() {
@@ -169,12 +169,12 @@ public class BWHeadless {
     String[] bwhArgsArray = AdakiteUtils.toStringArray(bwhArgs);
 
     /* Start bwheadless. */
-    this.bwheadlessPipe.setLogWindow(this.txtLogWindow);
+    this.bwheadlessPipe.setConsoleOutput(this.consoleOutput);
     this.bwheadlessPipe.open(Paths.get(BWHEADLESS_EXE), bwhArgsArray, starcraftDirectory, BWH_STREAM_NAME);
 
     /* Start bot client in a command prompt. */
     if (this.botModule.getType() == BotModule.Type.CLIENT) {
-      this.botPipe.setLogWindow(this.txtLogWindow);
+      this.botPipe.setConsoleOutput(this.consoleOutput);
       ArrayList<String> clArgs = new ArrayList<>();
       if (AdakiteUtils.getFileExtension(this.botModule.getPath()).equalsIgnoreCase("jar")) {
         for (String arg : Windows.DEFAULT_JAR_ARGS) {
