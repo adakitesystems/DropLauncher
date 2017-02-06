@@ -8,6 +8,9 @@ src/adakite/*
 *.txt
 *.exe
 
+# WIP themes
+src/droplauncher/mvc/view/themes/*
+
 # NetBeans
 build/*
 dist/*
