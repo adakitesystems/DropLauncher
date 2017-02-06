@@ -1,7 +1,7 @@
 package droplauncher.util.windows;
 
 /**
- * Data container class for process information obtained from
+ * Container class for process information obtained from
  * Windows Tasklist.
  */
 public class Task {

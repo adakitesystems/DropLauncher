@@ -1,16 +1,11 @@
 package droplauncher.util.windows;
 
-import droplauncher.util.Constants;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 /**
  * Class for tracking newly created tasks in the Windows Tasklist.
  */
 public class TaskTracker {
-
-  private static final Logger LOGGER = Logger.getLogger(TaskTracker.class.getName());
-  private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
 
   private Tasklist previousTasklist;
   private Tasklist currentTasklist;

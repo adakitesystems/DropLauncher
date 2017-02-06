@@ -11,6 +11,7 @@ public class Windows {
   public static Path WINDOWS_DIR = Paths.get("C:\\Windows");
 
   public static Path CMD_EXE = Paths.get("C:\\Windows\\System32\\cmd.exe");
+  public static String[] DEFAULT_CMD_POPUP_ARGS = {"/c", "start"};
 
   public static Path TASKLIST_EXE = Paths.get("C:\\Windows\\System32\\tasklist.exe");
   public static String[] DEFAULT_TASKLIST_ARGS = {"/v"};
