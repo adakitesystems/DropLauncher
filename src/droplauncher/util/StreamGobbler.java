@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 
 /**
@@ -18,6 +19,7 @@ public class StreamGobbler extends Thread {
   private InputStream inputStream;
   private TextArea txtLogWindow;
   private String streamName;
+  private String line;
 
   private StreamGobbler() {}
 
@@ -25,25 +27,26 @@ public class StreamGobbler extends Thread {
     this.streamName = streamName;
     this.inputStream = inputStream;
     this.txtLogWindow = textArea;
+    this.line = "";
   }
 
   @Override
   public void run() {
     try {
       BufferedReader br = new BufferedReader(new InputStreamReader(this.inputStream));
-      String line;
-      while ((line = br.readLine()) != null) {
-        if (line.startsWith("fps: ")) {
+      while ((this.line = br.readLine()) != null) {
+        if (this.line.startsWith("fps: ")) {
           continue;
         }
         if (!AdakiteUtils.isNullOrEmpty(this.streamName)) {
-          line = this.streamName + ": " + line;
+          this.line = this.streamName + ": " + line;
         }
         if (this.txtLogWindow != null && this.txtLogWindow.isVisible()) {
-          this.txtLogWindow.appendText(Util.newline() + line);
-        } else {
-          System.out.println(line);
+          Platform.runLater(() -> {
+            this.txtLogWindow.appendText(Util.newline() + this.line);
+          });
         }
+        System.out.println(this.line);
       }
     } catch (Exception ex) {
       if (CLASS_DEBUG) {
