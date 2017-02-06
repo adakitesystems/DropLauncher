@@ -34,6 +34,8 @@ public class Constants {
   public static final String DROPLAUNCHER_INI = "droplauncher.ini";
   public static final String DROPLAUNCHER_INI_SECTION = "droplauncher";
 
+  public static final String TEMP_DIRECTORY = "tmp";
+
   private Constants() {}
 
 }
