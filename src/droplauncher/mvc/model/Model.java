@@ -5,7 +5,6 @@ import adakite.util.AdakiteUtils;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotModule;
 import droplauncher.bwheadless.KillableTask;
-import droplauncher.bwheadless.ReadyError;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import droplauncher.util.SettingsKey;
