@@ -6,12 +6,11 @@ Designed to be a simple tool to aid players in setting up and playing 1v1 StarCr
 
 ## Third-party Libraries/Applications
 * [bwheadless.exe](https://github.com/tscmoo/bwheadless) to load the bots into StarCraft.exe
-* [FileDrop.java](http://iharder.sourceforge.net/current/java/filedrop/) for dropping bot files into the program
+* ~~[FileDrop.java](http://iharder.sourceforge.net/current/java/filedrop/) for dropping bot files into the program~~ (removed)
 
 ## Estimated Release Date
 Between 2017-02-05 and 2017-02-11.
 
 ## Pending Actions Before Release
-* Check code for errors or missing dependencies.
 * Complete a few in-house tests.
 * Create an installer for binary distribution.
