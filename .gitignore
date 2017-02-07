@@ -7,9 +7,12 @@ src/adakite/*
 *.cfg
 *.txt
 *.exe
+*.dll
+*.json
+tmp/*
+bwheadless*
 
 # WIP themes
-src/droplauncher/mvc/view/themes/*
 src/droplauncher/mvc/view/theme/*
 
 # NetBeans
