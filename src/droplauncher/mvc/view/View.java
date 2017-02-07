@@ -26,9 +26,12 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class View implements EventHandler<DragEvent>  {
@@ -193,16 +196,19 @@ public class View implements EventHandler<DragEvent>  {
     fileLabelGridPane.add(this.lblBotFileText);
     fileLabelGridPane.get().setAlignment(Pos.CENTER_LEFT);
     fileLabelGridPane.setGaps(DefaultSetting.LABEL_TEXT_SPACING.getValue(), 0);
+    fileLabelGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
     CustomGridPane bwapiLabelGridPane = new CustomGridPane();
     bwapiLabelGridPane.add(this.lblBwapiVersion);
     bwapiLabelGridPane.add(this.lblBwapiVersionText);
     bwapiLabelGridPane.get().setAlignment(Pos.CENTER_LEFT);
     bwapiLabelGridPane.setGaps(DefaultSetting.LABEL_TEXT_SPACING.getValue(), 0);
+    bwapiLabelGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
     CustomGridPane botNameGridPane = new CustomGridPane();
     botNameGridPane.add(this.lblBotName, true);
     botNameGridPane.add(this.txtBotName);
     botNameGridPane.get().setAlignment(Pos.CENTER_LEFT);
     botNameGridPane.setGaps(0, DefaultSetting.LABEL_TEXT_SPACING.getValue());
+    botNameGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
 
     CustomGridPane infoGridPane = new CustomGridPane();
     infoGridPane.add(this.imgFile);
@@ -213,14 +219,22 @@ public class View implements EventHandler<DragEvent>  {
     infoGridPane.add(this.imgRobot);
     infoGridPane.add(botNameGridPane.get());
     infoGridPane.setGaps(DefaultSetting.GAP.getValue(), DefaultSetting.GAP.getValue());
+    infoGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
     infoGridPane.get().setAlignment(Pos.CENTER_LEFT);
+
+    VBox hbox = new VBox();
+    this.btnLaunch.setAlignment(Pos.CENTER);
+    hbox.getChildren().add(this.btnLaunch);
+    if (this.controller.isEnabledLogWindow()) {
+      hbox.getChildren().add(this.console.get());
+    }
+    hbox.setSpacing(DefaultSetting.GAP.getValue());
+    hbox.setAlignment(Pos.CENTER);
+    hbox.setMinWidth(Region.USE_PREF_SIZE);
 
     CustomGridPane mainGridPane = new CustomGridPane();
     mainGridPane.add(infoGridPane.get(), true);
-    mainGridPane.add(this.btnLaunch, true);
-    if (this.controller.isEnabledLogWindow()) {
-      mainGridPane.add(this.console.get(), true);
-    }
+    mainGridPane.add(hbox, true);
     mainGridPane.get().setPadding(new Insets(
         DefaultSetting.TOP_PADDING.getValue(),
         DefaultSetting.LEFT_PADDING.getValue(),
@@ -229,6 +243,7 @@ public class View implements EventHandler<DragEvent>  {
     ));
     mainGridPane.setGaps(DefaultSetting.GAP.getValue(), DefaultSetting.GAP.getValue());
     mainGridPane.get().setAlignment(Pos.CENTER);
+    mainGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
 
     BorderPane borderPane = new BorderPane();
     borderPane.setTop(this.menuBar);
