@@ -17,3 +17,9 @@ Between 2017-02-05 and 2017-02-11.
 ## Pending Actions Before Release
 * Complete a few in-house tests.
 * Create an installer for binary distribution.
+
+## Screenshots
+
+![alt tag](http://i.imgur.com/cs5hElg.png)
+
+![alt tag](http://i.imgur.com/RNRbbgI.png)
