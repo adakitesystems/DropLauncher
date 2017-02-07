@@ -2,10 +2,10 @@ package droplauncher.mvc.view;
 
 import adakite.ini.INI;
 import adakite.util.AdakiteUtils;
+import droplauncher.bwheadless.BotModule;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
-import droplauncher.util.SettingsKey;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +25,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class View implements EventHandler<DragEvent>  {
@@ -54,8 +56,7 @@ public class View implements EventHandler<DragEvent>  {
 
   }
 
-  public static final String DEFAULT_CSS = "droplauncher/mvc/view/themes/droplauncher.css";
-//  public static final String NEUROPOL_FONT = "droplauncher/mvc/view/themes/neuropol.ttf";
+  public static final String DEFAULT_CSS = "droplauncher/mvc/view/theme/droplauncher.css";
 
   private static final String EMPTY_LABEL = "-";
 
@@ -134,13 +135,13 @@ public class View implements EventHandler<DragEvent>  {
   }
 
   private void initImages() {
-    this.imgFileBlank = new ImageView("droplauncher/mvc/view/themes/images/file-blank-56.png");
-    this.imgFileDll = new ImageView("droplauncher/mvc/view/themes/images/file-dll-56.png");
-    this.imgFileExe = new ImageView("droplauncher/mvc/view/themes/images/file-exe-56.png");
-    this.imgFileJar = new ImageView("droplauncher/mvc/view/themes/images/file-java-56.png");
-    this.imgFile = this.imgFileBlank;
-    this.imgBwapi = new ImageView("droplauncher/mvc/view/themes/images/bwapi.png");
-    this.imgRobot = new ImageView("droplauncher/mvc/view/themes/images/robot-56.png");
+    this.imgFileBlank = new ImageView("droplauncher/mvc/view/theme/images/file-blank-56.png");
+    this.imgFileDll = new ImageView("droplauncher/mvc/view/theme/images/file-dll-56.png");
+    this.imgFileExe = new ImageView("droplauncher/mvc/view/theme/images/file-exe-56.png");
+    this.imgFileJar = new ImageView("droplauncher/mvc/view/theme/images/file-java-56.png");
+    this.imgFile = new ImageView(this.imgFileBlank.getImage());
+    this.imgBwapi = new ImageView("droplauncher/mvc/view/theme/images/bwapi.png");
+    this.imgRobot = new ImageView("droplauncher/mvc/view/theme/images/robot-56.png");
   }
 
   private void initComponents() {
@@ -164,9 +165,9 @@ public class View implements EventHandler<DragEvent>  {
     this.cbRace.getItems().add(Race.ZERG.toString());
     this.cbRace.getItems().add(Race.PROTOSS.toString());
     this.cbRace.getItems().add(Race.RANDOM.toString());
-    this.cbRace.getStyleClass().add("terran-font");
-    this.cbRace.getStyleClass().add("zerg-font");
-    this.cbRace.getStyleClass().add("protoss-font");
+//    this.cbRace.getStyleClass().add("terran-font");
+//    this.cbRace.getStyleClass().add("zerg-font");
+//    this.cbRace.getStyleClass().add("protoss-font");
     this.cbRace.setMinWidth(Region.USE_PREF_SIZE);
     this.btnLaunch = new Button(LaunchButtonText.LAUNCH.toString());
     this.btnLaunch.setMinWidth(300);
@@ -270,6 +271,24 @@ public class View implements EventHandler<DragEvent>  {
   public void update() {
     setText(this.lblBwapiVersionText, this.controller.getBwapiDllVersion());
 
+    switch (this.controller.getBotModule().getType()) {
+      case CLIENT:
+        String ext = AdakiteUtils.getFileExtension(this.controller.getBotModule().getPath().getFileName());
+        if (ext.equalsIgnoreCase("jar")) {
+          this.imgFile.setImage(this.imgFileJar.getImage());
+        } else if (ext.equalsIgnoreCase("exe")) {
+          this.imgFile.setImage(this.imgFileExe.getImage());
+        } else {
+          this.imgFile.setImage(this.imgFileBlank.getImage());
+        }
+        break;
+      case DLL:
+        this.imgFile.setImage(this.imgFileDll.getImage());
+        break;
+      default:
+        this.imgFile.setImage(this.imgFileBlank.getImage());
+        break;
+    }
     setText(this.lblBotFileText, this.controller.getBotModule().getPath().getFileName().toString());
 
     String displayBotName = this.txtBotName.getText();

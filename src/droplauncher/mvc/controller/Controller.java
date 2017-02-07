@@ -61,16 +61,16 @@ public class Controller {
     this.view.getRaceChoiceBox().getStyleClass().removeAll();
     switch (getBotRace()) {
       case TERRAN:
-        this.view.getRaceChoiceBox().getStyleClass().add("terran-font");
+        this.view.getRaceChoiceBox().setStyle("-fx-font-family: 'Capture it'; -fx-font-size: 20.0px");
         break;
       case ZERG:
-        this.view.getRaceChoiceBox().getStyleClass().add("zerg-font");
+        this.view.getRaceChoiceBox().setStyle("-fx-font-family: 'Toxia'; -fx-font-size: 18.0px");
         break;
       case PROTOSS:
-        this.view.getRaceChoiceBox().getStyleClass().add("protoss-font");
+        this.view.getRaceChoiceBox().setStyle("-fx-font-family: 'Neuropol'; -fx-font-size: 18.0px");
         break;
       case RANDOM:
-        this.view.getRaceChoiceBox().getStyleClass().add("terran-font");
+        this.view.getRaceChoiceBox().setStyle("-fx-font-family: 'Capture it'; -fx-font-size: 20.0px");
         break;
       default:
         break;
