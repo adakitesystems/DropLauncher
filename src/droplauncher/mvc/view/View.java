@@ -168,13 +168,10 @@ public class View implements EventHandler<DragEvent>  {
     this.cbRace.getItems().add(Race.ZERG.toString());
     this.cbRace.getItems().add(Race.PROTOSS.toString());
     this.cbRace.getItems().add(Race.RANDOM.toString());
-//    this.cbRace.getStyleClass().add("terran-font");
-//    this.cbRace.getStyleClass().add("zerg-font");
-//    this.cbRace.getStyleClass().add("protoss-font");
     this.cbRace.setMinWidth(Region.USE_PREF_SIZE);
     this.btnLaunch = new Button(LaunchButtonText.LAUNCH.toString());
     this.btnLaunch.setMinWidth(300);
-    this.btnLaunch.setMinHeight(40);
+    this.btnLaunch.setMinHeight(50);
     this.btnLaunch.getStyleClass().add("launch-btn");
     this.console = new ConsoleOutput();
     this.console.get().getStyleClass().add("console-output");

@@ -1,10 +1,8 @@
 package droplauncher.mvc.view;
 
 import java.util.ArrayList;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
 
 /**
  * Container class for easier GridPane manipulation.
@@ -18,9 +16,9 @@ public class CustomGridPane {
 
   public CustomGridPane() {
     this.gridPane = new GridPane();
-    this.gridPane.setPadding(new Insets(0, 0, 0, 0));
-    this.gridPane.setHgap(0);
-    this.gridPane.setVgap(0);
+//    this.gridPane.setPadding(new Insets(0, 0, 0, 0));
+//    this.gridPane.setHgap(0);
+//    this.gridPane.setVgap(0);
     this.column = 0;
     this.row = 0;
     this.nodes = new ArrayList<>();
@@ -31,16 +29,8 @@ public class CustomGridPane {
     for (Node node : nodes) {
       this.gridPane.getChildren().add(node);
     }
-    this.gridPane.setMinWidth(Region.USE_PREF_SIZE);
+//    this.gridPane.setMinWidth(Region.USE_PREF_SIZE);
     return this.gridPane;
-  }
-
-  public int getColumn() {
-    return this.column;
-  }
-
-  public int getRow() {
-    return this.row;
   }
 
   public void setGaps(int hGap, int vGap) {
@@ -71,17 +61,6 @@ public class CustomGridPane {
    */
   public void add(Node node) {
     add(node, false);
-  }
-
-  /**
-   * Sets the cursor to the specified coordinates.
-   *
-   * @param column column
-   * @param row row
-   */
-  public void setCursor(int column, int row) {
-    this.column = column;
-    this.row = row;
   }
 
   /**
