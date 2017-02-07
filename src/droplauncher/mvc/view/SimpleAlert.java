@@ -14,7 +14,7 @@ public class SimpleAlert {
     alert.setTitle(title);
     alert.setHeaderText(null);
     alert.setContentText(msg);
-    alert.getDialogPane().getStylesheets().add(View.DEFAULT_CSS);
+//    alert.getDialogPane().getStylesheets().add(View.DEFAULT_CSS);
     alert.showAndWait();
   }
 

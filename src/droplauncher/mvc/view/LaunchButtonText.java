@@ -5,8 +5,8 @@ package droplauncher.mvc.view;
  */
 public enum LaunchButtonText {
 
-  LAUNCH("LAUNCH"),
-  EJECT("EJECT")
+  LAUNCH("Launch"),
+  EJECT("Eject")
   ;
 
   private String str;

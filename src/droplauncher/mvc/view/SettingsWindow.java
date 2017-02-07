@@ -113,13 +113,13 @@ public class SettingsWindow {
     mainGridPane.setGaps(View.DefaultSetting.GAP.getValue(), View.DefaultSetting.GAP.getValue());
     mainGridPane.get().setPadding(new Insets(
         View.DefaultSetting.TOP_PADDING.getValue(),
-        View.DefaultSetting.LEFT_PADDING.getValue(),
+        View.DefaultSetting.RIGHT_PADDING.getValue(),
         View.DefaultSetting.BOTTOM_PADDING.getValue(),
-        View.DefaultSetting.RIGHT_PADDING.getValue()
+        View.DefaultSetting.LEFT_PADDING.getValue()
     ));
 
     this.scene = new Scene(mainGridPane.get());
-    this.scene.getStylesheets().add(View.DEFAULT_CSS);
+//    this.scene.getStylesheets().add(View.DEFAULT_CSS);
 
     this.stage = new Stage();
     this.stage.setTitle("Settings");

@@ -25,12 +25,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -59,7 +55,9 @@ public class View implements EventHandler<DragEvent>  {
 
   }
 
-  public static final String DEFAULT_CSS = "droplauncher/mvc/view/theme/droplauncher.css";
+  private static final String RESOURCE_PATH = "/droplauncher/mvc/view/theme/";
+  private static final String IMAGE_PATH = RESOURCE_PATH + "images/";
+  public static final String DEFAULT_CSS = RESOURCE_PATH + "droplauncher.css";
 
   private static final String EMPTY_LABEL = "-";
 
@@ -138,13 +136,13 @@ public class View implements EventHandler<DragEvent>  {
   }
 
   private void initImages() {
-    this.imgFileBlank = new ImageView("droplauncher/mvc/view/theme/images/file-blank-56.png");
-    this.imgFileDll = new ImageView("droplauncher/mvc/view/theme/images/file-dll-56.png");
-    this.imgFileExe = new ImageView("droplauncher/mvc/view/theme/images/file-exe-56.png");
-    this.imgFileJar = new ImageView("droplauncher/mvc/view/theme/images/file-java-56.png");
+    this.imgFileBlank = new ImageView(IMAGE_PATH + "file-blank-2-80-56.png");
+    this.imgFileDll = new ImageView(IMAGE_PATH + "file-dll-56.png");
+    this.imgFileExe = new ImageView(IMAGE_PATH + "file-exe-56.png");
+    this.imgFileJar = new ImageView(IMAGE_PATH + "file-java-56.png");
     this.imgFile = new ImageView(this.imgFileBlank.getImage());
-    this.imgBwapi = new ImageView("droplauncher/mvc/view/theme/images/bwapi.png");
-    this.imgRobot = new ImageView("droplauncher/mvc/view/theme/images/robot-56.png");
+    this.imgBwapi = new ImageView(IMAGE_PATH + "bwapi.png");
+    this.imgRobot = new ImageView(IMAGE_PATH + "robot-56.png");
   }
 
   private void initComponents() {
@@ -158,7 +156,6 @@ public class View implements EventHandler<DragEvent>  {
     this.lblBotFile = new Label("Bot File:");
     this.lblBotFile.setMinWidth(Region.USE_PREF_SIZE);
     this.lblBotFileText = new Label(EMPTY_LABEL);
-    this.lblBotFileText.setMinWidth(Region.USE_PREF_SIZE);
     this.lblBotName = new Label("Bot Name (max 24 characters):");
     this.lblBotName.setMinWidth(Region.USE_PREF_SIZE);
     this.txtBotName = new TextField("");
@@ -168,7 +165,6 @@ public class View implements EventHandler<DragEvent>  {
     this.cbRace.getItems().add(Race.ZERG.toString());
     this.cbRace.getItems().add(Race.PROTOSS.toString());
     this.cbRace.getItems().add(Race.RANDOM.toString());
-    this.cbRace.setMinWidth(Region.USE_PREF_SIZE);
     this.btnLaunch = new Button(LaunchButtonText.LAUNCH.toString());
     this.btnLaunch.setMinWidth(300);
     this.btnLaunch.setMinHeight(50);
@@ -191,6 +187,7 @@ public class View implements EventHandler<DragEvent>  {
     CustomGridPane fileLabelGridPane = new CustomGridPane();
     fileLabelGridPane.add(this.lblBotFile);
     fileLabelGridPane.add(this.lblBotFileText);
+    fileLabelGridPane.add(this.cbRace, true);
     fileLabelGridPane.get().setAlignment(Pos.CENTER_LEFT);
     fileLabelGridPane.setGaps(DefaultSetting.LABEL_TEXT_SPACING.getValue(), 0);
     fileLabelGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
@@ -202,19 +199,18 @@ public class View implements EventHandler<DragEvent>  {
     bwapiLabelGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
     CustomGridPane botNameGridPane = new CustomGridPane();
     botNameGridPane.add(this.lblBotName, true);
-    botNameGridPane.add(this.txtBotName);
+    botNameGridPane.add(this.txtBotName, true);
     botNameGridPane.get().setAlignment(Pos.CENTER_LEFT);
     botNameGridPane.setGaps(0, DefaultSetting.LABEL_TEXT_SPACING.getValue());
     botNameGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
 
     CustomGridPane infoGridPane = new CustomGridPane();
     infoGridPane.add(this.imgFile);
-    infoGridPane.add(fileLabelGridPane.get());
-    infoGridPane.add(this.cbRace, true);
+    infoGridPane.add(fileLabelGridPane.get(), true);
     infoGridPane.add(this.imgBwapi);
     infoGridPane.add(bwapiLabelGridPane.get(), true);
     infoGridPane.add(this.imgRobot);
-    infoGridPane.add(botNameGridPane.get());
+    infoGridPane.add(botNameGridPane.get(), true);
     infoGridPane.setGaps(DefaultSetting.GAP.getValue(), DefaultSetting.GAP.getValue());
     infoGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
     infoGridPane.get().setAlignment(Pos.CENTER_LEFT);
@@ -234,9 +230,9 @@ public class View implements EventHandler<DragEvent>  {
     mainGridPane.add(hbox, true);
     mainGridPane.get().setPadding(new Insets(
         DefaultSetting.TOP_PADDING.getValue(),
-        DefaultSetting.LEFT_PADDING.getValue(),
+        DefaultSetting.RIGHT_PADDING.getValue(),
         DefaultSetting.BOTTOM_PADDING.getValue(),
-        DefaultSetting.RIGHT_PADDING.getValue()
+        DefaultSetting.LEFT_PADDING.getValue()
     ));
     mainGridPane.setGaps(DefaultSetting.GAP.getValue(), DefaultSetting.GAP.getValue());
     mainGridPane.get().setAlignment(Pos.CENTER);
@@ -246,18 +242,19 @@ public class View implements EventHandler<DragEvent>  {
     borderPane.setTop(this.menuBar);
     borderPane.setCenter(mainGridPane.get());
 
+//    System.setProperty("prism.lcdtext", "false");
+//    System.setProperty("prism.text", "t2k");
+
     this.scene = new Scene(borderPane);
     this.scene.setOnDragOver(this);
     this.scene.setOnDragDropped(this);
-//    this.scene.getStylesheets().add(getClass().getResource("themes/droplauncher.css").toString());
-//    this.scene.getStylesheets().add("droplauncher/mvc/view/themes/droplauncher.css");
-    this.scene.getStylesheets().add(DEFAULT_CSS);
+    this.scene.getStylesheets().add(View.class.getResource(DEFAULT_CSS).toString());
 
     this.stage.setOnCloseRequest(e -> {
       this.controller.closeProgramRequest(this.stage);
       e.consume();
     });
-//    this.stage.setResizable(false);
+    this.stage.setResizable(false);
     this.stage.setTitle(Constants.PROGRAM_TITLE);
     this.stage.setScene(this.scene);
   }
@@ -316,7 +313,20 @@ public class View implements EventHandler<DragEvent>  {
       txtBotName.positionCaret(caret);
     }
 
-    this.controller.updateRaceChoiceBox();
+    if (this.controller.getBotModule().getType() != BotModule.Type.UNKNOWN) {
+      this.cbRace.setVisible(true);
+      this.imgFile.setOpacity(1.0);
+      this.controller.updateRaceChoiceBox();
+    } else {
+      this.cbRace.setVisible(false);
+      this.imgFile.setOpacity(0.4);
+    }
+
+    sizeToScene();
+  }
+
+  public void sizeToScene() {
+    this.stage.sizeToScene();
   }
 
   public void setText(Node node, String str) {
