@@ -37,7 +37,6 @@ public class Controller {
 
   public void setView(View view) {
     this.view = view;
-    this.view.setINI(this.model.getINI());
   }
 
   private void startBWHeadless() {

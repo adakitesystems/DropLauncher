@@ -89,18 +89,12 @@ public class View implements EventHandler<DragEvent>  {
   private ImageView imgBwapi;
   private ImageView imgRobot;
 
-  private INI ini;
-
   public View() {
     /* Do nothing. */
   }
 
   public void setController(Controller controller) {
     this.controller = controller;
-  }
-
-  public void setINI(INI ini) {
-    this.ini = ini;
   }
 
   private void initMenus() {
@@ -110,7 +104,6 @@ public class View implements EventHandler<DragEvent>  {
     MenuItem mnuFileExit = new MenuItem(MenuText.EXIT.toString());
     mnuFileExit.setOnAction(e -> {
       this.controller.mnuFileExitClicked(this.stage);
-      e.consume();
     });
     this.fileMenu = new Menu(MenuText.FILE.toString());
     this.fileMenu.getItems().add(mnuFileSelectBotFiles);
@@ -146,9 +139,6 @@ public class View implements EventHandler<DragEvent>  {
   }
 
   private void initComponents() {
-    initMenus();
-    initImages();
-
     this.lblBwapiVersion = new Label("BWAPI.dll Version:");
     this.lblBwapiVersion.setMinWidth(Region.USE_PREF_SIZE);
     this.lblBwapiVersionText = new Label(EMPTY_LABEL);
@@ -270,6 +260,8 @@ public class View implements EventHandler<DragEvent>  {
   public void start(Stage primaryStage) {
     this.stage = primaryStage;
 
+    initImages();
+    initMenus();
     initComponents();
 
     this.stage.show();

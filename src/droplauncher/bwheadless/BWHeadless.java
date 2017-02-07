@@ -126,7 +126,7 @@ public class BWHeadless {
   }
 
   /**
-   * Tests is the pipe is open between this program and bwheadless.
+   * Tests if the pipe is open between this program and bwheadless.
    *
    * @return
    *     true if the pipe is open,

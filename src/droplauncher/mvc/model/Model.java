@@ -164,14 +164,14 @@ public class Model {
           }
         } catch (IOException ex) {
           if (CLASS_DEBUG) {
-            LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+            LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "unable to get directory contents for: " + file.getAbsolutePath(), ex);
           }
         }
       } else if (file.isFile()) {
         fileList.add(file.toPath());
       } else {
         if (CLASS_DEBUG) {
-          LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "Unknown file dropped: " + file.getAbsolutePath());
+          LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "unknown file dropped: " + file.getAbsolutePath());
         }
       }
     }
