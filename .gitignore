@@ -10,6 +10,7 @@ src/adakite/*
 
 # WIP themes
 src/droplauncher/mvc/view/themes/*
+src/droplauncher/mvc/view/theme/*
 
 # NetBeans
 build/*
