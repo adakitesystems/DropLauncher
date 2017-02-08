@@ -2,6 +2,7 @@ package droplauncher.util.windows;
 
 import adakite.util.AdakiteUtils;
 import droplauncher.util.Constants;
+import droplauncher.util.Debugging;
 import droplauncher.util.SimpleProcess;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -15,7 +16,7 @@ import java.util.logging.Logger;
 public class Tasklist {
 
   private static final Logger LOGGER = Logger.getLogger(Tasklist.class.getName());
-  private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
+  private static final boolean DEBUG_CLASS = (Debugging.isEnabled() && true);
 
   private ArrayList<Task> tasks;
 
@@ -72,8 +73,8 @@ public class Tasklist {
       }
     }
     if (index >= process.getLog().size()) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "error parsing Tasklist output");
+      if (DEBUG_CLASS) {
+        LOGGER.log(Debugging.getLoggerLevel(), "error parsing Tasklist output");
       }
       return false;
     }
@@ -100,8 +101,8 @@ public class Tasklist {
       /* Tokenize line using the column lengths. */
       ArrayList<String> tokens = tokenizeTaskEntry(line, colLengths);
       if (tokens.size() < TasklistTitle.values().length) {
-        if (CLASS_DEBUG) {
-          LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "error parsing task entry line");
+        if (DEBUG_CLASS) {
+          LOGGER.log(Debugging.getLoggerLevel(), "error parsing task entry line");
         }
         return false;
       }

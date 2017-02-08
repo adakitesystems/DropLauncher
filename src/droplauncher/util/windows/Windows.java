@@ -8,6 +8,10 @@ import java.nio.file.Paths;
  */
 public class Windows {
 
+  public enum FileType {
+    JAR, EXE, DLL
+  }
+
   public static Path WINDOWS_DIR = Paths.get("C:\\Windows");
 
   public static Path CMD_EXE = Paths.get("C:\\Windows\\System32\\cmd.exe");

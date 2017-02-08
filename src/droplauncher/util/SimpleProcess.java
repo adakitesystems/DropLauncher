@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 public class SimpleProcess {
 
   private static final Logger LOGGER = Logger.getLogger(SimpleProcess.class.getName());
-  private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
+  private static final boolean DEBUG_CLASS = (Debugging.isEnabled() && true);
 
   private ArrayList<String> log;
 
@@ -50,8 +50,8 @@ public class SimpleProcess {
         this.log.add(line);
       }
     } catch (Exception ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+      if (DEBUG_CLASS) {
+        LOGGER.log(Debugging.getLoggerLevel(), null, ex);
       }
     }
   }

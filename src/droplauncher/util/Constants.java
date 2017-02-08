@@ -1,7 +1,6 @@
 package droplauncher.util;
 
 import adakite.util.AdakiteUtils;
-import java.util.logging.Level;
 
 /**
  * Constants class for global constants.
@@ -27,10 +26,6 @@ public class Constants {
       + Constants.PROGRAM_GITHUB + AdakiteUtils.newline()
       + AdakiteUtils.newline()
       ;
-
-  /* Logging */
-  public static final boolean DEBUG = true;
-  public static final Level DEFAULT_LOG_LEVEL = Level.SEVERE;
 
   public static final String DROPLAUNCHER_INI = "droplauncher.ini";
   public static final String DROPLAUNCHER_INI_SECTION = "droplauncher";

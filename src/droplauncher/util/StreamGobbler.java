@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 public class StreamGobbler extends Thread {
 
   private static final Logger LOGGER = Logger.getLogger(StreamGobbler.class.getName());
-  private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
+  private static final boolean DEBUG_CLASS = (Debugging.isEnabled() && true);
 
   private InputStream inputStream;
   private ConsoleOutput consoleOutput;
@@ -45,8 +45,8 @@ public class StreamGobbler extends Thread {
         }
       }
     } catch (Exception ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+      if (DEBUG_CLASS) {
+        LOGGER.log(Debugging.getLoggerLevel(), null, ex);
       }
     }
   }

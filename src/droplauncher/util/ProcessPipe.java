@@ -1,6 +1,5 @@
 package droplauncher.util;
 
-import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.view.ConsoleOutput;
 import java.io.BufferedReader;
@@ -21,7 +20,7 @@ import java.util.logging.Logger;
 public class ProcessPipe {
 
   private static final Logger LOGGER = Logger.getLogger(ProcessPipe.class.getName());
-  private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
+  private static final boolean DEBUG_CLASS = (Debugging.isEnabled() && true);
 
   public static final double DEFAULT_READ_TIMEOUT = (double)0.25; /* seconds */
 
@@ -73,8 +72,9 @@ public class ProcessPipe {
    */
   public boolean open(Path path, String[] args, String cwd, String streamName) {
     if (path == null) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, Debugging.nullObject("file"));
+      if (DEBUG_CLASS) {
+        //TODO: Throw, don't catch.
+        LOGGER.log(Debugging.getLoggerLevel(), "path is null");
       }
       return false;
     }
@@ -114,8 +114,8 @@ public class ProcessPipe {
 
       return true;
     } catch (Exception ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+      if (DEBUG_CLASS) {
+        LOGGER.log(Debugging.getLoggerLevel(), null, ex);
       }
     }
 
@@ -148,8 +148,8 @@ public class ProcessPipe {
       this.process.destroy();
       return true;
     } catch (Exception ex) {
-      if (CLASS_DEBUG) {
-        LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+      if (DEBUG_CLASS) {
+        LOGGER.log(Debugging.getLoggerLevel(), null, ex);
       }
     }
     return false;

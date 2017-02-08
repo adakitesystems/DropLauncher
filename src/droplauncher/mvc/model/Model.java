@@ -7,6 +7,7 @@ import droplauncher.bwheadless.BotModule;
 import droplauncher.bwheadless.KillableTask;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
+import droplauncher.util.Debugging;
 import droplauncher.util.SettingsKey;
 import droplauncher.util.windows.Task;
 import droplauncher.util.windows.TaskTracker;
@@ -25,8 +26,8 @@ import org.apache.commons.io.FileUtils;
 public class Model {
 
   private static final Logger LOGGER = Logger.getLogger(Model.class.getName());
-  private static final boolean CLASS_DEBUG = (Constants.DEBUG && true);
-  private static final boolean KILL_DEBUG = false;
+  private static final boolean DEBUG_CLASS = (Debugging.isEnabled() && true);
+  private static final boolean DEBUG_KILL = false;
 
   private INI ini;
   private BWHeadless bwheadless;
@@ -43,7 +44,7 @@ public class Model {
       parseSettings(this.ini);
       this.bwheadless.parseSettings(this.ini);
     } catch (IOException ex) {
-      LOGGER.log(Constants.DEFAULT_LOG_LEVEL, null, ex);
+      LOGGER.log(Debugging.getLoggerLevel(), null, ex);
     }
   }
 
@@ -130,7 +131,7 @@ public class Model {
     for (Task task : tasks) {
       /* Kill bot module. */
       if (isClient && botModuleName.contains(task.getImageName())) {
-        if (KILL_DEBUG) {
+        if (DEBUG_KILL) {
           System.out.println("Killing: " + task.getPID() + ":" + task.getImageName());
         }
         tasklist.kill(task.getPID());
@@ -139,7 +140,7 @@ public class Model {
       /* Only kill tasks whose names match known associated tasks. */
       for (KillableTask kt : KillableTask.values()) {
         if (kt.toString().equalsIgnoreCase(task.getImageName())) {
-          if (KILL_DEBUG) {
+          if (DEBUG_KILL) {
             System.out.println("Killing: " + task.getPID() + ":" + task.getImageName());
           }
           tasklist.kill(task.getPID());
@@ -163,15 +164,15 @@ public class Model {
             fileList.add(tmpPath);
           }
         } catch (IOException ex) {
-          if (CLASS_DEBUG) {
-            LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "unable to get directory contents for: " + file.getAbsolutePath(), ex);
+          if (DEBUG_CLASS) {
+            LOGGER.log(Debugging.getLoggerLevel(), "unable to get directory contents for: " + file.getAbsolutePath(), ex);
           }
         }
       } else if (file.isFile()) {
         fileList.add(file.toPath());
       } else {
-        if (CLASS_DEBUG) {
-          LOGGER.log(Constants.DEFAULT_LOG_LEVEL, "unknown file dropped: " + file.getAbsolutePath());
+        if (DEBUG_CLASS) {
+          LOGGER.log(Debugging.getLoggerLevel(), "unknown file dropped: " + file.getAbsolutePath());
         }
       }
     }
