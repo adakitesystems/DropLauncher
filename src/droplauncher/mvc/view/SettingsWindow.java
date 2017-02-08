@@ -119,7 +119,7 @@ public class SettingsWindow {
     ));
 
     this.scene = new Scene(mainGridPane.get());
-//    this.scene.getStylesheets().add(View.DEFAULT_CSS);
+    this.scene.getStylesheets().add(View.DEFAULT_CSS);
 
     this.stage = new Stage();
     this.stage.setTitle("Settings");

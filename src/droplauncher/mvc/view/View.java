@@ -155,8 +155,8 @@ public class View implements EventHandler<DragEvent>  {
     this.cbRace.getItems().add(Race.PROTOSS.toString());
     this.cbRace.getItems().add(Race.RANDOM.toString());
     this.btnLaunch = new Button(LaunchButtonText.LAUNCH.toString());
-    this.btnLaunch.setMinWidth(300);
-    this.btnLaunch.setMinHeight(50);
+    this.btnLaunch.setMinWidth(250);
+    this.btnLaunch.setMinHeight(30);
     this.btnLaunch.getStyleClass().add("launch-btn");
     this.console = new ConsoleOutput();
     this.console.get().getStyleClass().add("console-output");
@@ -194,11 +194,11 @@ public class View implements EventHandler<DragEvent>  {
     botNameGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
 
     CustomGridPane infoGridPane = new CustomGridPane();
-    infoGridPane.add(this.imgFile);
+//    infoGridPane.add(this.imgFile);
     infoGridPane.add(fileLabelGridPane.get(), true);
-    infoGridPane.add(this.imgBwapi);
+//    infoGridPane.add(this.imgBwapi);
     infoGridPane.add(bwapiLabelGridPane.get(), true);
-    infoGridPane.add(this.imgRobot);
+//    infoGridPane.add(this.imgRobot);
     infoGridPane.add(botNameGridPane.get(), true);
     infoGridPane.setGaps(DefaultSetting.GAP.getValue(), DefaultSetting.GAP.getValue());
     infoGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
