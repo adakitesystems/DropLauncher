@@ -289,6 +289,7 @@ public class View implements EventHandler<DragEvent>  {
       label.setText(str);
     } else if (node instanceof ChoiceBox) {
       ChoiceBox choiceBox = (ChoiceBox) node;
+      //TODO: Use ChoiceBox.getSelectionModel().select(int)
       choiceBox.setValue(str);
     } else if (node instanceof TextField) {
       TextField textField = (TextField) node;
