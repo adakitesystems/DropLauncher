@@ -138,8 +138,8 @@ public class ProcessPipe {
       if (this.br != null && this.is != null
           && this.bw != null && this.os != null
           && this.process != null && this.process.isAlive()) {
-        this.gobblerStderr.stop();
-        this.gobblerStdout.stop();
+        this.gobblerStderr.interrupt();
+        this.gobblerStdout.interrupt();
         this.br.close();
         this.is.close();
         this.bw.close();
