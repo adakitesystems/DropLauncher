@@ -16,6 +16,9 @@ bwheadless*
 # WIP themes
 src/droplauncher/mvc/view/theme/*
 
+# Test packages
+test/*
+
 # NetBeans
 build/*
 dist/*
