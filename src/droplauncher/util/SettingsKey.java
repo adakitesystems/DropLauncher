@@ -3,7 +3,6 @@ package droplauncher.util;
 public enum SettingsKey {
 
   /* Program keys */
-  JAVA_EXE("java_exe"),
   SHOW_LOG_WINDOW("show_log_window"),
 
   /* BWHeadless keys */

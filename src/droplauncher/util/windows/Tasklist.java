@@ -1,13 +1,12 @@
 package droplauncher.util.windows;
 
 import adakite.util.AdakiteUtils;
-import droplauncher.util.Constants;
-import droplauncher.util.Debugging;
 import droplauncher.util.SimpleProcess;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.StringTokenizer;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Class for getting and storing a list of processes using
@@ -15,8 +14,7 @@ import java.util.logging.Logger;
  */
 public class Tasklist {
 
-  private static final Logger LOGGER = Logger.getLogger(Tasklist.class.getName());
-  private static final boolean DEBUG_CLASS = (Debugging.isEnabled() && true);
+  private static final Logger LOGGER = LogManager.getLogger();
 
   private ArrayList<Task> tasks;
 
@@ -25,11 +23,11 @@ public class Tasklist {
   }
 
   public void kill(String pid) {
-    String[] args = new String[Windows.DEFAULT_TASKKILL_ARGS.length + 1];
-    System.arraycopy(Windows.DEFAULT_TASKKILL_ARGS, 0, args, 0, Windows.DEFAULT_TASKKILL_ARGS.length);
+    String[] args = new String[Windows.Program.TASKKILL.getPredefinedArgs().length + 1];
+    System.arraycopy(Windows.Program.TASKKILL.getPredefinedArgs(), 0, args, 0, Windows.Program.TASKKILL.getPredefinedArgs().length);
     args[args.length - 1] = pid;
     SimpleProcess process = new SimpleProcess();
-    process.run(Windows.TASKKILL_EXE, args);
+    process.run(Windows.Program.TASKKILL.getPath(), args);
   }
 
   /**
@@ -62,7 +60,7 @@ public class Tasklist {
     this.tasks.clear();
 
     SimpleProcess process = new SimpleProcess();
-    process.run(Windows.TASKLIST_EXE, Windows.DEFAULT_TASKLIST_ARGS);
+    process.run(Windows.Program.TASKLIST.getPath(), Windows.Program.TASKLIST.getPredefinedArgs());
 
     /* Find beginning of process list. */
     int index;
@@ -73,9 +71,8 @@ public class Tasklist {
       }
     }
     if (index >= process.getLog().size()) {
-      if (DEBUG_CLASS) {
-        LOGGER.log(Debugging.getLoggerLevel(), "error parsing Tasklist output");
-      }
+      //TODO: Throw built-in or custom exception.
+      LOGGER.error("error parsing Tasklist output");
       return false;
     }
 
@@ -101,9 +98,8 @@ public class Tasklist {
       /* Tokenize line using the column lengths. */
       ArrayList<String> tokens = tokenizeTaskEntry(line, colLengths);
       if (tokens.size() < TasklistTitle.values().length) {
-        if (DEBUG_CLASS) {
-          LOGGER.log(Debugging.getLoggerLevel(), "error parsing task entry line");
-        }
+        //TODO: Throw built-in or custom exception.
+        LOGGER.error("error parsing task entry line");
         return false;
       }
 

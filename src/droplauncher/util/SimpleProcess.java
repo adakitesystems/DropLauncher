@@ -5,7 +5,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Class for running a program and logging its output. This class does not
@@ -14,8 +15,7 @@ import java.util.logging.Logger;
  */
 public class SimpleProcess {
 
-  private static final Logger LOGGER = Logger.getLogger(SimpleProcess.class.getName());
-  private static final boolean DEBUG_CLASS = (Debugging.isEnabled() && true);
+  private static final Logger LOGGER = LogManager.getLogger();
 
   private ArrayList<String> log;
 
@@ -50,9 +50,7 @@ public class SimpleProcess {
         this.log.add(line);
       }
     } catch (Exception ex) {
-      if (DEBUG_CLASS) {
-        LOGGER.log(Debugging.getLoggerLevel(), null, ex);
-      }
+      LOGGER.error(ex);
     }
   }
 

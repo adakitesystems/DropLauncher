@@ -11,7 +11,8 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Generic class for handling communication between the main program and
@@ -19,8 +20,7 @@ import java.util.logging.Logger;
  */
 public class ProcessPipe {
 
-  private static final Logger LOGGER = Logger.getLogger(ProcessPipe.class.getName());
-  private static final boolean DEBUG_CLASS = (Debugging.isEnabled() && true);
+  private static final Logger LOGGER = LogManager.getLogger();
 
   public static final double DEFAULT_READ_TIMEOUT = (double)0.25; /* seconds */
 
@@ -72,10 +72,7 @@ public class ProcessPipe {
    */
   public boolean open(Path path, String[] args, String cwd, String streamName) {
     if (path == null) {
-      if (DEBUG_CLASS) {
-        //TODO: Throw, don't catch.
-        LOGGER.log(Debugging.getLoggerLevel(), "path is null");
-      }
+      LOGGER.warn("path is null");
       return false;
     }
 
@@ -114,9 +111,7 @@ public class ProcessPipe {
 
       return true;
     } catch (Exception ex) {
-      if (DEBUG_CLASS) {
-        LOGGER.log(Debugging.getLoggerLevel(), null, ex);
-      }
+      LOGGER.error(ex);
     }
 
     this.isOpen = false;
@@ -148,9 +143,7 @@ public class ProcessPipe {
       this.process.destroy();
       return true;
     } catch (Exception ex) {
-      if (DEBUG_CLASS) {
-        LOGGER.log(Debugging.getLoggerLevel(), null, ex);
-      }
+      LOGGER.error(ex);
     }
     return false;
   }

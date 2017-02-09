@@ -11,7 +11,6 @@ public enum KillableTask {
   STARCRAFT_EXE("StarCraft.exe"),
   TASKLIST_EXE("tasklist.exe"),
   DLLHOST_EXE("dllhost.exe"),
-  JAVA_EXE("java.exe")
   ;
 
   private String str;

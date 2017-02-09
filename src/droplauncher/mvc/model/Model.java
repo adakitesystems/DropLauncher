@@ -7,8 +7,6 @@ import droplauncher.bwheadless.BotModule;
 import droplauncher.bwheadless.KillableTask;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
-import droplauncher.util.Debugging;
-import droplauncher.util.SettingsKey;
 import droplauncher.util.windows.Task;
 import droplauncher.util.windows.TaskTracker;
 import droplauncher.util.windows.Tasklist;
@@ -18,15 +16,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import net.lingala.zip4j.core.ZipFile;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Model {
 
-  private static final Logger LOGGER = Logger.getLogger(Model.class.getName());
-  private static final boolean DEBUG_CLASS = (Debugging.isEnabled() && true);
-  private static final boolean DEBUG_KILL = false;
+  private static final Logger LOGGER = LogManager.getLogger();
 
   private INI ini;
   private BWHeadless bwheadless;
@@ -40,10 +37,9 @@ public class Model {
     this.bwheadless.setINI(this.ini);
     try {
       this.ini.open(Constants.DROPLAUNCHER_INI_PATH);
-      parseSettings(this.ini);
       this.bwheadless.parseSettings(this.ini);
     } catch (IOException ex) {
-      LOGGER.log(Debugging.getLoggerLevel(), null, ex);
+      LOGGER.error(ex);
     }
   }
 
@@ -105,14 +101,6 @@ public class Model {
     }
   }
 
-  public void parseSettings(INI ini) {
-    String val;
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString()))
-        && AdakiteUtils.fileExists(Paths.get(val))) {
-      this.ini.set(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString(), val);
-    }
-  }
-
   public void startBWHeadless() {
     this.taskTracker.update();
     this.bwheadless.start();
@@ -128,18 +116,14 @@ public class Model {
     for (Task task : tasks) {
       /* Kill bot module. */
       if (isClient && botModuleName.contains(task.getImageName())) {
-        if (DEBUG_KILL) {
-          System.out.println("Killing: " + task.getPID() + ":" + task.getImageName());
-        }
+        LOGGER.info("Killing: " + task.getPID() + ":" + task.getImageName());
         tasklist.kill(task.getPID());
         continue;
       }
       /* Only kill tasks whose names match known associated tasks. */
       for (KillableTask kt : KillableTask.values()) {
         if (kt.toString().equalsIgnoreCase(task.getImageName())) {
-          if (DEBUG_KILL) {
-            System.out.println("Killing: " + task.getPID() + ":" + task.getImageName());
-          }
+          LOGGER.info("Killing: " + task.getPID() + ":" + task.getImageName());
           tasklist.kill(task.getPID());
           break;
         }
@@ -161,16 +145,12 @@ public class Model {
             fileList.add(tmpPath);
           }
         } catch (IOException ex) {
-          if (DEBUG_CLASS) {
-            LOGGER.log(Debugging.getLoggerLevel(), "unable to get directory contents for: " + file.getAbsolutePath(), ex);
-          }
+          LOGGER.error("unable to get directory contents for: " + file.getAbsolutePath(), ex);
         }
       } else if (file.isFile()) {
         fileList.add(file.toPath());
       } else {
-        if (DEBUG_CLASS) {
-          LOGGER.log(Debugging.getLoggerLevel(), "unknown file dropped: " + file.getAbsolutePath());
-        }
+        LOGGER.warn("unknown file dropped: " + file.getAbsolutePath());
       }
     }
 

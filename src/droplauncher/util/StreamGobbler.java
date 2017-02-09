@@ -5,15 +5,15 @@ import droplauncher.mvc.view.ConsoleOutput;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Class for consuming output from an input stream.
  */
 public class StreamGobbler extends Thread {
 
-  private static final Logger LOGGER = Logger.getLogger(StreamGobbler.class.getName());
-  private static final boolean DEBUG_CLASS = (Debugging.isEnabled() && true);
+  private static final Logger LOGGER = LogManager.getLogger();
 
   private InputStream inputStream;
   private ConsoleOutput consoleOutput;
@@ -45,9 +45,7 @@ public class StreamGobbler extends Thread {
         }
       }
     } catch (Exception ex) {
-      if (DEBUG_CLASS) {
-        LOGGER.log(Debugging.getLoggerLevel(), null, ex);
-      }
+      LOGGER.error(ex);
     }
   }
 

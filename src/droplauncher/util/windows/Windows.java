@@ -12,16 +12,38 @@ public class Windows {
     EXE, DLL
   }
 
-  public static Path WINDOWS_DIR = Paths.get("C:\\Windows");
+  public enum Program {
 
-  public static Path CMD_EXE = Paths.get("C:\\Windows\\System32\\cmd.exe");
-  public static String[] DEFAULT_CMD_POPUP_ARGS = {"/c", "start"};
+    CMD("C:\\Windows\\System32\\cmd.exe"),
+    TASKLIST("C:\\Windows\\System32\\tasklist.exe"),
+    TASKKILL("C:\\Windows\\System32\\taskkill.exe");
+    ;
 
-  public static Path TASKLIST_EXE = Paths.get("C:\\Windows\\System32\\tasklist.exe");
-  public static String[] DEFAULT_TASKLIST_ARGS = {"/v"};
+    private String str;
 
-  public static Path TASKKILL_EXE = Paths.get("C:\\Windows\\System32\\taskkill.exe");
-  public static String[] DEFAULT_TASKKILL_ARGS = {"/f", "/pid"}; /* /PID requires a second string */
+    private Program(String str) {
+      this.str = str;
+    }
+
+    public Path getPath() {
+      return Paths.get(this.str);
+    }
+
+    public String[] getPredefinedArgs() {
+      switch (this) {
+        case CMD: return new String[]{"/c", "start"};
+        case TASKLIST: return new String[]{"/v"};
+        case TASKKILL: return new String[]{"/f", "/pid"};
+        default: return new String[]{};
+      }
+    }
+
+    @Override
+    public String toString() {
+      return this.str;
+    }
+
+  }
 
   private Windows() {}
 

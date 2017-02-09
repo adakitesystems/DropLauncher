@@ -27,9 +27,6 @@ public class SettingsWindow {
   private Label lblChangeStarcraftExe;
   private Label lblChangeStarcraftExeText;
   private Button btnChangeStarcraftExe;
-  private Label lblChangeJavaExe;
-  private Label lblChangeJavaExeText;
-  private Button btnChangeJavaExe;
 
   private INI ini;
 
@@ -63,11 +60,6 @@ public class SettingsWindow {
     this.lblChangeStarcraftExeText = new Label(this.ini.getValue(BWHeadless.BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()));
     this.lblChangeStarcraftExeText.setMinWidth(Region.USE_PREF_SIZE);
 
-    this.lblChangeJavaExe = new Label("java.exe:");
-    this.btnChangeJavaExe = new Button("...");
-    this.lblChangeJavaExeText = new Label(this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString()));
-    this.lblChangeJavaExeText.setMinWidth(Region.USE_PREF_SIZE);
-
     this.btnChangeStarcraftExe.setOnAction(e -> {
       FileChooser fc = new FileChooser();
       fc.getExtensionFilters().add(new ExtensionFilter("StarCraft.exe", "StarCraft.exe"));
@@ -82,28 +74,11 @@ public class SettingsWindow {
         this.lblChangeStarcraftExeText.setText(this.ini.getValue(BWHeadless.BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()));
       }
     });
-    this.btnChangeJavaExe.setOnAction(e -> {
-      FileChooser fc = new FileChooser();
-      fc.getExtensionFilters().add(new ExtensionFilter("java.exe", "java.exe"));
-      fc.setTitle("Select java.exe ...");
-      String userDirectory = AdakiteUtils.getUserHomeDirectory().toAbsolutePath().toString();
-      if (userDirectory != null) {
-        fc.setInitialDirectory(new File(userDirectory));
-      }
-      File file = fc.showOpenDialog(this.stage);
-      if (file != null) {
-        this.ini.set(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString(), file.getAbsolutePath());
-        this.lblChangeJavaExeText.setText(this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString()));
-      }
-    });
 
     CustomGridPane fileSelectPane = new CustomGridPane();
     fileSelectPane.add(this.lblChangeStarcraftExe);
     fileSelectPane.add(this.lblChangeStarcraftExeText);
     fileSelectPane.add(this.btnChangeStarcraftExe, true);
-    fileSelectPane.add(this.lblChangeJavaExe);
-    fileSelectPane.add(this.lblChangeJavaExeText);
-    fileSelectPane.add(this.btnChangeJavaExe, true);
     fileSelectPane.setGaps(View.DefaultSetting.GAP.getValue(), View.DefaultSetting.GAP.getValue());
 
     CustomGridPane mainGridPane = new CustomGridPane();

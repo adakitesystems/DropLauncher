@@ -1,12 +1,12 @@
 package droplauncher.bwheadless;
 
+import adakite.debugging.Debugging;
 import adakite.ini.INI;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.view.ConsoleOutput;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
-import droplauncher.util.Debugging;
 import droplauncher.util.ProcessPipe;
 import droplauncher.util.SettingsKey;
 import droplauncher.util.windows.Windows;
@@ -16,16 +16,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Class for handling execution and communication with bwheadless.
  */
 public class BWHeadless {
 
-  private static final Logger LOGGER = Logger.getLogger(BWHeadless.class.getName());
-  private static final boolean DEBUG_CLASS = (Debugging.isEnabled() && true);
-  private static final boolean DEBUG_SETTERS = (DEBUG_CLASS && false);
+  private static final Logger LOGGER = LogManager.getLogger();
 
   public static final Path BWHEADLESS_EXE_PATH = Paths.get("bwheadless.exe");
   public static final String BWHEADLESS_INI_SECTION = "bwheadless";
@@ -149,7 +148,7 @@ public class BWHeadless {
       //TODO: Don't catch, throw.
       configureBwapi();
     } catch (IOException ex) {
-      LOGGER.log(Debugging.getLoggerLevel(), null, ex);
+      LOGGER.error(ex);
     }
 
     String starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()))).toAbsolutePath().toString();
@@ -253,22 +252,21 @@ public class BWHeadless {
   public void setStarcraftExe(String starcraftExe) {
     this.ini.set(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString(), starcraftExe);
 
-    if (DEBUG_SETTERS) {
-      System.out.println("setStarcraftExe = " + this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()));
-    }
+    LOGGER.info("setStarcraftExe = " + this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()));
   }
 
   public void setBwapiDll(String bwapiDll) {
     this.ini.set(BWHEADLESS_INI_SECTION, SettingsKey.BWAPI_DLL.toString(), bwapiDll);
 
-    if (DEBUG_SETTERS) {
-      System.out.println("setBwapiDll = " + this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BWAPI_DLL.toString()));
-    }
+    LOGGER.info("setBwapiDll = " + this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BWAPI_DLL.toString()));
   }
 
   public void setBotName(String botName) {
+    LOGGER.info(Debugging.status(Debugging.Status.REQ, "setBotName = " + botName));
+
     String cleaned = Starcraft.cleanProfileName(botName);
     if (cleaned.equals(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BOT_NAME.toString()))) {
+      LOGGER.info(Debugging.status(Debugging.Status.FAIL, "setBotName = " + botName));
       return;
     }
 
@@ -278,9 +276,7 @@ public class BWHeadless {
       this.ini.set(BWHEADLESS_INI_SECTION, SettingsKey.BOT_NAME.toString(), cleaned);
     }
 
-    if (DEBUG_SETTERS) {
-      System.out.println("setBotName = " + this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BOT_NAME.toString()));
-    }
+    LOGGER.info(Debugging.status(Debugging.Status.OK, "setBotName = " + this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BOT_NAME.toString())));
   }
 
   public BotModule getBotModule() {
@@ -292,33 +288,25 @@ public class BWHeadless {
     this.botModule.setPath(botModule);
     this.ini.set(BWHEADLESS_INI_SECTION, SettingsKey.BOT_MODULE.toString(), botModule);
 
-    if (DEBUG_SETTERS) {
-      System.out.println("setBotModule = " + botModule);
-    }
+    LOGGER.info("setBotModule = " + botModule);
   }
 
   public void setBotRace(Race botRace) {
     this.ini.set(BWHEADLESS_INI_SECTION, SettingsKey.BOT_RACE.toString(), botRace.toString());
 
-    if (DEBUG_SETTERS) {
-      System.out.println("setBotRace = " + this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BOT_RACE.toString()));
-    }
+    LOGGER.info("setBotRace = " + this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BOT_RACE.toString()));
   }
 
   public void setNetworkProvider(NetworkProvider networkProvider) {
     this.ini.set(BWHEADLESS_INI_SECTION, SettingsKey.NETWORK_PROVIDER.toString(), networkProvider.toString());
 
-    if (DEBUG_SETTERS) {
-      System.out.println("setNetworkProvider = " + this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.NETWORK_PROVIDER.toString()));
-    }
+    LOGGER.info("setNetworkProvider = " + this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.NETWORK_PROVIDER.toString()));
   }
 
   public void setConnectMode(ConnectMode connectMode) {
     this.ini.set(BWHEADLESS_INI_SECTION, SettingsKey.CONNECT_MODE.toString(), connectMode.toString());
 
-    if (DEBUG_SETTERS) {
-      System.out.println("setConnectMode = " + this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.CONNECT_MODE.toString()));
-    }
+    LOGGER.info("setConnectMode = " + this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.CONNECT_MODE.toString()));
   }
 
   /**
