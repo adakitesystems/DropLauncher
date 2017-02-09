@@ -20,7 +20,6 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -55,7 +54,6 @@ public class View implements EventHandler<DragEvent>  {
   }
 
   private static final String RESOURCE_PATH = "/droplauncher/mvc/view/theme/";
-  private static final String IMAGE_PATH = RESOURCE_PATH + "images/";
   public static final String DEFAULT_CSS = RESOURCE_PATH + "droplauncher.css";
 
   private static final String EMPTY_LABEL = "-";
@@ -176,11 +174,8 @@ public class View implements EventHandler<DragEvent>  {
     botNameGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
 
     CustomGridPane infoGridPane = new CustomGridPane();
-//    infoGridPane.add(this.imgFile);
     infoGridPane.add(fileLabelGridPane.get(), true);
-//    infoGridPane.add(this.imgBwapi);
     infoGridPane.add(bwapiLabelGridPane.get(), true);
-//    infoGridPane.add(this.imgRobot);
     infoGridPane.add(botNameGridPane.get(), true);
     infoGridPane.setGaps(DefaultSetting.GAP.getValue(), DefaultSetting.GAP.getValue());
     infoGridPane.get().setMinWidth(Region.USE_PREF_SIZE);

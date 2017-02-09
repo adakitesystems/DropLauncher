@@ -6,7 +6,6 @@ import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.view.ConsoleOutput;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
-import droplauncher.util.Constants;
 import droplauncher.util.Debugging;
 import droplauncher.util.ProcessPipe;
 import droplauncher.util.SettingsKey;
@@ -28,7 +27,7 @@ public class BWHeadless {
   private static final boolean DEBUG_CLASS = (Debugging.isEnabled() && true);
   private static final boolean DEBUG_SETTERS = (DEBUG_CLASS && false);
 
-  public static final String BWHEADLESS_EXE = "bwheadless.exe";
+  public static final Path BWHEADLESS_EXE_PATH = Paths.get("bwheadless.exe");
   public static final String BWHEADLESS_INI_SECTION = "bwheadless";
 
   public static final String DEFAULT_BOT_NAME = "BOT";
@@ -101,7 +100,7 @@ public class BWHeadless {
    *     from being ready. E.g. {@link ReadyError#STARTCRAFT_EXE}
    */
   public ReadyError getReadyError() {
-    if (!AdakiteUtils.fileExists(Paths.get(BWHEADLESS_EXE))) {
+    if (!AdakiteUtils.fileExists(BWHEADLESS_EXE_PATH)) {
       return ReadyError.BWHEADLESS_EXE;
     } else if (!this.ini.hasValue(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString())
         || !AdakiteUtils.fileExists(Paths.get(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString())))) {
@@ -173,7 +172,7 @@ public class BWHeadless {
 
     /* Start bwheadless. */
     this.bwheadlessPipe.setConsoleOutput(this.consoleOutput);
-    this.bwheadlessPipe.open(Paths.get(BWHEADLESS_EXE), bwhArgsArray, starcraftDirectory, BWH_STREAM_NAME);
+    this.bwheadlessPipe.open(BWHEADLESS_EXE_PATH, bwhArgsArray, starcraftDirectory, BWH_STREAM_NAME);
 
     /* Start bot client in a command prompt. */
     if (this.botModule.getType() == BotModule.Type.CLIENT) {
@@ -197,14 +196,15 @@ public class BWHeadless {
    * @throws IOException
    */
   private void configureBwapi() throws IOException {
+    //TODO: Determine StarCraft path using Path object.
     /* Determine StarCraft directory from StarCraft.exe path. */
     String starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()))).toAbsolutePath().toString();
 
     /* Configure BWAPI INI file. */
     INI bwapiIni = new INI();
-    bwapiIni.open(Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_INI));
+    bwapiIni.open(Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_INI_PATH.toString()));
     if (this.botModule.getType() == BotModule.Type.DLL) {
-      bwapiIni.set("ai", "ai", BWAPI.BWAPI_DATA_AI_DIR + AdakiteUtils.FILE_SEPARATOR + this.botModule.getPath().getFileName().toString());
+      bwapiIni.set("ai", "ai", BWAPI.BWAPI_DATA_AI_PATH + AdakiteUtils.FILE_SEPARATOR + this.botModule.getPath().getFileName().toString());
     } else {
       bwapiIni.disableVariable("ai", "ai");
     }
@@ -219,7 +219,7 @@ public class BWHeadless {
       src = this.botModule.getPath();
       dest = Paths.get(
           starcraftDirectory,
-          BWAPI.BWAPI_DATA_AI_DIR,
+          BWAPI.BWAPI_DATA_AI_PATH.toString(),
           Paths.get(this.botModule.toString()).getFileName().toString()
       );
       this.botModule.setPath(dest);
@@ -237,9 +237,9 @@ public class BWHeadless {
     Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
 
     /* Copy misc files to common bot I/O directories. */
-    Path readPath = Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_DIR_READ);
-    Path writePath = Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_DIR_WRITE);
-    Path aiPath = Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_AI_DIR);
+    Path readPath = Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_READ_PATH.toString());
+    Path writePath = Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_WRITE_PATH.toString());
+    Path aiPath = Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_AI_PATH.toString());
     AdakiteUtils.createDirectory(readPath);
     AdakiteUtils.createDirectory(writePath);
     AdakiteUtils.createDirectory(aiPath);

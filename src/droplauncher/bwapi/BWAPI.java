@@ -1,53 +1,47 @@
 package droplauncher.bwapi;
 
-import adakite.md5sum.MD5Checksum;
-import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Utilities and constants class for BWAPI.
  */
 public class BWAPI {
 
-  public static final String BWAPI_DATA_DIR = "bwapi-data";
-  public static final String BWAPI_DATA_AI_DIR = BWAPI_DATA_DIR + File.separator + "AI";
-  public static final String BWAPI_DATA_INI = BWAPI_DATA_DIR + File.separator + "bwapi.ini";
-  public static final String BWAPI_DATA_DIR_READ = BWAPI_DATA_DIR + File.separator + "read";
-  public static final String BWAPI_DATA_DIR_WRITE = BWAPI_DATA_DIR + File.separator + "write";
+  public static final Path BWAPI_DATA_PATH = Paths.get("bwapi-data");
+  public static final Path BWAPI_DATA_AI_PATH = Paths.get(BWAPI_DATA_PATH.toString(), "AI");
+  public static final Path BWAPI_DATA_INI_PATH = Paths.get(BWAPI_DATA_PATH.toString(), "bwapi.ini");
+  public static final Path BWAPI_DATA_READ_PATH = Paths.get(BWAPI_DATA_PATH.toString(), "read");
+  public static final Path BWAPI_DATA_WRITE_PATH = Paths.get(BWAPI_DATA_PATH.toString(), "write");
   public static final String BWAPI_DLL_UNKNOWN = "Unknown";
 
   private BWAPI() {}
 
   /**
-   * Returns the BWAPI version for the specified file. This parameter
-   * should be the path to a "BWAPI.dll" file.
+   * Returns the BWAPI version associated with the specified MD5 checksum.
    *
-   * @param path specified file
+   * @param checksum specified MD5 checksum
    * @return
    *     the BWAPI version if known,
    *     otherwise an unknown-type indication string
    */
-  public static String getBwapiVersion(Path path) {
-    String checksum = MD5Checksum.get(path);
-    String version;
-
+  public static String getBwapiVersion(String checksum) {
+    checksum = checksum.toLowerCase();
     if (checksum.equals(Checksum.BWAPI_DLL_374.toString())) {
-      version = "3.7.4";
+      return Checksum.BWAPI_DLL_374.getName();
     } else if (checksum.equals(Checksum.BWAPI_DLL_375.toString())) {
-      version = "3.7.5";
+      return Checksum.BWAPI_DLL_375.getName();
     } else if (checksum.equals(Checksum.BWAPI_DLL_401B.toString())) {
-      version = "4.0.1b";
+      return Checksum.BWAPI_DLL_401B.getName();
     } else if (checksum.equals(Checksum.BWAPI_DLL_410B.toString())) {
-      version = "4.1.0b";
+      return Checksum.BWAPI_DLL_410B.getName();
     } else if (checksum.equals(Checksum.BWAPI_DLL_411B.toString())) {
-      version = "4.1.1b";
+      return Checksum.BWAPI_DLL_411B.getName();
     } else if (checksum.equals(Checksum.BWAPI_DLL_412.toString())) {
-      version = "4.1.2";
+      return Checksum.BWAPI_DLL_412.getName();
     } else {
-      version = BWAPI_DLL_UNKNOWN;
+      return Checksum.UNKNOWN.getName();
     }
-
-    return version;
   }
 
 }

@@ -1,5 +1,6 @@
 package droplauncher.mvc.controller;
 
+import adakite.md5sum.MD5Checksum;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
@@ -75,9 +76,9 @@ public class Controller {
   public String getBwapiDllVersion() {
     String dll = this.model.getBWHeadless().getINI().getValue(BWHeadless.BWHEADLESS_INI_SECTION, SettingsKey.BWAPI_DLL.toString());
     if (AdakiteUtils.isNullOrEmpty(dll)) {
-      return "";
+      return null;
     } else {
-      return BWAPI.getBwapiVersion(Paths.get(dll));
+      return BWAPI.getBwapiVersion(MD5Checksum.get(Paths.get(dll)).toString());
     }
   }
 

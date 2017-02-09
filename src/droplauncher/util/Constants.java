@@ -1,6 +1,8 @@
 package droplauncher.util;
 
 import adakite.util.AdakiteUtils;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Constants class for global constants.
@@ -27,7 +29,7 @@ public class Constants {
       + AdakiteUtils.newline()
       ;
 
-  public static final String DROPLAUNCHER_INI = "droplauncher.ini";
+  public static final Path DROPLAUNCHER_INI_PATH = Paths.get("droplauncher.ini");
   public static final String DROPLAUNCHER_INI_SECTION = "droplauncher";
 
   public static final String TEMP_DIRECTORY = "tmp";

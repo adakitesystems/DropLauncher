@@ -17,15 +17,15 @@ public enum Argument {
   STARCRAFT_INSTALL_PATH("--installpath") /* requires second string */
   ;
 
-  private String name;
+  private String str;
 
-  private Argument(String name) {
-    this.name = name;
+  private Argument(String str) {
+    this.str = str;
   }
 
   @Override
   public String toString() {
-    return name;
+    return str;
   }
 
 }

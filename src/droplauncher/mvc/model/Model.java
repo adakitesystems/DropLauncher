@@ -39,7 +39,7 @@ public class Model {
 
     this.bwheadless.setINI(this.ini);
     try {
-      this.ini.open(Paths.get(Constants.DROPLAUNCHER_INI));
+      this.ini.open(Constants.DROPLAUNCHER_INI_PATH);
       parseSettings(this.ini);
       this.bwheadless.parseSettings(this.ini);
     } catch (IOException ex) {
