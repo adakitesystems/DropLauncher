@@ -20,6 +20,8 @@ Between 2017-02-05 and 2017-02-11.
 
 ## Screenshots
 
-![alt tag](http://i.imgur.com/cs5hElg.png)
+![alt tag](http://i.imgur.com/0LKGpcf.png)
 
-![alt tag](http://i.imgur.com/RNRbbgI.png)
+![alt tag](http://i.imgur.com/KBg6ZQk.png)
+
+![alt tag](http://i.imgur.com/0VY1Ijh.png)
