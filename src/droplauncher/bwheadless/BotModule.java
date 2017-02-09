@@ -46,7 +46,7 @@ public class BotModule {
     String ext = AdakiteUtils.getFileExtension(getPath()).toLowerCase();
     if (ext.equals("dll")) {
       this.type = Type.DLL;
-    } else if (ext.equals("exe") || ext.equals("jar")) {
+    } else if (ext.equals("exe")) {
       this.type = Type.CLIENT;
     } else {
       this.type = Type.UNKNOWN;

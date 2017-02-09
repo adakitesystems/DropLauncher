@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 public class Windows {
 
   public enum FileType {
-    JAR, EXE, DLL
+    EXE, DLL
   }
 
   public static Path WINDOWS_DIR = Paths.get("C:\\Windows");
@@ -22,9 +22,6 @@ public class Windows {
 
   public static Path TASKKILL_EXE = Paths.get("C:\\Windows\\System32\\taskkill.exe");
   public static String[] DEFAULT_TASKKILL_ARGS = {"/f", "/pid"}; /* /PID requires a second string */
-
-  public static Path DEFAULT_JAVA_EXE = Paths.get("C:\\ProgramData\\Oracle\\Java\\javapath\\java.exe");
-  public static String[] DEFAULT_JAR_ARGS = {"-jar"};
 
   private Windows() {}
 

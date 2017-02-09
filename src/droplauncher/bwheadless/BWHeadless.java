@@ -179,14 +179,7 @@ public class BWHeadless {
     if (this.botModule.getType() == BotModule.Type.CLIENT) {
       this.botPipe.setConsoleOutput(this.consoleOutput);
       ArrayList<String> clArgs = new ArrayList<>();
-      if (AdakiteUtils.getFileExtension(this.botModule.getPath()).equalsIgnoreCase(Windows.FileType.JAR.toString())) {
-        for (String arg : Windows.DEFAULT_JAR_ARGS) {
-          clArgs.add(arg);
-        }
-        clArgs.add(this.botModule.getPath().toAbsolutePath().toString());
-        String[] clargsArray = AdakiteUtils.toStringArray(clArgs);
-        this.botPipe.open(Paths.get(this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString())), clargsArray, starcraftDirectory, CLIENT_STREAM_NAME);
-      } else if (AdakiteUtils.getFileExtension(this.botModule.getPath()).equalsIgnoreCase(Windows.FileType.EXE.toString())) {
+      if (AdakiteUtils.getFileExtension(this.botModule.getPath()).equalsIgnoreCase(Windows.FileType.EXE.toString())) {
         clArgs.add(this.botModule.toString());
         String[] clArgsArray = AdakiteUtils.toStringArray(clArgs);
         this.botPipe.open(this.botModule.getPath().toAbsolutePath(), clArgsArray, starcraftDirectory, CLIENT_STREAM_NAME);

@@ -80,14 +80,6 @@ public class View implements EventHandler<DragEvent>  {
   private Button btnLaunch;
   private ConsoleOutput console;
 
-  private ImageView imgFile;
-  private ImageView imgFileBlank;
-  private ImageView imgFileExe;
-  private ImageView imgFileJar;
-  private ImageView imgFileDll;
-  private ImageView imgBwapi;
-  private ImageView imgRobot;
-
   public View() {
     /* Do nothing. */
   }
@@ -125,16 +117,6 @@ public class View implements EventHandler<DragEvent>  {
     this.menuBar.getMenus().add(this.editMenu);
     this.menuBar.getMenus().add(this.helpMenu);
     this.menuBar.getStyleClass().add("dl-menustyle");
-  }
-
-  private void initImages() {
-    this.imgFileBlank = new ImageView(IMAGE_PATH + "file-blank-2-80-56.png");
-    this.imgFileDll = new ImageView(IMAGE_PATH + "file-dll-56.png");
-    this.imgFileExe = new ImageView(IMAGE_PATH + "file-exe-56.png");
-    this.imgFileJar = new ImageView(IMAGE_PATH + "file-java-56.png");
-    this.imgFile = new ImageView(this.imgFileBlank.getImage());
-    this.imgBwapi = new ImageView(IMAGE_PATH + "bwapi.png");
-    this.imgRobot = new ImageView(IMAGE_PATH + "robot-56.png");
   }
 
   private void initComponents() {
@@ -259,7 +241,6 @@ public class View implements EventHandler<DragEvent>  {
   public void start(Stage primaryStage) {
     this.stage = primaryStage;
 
-    initImages();
     initMenus();
     initComponents();
 
@@ -271,24 +252,6 @@ public class View implements EventHandler<DragEvent>  {
   public void update() {
     setText(this.lblBwapiVersionText, this.controller.getBwapiDllVersion());
 
-    switch (this.controller.getBotModule().getType()) {
-      case CLIENT:
-        String ext = AdakiteUtils.getFileExtension(this.controller.getBotModule().getPath().getFileName());
-        if (ext.equalsIgnoreCase("jar")) {
-          this.imgFile.setImage(this.imgFileJar.getImage());
-        } else if (ext.equalsIgnoreCase("exe")) {
-          this.imgFile.setImage(this.imgFileExe.getImage());
-        } else {
-          this.imgFile.setImage(this.imgFileBlank.getImage());
-        }
-        break;
-      case DLL:
-        this.imgFile.setImage(this.imgFileDll.getImage());
-        break;
-      default:
-        this.imgFile.setImage(this.imgFileBlank.getImage());
-        break;
-    }
     setText(this.lblBotFileText, this.controller.getBotModule().getPath().getFileName().toString());
 
     String displayBotName = this.txtBotName.getText();
@@ -306,11 +269,9 @@ public class View implements EventHandler<DragEvent>  {
 
     if (this.controller.getBotModule().getType() != BotModule.Type.UNKNOWN) {
       this.cbRace.setVisible(true);
-      this.imgFile.setOpacity(1.0);
       this.controller.updateRaceChoiceBox();
     } else {
       this.cbRace.setVisible(false);
-      this.imgFile.setOpacity(0.4);
     }
 
     sizeToScene();

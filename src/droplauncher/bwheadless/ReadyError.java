@@ -10,7 +10,7 @@ public enum ReadyError {
   STARTCRAFT_EXE("unable to read/locate StarCraft.exe"),
   BWAPI_DLL("unable to read/locate BWAPI.dll"),
   BOT_NAME("invalid bot name"),
-  BOT_FILE("unable to read/locate bot file (*.dll, *.exe, *.jar, etc.)"),
+  BOT_FILE("unable to read/locate bot file (*.dll, *.exe)"),
   BOT_RACE("invalid bot race"),
   NETWORK_PROVIDER("invalid network provider"),
   CONNECT_MODE("invalid connect mode")

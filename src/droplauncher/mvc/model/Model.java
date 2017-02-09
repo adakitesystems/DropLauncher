@@ -12,7 +12,6 @@ import droplauncher.util.SettingsKey;
 import droplauncher.util.windows.Task;
 import droplauncher.util.windows.TaskTracker;
 import droplauncher.util.windows.Tasklist;
-import droplauncher.util.windows.Windows;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -86,7 +85,7 @@ public class Model {
         } catch (Exception ex) {
           return;
         }
-      } else if (ext.equals("dll") || ext.equals("exe") || ext.equals("jar")) {
+      } else if (ext.equals("dll") || ext.equals("exe")) {
         if (path.getFileName().toString().equalsIgnoreCase("BWAPI.dll")) {
           /* BWAPI.dll */
           this.bwheadless.setBwapiDll(path.toAbsolutePath().toString());
@@ -111,8 +110,6 @@ public class Model {
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString()))
         && AdakiteUtils.fileExists(Paths.get(val))) {
       this.ini.set(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString(), val);
-    } else {
-      this.ini.set(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.JAVA_EXE.toString(), Windows.DEFAULT_JAVA_EXE.toAbsolutePath().toString());
     }
   }
 
