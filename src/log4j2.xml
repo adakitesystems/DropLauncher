@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--<Configuration status="DEBUG">-->
-<Configuration status="DEBUG">
+<Configuration>
   <Appenders>
     <Console name="Clean" target="SYSTEM_OUT">
 			<PatternLayout pattern="%msg%n" />

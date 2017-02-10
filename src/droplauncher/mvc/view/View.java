@@ -247,8 +247,9 @@ public class View implements EventHandler<DragEvent>  {
   public void update() {
     setText(this.lblBwapiVersionText, this.controller.getBwapiDllVersion());
 
-    setText(this.lblBotFileText, this.controller.getBotModule().getPath().getFileName().toString());
+    setText(this.lblBotFileText, this.controller.getBotModule());
 
+    /* Handling for when the user enters an invalid character for the bot name. */
     String displayBotName = this.txtBotName.getText();
     String internalBotName = this.controller.getBotName();
     int caret = txtBotName.getCaretPosition();
@@ -262,7 +263,7 @@ public class View implements EventHandler<DragEvent>  {
       txtBotName.positionCaret(caret);
     }
 
-    if (this.controller.getBotModule().getType() != BotModule.Type.UNKNOWN) {
+    if (!AdakiteUtils.isNullOrEmpty(this.controller.getBotModule())) {
       this.cbRace.setVisible(true);
       this.controller.updateRaceChoiceBox();
     } else {

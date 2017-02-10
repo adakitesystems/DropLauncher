@@ -288,8 +288,11 @@ public class BWHeadless {
     LOGGER.info(botModule);
 
     this.extraBotFiles.clear();
-    this.botModule.setPath(Paths.get(botModule));
-    this.ini.set(BWHEADLESS_INI_SECTION, SettingsKey.BOT_MODULE.toString(), botModule);
+    Path path = Paths.get(botModule);
+    if (AdakiteUtils.fileExists(path)) {
+      this.botModule.setPath(path);
+      this.ini.set(BWHEADLESS_INI_SECTION, SettingsKey.BOT_MODULE.toString(), botModule);
+    }
   }
 
   public void setBotRace(Race botRace) {

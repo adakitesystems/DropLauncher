@@ -69,8 +69,12 @@ public class Controller {
     return this.view.getConsoleOutput();
   }
 
-  public BotModule getBotModule() {
-    return this.model.getBWHeadless().getBotModule();
+  public String getBotModule() {
+    if (this.model.getBWHeadless().getBotModule().getType() != BotModule.Type.UNKNOWN) {
+      return this.model.getBWHeadless().getBotModule().getPath().toAbsolutePath().toString();
+    } else {
+      return null;
+    }
   }
 
   public String getBwapiDllVersion() {
