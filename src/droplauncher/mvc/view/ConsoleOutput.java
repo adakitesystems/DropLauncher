@@ -3,12 +3,16 @@ package droplauncher.mvc.view;
 import adakite.util.AdakiteUtils;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Container class for log output. Uses a
  * {@link javafx.scene.control.TextArea} object as the destination.
  */
 public class ConsoleOutput {
+
+  private static final Logger LOGGER = LogManager.getLogger();
 
   private TextArea obj;
   private boolean printToStdout;

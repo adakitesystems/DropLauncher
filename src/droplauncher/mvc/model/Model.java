@@ -88,7 +88,7 @@ public class Model {
         } else {
           /* Bot module */
           this.bwheadless.setBotModule(path.toAbsolutePath().toString());
-          this.bwheadless.setBotName(AdakiteUtils.removeFileExtension(path.getFileName().toString()));
+          this.bwheadless.setBotName(AdakiteUtils.getFilenameNoExt(path));
           this.bwheadless.setBotRace(Race.RANDOM);
         }
       } else {
