@@ -12,6 +12,7 @@ src/adakite/*
 tmp/*
 bwheadless*
 *.jar
+*.log
 
 # WIP themes
 src/droplauncher/mvc/view/theme/*
