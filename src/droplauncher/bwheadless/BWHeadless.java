@@ -49,6 +49,8 @@ public class BWHeadless {
   private ConsoleOutput consoleOutput;
 
   public BWHeadless() {
+    LOGGER.info(Debugging.ack());
+
     this.ini = null;
 
     this.bwheadlessPipe = new ProcessPipe();
