@@ -1,6 +1,5 @@
 package droplauncher.bwheadless;
 
-import adakite.debugging.Debugging;
 import adakite.ini.INI;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
@@ -49,8 +48,6 @@ public class BWHeadless {
   private ConsoleOutput consoleOutput;
 
   public BWHeadless() {
-    LOGGER.info(Debugging.ack());
-
     this.ini = null;
 
     this.bwheadlessPipe = new ProcessPipe();
@@ -64,8 +61,6 @@ public class BWHeadless {
   }
 
   public void setConsoleOutput(ConsoleOutput co) {
-    LOGGER.info("ack");
-
     this.consoleOutput = co;
   }
 
@@ -74,8 +69,6 @@ public class BWHeadless {
   }
 
   public void setINI(INI ini) {
-    LOGGER.info("ack");
-
     this.ini = ini;
   }
 
@@ -87,9 +80,6 @@ public class BWHeadless {
    * Tests if the program has sufficient information to run bwheadless.
    *
    * @see #getReadyError()
-   * @return
-   *     true if ready,
-   *     otherwise false
    */
   public boolean isReady() {
     return (getReadyError() == ReadyError.NONE);
@@ -132,10 +122,6 @@ public class BWHeadless {
 
   /**
    * Tests if the pipe is open between this program and bwheadless.
-   *
-   * @return
-   *     true if the pipe is open,
-   *     otherwise false
    */
   public boolean isRunning() {
     return this.bwheadlessPipe.isOpen();
@@ -321,8 +307,6 @@ public class BWHeadless {
    * @param ini specified INI object
    */
   public void parseSettings(INI ini) {
-    LOGGER.info("ack");
-
     String val;
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()))) {
       setStarcraftExe(val);

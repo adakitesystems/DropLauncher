@@ -34,8 +34,6 @@ public class Tasklist {
    * Returns a list of Task objects.
    *
    * @param update whether to update the list before returning
-   * @return
-   *     a list of Task objects
    */
   public ArrayList<Task> getTasks(boolean update) {
     if (update) {
@@ -49,8 +47,6 @@ public class Tasklist {
    * before returning.
    *
    * @see #getTasks(boolean)
-   * @return
-   *     a list of Task objects
    */
   public ArrayList<Task> getTasks() {
     return getTasks(false);

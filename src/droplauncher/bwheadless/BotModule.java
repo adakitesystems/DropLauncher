@@ -28,14 +28,8 @@ public class BotModule {
 
   /**
    * Returns the type. E.g. either a DLL file, or a client file (EXE/JAR/etc).
-   *
-   * @return
-   *     the type. E.g. either a DLL file, or a client file (EXE/JAR/etc)
    */
   public Type getType() {
-    if (path == null) {
-      LOGGER.warn("path not set");
-    }
     return this.type;
   }
 

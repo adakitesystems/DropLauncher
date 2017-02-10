@@ -25,9 +25,6 @@ public class ConsoleOutput {
 
   /**
    * Returns the object to which data is printed.
-   *
-   * @return
-   *    returns the object to which data is printed
    */
   public TextArea get() {
     return this.obj;

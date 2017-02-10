@@ -16,8 +16,6 @@ public class Starcraft {
    * Returns a filtered string compatible with a StarCraft profile name.
    *
    * @param str specified string
-   * @return
-   *    a filtered string compatible with a StarCraft profile name
    */
   public static String cleanProfileName(String str) {
     if (AdakiteUtils.isNullOrEmpty(str, true)) {

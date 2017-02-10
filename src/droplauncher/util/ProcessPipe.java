@@ -60,6 +60,7 @@ public class ProcessPipe {
     return this.isOpen;
   }
 
+  //TODO: Change return type to void and throw exceptions where required.
   /**
    * Open a pipe to the specified program.
    *
@@ -119,6 +120,7 @@ public class ProcessPipe {
     return false;
   }
 
+  //TODO: Change return type to void and throw exceptions where required.
   /**
    * Closes the pipe and destroys the process.
    *

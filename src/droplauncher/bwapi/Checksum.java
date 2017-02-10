@@ -26,9 +26,6 @@ public enum Checksum {
 
   /**
    * Returns the version in string format.
-   *
-   * @return
-   *     the version in String format
    */
   public String getName() {
     switch (this) {
@@ -44,9 +41,6 @@ public enum Checksum {
 
   /**
    * Returns the MD5 checksum.
-   *
-   * @return
-   *     the MD5 checksum
    */
   @Override
   public String toString() {

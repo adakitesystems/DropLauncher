@@ -1,7 +1,6 @@
 package droplauncher.mvc.view;
 
 import adakite.util.AdakiteUtils;
-import droplauncher.bwheadless.BotModule;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
@@ -27,8 +26,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class View implements EventHandler<DragEvent>  {
+
+  private static final Logger LOGGER = LogManager.getLogger();
 
   public enum DefaultSetting {
 
@@ -248,6 +251,12 @@ public class View implements EventHandler<DragEvent>  {
     setText(this.lblBwapiVersionText, this.controller.getBwapiDllVersion());
 
     setText(this.lblBotFileText, this.controller.getBotModule());
+    if (!AdakiteUtils.isNullOrEmpty(this.controller.getBotModule())) {
+      this.cbRace.setVisible(true);
+      this.controller.updateRaceChoiceBox();
+    } else {
+      this.cbRace.setVisible(false);
+    }
 
     /* Handling for when the user enters an invalid character for the bot name. */
     String displayBotName = this.txtBotName.getText();
@@ -261,13 +270,6 @@ public class View implements EventHandler<DragEvent>  {
       }
       setText(this.txtBotName, internalBotName);
       txtBotName.positionCaret(caret);
-    }
-
-    if (!AdakiteUtils.isNullOrEmpty(this.controller.getBotModule())) {
-      this.cbRace.setVisible(true);
-      this.controller.updateRaceChoiceBox();
-    } else {
-      this.cbRace.setVisible(false);
     }
 
     sizeToScene();
