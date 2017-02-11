@@ -35,8 +35,8 @@ public class BWHeadless {
 
   private INI ini;
 
-  private CustomProcess bwheadlessPipe;
-  private CustomProcess botPipe;
+  private CustomProcess bwheadlessProcess;
+  private CustomProcess botProcess;
 
   private BotFile botFile;
   private ArrayList<Path> extraBotFiles;
@@ -44,8 +44,8 @@ public class BWHeadless {
   public BWHeadless() {
     this.ini = null;
 
-    this.bwheadlessPipe = new CustomProcess();
-    this.botPipe = new CustomProcess();
+    this.bwheadlessProcess = new CustomProcess();
+    this.botProcess = new CustomProcess();
 
     this.botFile = new BotFile();
     this.extraBotFiles = new ArrayList<>();
@@ -132,23 +132,23 @@ public class BWHeadless {
     bwhCommand.addArg(starcraftDirectory.toString());
 
     /* Start bwheadless. */
-    this.bwheadlessPipe.setCWD(starcraftDirectory);
-    this.bwheadlessPipe.open(bwhCommand.get());
+    this.bwheadlessProcess.setCWD(starcraftDirectory);
+    this.bwheadlessProcess.start(bwhCommand.get());
 
     if (this.botFile.getType() == BotFile.Type.CLIENT) {
       /* Compile bot client arguments. */
       CommandBuilder clientCommand = new CommandBuilder();
       clientCommand.setPath(this.botFile.getPath().toAbsolutePath());
       /* Start bot client. */
-      this.botPipe.setCWD(starcraftDirectory);
-      this.botPipe.open(clientCommand.get());
+      this.botProcess.setCWD(starcraftDirectory);
+      this.botProcess.start(clientCommand.get());
     }
   }
 
   public void stop() {
-    this.bwheadlessPipe.close();
+    this.bwheadlessProcess.stop();
     if (this.botFile.getType() == BotFile.Type.CLIENT) {
-      this.botPipe.close();
+      this.botProcess.stop();
     }
   }
 

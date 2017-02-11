@@ -41,7 +41,7 @@ public class CustomProcess {
    * @param args specified command and arguments to run
    * @throws IOException
    */
-  public void open(String[] args) throws IOException {
+  public void start(String[] args) throws IOException {
     if (args == null) {
       throw new IllegalArgumentException(Debugging.nullObject("args"));
     }
@@ -63,7 +63,7 @@ public class CustomProcess {
   /**
    * Attempts to close the pipe.
    */
-  public void close() {
+  public void stop() {
     this.gobblerStdout.interrupt();
     this.gobblerStdout.interrupt();
     this.process.destroy();
