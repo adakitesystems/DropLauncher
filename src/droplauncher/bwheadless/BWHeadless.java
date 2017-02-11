@@ -6,9 +6,9 @@ import droplauncher.bwapi.BWAPI;
 import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
+import droplauncher.util.CommandBuilder;
 import droplauncher.util.CustomProcess;
 import droplauncher.util.SettingsKey;
-import droplauncher.util.windows.Windows;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,9 +32,6 @@ public class BWHeadless {
   public static final Race DEFAULT_BOT_RACE = Race.RANDOM;
   public static final NetworkProvider DEFAULT_NETWORK_PROVIDER = NetworkProvider.LAN;
   public static final ConnectMode DEFAULT_CONNECT_MODE = ConnectMode.JOIN;
-
-  private static final String DEFAULT_STREAM_NAME = "bwh";
-  private static final String CLIENT_STREAM_NAME = "client";
 
   private INI ini;
 
@@ -114,60 +111,57 @@ public class BWHeadless {
    * Attempts to start bwheadless after configuring and checking settings.
    */
   public void start() throws IOException, InvalidBotTypeException {
-//    if (isRunning() || !isReady()) {
-    if (!isReady()) {
-      //TODO: Throw a built-in or custom exception.
-      return;
-    }
-
-    configureBwapi();
-
     Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString()))).toAbsolutePath();
 
+    configureBwapi(starcraftDirectory);
+
     /* Compile bwheadless arguments. */
-    ArrayList<String> bwhArgs = new ArrayList<>(); /* bwheadless arguments */
-    bwhArgs.add(Argument.STARCRAFT_EXE.toString());
-    bwhArgs.add(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString()));
-    bwhArgs.add(Argument.JOIN_GAME.toString());
-    bwhArgs.add(Argument.BOT_NAME.toString());
-    bwhArgs.add(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_NAME.toString()));
-    bwhArgs.add(Argument.BOT_RACE.toString());
-    bwhArgs.add(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_RACE.toString()));
-    bwhArgs.add(Argument.LOAD_DLL.toString());
-    bwhArgs.add(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BWAPI_DLL.toString()));
-    bwhArgs.add(Argument.ENABLE_LAN.toString());
-    bwhArgs.add(Argument.STARCRAFT_INSTALL_PATH.toString());
-    bwhArgs.add(starcraftDirectory.toString());
-    String[] bwhArgsArray = AdakiteUtils.toStringArray(bwhArgs);
+    CommandBuilder bwhCommand = new CommandBuilder();
+    bwhCommand.setPath(DEFAULT_EXE_PATH.toAbsolutePath());
+    bwhCommand.addArg(Argument.STARCRAFT_EXE.toString());
+    bwhCommand.addArg(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString()));
+    bwhCommand.addArg(Argument.JOIN_GAME.toString());
+    bwhCommand.addArg(Argument.BOT_NAME.toString());
+    bwhCommand.addArg(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_NAME.toString()));
+    bwhCommand.addArg(Argument.BOT_RACE.toString());
+    bwhCommand.addArg(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_RACE.toString()));
+    bwhCommand.addArg(Argument.LOAD_DLL.toString());
+    bwhCommand.addArg(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BWAPI_DLL.toString()));
+    bwhCommand.addArg(Argument.ENABLE_LAN.toString());
+    bwhCommand.addArg(Argument.STARCRAFT_INSTALL_PATH.toString());
+    bwhCommand.addArg(starcraftDirectory.toString());
 
     /* Start bwheadless. */
-//    this.bwheadlessPipe.open(DEFAULT_EXE_PATH.toAbsolutePath(), bwhArgsArray, starcraftDirectory.toString(), DEFAULT_STREAM_NAME);
+    this.bwheadlessPipe.setCWD(starcraftDirectory);
+    this.bwheadlessPipe.open(bwhCommand.get());
 
-    /* Start bot client in a command prompt. */
     if (this.botFile.getType() == BotFile.Type.CLIENT) {
-      ArrayList<String> clArgs = new ArrayList<>(); /* client arguments */
-      if (AdakiteUtils.getFileExtension(this.botFile.getPath()).equalsIgnoreCase(Windows.FileType.EXE.toString())) {
-        clArgs.add(this.botFile.toString());
-        String[] clArgsArray = AdakiteUtils.toStringArray(clArgs);
-//        this.botPipe.open(this.botFile.getPath().toAbsolutePath(), clArgsArray, starcraftDirectory.toString(), CLIENT_STREAM_NAME);
-      }
+      /* Compile bot client arguments. */
+      CommandBuilder clientCommand = new CommandBuilder();
+      clientCommand.setPath(this.botFile.getPath().toAbsolutePath());
+      /* Start bot client. */
+      this.botPipe.setCWD(starcraftDirectory);
+      this.botPipe.open(clientCommand.get());
     }
   }
 
   public void stop() {
-//    this.bwheadlessPipe.close();
+    this.bwheadlessPipe.close();
+    if (this.botFile.getType() == BotFile.Type.CLIENT) {
+      this.botPipe.close();
+    }
   }
 
   /**
-   * Configures BWAPI settings and related files.
+   * Configures BWAPI in the specified StarCraft directory.
    *
+   * @param starcraftDirectory path to the specified StarCraft directory
    * @throws IOException
+   * @throws InvalidBotTypeException if bot type is not recognized
    */
-  private void configureBwapi() throws IOException,
-                                       InvalidBotTypeException {
-    /* Determine StarCraft directory from StarCraft.exe path. */
-    Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString()))).toAbsolutePath();
-
+  private void configureBwapi(Path starcraftDirectory)
+      throws IOException,
+             InvalidBotTypeException {
     /* Configure BWAPI INI file. */
     INI bwapiIni = new INI();
     bwapiIni.open(Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_INI_PATH.toString()));

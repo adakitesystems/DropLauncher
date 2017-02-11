@@ -13,6 +13,10 @@ public class MVC {
     this.model = new Model();
 
     this.controller.setModel(this.model);
+
+    // DEBUG --
+    this.controller.debug();
+    //---
   }
 
 }

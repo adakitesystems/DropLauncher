@@ -31,13 +31,11 @@ public class Model {
   private INI ini;
   private BWHeadless bwheadless;
   private TaskTracker taskTracker;
-  private State state;
 
   public Model() {
     this.ini = new INI();
     this.bwheadless = new BWHeadless();
     this.taskTracker = new TaskTracker();
-    this.state = State.IDLE;
 
     this.bwheadless.setINI(this.ini);
     try {
@@ -52,68 +50,8 @@ public class Model {
     return this.ini;
   }
 
-  public State getState() {
-    return this.state;
-  }
-
-  public void setState(State state) {
-    this.state = state;
-  }
-
   public BWHeadless getBWHeadless() {
     return this.bwheadless;
-  }
-
-  /**
-   * Reads a dropped or selected file which is meant for bwheadless and
-   * sets the appropiate settings.
-   *
-   * @param path specified file to process
-   */
-  private void processFile(Path path) {
-    String ext = AdakiteUtils.getFileExtension(path).toLowerCase(Locale.US);
-    if (AdakiteUtils.isNullOrEmpty(ext)) {
-      return;
-    }
-
-    if (ext.equals("zip")) {
-      try {
-        ZipFile zipFile = new ZipFile(path.toAbsolutePath().toString());
-        if (zipFile.isEncrypted()) {
-//            throw new EncryptedArchiveException();
-          LOGGER.warn("unsupported encrypted archive: " + zipFile.getFile().getAbsolutePath());
-          return;
-        }
-        Path tmpDir = Paths.get(Constants.TEMP_DIRECTORY).toAbsolutePath();
-        FileUtils.deleteDirectory(tmpDir.toFile());
-        AdakiteUtils.createDirectory(tmpDir);
-        zipFile.extractAll(tmpDir.toString());
-        Path[] tmpList = AdakiteUtils.getDirectoryContents(tmpDir);
-        for (Path tmpPath : tmpList) {
-          if (!AdakiteUtils.directoryExists(tmpPath)) {
-            Path dest = tmpPath.getFileName();
-            FileUtils.copyFile(tmpPath.toFile(), dest.getFileName().toFile());
-            processFile(tmpPath);
-          }
-        }
-      } catch (IOException | ZipException ex) {
-        LOGGER.warn("unable to process ZIP file: " + path.toAbsolutePath().toString(), ex);
-        return;
-      }
-    } else if (ext.equals("dll") || ext.equals("exe")) {
-      if (path.getFileName().toString().equalsIgnoreCase("BWAPI.dll")) {
-        /* BWAPI.dll */
-        this.bwheadless.setBwapiDll(path.toAbsolutePath().toString());
-      } else {
-        /* Bot file */
-        this.bwheadless.setBotFile(path.toAbsolutePath().toString());
-        this.bwheadless.setBotName(AdakiteUtils.getFilenameNoExt(path));
-        this.bwheadless.setBotRace(Race.RANDOM);
-      }
-    } else {
-      /* Treat as a config file. */
-      this.bwheadless.getExtraBotFiles().add(path);
-    }
   }
 
   public void startBWHeadless() throws IOException, InvalidBotTypeException {
@@ -145,34 +83,6 @@ public class Model {
       }
     }
     this.bwheadless.stop();
-  }
-
-  public void filesDropped(List<File> files) {
-    /* Parse all objects dropped into a complete list of files dropped since
-       dropping a directory does NOT include all subdirectories and
-       files by default. */
-    ArrayList<Path> fileList = new ArrayList<>();
-    for (File file : files) {
-      if (file.isDirectory()) {
-        try {
-          Path[] tmpList = AdakiteUtils.getDirectoryContents(file.toPath(), true);
-          for (Path tmpPath : tmpList) {
-            fileList.add(tmpPath);
-          }
-        } catch (IOException ex) {
-          LOGGER.error("unable to get directory contents for: " + file.getAbsolutePath(), ex);
-        }
-      } else if (file.isFile()) {
-        fileList.add(file.toPath());
-      } else {
-        LOGGER.warn("unknown file dropped: " + file.getAbsolutePath());
-      }
-    }
-
-    /* Process all files. */
-    for (Path path : fileList) {
-      processFile(path);
-    }
   }
 
 }

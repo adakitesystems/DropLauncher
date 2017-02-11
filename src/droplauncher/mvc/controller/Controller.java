@@ -5,14 +5,22 @@ import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotFile;
-import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.mvc.model.Model;
+import droplauncher.mvc.model.State;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import droplauncher.util.SettingsKey;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import javafx.stage.Stage;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,37 +29,136 @@ public class Controller {
   private static final Logger LOGGER = LogManager.getLogger();
 
   private Model model;
+  private State state;
 
   public Controller() {
     this.model = null;
+    this.state = State.IDLE;
+  }
+
+  public void debug() {
+    startBWHeadless();
   }
 
   public void setModel(Model model) {
     this.model = model;
   }
 
+  public State getState() {
+    return this.state;
+  }
+
   private void startBWHeadless() {
+    if (this.state != State.IDLE) {
+      throw new IllegalStateException("state != " + State.IDLE.toString());
+    }
     try {
       this.model.startBWHeadless();
-    } catch (IOException | InvalidBotTypeException ex) {
+    } catch (Exception ex) {
       LOGGER.error(ex);
+      return;
     }
+    this.state = State.RUNNING;
   }
 
   private void stopBWHeadless() {
+    if (this.state != State.RUNNING) {
+      throw new IllegalStateException("state != " + State.RUNNING.toString());
+    }
     try {
       this.model.stopBWHeadless();
-    } catch (IOException ex) {
+    } catch (Exception ex) {
       LOGGER.error(ex);
+      return;
     }
+    this.state = State.IDLE;
   }
 
   public void closeProgramRequest(Stage stage) {
-//    if (this.model.getBWHeadless().isRunning()) {
-//      stopBWHeadless();
-//    }
-    stopBWHeadless();
+    if (this.state == State.RUNNING) {
+      stopBWHeadless();
+    }
     stage.close();
+  }
+
+  /**
+   * Reads a dropped or selected file which is meant for bwheadless and
+   * sets the appropiate settings.
+   *
+   * @param path specified file to process
+   */
+  private void processFile(Path path) {
+    String ext = AdakiteUtils.getFileExtension(path).toLowerCase(Locale.US);
+    if (AdakiteUtils.isNullOrEmpty(ext)) {
+      return;
+    }
+
+    if (ext.equals("zip")) {
+      try {
+        ZipFile zipFile = new ZipFile(path.toAbsolutePath().toString());
+        if (zipFile.isEncrypted()) {
+//            throw new UnsupportedEncryptedArchiveException();
+          LOGGER.warn("unsupported encrypted archive: " + zipFile.getFile().getAbsolutePath());
+          return;
+        }
+        Path tmpDir = Paths.get(Constants.TEMP_DIRECTORY).toAbsolutePath();
+        FileUtils.deleteDirectory(tmpDir.toFile());
+        AdakiteUtils.createDirectory(tmpDir);
+        zipFile.extractAll(tmpDir.toString());
+        Path[] tmpList = AdakiteUtils.getDirectoryContents(tmpDir);
+        for (Path tmpPath : tmpList) {
+          if (!AdakiteUtils.directoryExists(tmpPath)) {
+            Path dest = tmpPath.getFileName();
+            FileUtils.copyFile(tmpPath.toFile(), dest.getFileName().toFile());
+            processFile(tmpPath);
+          }
+        }
+      } catch (IOException | ZipException ex) {
+        LOGGER.warn("unable to process ZIP file: " + path.toAbsolutePath().toString(), ex);
+        return;
+      }
+    } else if (ext.equals("dll") || ext.equals("exe")) {
+      if (path.getFileName().toString().equalsIgnoreCase("BWAPI.dll")) {
+        /* BWAPI.dll */
+        this.model.getBWHeadless().setBwapiDll(path.toAbsolutePath().toString());
+      } else {
+        /* Bot file */
+        this.model.getBWHeadless().setBotFile(path.toAbsolutePath().toString());
+        this.model.getBWHeadless().setBotName(AdakiteUtils.getFilenameNoExt(path));
+        this.model.getBWHeadless().setBotRace(Race.RANDOM);
+      }
+    } else {
+      /* Treat as a config file. */
+      this.model.getBWHeadless().getExtraBotFiles().add(path);
+    }
+  }
+
+  public void filesDropped(List<File> files) {
+    /* Parse all objects dropped into a complete list of files dropped since
+       dropping a directory does NOT include all subdirectories and
+       files by default. */
+    ArrayList<Path> fileList = new ArrayList<>();
+    for (File file : files) {
+      if (file.isDirectory()) {
+        try {
+          Path[] tmpList = AdakiteUtils.getDirectoryContents(file.toPath(), true);
+          for (Path tmpPath : tmpList) {
+            fileList.add(tmpPath);
+          }
+        } catch (IOException ex) {
+          LOGGER.error("unable to get directory contents for: " + file.getAbsolutePath(), ex);
+        }
+      } else if (file.isFile()) {
+        fileList.add(file.toPath());
+      } else {
+        LOGGER.warn("unknown file dropped: " + file.getAbsolutePath());
+      }
+    }
+
+    /* Process all files. */
+    for (Path path : fileList) {
+      processFile(path);
+    }
   }
 
   /* ************************************************************ */
