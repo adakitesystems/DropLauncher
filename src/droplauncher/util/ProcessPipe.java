@@ -8,8 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Generic class for handling communication between the main program and
- * a process.
+ * Container class for starting and stopping a new process.
  */
 public class ProcessPipe {
 
@@ -29,22 +28,28 @@ public class ProcessPipe {
     this.gobblerStderr = null;
   }
 
-  public String[] getArgs() {
-    return this.args;
-  }
-
-  public void setArgs(String[] args) {
-    this.args = args;
-  }
-
+  /**
+   * Returns the current working directory for the process.
+   */
   public Path getCWD() {
     return this.cwd;
   }
 
+  /**
+   * Sets the current working directory for the executable.
+   *
+   * @param path specified current working directory
+   */
   public void setCWD(Path path) {
     this.cwd = path;
   }
 
+  /**
+   * Creates and opens the pipe to the specified executable.
+   *
+   * @param args specified command and arguments to run
+   * @throws IOException
+   */
   public void open(String[] args) throws IOException {
     if (args == null) {
       throw new IllegalArgumentException(Debugging.nullObject("args"));
@@ -66,12 +71,15 @@ public class ProcessPipe {
     this.gobblerStderr.start();
   }
 
+  /**
+   * Attempts to close the pipe.
+   */
   public void close() {
     this.gobblerStdout.interrupt();
     this.gobblerStdout.interrupt();
     this.process.destroy();
     if (this.process.isAlive()) {
-      LOGGER.warn("process is still alive after attempting to destroy");
+      LOGGER.warn("process is still alive after destroy attempt");
     }
   }
 
