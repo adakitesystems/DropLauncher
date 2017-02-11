@@ -5,6 +5,7 @@ import adakite.util.AdakiteUtils;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotFile;
 import droplauncher.bwheadless.KillableTask;
+import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import droplauncher.util.windows.Task;
@@ -30,11 +31,13 @@ public class Model {
   private INI ini;
   private BWHeadless bwheadless;
   private TaskTracker taskTracker;
+  private State state;
 
   public Model() {
     this.ini = new INI();
     this.bwheadless = new BWHeadless();
     this.taskTracker = new TaskTracker();
+    this.state = State.IDLE;
 
     this.bwheadless.setINI(this.ini);
     try {
@@ -47,6 +50,14 @@ public class Model {
 
   public INI getINI() {
     return this.ini;
+  }
+
+  public State getState() {
+    return this.state;
+  }
+
+  public void setState(State state) {
+    this.state = state;
   }
 
   public BWHeadless getBWHeadless() {
@@ -105,7 +116,7 @@ public class Model {
     }
   }
 
-  public void startBWHeadless() throws IOException {
+  public void startBWHeadless() throws IOException, InvalidBotTypeException {
     this.taskTracker.update();
     this.bwheadless.start();
   }

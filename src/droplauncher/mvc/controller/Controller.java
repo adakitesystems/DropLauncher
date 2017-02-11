@@ -5,6 +5,7 @@ import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotFile;
+import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.ConsoleOutput;
 import droplauncher.mvc.view.LaunchButtonText;
@@ -50,17 +51,20 @@ public class Controller {
     this.model.getBWHeadless().setConsoleOutput(this.view.getConsoleOutput());
     try {
       this.model.startBWHeadless();
-    } catch (IOException ex) {
+    } catch (IOException | InvalidBotTypeException ex) {
       LOGGER.error(ex);
     }
   }
 
   private void stopBWHeadless() {
+    LOGGER.info("ack");
     try {
       this.model.stopBWHeadless();
+      LOGGER.info("ack2");
     } catch (IOException ex) {
       LOGGER.error(ex);
     }
+    LOGGER.info("ack3");
   }
 
   public void closeProgramRequest(Stage stage) {
