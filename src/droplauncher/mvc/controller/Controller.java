@@ -36,8 +36,12 @@ public class Controller {
     this.state = State.IDLE;
   }
 
-  public void debug() {
+  public void debug() throws InterruptedException {
+    processFile(Paths.get("V:\\files\\BWAPI\\Bots\\krasi0 zip\\krasi0_BjYnC4.zip"));
+    this.model.getBWHeadless().setBotRace(Race.TERRAN);
     startBWHeadless();
+    Thread.sleep(30000);
+    stopBWHeadless();
   }
 
   public void setModel(Model model) {
@@ -52,12 +56,17 @@ public class Controller {
     if (this.state != State.IDLE) {
       throw new IllegalStateException("state != " + State.IDLE.toString());
     }
+    if (!this.model.getBWHeadless().isReady()) {
+      throw new IllegalStateException("BWH not ready: " + this.model.getBWHeadless().getReadyError().toString());
+    }
+
     try {
       this.model.startBWHeadless();
     } catch (Exception ex) {
       LOGGER.error(ex);
       return;
     }
+
     this.state = State.RUNNING;
   }
 
@@ -65,12 +74,14 @@ public class Controller {
     if (this.state != State.RUNNING) {
       throw new IllegalStateException("state != " + State.RUNNING.toString());
     }
+
     try {
       this.model.stopBWHeadless();
     } catch (Exception ex) {
       LOGGER.error(ex);
       return;
     }
+
     this.state = State.IDLE;
   }
 
