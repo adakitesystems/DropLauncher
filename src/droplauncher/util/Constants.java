@@ -26,11 +26,10 @@ public class Constants {
       + Constants.PROGRAM_LICENSE_LINK + AdakiteUtils.newline(2)
       + "Source:" + AdakiteUtils.newline()
       + Constants.PROGRAM_GITHUB + AdakiteUtils.newline()
-      + AdakiteUtils.newline()
       ;
 
   public static final Path DROPLAUNCHER_INI_PATH = Paths.get("droplauncher.ini");
-  public static final String DROPLAUNCHER_INI_SECTION = "droplauncher";
+  public static final String DROPLAUNCHER_INI_SECTION_NAME = "droplauncher";
 
   public static final String TEMP_DIRECTORY = "tmp";
 
