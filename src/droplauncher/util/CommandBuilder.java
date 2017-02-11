@@ -57,6 +57,13 @@ public class CommandBuilder {
     return args;
   }
 
+  public void setArgs(String[] args) {
+    this.args.clear();
+    for (String arg : args) {
+      this.args.add(arg);
+    }
+  }
+
   /**
    * Returns a String array of the command and args.
    */
