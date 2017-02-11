@@ -58,50 +58,44 @@ public class ProcessPipe {
    * @param streamName name for outputStream from pipe
    * @throws UnsupportedEncodingException
    * @throws IOException
+   * @throws IllegalArgumentException if Path argument is null
    */
   public void open(Path path, String[] args, String cwd, String streamName)
       throws UnsupportedEncodingException,
-             IOException,
-             Throwable {
+             IOException {
     if (path == null) {
-      throw LOGGER.throwing((Throwable) new IllegalArgumentException(Debugging.nullObject("path")));
+      throw new IllegalArgumentException(Debugging.nullObject("path"));
     }
 
-    try {
-      String[] command;
-      if (args == null) {
-        command = new String[1];
-      } else {
-        this.args = Arrays.copyOf(args, args.length);
-        command = new String[this.args.length + 1];
-        System.arraycopy(this.args, 0, command, 1, this.args.length);
-      }
-
-      this.path = path;
-      command[0] = this.path.toString();
-      if (!AdakiteUtils.isNullOrEmpty(cwd)) {
-        /* Set current working directory for the new process. */
-        ProcessBuilder pb = new ProcessBuilder(command);
-        pb.directory(Paths.get(cwd).toFile());
-        this.process = pb.start();
-      } else {
-        this.process = new ProcessBuilder(command).start();
-      }
-
-      this.is = this.process.getInputStream();
-      this.br = new BufferedReader(new InputStreamReader(this.is, StandardCharsets.UTF_8));
-      this.gobblerStdout = new StreamGobbler(streamName, this.process.getInputStream());
-      this.gobblerStderr = new StreamGobbler(streamName, this.process.getErrorStream());
-      this.gobblerStdout.start();
-      this.gobblerStderr.start();
-
-      this.os = this.process.getOutputStream();
-      this.bw = new BufferedWriter(new OutputStreamWriter(this.os, StandardCharsets.UTF_8));
-    } catch (UnsupportedEncodingException ex) {
-      throw LOGGER.throwing((Throwable) ex);
-    } catch (IOException ex) {
-      throw LOGGER.throwing((Throwable) ex);
+    String[] command;
+    if (args == null) {
+      command = new String[1];
+    } else {
+      this.args = Arrays.copyOf(args, args.length);
+      command = new String[this.args.length + 1];
+      System.arraycopy(this.args, 0, command, 1, this.args.length);
     }
+
+    this.path = path;
+    command[0] = this.path.toString();
+    if (!AdakiteUtils.isNullOrEmpty(cwd)) {
+      /* Set current working directory for the new process. */
+      ProcessBuilder pb = new ProcessBuilder(command);
+      pb.directory(Paths.get(cwd).toFile());
+      this.process = pb.start();
+    } else {
+      this.process = new ProcessBuilder(command).start();
+    }
+
+    this.is = this.process.getInputStream();
+    this.br = new BufferedReader(new InputStreamReader(this.is, StandardCharsets.UTF_8));
+    this.gobblerStdout = new StreamGobbler(streamName, this.process.getInputStream());
+    this.gobblerStderr = new StreamGobbler(streamName, this.process.getErrorStream());
+    this.gobblerStdout.start();
+    this.gobblerStderr.start();
+
+    this.os = this.process.getOutputStream();
+    this.bw = new BufferedWriter(new OutputStreamWriter(this.os, StandardCharsets.UTF_8));
   }
 
   /**

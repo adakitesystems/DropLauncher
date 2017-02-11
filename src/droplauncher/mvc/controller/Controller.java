@@ -30,7 +30,7 @@ public class Controller {
     this.model = model;
   }
 
-  private void startBWHeadless() throws Throwable {
+  private void startBWHeadless() {
     try {
       this.model.startBWHeadless();
     } catch (IOException | InvalidBotTypeException ex) {
@@ -39,14 +39,11 @@ public class Controller {
   }
 
   private void stopBWHeadless() {
-    LOGGER.info("ack");
     try {
       this.model.stopBWHeadless();
-      LOGGER.info("ack2");
     } catch (IOException ex) {
       LOGGER.error(ex);
     }
-    LOGGER.info("ack3");
   }
 
   public void closeProgramRequest(Stage stage) {

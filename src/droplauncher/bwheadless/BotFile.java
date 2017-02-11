@@ -44,7 +44,7 @@ public class BotFile {
    */
   public Path getPath() {
     if (this.path == null) {
-      throw LOGGER.throwing(new IllegalStateException("path not set"));
+      throw new IllegalStateException("path not set");
     }
     return this.path;
   }
