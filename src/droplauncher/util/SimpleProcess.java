@@ -1,8 +1,10 @@
 package droplauncher.util;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
@@ -27,30 +29,27 @@ public class SimpleProcess {
     return this.log;
   }
 
-  public void run(Path path, String[] args) {
+  public void run(Path path, String[] args) throws UnsupportedEncodingException,
+                                                   IOException {
     this.log.clear();
 
-    try {
-      String[] command;
-      if (args == null) {
-        command = new String[1];
-      } else {
-        command = new String[args.length + 1];
-        System.arraycopy(args, 0, command, 1, args.length);
-      }
+    String[] command;
+    if (args == null) {
+      command = new String[1];
+    } else {
+      command = new String[args.length + 1];
+      System.arraycopy(args, 0, command, 1, args.length);
+    }
 
-      command[0] = path.toString();
-      Process process = new ProcessBuilder(command).start();
+    command[0] = path.toString();
+    Process process = new ProcessBuilder(command).start();
 
-      InputStream is = process.getInputStream();
-      BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
+    InputStream is = process.getInputStream();
+    try (BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
       String line;
       while ((line = br.readLine()) != null) {
         this.log.add(line);
       }
-    } catch (Exception ex) {
-      LOGGER.error(ex);
     }
   }
 

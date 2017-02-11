@@ -22,22 +22,21 @@ public class Starcraft {
       return "";
     }
 
-    String ret = "";
-
+    StringBuilder sb = new StringBuilder();
     for (int i = 0; i < str.length(); i++) {
       char ch = str.charAt(i);
       if ((ch >= 'A' && ch <= 'Z')
           || (ch >= 'a' && ch <= 'z')
           || (ch >= '0' && ch <= '9')
           || ch == ' ') {
-        ret += ch;
+        sb.append(ch);
       }
     }
 
+    String ret = sb.toString();
     if (ret.length() > MAX_PROFILE_NAME_LENGTH) {
       ret = ret.substring(0, MAX_PROFILE_NAME_LENGTH);
     }
-
     return ret;
   }
 

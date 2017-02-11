@@ -15,6 +15,8 @@ import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import droplauncher.util.SettingsKey;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import javafx.application.Platform;
@@ -46,11 +48,19 @@ public class Controller {
 
   private void startBWHeadless() {
     this.model.getBWHeadless().setConsoleOutput(this.view.getConsoleOutput());
-    this.model.startBWHeadless();
+    try {
+      this.model.startBWHeadless();
+    } catch (IOException ex) {
+      LOGGER.error(ex);
+    }
   }
 
   private void stopBWHeadless() {
-    this.model.stopBWHeadless();
+    try {
+      this.model.stopBWHeadless();
+    } catch (IOException ex) {
+      LOGGER.error(ex);
+    }
   }
 
   public void closeProgramRequest(Stage stage) {
@@ -86,7 +96,7 @@ public class Controller {
     if (AdakiteUtils.isNullOrEmpty(dll)) {
       return null;
     } else {
-      return BWAPI.getBwapiVersion(MD5Checksum.get(Paths.get(dll)).toString());
+      return BWAPI.getBwapiVersion(MD5Checksum.get(Paths.get(dll)));
     }
   }
 
@@ -110,10 +120,8 @@ public class Controller {
   public void mnuFileSelectBotFilesClicked(Stage stage) {
     FileChooser fc = new FileChooser();
     fc.setTitle("Select bot files ...");
-    String userDirectory = AdakiteUtils.getUserHomeDirectory().toAbsolutePath().toString();
-    if (userDirectory != null) {
-      fc.setInitialDirectory(new File(userDirectory));
-    }
+    Path userDirectory = AdakiteUtils.getUserHomeDirectory();
+    fc.setInitialDirectory(new File(userDirectory.toAbsolutePath().toString()));
     List<File> files = fc.showOpenMultipleDialog(stage);
     if (files != null && files.size() > 0) {
       filesDropped(files);

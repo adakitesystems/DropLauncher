@@ -2,6 +2,7 @@ package droplauncher.bwapi;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
 
 /**
  * Utilities and constants class for BWAPI.
@@ -26,7 +27,7 @@ public class BWAPI {
    *     otherwise an unknown-type indication string
    */
   public static String getBwapiVersion(String checksum) {
-    checksum = checksum.toLowerCase();
+    checksum = checksum.toLowerCase(Locale.US);
     if (checksum.equals(Checksum.BWAPI_DLL_374.toString())) {
       return Checksum.BWAPI_DLL_374.getName();
     } else if (checksum.equals(Checksum.BWAPI_DLL_375.toString())) {

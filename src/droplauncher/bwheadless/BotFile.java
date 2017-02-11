@@ -2,6 +2,7 @@ package droplauncher.bwheadless;
 
 import adakite.util.AdakiteUtils;
 import java.nio.file.Path;
+import java.util.Locale;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -50,7 +51,7 @@ public class BotFile {
 
   public void setPath(Path path) {
     this.path = path;
-    String ext = AdakiteUtils.getFileExtension(this.path).toLowerCase();
+    String ext = AdakiteUtils.getFileExtension(this.path).toLowerCase(Locale.US);
     if (ext.equals("dll")) {
       this.type = Type.DLL;
     } else if (ext.equals("exe")) {

@@ -16,7 +16,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,7 +60,7 @@ public class Model {
    * @param path specified file to process
    */
   private void processFile(Path path) {
-    String ext = AdakiteUtils.getFileExtension(path).toLowerCase();
+    String ext = AdakiteUtils.getFileExtension(path).toLowerCase(Locale.US);
     if (AdakiteUtils.isNullOrEmpty(ext)) {
       return;
     }
@@ -83,7 +85,7 @@ public class Model {
             processFile(tmpPath);
           }
         }
-      } catch (Exception ex) {
+      } catch (IOException | ZipException ex) {
         LOGGER.warn("unable to process ZIP file: " + path.toAbsolutePath().toString(), ex);
         return;
       }
@@ -103,12 +105,12 @@ public class Model {
     }
   }
 
-  public void startBWHeadless() {
+  public void startBWHeadless() throws IOException {
     this.taskTracker.update();
     this.bwheadless.start();
   }
 
-  public void stopBWHeadless() {
+  public void stopBWHeadless() throws IOException {
     /* Kill new tasks that were started with bwheadless. */
     this.taskTracker.updateNewTasks();
     ArrayList<Task> tasks = this.taskTracker.getNewTasks();

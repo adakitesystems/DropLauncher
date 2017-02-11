@@ -3,6 +3,7 @@ package droplauncher.bwheadless;
 import adakite.ini.INI;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
+import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.mvc.view.ConsoleOutput;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
@@ -130,7 +131,7 @@ public class BWHeadless {
   /**
    * Attempts to start bwheadless after configuring and checking settings.
    */
-  public void start() {
+  public void start() throws IOException {
     if (isRunning() || !isReady()) {
       //TODO: Throw a built-in or custom exception.
       return;
@@ -139,7 +140,7 @@ public class BWHeadless {
     try {
       //TODO: Don't catch, throw.
       configureBwapi();
-    } catch (IOException ex) {
+    } catch (IOException | InvalidBotTypeException ex) {
       LOGGER.error(ex);
     }
 
@@ -186,7 +187,8 @@ public class BWHeadless {
    *
    * @throws IOException
    */
-  private void configureBwapi() throws IOException {
+  private void configureBwapi() throws IOException,
+                                       InvalidBotTypeException {
     /* Determine StarCraft directory from StarCraft.exe path. */
     Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()))).toAbsolutePath();
 
@@ -204,16 +206,21 @@ public class BWHeadless {
     /* Prepare to copy bot files to StarCraft directory. */
     Path src = null;
     Path dest = null;
-    if (this.botFile.getType() == BotFile.Type.DLL) {
-      /* Prepare to copy DLL to bwapi-data directory. */
-      src = this.botFile.getPath();
-      dest = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_AI_PATH.toString(), Paths.get(this.botFile.toString()).getFileName().toString());
-      this.botFile.setPath(dest);
-    } else if (this.botFile.getType() == BotFile.Type.CLIENT) {
-      /* Prepare to copy client to StarCraft root directory. */
-      src = this.botFile.getPath();
-      dest = Paths.get(starcraftDirectory.toString(), this.botFile.getPath().getFileName().toString());
-      this.botFile.setPath(dest);
+    switch (this.botFile.getType()) {
+      case DLL:
+        /* Prepare to copy DLL to bwapi-data directory. */
+        src = this.botFile.getPath();
+        dest = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_AI_PATH.toString(), Paths.get(this.botFile.toString()).getFileName().toString());
+        this.botFile.setPath(dest);
+        break;
+      case CLIENT:
+        /* Prepare to copy client to StarCraft root directory. */
+        src = this.botFile.getPath();
+        dest = Paths.get(starcraftDirectory.toString(), this.botFile.getPath().getFileName().toString());
+        this.botFile.setPath(dest);
+        break;
+      default:
+        throw LOGGER.throwing(new InvalidBotTypeException());
     }
     /* Copy files. */
     AdakiteUtils.createDirectory(dest.getParent());

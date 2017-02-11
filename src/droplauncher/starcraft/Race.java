@@ -1,5 +1,7 @@
 package droplauncher.starcraft;
 
+import java.util.Locale;
+
 /**
  * Enum for race selections in StarCraft.
  */
@@ -26,9 +28,9 @@ public enum Race {
    *     otherwise null if no match was found
    */
   public static Race get(String str) {
-    str = str.toLowerCase();
+    str = str.toLowerCase(Locale.US);
     for (Race val : Race.values()) {
-      if (str.equals(val.toString().toLowerCase())) {
+      if (str.equals(val.toString().toLowerCase(Locale.US))) {
         return val;
       }
     }

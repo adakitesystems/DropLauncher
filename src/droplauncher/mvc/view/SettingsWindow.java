@@ -34,11 +34,16 @@ public class SettingsWindow {
   private SettingsWindow() {}
 
   public SettingsWindow(INI ini) {
+    this.chkKeepClientWindow = new CheckBox();
+    this.lblChangeStarcraftExe = new Label();
+    this.lblChangeStarcraftExeText = new Label();
+    this.btnChangeStarcraftExe = new Button();
+
     this.ini = ini;
   }
 
   public SettingsWindow showAndWait() {
-    this.chkKeepClientWindow = new CheckBox("Show log window for executable bot clients (requires program restart)");
+    this.chkKeepClientWindow.setText("Show log window for executable bot clients (requires program restart)");
     if (this.ini.hasValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.SHOW_LOG_WINDOW.toString())
         && this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.SHOW_LOG_WINDOW.toString()).equalsIgnoreCase(Boolean.TRUE.toString())) {
       this.chkKeepClientWindow.setSelected(true);
@@ -55,9 +60,8 @@ public class SettingsWindow {
       this.ini.set(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.SHOW_LOG_WINDOW.toString(), val);
     });
 
-    this.lblChangeStarcraftExe = new Label("StarCraft.exe:");
-    this.btnChangeStarcraftExe = new Button("...");
-    this.lblChangeStarcraftExeText = new Label("");
+    this.lblChangeStarcraftExe.setText("StarCraft.exe:");
+    this.btnChangeStarcraftExe.setText("...");
     String starcraftExe = this.ini.getValue(BWHeadless.BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString());
     if (!AdakiteUtils.isNullOrEmpty(starcraftExe)
         && AdakiteUtils.fileExists(Paths.get(starcraftExe))) {

@@ -1,5 +1,6 @@
 package droplauncher.util.windows;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -32,7 +33,7 @@ public class TaskTracker {
   /**
    * Updates both the current and previous tasklists.
    */
-  public void update() {
+  public void update() throws IOException {
     this.previousTasklist.update();
     this.currentTasklist.update();
   }
@@ -44,7 +45,7 @@ public class TaskTracker {
    * @param updatePreviousTasks whether to update the previous
    *     tasklist after comparison
    */
-  public void updateNewTasks(boolean updatePreviousTasks) {
+  public void updateNewTasks(boolean updatePreviousTasks) throws IOException {
     this.newTasks.clear();
 
     this.currentTasklist.update();
@@ -75,7 +76,7 @@ public class TaskTracker {
    *
    * @see #updateNewTasks(boolean)
    */
-  public void updateNewTasks() {
+  public void updateNewTasks() throws IOException {
     updateNewTasks(false);
   }
 

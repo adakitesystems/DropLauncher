@@ -1,5 +1,7 @@
 package droplauncher.bwheadless;
 
+import java.util.Locale;
+
 /**
  * Enum for how the bot should connect to a game lobby.
  */
@@ -24,9 +26,9 @@ public enum ConnectMode {
    *     otherwise null if no match was found
    */
   public static ConnectMode get(String str) {
-    str = str.toLowerCase();
+    str = str.toLowerCase(Locale.US);
     for (ConnectMode val : ConnectMode.values()) {
-      if (str.equals(val.toString().toLowerCase())) {
+      if (str.equals(val.toString().toLowerCase(Locale.US))) {
         return val;
       }
     }

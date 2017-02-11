@@ -2,6 +2,7 @@ package droplauncher.util.windows;
 
 import adakite.util.AdakiteUtils;
 import droplauncher.util.SimpleProcess;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.StringTokenizer;
@@ -22,7 +23,7 @@ public class Tasklist {
     this.tasks = new ArrayList<>();
   }
 
-  public void kill(String pid) {
+  public void kill(String pid) throws IOException {
     String[] args = new String[Windows.Program.TASKKILL.getPredefinedArgs().length + 1];
     System.arraycopy(Windows.Program.TASKKILL.getPredefinedArgs(), 0, args, 0, Windows.Program.TASKKILL.getPredefinedArgs().length);
     args[args.length - 1] = pid;
@@ -35,7 +36,7 @@ public class Tasklist {
    *
    * @param update whether to update the list before returning
    */
-  public ArrayList<Task> getTasks(boolean update) {
+  public ArrayList<Task> getTasks(boolean update) throws IOException {
     if (update) {
       update();
     }
@@ -48,11 +49,11 @@ public class Tasklist {
    *
    * @see #getTasks(boolean)
    */
-  public ArrayList<Task> getTasks() {
+  public ArrayList<Task> getTasks() throws IOException {
     return getTasks(false);
   }
 
-  public boolean update() {
+  public boolean update() throws IOException {
     this.tasks.clear();
 
     SimpleProcess process = new SimpleProcess();
@@ -139,18 +140,23 @@ public class Tasklist {
     } else if (obj == this) {
       return true;
     } else {
-      Tasklist tasklist = (Tasklist) obj;
-      for (Task task1 : tasklist.getTasks()) {
-        boolean isFound = false;
-        for (Task task2 : this.getTasks()) {
-          if (task1.getPID().equals(task2.getPID())) {
-            isFound = true;
-            break;
+      try {
+        Tasklist tasklist = (Tasklist) obj;
+        for (Task task1 : tasklist.getTasks()) {
+          boolean isFound = false;
+          for (Task task2 : this.getTasks()) {
+            if (task1.getPID().equals(task2.getPID())) {
+              isFound = true;
+              break;
+            }
+          }
+          if (!isFound) {
+            return false;
           }
         }
-        if (!isFound) {
-          return false;
-        }
+      } catch (IOException ex) {
+        LOGGER.error(ex);
+        return false;
       }
     }
     return true;

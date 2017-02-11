@@ -1,13 +1,16 @@
 package droplauncher.util;
 
+import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.view.ConsoleOutput;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -60,21 +63,21 @@ public class ProcessPipe {
     return this.isOpen;
   }
 
-  //TODO: Change return type to void and throw exceptions where required.
   /**
    * Open a pipe to the specified program.
    *
    * @param path specified program
    * @param args arguments to include during invocation
    * @param cwd current working directory
-   * @return
-   *     true if pipe was opened successfully,
-   *     otherwise false
+   * @param streamName name for outputStream from pipe
+   * @throws UnsupportedEncodingException
+   * @throws IOException
    */
-  public boolean open(Path path, String[] args, String cwd, String streamName) {
+  public void open(Path path, String[] args, String cwd, String streamName)
+      throws UnsupportedEncodingException,
+             IOException {
     if (path == null) {
-      LOGGER.warn("path is null");
-      return false;
+      throw LOGGER.throwing(new IllegalArgumentException(Debugging.nullObject("path")));
     }
 
     try {
@@ -99,37 +102,29 @@ public class ProcessPipe {
       }
 
       this.is = this.process.getInputStream();
-      this.br = new BufferedReader(new InputStreamReader(this.is));
+      this.br = new BufferedReader(new InputStreamReader(this.is, "UTF-8"));
       this.gobblerStdout = new StreamGobbler(streamName, this.process.getInputStream(), this.consoleOutput);
       this.gobblerStderr = new StreamGobbler(streamName, this.process.getErrorStream(), this.consoleOutput);
       this.gobblerStdout.start();
       this.gobblerStderr.start();
 
       this.os = this.process.getOutputStream();
-      this.bw = new BufferedWriter(new OutputStreamWriter(this.os));
+      this.bw = new BufferedWriter(new OutputStreamWriter(this.os, "UTF-8"));
 
       this.isOpen = true;
-
-      return true;
-    } catch (Exception ex) {
-      LOGGER.error(ex);
+    } catch (UnsupportedEncodingException ex) {
+      throw LOGGER.throwing(ex);
+    } catch (IOException ex) {
+      throw LOGGER.throwing(ex);
     }
 
     this.isOpen = false;
-
-    return false;
   }
 
-  //TODO: Change return type to void and throw exceptions where required.
   /**
    * Closes the pipe and destroys the process.
-   *
-   * @return
-   *     true if all pipe-related objects were closed and no errors
-   *         were encountered,
-   *     otherwise false
    */
-  public boolean close() {
+  public void close() {
     this.isOpen = false;
     try {
       if (this.br != null && this.is != null
@@ -143,11 +138,9 @@ public class ProcessPipe {
         this.os.close();
       }
       this.process.destroy();
-      return true;
     } catch (Exception ex) {
       LOGGER.error(ex);
     }
-    return false;
   }
 
 }

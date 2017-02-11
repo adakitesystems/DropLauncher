@@ -32,7 +32,7 @@ public class StreamGobbler extends Thread {
   @Override
   public void run() {
     try {
-      BufferedReader br = new BufferedReader(new InputStreamReader(this.inputStream));
+      BufferedReader br = new BufferedReader(new InputStreamReader(this.inputStream, "UTF-8"));
       while ((this.line = br.readLine()) != null) {
         if (this.line.startsWith("fps: ")) {
           continue;
