@@ -2,7 +2,6 @@ package droplauncher.util;
 
 import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
-import droplauncher.mvc.view.ConsoleOutput;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -38,8 +37,6 @@ public class ProcessPipe {
   private StreamGobbler gobblerStderr;
   private boolean isOpen;
 
-  private ConsoleOutput consoleOutput;
-
   public ProcessPipe() {
     this.path = null;
     this.args = null;
@@ -51,12 +48,6 @@ public class ProcessPipe {
     this.gobblerStdout = null;
     this.gobblerStderr = null;
     this.isOpen = false;
-
-    this.consoleOutput = null;
-  }
-
-  public void setConsoleOutput(ConsoleOutput co) {
-    this.consoleOutput = co;
   }
 
   public boolean isOpen() {
@@ -103,8 +94,8 @@ public class ProcessPipe {
 
       this.is = this.process.getInputStream();
       this.br = new BufferedReader(new InputStreamReader(this.is, "UTF-8"));
-      this.gobblerStdout = new StreamGobbler(streamName, this.process.getInputStream(), this.consoleOutput);
-      this.gobblerStderr = new StreamGobbler(streamName, this.process.getErrorStream(), this.consoleOutput);
+      this.gobblerStdout = new StreamGobbler(streamName, this.process.getInputStream());
+      this.gobblerStderr = new StreamGobbler(streamName, this.process.getErrorStream());
       this.gobblerStdout.start();
       this.gobblerStderr.start();
 

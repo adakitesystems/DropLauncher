@@ -4,7 +4,6 @@ import adakite.ini.INI;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.exception.InvalidBotTypeException;
-import droplauncher.mvc.view.ConsoleOutput;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.ProcessPipe;
@@ -46,8 +45,6 @@ public class BWHeadless {
 
   private ArrayList<Path> extraBotFiles;
 
-  private ConsoleOutput consoleOutput;
-
   public BWHeadless() {
     this.ini = null;
 
@@ -57,12 +54,6 @@ public class BWHeadless {
     this.botFile = new BotFile();
 
     this.extraBotFiles = new ArrayList<>();
-
-    this.consoleOutput = null;
-  }
-
-  public void setConsoleOutput(ConsoleOutput co) {
-    this.consoleOutput = co;
   }
 
   public INI getINI() {
@@ -158,12 +149,10 @@ public class BWHeadless {
     String[] bwhArgsArray = AdakiteUtils.toStringArray(bwhArgs);
 
     /* Start bwheadless. */
-    this.bwheadlessPipe.setConsoleOutput(this.consoleOutput);
     this.bwheadlessPipe.open(BWHEADLESS_EXE_PATH.toAbsolutePath(), bwhArgsArray, starcraftDirectory.toString(), BWH_STREAM_NAME);
 
     /* Start bot client in a command prompt. */
     if (this.botFile.getType() == BotFile.Type.CLIENT) {
-      this.botPipe.setConsoleOutput(this.consoleOutput);
       ArrayList<String> clArgs = new ArrayList<>(); /* client arguments */
       if (AdakiteUtils.getFileExtension(this.botFile.getPath()).equalsIgnoreCase(Windows.FileType.EXE.toString())) {
         clArgs.add(this.botFile.toString());

@@ -1,7 +1,6 @@
 package droplauncher.util;
 
 import adakite.util.AdakiteUtils;
-import droplauncher.mvc.view.ConsoleOutput;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,16 +15,14 @@ public class StreamGobbler extends Thread {
   private static final Logger LOGGER = LogManager.getLogger();
 
   private InputStream inputStream;
-  private ConsoleOutput consoleOutput;
   private String streamName;
   private String line;
 
   private StreamGobbler() {}
 
-  public StreamGobbler(String streamName, InputStream inputStream, ConsoleOutput co) {
+  public StreamGobbler(String streamName, InputStream inputStream) {
     this.streamName = streamName;
     this.inputStream = inputStream;
-    this.consoleOutput = co;
     this.line = "";
   }
 
@@ -39,9 +36,6 @@ public class StreamGobbler extends Thread {
         }
         if (!AdakiteUtils.isNullOrEmpty(this.streamName)) {
           this.line = this.streamName + ": " + line;
-        }
-        if (this.consoleOutput != null) {
-          this.consoleOutput.println(line);
         }
       }
     } catch (Exception ex) {
