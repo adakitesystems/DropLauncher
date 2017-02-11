@@ -22,7 +22,7 @@ public class StreamGobbler extends Thread {
     this.inputStream = inputStream;
   }
 
-  //TODO: Check if thread failed.
+  //TODO: Check if thread failed and provide some indication other than throwing an error to the log.
   @Override
   public void run() {
     try {
