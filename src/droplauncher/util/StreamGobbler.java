@@ -26,6 +26,7 @@ public class StreamGobbler extends Thread {
     this.line = "";
   }
 
+  //TODO: How do we know if this failed? Redesign StreamGobbler implementation?
   @Override
   public void run() {
     try {
