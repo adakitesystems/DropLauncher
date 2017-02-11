@@ -57,11 +57,23 @@ public class CommandBuilder {
     return args;
   }
 
+  /**
+   * Replaces the current argument list with the specified argument list.
+   *
+   * @param args specified argument list.
+   */
   public void setArgs(String[] args) {
-    this.args.clear();
+    clearArgs();
     for (String arg : args) {
       this.args.add(arg);
     }
+  }
+
+  /**
+   * Clears the current argument list.
+   */
+  public void clearArgs() {
+    this.args.clear();
   }
 
   /**
