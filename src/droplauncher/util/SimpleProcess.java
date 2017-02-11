@@ -8,8 +8,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Class for running a program and logging its output. This class does not
@@ -17,8 +15,6 @@ import org.apache.logging.log4j.Logger;
  * terminate itself.
  */
 public class SimpleProcess {
-
-  private static final Logger LOGGER = LogManager.getLogger();
 
   private ArrayList<String> log;
 
