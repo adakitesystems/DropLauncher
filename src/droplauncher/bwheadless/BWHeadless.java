@@ -122,7 +122,7 @@ public class BWHeadless {
   /**
    * Attempts to start bwheadless after configuring and checking settings.
    */
-  public void start() throws IOException, InvalidBotTypeException {
+  public void start() throws IOException, InvalidBotTypeException, Throwable {
     if (isRunning() || !isReady()) {
       //TODO: Throw a built-in or custom exception.
       return;
@@ -172,7 +172,8 @@ public class BWHeadless {
    * @throws IOException
    */
   private void configureBwapi() throws IOException,
-                                       InvalidBotTypeException {
+                                       InvalidBotTypeException,
+                                       Throwable {
     /* Determine StarCraft directory from StarCraft.exe path. */
     Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()))).toAbsolutePath();
 
@@ -204,7 +205,7 @@ public class BWHeadless {
         this.botFile.setPath(dest);
         break;
       default:
-        throw LOGGER.throwing(new InvalidBotTypeException());
+        throw LOGGER.throwing((Throwable) new InvalidBotTypeException());
     }
     /* Copy files. */
     AdakiteUtils.createDirectory(dest.getParent());

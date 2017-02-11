@@ -116,7 +116,7 @@ public class Model {
     }
   }
 
-  public void startBWHeadless() throws IOException, InvalidBotTypeException {
+  public void startBWHeadless() throws IOException, InvalidBotTypeException, Throwable {
     this.taskTracker.update();
     this.bwheadless.start();
   }

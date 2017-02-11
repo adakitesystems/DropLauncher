@@ -30,7 +30,7 @@ public class Controller {
     this.model = model;
   }
 
-  private void startBWHeadless() {
+  private void startBWHeadless() throws Throwable {
     try {
       this.model.startBWHeadless();
     } catch (IOException | InvalidBotTypeException ex) {

@@ -13,7 +13,7 @@ public class Main {
 
     /* Try-catch for sending all exceptions to log4j2. */
     try {
-      MVC mvc = new MVC();
+      new MVC();
     } catch (Exception ex) {
       LOGGER.error("droplauncher", ex);
     }

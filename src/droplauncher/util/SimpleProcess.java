@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +46,7 @@ public class SimpleProcess {
     Process process = new ProcessBuilder(command).start();
 
     InputStream is = process.getInputStream();
-    try (BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
+    try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
       String line;
       while ((line = br.readLine()) != null) {
         this.log.add(line);

@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -66,9 +67,10 @@ public class ProcessPipe {
    */
   public void open(Path path, String[] args, String cwd, String streamName)
       throws UnsupportedEncodingException,
-             IOException {
+             IOException,
+             Throwable {
     if (path == null) {
-      throw LOGGER.throwing(new IllegalArgumentException(Debugging.nullObject("path")));
+      throw LOGGER.throwing((Throwable) new IllegalArgumentException(Debugging.nullObject("path")));
     }
 
     try {
@@ -93,20 +95,20 @@ public class ProcessPipe {
       }
 
       this.is = this.process.getInputStream();
-      this.br = new BufferedReader(new InputStreamReader(this.is, "UTF-8"));
+      this.br = new BufferedReader(new InputStreamReader(this.is, StandardCharsets.UTF_8));
       this.gobblerStdout = new StreamGobbler(streamName, this.process.getInputStream());
       this.gobblerStderr = new StreamGobbler(streamName, this.process.getErrorStream());
       this.gobblerStdout.start();
       this.gobblerStderr.start();
 
       this.os = this.process.getOutputStream();
-      this.bw = new BufferedWriter(new OutputStreamWriter(this.os, "UTF-8"));
+      this.bw = new BufferedWriter(new OutputStreamWriter(this.os, StandardCharsets.UTF_8));
 
       this.isOpen = true;
     } catch (UnsupportedEncodingException ex) {
-      throw LOGGER.throwing(ex);
+      throw LOGGER.throwing((Throwable) ex);
     } catch (IOException ex) {
-      throw LOGGER.throwing(ex);
+      throw LOGGER.throwing((Throwable) ex);
     }
 
     this.isOpen = false;
