@@ -1,26 +1,16 @@
 package droplauncher.mvc.model;
 
 import adakite.ini.INI;
-import adakite.util.AdakiteUtils;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotFile;
 import droplauncher.bwheadless.KillableTask;
 import droplauncher.exception.InvalidBotTypeException;
-import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import droplauncher.util.windows.Task;
 import droplauncher.util.windows.TaskTracker;
 import droplauncher.util.windows.Tasklist;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import net.lingala.zip4j.core.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
