@@ -88,7 +88,7 @@ public class ProcessPipe {
       }
 
       this.path = path;
-      command[0] = this.path.toAbsolutePath().toString();
+      command[0] = this.path.toString();
       if (!AdakiteUtils.isNullOrEmpty(cwd)) {
         /* Set current working directory for the new process. */
         ProcessBuilder pb = new ProcessBuilder(command);

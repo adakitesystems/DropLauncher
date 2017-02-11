@@ -3,7 +3,7 @@ package droplauncher.mvc.model;
 import adakite.ini.INI;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwheadless.BWHeadless;
-import droplauncher.bwheadless.BotModule;
+import droplauncher.bwheadless.BotFile;
 import droplauncher.bwheadless.KillableTask;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
@@ -59,45 +59,47 @@ public class Model {
    */
   private void processFile(Path path) {
     String ext = AdakiteUtils.getFileExtension(path).toLowerCase();
-    if (!AdakiteUtils.isNullOrEmpty(ext)) {
-      if (ext.equals("zip")) {
-        try {
-          ZipFile zipFile = new ZipFile(path.toAbsolutePath().toString());
-          if (zipFile.isEncrypted()) {
-            return;
-          }
-          Path tmpDir = Paths.get(Constants.TEMP_DIRECTORY);
-          FileUtils.deleteDirectory(tmpDir.toFile());
-          AdakiteUtils.createDirectory(tmpDir);
-          zipFile.extractAll(tmpDir.toAbsolutePath().toString());
-          Path[] tmpList = AdakiteUtils.getDirectoryContents(tmpDir);
-          for (Path tmpPath : tmpList) {
-            if (!AdakiteUtils.directoryExists(tmpPath)) {
-              Path dest = tmpPath.getFileName();
-              FileUtils.copyFile(tmpPath.toFile(), dest.getFileName().toFile());
-              processFile(tmpPath);
-            }
-          }
-        } catch (Exception ex) {
+    if (AdakiteUtils.isNullOrEmpty(ext)) {
+      return;
+    }
+
+    if (ext.equals("zip")) {
+      try {
+        ZipFile zipFile = new ZipFile(path.toAbsolutePath().toString());
+        if (zipFile.isEncrypted()) {
+//            throw new EncryptedArchiveException();
+          LOGGER.warn("unsupported encrypted archive: " + zipFile.getFile().getAbsolutePath());
           return;
         }
-      } else if (ext.equals("dll") || ext.equals("exe")) {
-        if (path.getFileName().toString().equalsIgnoreCase("BWAPI.dll")) {
-          /* BWAPI.dll */
-          this.bwheadless.setBwapiDll(path.toAbsolutePath().toString());
-        } else {
-          /* Bot module */
-          this.bwheadless.setBotModule(path.toAbsolutePath().toString());
-          this.bwheadless.setBotName(AdakiteUtils.getFilenameNoExt(path));
-          this.bwheadless.setBotRace(Race.RANDOM);
+        Path tmpDir = Paths.get(Constants.TEMP_DIRECTORY).toAbsolutePath();
+        FileUtils.deleteDirectory(tmpDir.toFile());
+        AdakiteUtils.createDirectory(tmpDir);
+        zipFile.extractAll(tmpDir.toString());
+        Path[] tmpList = AdakiteUtils.getDirectoryContents(tmpDir);
+        for (Path tmpPath : tmpList) {
+          if (!AdakiteUtils.directoryExists(tmpPath)) {
+            Path dest = tmpPath.getFileName();
+            FileUtils.copyFile(tmpPath.toFile(), dest.getFileName().toFile());
+            processFile(tmpPath);
+          }
         }
+      } catch (Exception ex) {
+        LOGGER.warn("unable to process ZIP file: " + path.toAbsolutePath().toString(), ex);
+        return;
+      }
+    } else if (ext.equals("dll") || ext.equals("exe")) {
+      if (path.getFileName().toString().equalsIgnoreCase("BWAPI.dll")) {
+        /* BWAPI.dll */
+        this.bwheadless.setBwapiDll(path.toAbsolutePath().toString());
       } else {
-        /* Treat as a config file. */
-        this.bwheadless.getExtraBotFiles().add(path);
+        /* Bot file */
+        this.bwheadless.setBotFile(path.toAbsolutePath().toString());
+        this.bwheadless.setBotName(AdakiteUtils.getFilenameNoExt(path));
+        this.bwheadless.setBotRace(Race.RANDOM);
       }
     } else {
-      /* Unrecognized file */
-      /* Do nothing. */
+      /* Treat as a config file. */
+      this.bwheadless.getExtraBotFiles().add(path);
     }
   }
 
@@ -111,11 +113,11 @@ public class Model {
     this.taskTracker.updateNewTasks();
     ArrayList<Task> tasks = this.taskTracker.getNewTasks();
     Tasklist tasklist = new Tasklist();
-    boolean isClient = this.bwheadless.getBotModule().getType() == BotModule.Type.CLIENT;
-    String botModuleName = this.bwheadless.getBotModule().getPath().getFileName().toString();
+    boolean isClient = this.bwheadless.getBotFile().getType() == BotFile.Type.CLIENT;
+    String botName = this.bwheadless.getBotFile().getPath().getFileName().toString();
     for (Task task : tasks) {
-      /* Kill bot module. */
-      if (isClient && botModuleName.contains(task.getImageName())) {
+      /* Kill bot client. */
+      if (isClient && botName.contains(task.getImageName())) {
         LOGGER.info("Killing: " + task.getPID() + ":" + task.getImageName());
         tasklist.kill(task.getPID());
         continue;

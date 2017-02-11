@@ -9,7 +9,7 @@ public enum SettingsKey {
   STARCRAFT_EXE("starcraft_exe"),
   BWAPI_DLL("bwapi_dll"),
   BOT_NAME("bot_name"),
-  BOT_MODULE("bot_module"),
+  BOT_FILE("bot_file"),
   BOT_RACE("bot_race"),
   NETWORK_PROVIDER("network"),
   CONNECT_MODE("connect_mode"),

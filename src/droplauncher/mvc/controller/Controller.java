@@ -4,7 +4,7 @@ import adakite.md5sum.MD5Checksum;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
-import droplauncher.bwheadless.BotModule;
+import droplauncher.bwheadless.BotFile;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.ConsoleOutput;
 import droplauncher.mvc.view.LaunchButtonText;
@@ -73,9 +73,9 @@ public class Controller {
     return this.view.getConsoleOutput();
   }
 
-  public String getBotModule() {
-    if (this.model.getBWHeadless().getBotModule().getType() != BotModule.Type.UNKNOWN) {
-      return this.model.getBWHeadless().getBotModule().getPath().toAbsolutePath().toString();
+  public String getBotFilename() {
+    if (this.model.getBWHeadless().getBotFile().getType() != BotFile.Type.UNKNOWN) {
+      return this.model.getBWHeadless().getBotFile().getPath().getFileName().toString();
     } else {
       return null;
     }
@@ -125,8 +125,7 @@ public class Controller {
   }
 
   public void mnuEditSettingsClicked() {
-    SettingsWindow window = new SettingsWindow(this.model.getINI());
-    window.showAndWait();
+    new SettingsWindow(this.model.getINI()).showAndWait();
   }
 
   public void mnuHelpAboutClicked() {

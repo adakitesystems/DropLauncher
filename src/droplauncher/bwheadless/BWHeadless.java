@@ -41,7 +41,7 @@ public class BWHeadless {
   private ProcessPipe bwheadlessPipe;
   private ProcessPipe botPipe;
 
-  private BotModule botModule;
+  private BotFile botFile;
 
   private ArrayList<Path> extraBotFiles;
 
@@ -53,7 +53,7 @@ public class BWHeadless {
     this.bwheadlessPipe = new ProcessPipe();
     this.botPipe = new ProcessPipe();
 
-    this.botModule = new BotModule();
+    this.botFile = new BotFile();
 
     this.extraBotFiles = new ArrayList<>();
 
@@ -105,8 +105,8 @@ public class BWHeadless {
       return ReadyError.BWAPI_DLL;
     } else if (!this.ini.hasValue(BWHEADLESS_INI_SECTION, SettingsKey.BOT_NAME.toString())) {
       return ReadyError.BOT_NAME;
-    } else if (this.botModule.getType() == BotModule.Type.UNKNOWN
-        || !AdakiteUtils.fileExists(this.botModule.getPath())) {
+    } else if (this.botFile.getType() == BotFile.Type.UNKNOWN
+        || !AdakiteUtils.fileExists(this.botFile.getPath())) {
       /* If both the bot DLL and bot client fields are missing. */
       return ReadyError.BOT_FILE;
     } else if (!this.ini.hasValue(BWHEADLESS_INI_SECTION, SettingsKey.BOT_RACE.toString())) {
@@ -143,7 +143,7 @@ public class BWHeadless {
       LOGGER.error(ex);
     }
 
-    String starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()))).toAbsolutePath().toString();
+    Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()))).toAbsolutePath();
 
     /* Compile bwheadless arguments. */
     ArrayList<String> bwhArgs = new ArrayList<>(); /* bwheadless arguments */
@@ -158,21 +158,21 @@ public class BWHeadless {
     bwhArgs.add(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BWAPI_DLL.toString()));
     bwhArgs.add(Argument.ENABLE_LAN.toString());
     bwhArgs.add(Argument.STARCRAFT_INSTALL_PATH.toString());
-    bwhArgs.add(starcraftDirectory);
+    bwhArgs.add(starcraftDirectory.toString());
     String[] bwhArgsArray = AdakiteUtils.toStringArray(bwhArgs);
 
     /* Start bwheadless. */
     this.bwheadlessPipe.setConsoleOutput(this.consoleOutput);
-    this.bwheadlessPipe.open(BWHEADLESS_EXE_PATH, bwhArgsArray, starcraftDirectory, BWH_STREAM_NAME);
+    this.bwheadlessPipe.open(BWHEADLESS_EXE_PATH.toAbsolutePath(), bwhArgsArray, starcraftDirectory.toString(), BWH_STREAM_NAME);
 
     /* Start bot client in a command prompt. */
-    if (this.botModule.getType() == BotModule.Type.CLIENT) {
+    if (this.botFile.getType() == BotFile.Type.CLIENT) {
       this.botPipe.setConsoleOutput(this.consoleOutput);
-      ArrayList<String> clArgs = new ArrayList<>();
-      if (AdakiteUtils.getFileExtension(this.botModule.getPath()).equalsIgnoreCase(Windows.FileType.EXE.toString())) {
-        clArgs.add(this.botModule.toString());
+      ArrayList<String> clArgs = new ArrayList<>(); /* client arguments */
+      if (AdakiteUtils.getFileExtension(this.botFile.getPath()).equalsIgnoreCase(Windows.FileType.EXE.toString())) {
+        clArgs.add(this.botFile.toString());
         String[] clArgsArray = AdakiteUtils.toStringArray(clArgs);
-        this.botPipe.open(this.botModule.getPath().toAbsolutePath(), clArgsArray, starcraftDirectory, CLIENT_STREAM_NAME);
+        this.botPipe.open(this.botFile.getPath().toAbsolutePath(), clArgsArray, starcraftDirectory.toString(), CLIENT_STREAM_NAME);
       }
     }
   }
@@ -187,15 +187,14 @@ public class BWHeadless {
    * @throws IOException
    */
   private void configureBwapi() throws IOException {
-    //TODO: Determine StarCraft path using Path object.
     /* Determine StarCraft directory from StarCraft.exe path. */
-    String starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()))).toAbsolutePath().toString();
+    Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()))).toAbsolutePath();
 
     /* Configure BWAPI INI file. */
     INI bwapiIni = new INI();
-    bwapiIni.open(Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_INI_PATH.toString()));
-    if (this.botModule.getType() == BotModule.Type.DLL) {
-      bwapiIni.set("ai", "ai", BWAPI.BWAPI_DATA_AI_PATH + AdakiteUtils.FILE_SEPARATOR + this.botModule.getPath().getFileName().toString());
+    bwapiIni.open(Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_INI_PATH.toString()));
+    if (this.botFile.getType() == BotFile.Type.DLL) {
+      bwapiIni.set("ai", "ai", BWAPI.BWAPI_DATA_AI_PATH + AdakiteUtils.FILE_SEPARATOR + this.botFile.getPath().getFileName().toString());
     } else {
       bwapiIni.disableVariable("ai", "ai");
     }
@@ -205,39 +204,32 @@ public class BWHeadless {
     /* Prepare to copy bot files to StarCraft directory. */
     Path src = null;
     Path dest = null;
-    if (this.botModule.getType() == BotModule.Type.DLL) {
+    if (this.botFile.getType() == BotFile.Type.DLL) {
       /* Prepare to copy DLL to bwapi-data directory. */
-      src = this.botModule.getPath();
-      dest = Paths.get(
-          starcraftDirectory,
-          BWAPI.BWAPI_DATA_AI_PATH.toString(),
-          Paths.get(this.botModule.toString()).getFileName().toString()
-      );
-      this.botModule.setPath(dest);
-    } else if (this.botModule.getType() == BotModule.Type.CLIENT) {
+      src = this.botFile.getPath();
+      dest = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_AI_PATH.toString(), Paths.get(this.botFile.toString()).getFileName().toString());
+      this.botFile.setPath(dest);
+    } else if (this.botFile.getType() == BotFile.Type.CLIENT) {
       /* Prepare to copy client to StarCraft root directory. */
-      src = this.botModule.getPath();
-      dest = Paths.get(
-          starcraftDirectory,
-          this.botModule.getPath().getFileName().toString()
-      );
-      this.botModule.setPath(dest);
+      src = this.botFile.getPath();
+      dest = Paths.get(starcraftDirectory.toString(), this.botFile.getPath().getFileName().toString());
+      this.botFile.setPath(dest);
     }
     /* Copy files. */
     AdakiteUtils.createDirectory(dest.getParent());
     Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
 
     /* Copy misc files to common bot I/O directories. */
-    Path readPath = Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_READ_PATH.toString());
-    Path writePath = Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_WRITE_PATH.toString());
-    Path aiPath = Paths.get(starcraftDirectory, BWAPI.BWAPI_DATA_AI_PATH.toString());
+    Path readPath = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_READ_PATH.toString()).toAbsolutePath();
+    Path writePath = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_WRITE_PATH.toString()).toAbsolutePath();
+    Path aiPath = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_AI_PATH.toString()).toAbsolutePath();
     AdakiteUtils.createDirectory(readPath);
     AdakiteUtils.createDirectory(writePath);
     AdakiteUtils.createDirectory(aiPath);
     for (Path path : this.extraBotFiles) {
-      Files.copy(path, Paths.get(readPath.toAbsolutePath().toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
-      Files.copy(path, Paths.get(writePath.toAbsolutePath().toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
-      Files.copy(path, Paths.get(aiPath.toAbsolutePath().toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
+      Files.copy(path, Paths.get(readPath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
+      Files.copy(path, Paths.get(writePath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
+      Files.copy(path, Paths.get(aiPath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
     }
   }
 
@@ -268,18 +260,18 @@ public class BWHeadless {
     }
   }
 
-  public BotModule getBotModule() {
-    return this.botModule;
+  public BotFile getBotFile() {
+    return this.botFile;
   }
 
-  public void setBotModule(String botModule) {
-    LOGGER.info(botModule);
+  public void setBotFile(String botFile) {
+    LOGGER.info(botFile);
 
     this.extraBotFiles.clear();
-    Path path = Paths.get(botModule);
+    Path path = Paths.get(botFile);
     if (AdakiteUtils.fileExists(path)) {
-      this.botModule.setPath(path);
-      this.ini.set(BWHEADLESS_INI_SECTION, SettingsKey.BOT_MODULE.toString(), botModule);
+      this.botFile.setPath(path);
+      this.ini.set(BWHEADLESS_INI_SECTION, SettingsKey.BOT_FILE.toString(), botFile);
     }
   }
 
@@ -319,8 +311,8 @@ public class BWHeadless {
     } else {
       setBotName(DEFAULT_BOT_NAME);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BOT_MODULE.toString()))) {
-      setBotModule(val);
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BOT_FILE.toString()))) {
+      setBotFile(val);
     }
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWHEADLESS_INI_SECTION, SettingsKey.BOT_RACE.toString()))) {
       if (val.equalsIgnoreCase(Race.TERRAN.toString())) {

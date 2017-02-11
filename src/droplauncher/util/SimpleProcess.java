@@ -39,7 +39,7 @@ public class SimpleProcess {
         System.arraycopy(args, 0, command, 1, args.length);
       }
 
-      command[0] = path.toAbsolutePath().toString();
+      command[0] = path.toString();
       Process process = new ProcessBuilder(command).start();
 
       InputStream is = process.getInputStream();

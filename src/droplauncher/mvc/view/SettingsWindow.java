@@ -6,6 +6,7 @@ import droplauncher.bwheadless.BWHeadless;
 import droplauncher.util.Constants;
 import droplauncher.util.SettingsKey;
 import java.io.File;
+import java.nio.file.Paths;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -38,12 +39,11 @@ public class SettingsWindow {
 
   public SettingsWindow showAndWait() {
     this.chkKeepClientWindow = new CheckBox("Show log window for executable bot clients (requires program restart)");
-    if (this.ini.hasValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.SHOW_LOG_WINDOW.toString())) {
-      if (this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.SHOW_LOG_WINDOW.toString()).equalsIgnoreCase(Boolean.TRUE.toString())) {
-        this.chkKeepClientWindow.setSelected(true);
-      } else {
-        this.chkKeepClientWindow.setSelected(false);
-      }
+    if (this.ini.hasValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.SHOW_LOG_WINDOW.toString())
+        && this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION, SettingsKey.SHOW_LOG_WINDOW.toString()).equalsIgnoreCase(Boolean.TRUE.toString())) {
+      this.chkKeepClientWindow.setSelected(true);
+    } else {
+      this.chkKeepClientWindow.setSelected(false);
     }
     this.chkKeepClientWindow.setOnAction(e -> {
       String val;
@@ -57,9 +57,13 @@ public class SettingsWindow {
 
     this.lblChangeStarcraftExe = new Label("StarCraft.exe:");
     this.btnChangeStarcraftExe = new Button("...");
-    this.lblChangeStarcraftExeText = new Label(this.ini.getValue(BWHeadless.BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString()));
+    this.lblChangeStarcraftExeText = new Label("");
+    String starcraftExe = this.ini.getValue(BWHeadless.BWHEADLESS_INI_SECTION, SettingsKey.STARCRAFT_EXE.toString());
+    if (!AdakiteUtils.isNullOrEmpty(starcraftExe)
+        && AdakiteUtils.fileExists(Paths.get(starcraftExe))) {
+      View.setText(this.lblChangeStarcraftExeText, starcraftExe);
+    }
     this.lblChangeStarcraftExeText.setMinWidth(Region.USE_PREF_SIZE);
-
     this.btnChangeStarcraftExe.setOnAction(e -> {
       FileChooser fc = new FileChooser();
       fc.getExtensionFilters().add(new ExtensionFilter("StarCraft.exe", "StarCraft.exe"));

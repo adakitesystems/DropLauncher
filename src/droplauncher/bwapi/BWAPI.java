@@ -9,10 +9,10 @@ import java.nio.file.Paths;
 public class BWAPI {
 
   public static final Path BWAPI_DATA_PATH = Paths.get("bwapi-data");
-  public static final Path BWAPI_DATA_AI_PATH = Paths.get(BWAPI_DATA_PATH.toString(), "AI");
-  public static final Path BWAPI_DATA_INI_PATH = Paths.get(BWAPI_DATA_PATH.toString(), "bwapi.ini");
-  public static final Path BWAPI_DATA_READ_PATH = Paths.get(BWAPI_DATA_PATH.toString(), "read");
-  public static final Path BWAPI_DATA_WRITE_PATH = Paths.get(BWAPI_DATA_PATH.toString(), "write");
+  public static final Path BWAPI_DATA_AI_PATH = BWAPI_DATA_PATH.resolve(Paths.get("AI"));
+  public static final Path BWAPI_DATA_INI_PATH = BWAPI_DATA_PATH.resolve(Paths.get("bwapi.ini"));
+  public static final Path BWAPI_DATA_READ_PATH = BWAPI_DATA_PATH.resolve(Paths.get("read"));
+  public static final Path BWAPI_DATA_WRITE_PATH = BWAPI_DATA_PATH.resolve(Paths.get("write"));
   public static final String BWAPI_DLL_UNKNOWN = "Unknown";
 
   private BWAPI() {}

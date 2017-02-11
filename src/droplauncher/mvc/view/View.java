@@ -250,8 +250,8 @@ public class View implements EventHandler<DragEvent>  {
   public void update() {
     setText(this.lblBwapiVersionText, this.controller.getBwapiDllVersion());
 
-    setText(this.lblBotFileText, this.controller.getBotModule());
-    if (!AdakiteUtils.isNullOrEmpty(this.controller.getBotModule())) {
+    setText(this.lblBotFileText, this.controller.getBotFilename());
+    if (!AdakiteUtils.isNullOrEmpty(this.controller.getBotFilename())) {
       this.cbRace.setVisible(true);
       this.controller.updateRaceChoiceBox();
     } else {
@@ -279,7 +279,7 @@ public class View implements EventHandler<DragEvent>  {
     this.stage.sizeToScene();
   }
 
-  public void setText(Node node, String str) {
+  public static void setText(Node node, String str) {
     if (AdakiteUtils.isNullOrEmpty(str)) {
       str = EMPTY_LABEL;
     }

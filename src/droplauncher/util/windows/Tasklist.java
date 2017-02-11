@@ -27,7 +27,7 @@ public class Tasklist {
     System.arraycopy(Windows.Program.TASKKILL.getPredefinedArgs(), 0, args, 0, Windows.Program.TASKKILL.getPredefinedArgs().length);
     args[args.length - 1] = pid;
     SimpleProcess process = new SimpleProcess();
-    process.run(Windows.Program.TASKKILL.getPath(), args);
+    process.run(Windows.Program.TASKKILL.getPath().toAbsolutePath(), args);
   }
 
   /**
@@ -56,7 +56,7 @@ public class Tasklist {
     this.tasks.clear();
 
     SimpleProcess process = new SimpleProcess();
-    process.run(Windows.Program.TASKLIST.getPath(), Windows.Program.TASKLIST.getPredefinedArgs());
+    process.run(Windows.Program.TASKLIST.getPath().toAbsolutePath(), Windows.Program.TASKLIST.getPredefinedArgs());
 
     /* Find beginning of process list. */
     int index;
