@@ -36,7 +36,6 @@ public class ProcessPipe {
   private BufferedWriter bw; /* write to process */
   private StreamGobbler gobblerStdout;
   private StreamGobbler gobblerStderr;
-  private boolean isOpen;
 
   public ProcessPipe() {
     this.path = null;
@@ -48,11 +47,6 @@ public class ProcessPipe {
     this.bw = null;
     this.gobblerStdout = null;
     this.gobblerStderr = null;
-    this.isOpen = false;
-  }
-
-  public boolean isOpen() {
-    return this.isOpen;
   }
 
   /**
@@ -103,22 +97,17 @@ public class ProcessPipe {
 
       this.os = this.process.getOutputStream();
       this.bw = new BufferedWriter(new OutputStreamWriter(this.os, StandardCharsets.UTF_8));
-
-      this.isOpen = true;
     } catch (UnsupportedEncodingException ex) {
       throw LOGGER.throwing((Throwable) ex);
     } catch (IOException ex) {
       throw LOGGER.throwing((Throwable) ex);
     }
-
-    this.isOpen = false;
   }
 
   /**
    * Closes the pipe and destroys the process.
    */
   public void close() {
-    this.isOpen = false;
     try {
       if (this.br != null && this.is != null
           && this.bw != null && this.os != null

@@ -111,17 +111,11 @@ public class BWHeadless {
   }
 
   /**
-   * Tests if the pipe is open between this program and bwheadless.
-   */
-  public boolean isRunning() {
-    return this.bwheadlessPipe.isOpen();
-  }
-
-  /**
    * Attempts to start bwheadless after configuring and checking settings.
    */
   public void start() throws IOException, InvalidBotTypeException, Throwable {
-    if (isRunning() || !isReady()) {
+//    if (isRunning() || !isReady()) {
+    if (!isReady()) {
       //TODO: Throw a built-in or custom exception.
       return;
     }

@@ -50,9 +50,10 @@ public class Controller {
   }
 
   public void closeProgramRequest(Stage stage) {
-    if (this.model.getBWHeadless().isRunning()) {
-      stopBWHeadless();
-    }
+//    if (this.model.getBWHeadless().isRunning()) {
+//      stopBWHeadless();
+//    }
+    stopBWHeadless();
     stage.close();
   }
 
