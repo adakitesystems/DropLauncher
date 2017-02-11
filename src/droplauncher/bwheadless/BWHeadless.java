@@ -6,7 +6,7 @@ import droplauncher.bwapi.BWAPI;
 import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
-import droplauncher.util.ProcessPipe;
+import droplauncher.util.CustomProcess;
 import droplauncher.util.SettingsKey;
 import droplauncher.util.windows.Windows;
 import java.io.IOException;
@@ -38,8 +38,8 @@ public class BWHeadless {
 
   private INI ini;
 
-  private ProcessPipe bwheadlessPipe;
-  private ProcessPipe botPipe;
+  private CustomProcess bwheadlessPipe;
+  private CustomProcess botPipe;
 
   private BotFile botFile;
   private ArrayList<Path> extraBotFiles;
@@ -47,8 +47,8 @@ public class BWHeadless {
   public BWHeadless() {
     this.ini = null;
 
-    this.bwheadlessPipe = new ProcessPipe();
-    this.botPipe = new ProcessPipe();
+    this.bwheadlessPipe = new CustomProcess();
+    this.botPipe = new CustomProcess();
 
     this.botFile = new BotFile();
     this.extraBotFiles = new ArrayList<>();

@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Container class for starting and stopping a new process.
  */
-public class ProcessPipe {
+public class CustomProcess {
 
   private static final Logger LOGGER = LogManager.getLogger();
 
@@ -20,7 +20,7 @@ public class ProcessPipe {
   private StreamGobbler gobblerStdout;
   private StreamGobbler gobblerStderr;
 
-  public ProcessPipe() {
+  public CustomProcess() {
     this.process = null;
     this.args = null;
     this.cwd = null;
