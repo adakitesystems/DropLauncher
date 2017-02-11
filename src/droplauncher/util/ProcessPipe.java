@@ -12,18 +12,13 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Generic class for handling communication between the main program and
  * a process.
  */
-public class ProcessPipe {
-
-  private static final Logger LOGGER = LogManager.getLogger();
+public class ProcessPipe extends Thread {
 
   public static final double DEFAULT_READ_TIMEOUT = (double)0.25; /* seconds */
 
@@ -36,6 +31,7 @@ public class ProcessPipe {
   private BufferedWriter bw; /* write to process */
   private StreamGobbler gobblerStdout;
   private StreamGobbler gobblerStderr;
+  private Path cwd;
 
   public ProcessPipe() {
     this.path = null;
@@ -47,6 +43,15 @@ public class ProcessPipe {
     this.bw = null;
     this.gobblerStdout = null;
     this.gobblerStderr = null;
+    this.cwd = null;
+  }
+
+  public Path getCWD() {
+    return this.cwd;
+  }
+
+  public void setCWD(Path path) {
+    this.cwd = path;
   }
 
   /**
@@ -54,13 +59,11 @@ public class ProcessPipe {
    *
    * @param path specified program
    * @param args arguments to include during invocation
-   * @param cwd current working directory
-   * @param streamName name for outputStream from pipe
    * @throws UnsupportedEncodingException
    * @throws IOException
    * @throws IllegalArgumentException if Path argument is null
    */
-  public void open(Path path, String[] args, String cwd, String streamName)
+  public void open(Path path, String[] args)
       throws UnsupportedEncodingException,
              IOException {
     if (path == null) {
@@ -78,10 +81,10 @@ public class ProcessPipe {
 
     this.path = path;
     command[0] = this.path.toString();
-    if (!AdakiteUtils.isNullOrEmpty(cwd)) {
+    if (AdakiteUtils.directoryExists(this.cwd)) {
       /* Set current working directory for the new process. */
       ProcessBuilder pb = new ProcessBuilder(command);
-      pb.directory(Paths.get(cwd).toFile());
+      pb.directory(this.cwd.toFile());
       this.process = pb.start();
     } else {
       this.process = new ProcessBuilder(command).start();
@@ -89,8 +92,8 @@ public class ProcessPipe {
 
     this.is = this.process.getInputStream();
     this.br = new BufferedReader(new InputStreamReader(this.is, StandardCharsets.UTF_8));
-    this.gobblerStdout = new StreamGobbler(streamName, this.process.getInputStream());
-    this.gobblerStderr = new StreamGobbler(streamName, this.process.getErrorStream());
+    this.gobblerStdout = new StreamGobbler(this.process.getInputStream());
+    this.gobblerStderr = new StreamGobbler(this.process.getErrorStream());
     this.gobblerStdout.start();
     this.gobblerStderr.start();
 
@@ -101,22 +104,18 @@ public class ProcessPipe {
   /**
    * Closes the pipe and destroys the process.
    */
-  public void close() {
-    try {
-      if (this.br != null && this.is != null
-          && this.bw != null && this.os != null
-          && this.process != null && this.process.isAlive()) {
-        this.gobblerStderr.interrupt();
-        this.gobblerStdout.interrupt();
-        this.br.close();
-        this.is.close();
-        this.bw.close();
-        this.os.close();
-      }
-      this.process.destroy();
-    } catch (Exception ex) {
-      LOGGER.error(ex);
-    }
+  public void close() throws IOException {
+    this.gobblerStderr.interrupt();
+    this.gobblerStdout.interrupt();
+    this.br.close();
+    this.is.close();
+    this.bw.close();
+    this.os.close();
+  }
+
+  @Override
+  public void run() {
+
   }
 
 }

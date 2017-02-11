@@ -141,7 +141,7 @@ public class BWHeadless {
     String[] bwhArgsArray = AdakiteUtils.toStringArray(bwhArgs);
 
     /* Start bwheadless. */
-    this.bwheadlessPipe.open(DEFAULT_EXE_PATH.toAbsolutePath(), bwhArgsArray, starcraftDirectory.toString(), DEFAULT_STREAM_NAME);
+//    this.bwheadlessPipe.open(DEFAULT_EXE_PATH.toAbsolutePath(), bwhArgsArray, starcraftDirectory.toString(), DEFAULT_STREAM_NAME);
 
     /* Start bot client in a command prompt. */
     if (this.botFile.getType() == BotFile.Type.CLIENT) {
@@ -149,13 +149,13 @@ public class BWHeadless {
       if (AdakiteUtils.getFileExtension(this.botFile.getPath()).equalsIgnoreCase(Windows.FileType.EXE.toString())) {
         clArgs.add(this.botFile.toString());
         String[] clArgsArray = AdakiteUtils.toStringArray(clArgs);
-        this.botPipe.open(this.botFile.getPath().toAbsolutePath(), clArgsArray, starcraftDirectory.toString(), CLIENT_STREAM_NAME);
+//        this.botPipe.open(this.botFile.getPath().toAbsolutePath(), clArgsArray, starcraftDirectory.toString(), CLIENT_STREAM_NAME);
       }
     }
   }
 
   public void stop() {
-    this.bwheadlessPipe.close();
+//    this.bwheadlessPipe.close();
   }
 
   /**
