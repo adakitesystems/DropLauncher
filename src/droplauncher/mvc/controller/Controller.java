@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -36,11 +37,15 @@ public class Controller {
     this.state = State.IDLE;
   }
 
-  public void debug() throws InterruptedException {
+  public void debug() {
     processFile(Paths.get("V:\\files\\BWAPI\\Bots\\krasi0 zip\\krasi0_BjYnC4.zip"));
     this.model.getBWHeadless().setBotRace(Race.TERRAN);
     startBWHeadless();
-    Thread.sleep(30000);
+    try {
+      Thread.sleep(30000);
+    } catch (InterruptedException ex) {
+//      java.util.logging.Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+    }
     stopBWHeadless();
   }
 
@@ -189,7 +194,12 @@ public class Controller {
     if (AdakiteUtils.isNullOrEmpty(dll)) {
       return null;
     } else {
-      return BWAPI.getBwapiVersion(MD5Checksum.get(Paths.get(dll)));
+      try {
+        return BWAPI.getBwapiVersion(MD5Checksum.get(Paths.get(dll)));
+      } catch (IOException | NoSuchAlgorithmException ex) {
+        LOGGER.error(ex);
+        return BWAPI.BWAPI_DLL_UNKNOWN;
+      }
     }
   }
 
