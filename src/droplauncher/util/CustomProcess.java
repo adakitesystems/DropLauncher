@@ -15,24 +15,15 @@ public class CustomProcess {
   private static final Logger LOGGER = LogManager.getLogger();
 
   private Process process;
-  private String[] args;
   private Path cwd;
   private StreamGobbler gobblerStdout;
   private StreamGobbler gobblerStderr;
 
   public CustomProcess() {
     this.process = null;
-    this.args = null;
     this.cwd = null;
     this.gobblerStdout = null;
     this.gobblerStderr = null;
-  }
-
-  /**
-   * Returns the current working directory for the process.
-   */
-  public Path getCWD() {
-    return this.cwd;
   }
 
   /**
@@ -55,9 +46,7 @@ public class CustomProcess {
       throw new IllegalArgumentException(Debugging.nullObject("args"));
     }
 
-    this.args = args;
-
-    ProcessBuilder pb = new ProcessBuilder(this.args);
+    ProcessBuilder pb = new ProcessBuilder(args);
     if (this.cwd != null && AdakiteUtils.directoryExists(this.cwd)) {
       /* Set current working directory for the new process. */
       pb.directory(this.cwd.toFile());
