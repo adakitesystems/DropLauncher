@@ -226,9 +226,9 @@ public class Controller {
   public void mnuFileSelectBotFilesClicked(Stage stage) {
     FileChooser fc = new FileChooser();
     fc.setTitle("Select bot files ...");
-    String userDirectory = AdakiteUtils.getUserHomeDirectory().toAbsolutePath().toString();
+    Path userDirectory = AdakiteUtils.getUserHomeDirectory();
     if (userDirectory != null) {
-      fc.setInitialDirectory(new File(userDirectory));
+      fc.setInitialDirectory(userDirectory.toFile());
     }
     List<File> files = fc.showOpenMultipleDialog(stage);
     if (files != null && files.size() > 0) {

@@ -279,7 +279,7 @@ public class View implements EventHandler<DragEvent>  {
     this.stage.sizeToScene();
   }
 
-  public static void setText(Node node, String str) {
+  public void setText(Node node, String str) {
     if (AdakiteUtils.isNullOrEmpty(str)) {
       str = EMPTY_LABEL_TEXT;
     }
