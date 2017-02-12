@@ -17,7 +17,7 @@ public enum SettingsKey {
   MAP("map")
   ;
 
-  private String str;
+  private final String str;
 
   private SettingsKey(String str) {
     this.str = str;

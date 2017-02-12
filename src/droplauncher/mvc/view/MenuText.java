@@ -13,7 +13,7 @@ public enum MenuText {
   ABOUT("About")
   ;
 
-  private String str;
+  private final String str;
 
   private MenuText(String str) {
     this.str = str;

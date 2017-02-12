@@ -9,7 +9,7 @@ public enum LaunchButtonText {
   EJECT("Eject")
   ;
 
-  private String str;
+  private final String str;
 
   private LaunchButtonText(String str) {
     this.str = str;

@@ -18,7 +18,7 @@ public enum Checksum {
   UNKNOWN("00000000000000000000000000000000")
   ;
 
-  private String str;
+  private final String str;
 
   private Checksum(String str) {
     this.str = str;

@@ -13,7 +13,7 @@ public enum KillableTask {
   DLLHOST_EXE("dllhost.exe"),
   ;
 
-  private String str;
+  private final String str;
 
   private KillableTask(String str) {
     this.str = str;

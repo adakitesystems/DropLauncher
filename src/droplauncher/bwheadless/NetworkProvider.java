@@ -12,7 +12,7 @@ public enum NetworkProvider {
   LAN("lan"),
   ;
 
-  private String str;
+  private final String str;
 
   private NetworkProvider(String str) {
     this.str = str;

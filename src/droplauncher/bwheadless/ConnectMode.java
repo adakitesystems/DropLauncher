@@ -11,7 +11,7 @@ public enum ConnectMode {
   HOST("host")
   ;
 
-  private String str;
+  private final String str;
 
   private ConnectMode(String str) {
     this.str = str;

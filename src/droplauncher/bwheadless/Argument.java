@@ -17,7 +17,7 @@ public enum Argument {
   STARCRAFT_INSTALL_PATH("--installpath") /* requires second string */
   ;
 
-  private String str;
+  private final String str;
 
   private Argument(String str) {
     this.str = str;

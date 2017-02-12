@@ -13,7 +13,7 @@ public enum Race {
   RANDOM("Random"),
   ;
 
-  private String str;
+  private final String str;
 
   private Race(String str) {
     this.str = str;

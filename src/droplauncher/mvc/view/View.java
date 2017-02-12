@@ -44,7 +44,7 @@ public class View implements EventHandler<DragEvent>  {
     LABEL_TEXT_SPACING(4)
     ;
 
-    private int val;
+    private final int val;
 
     private DefaultSetting(int val) {
       this.val = val;

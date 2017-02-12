@@ -19,7 +19,7 @@ public class Windows {
     TASKKILL("C:\\Windows\\System32\\taskkill.exe")
     ;
 
-    private String str;
+    private final String str;
 
     private Program(String str) {
       this.str = str;

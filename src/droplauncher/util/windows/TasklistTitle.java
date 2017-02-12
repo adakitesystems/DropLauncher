@@ -18,7 +18,7 @@ public enum TasklistTitle {
   WINDOW_TITLE("Window Title")
   ;
 
-  private String str;
+  private final String str;
 
   private TasklistTitle(String str) {
     this.str = str;
