@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Locale;
 import javafx.stage.Stage;
 import net.lingala.zip4j.core.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,6 +38,7 @@ public class Controller {
 
   public void debug() {
     this.model.getBWHeadless().setBotRace(Race.TERRAN);
+    processArchive(Paths.get("V:\\files\\BWAPI\\Bots\\krasi0.zip"));
     startBWHeadless();
     try {
       Thread.sleep(30000);
@@ -108,43 +108,52 @@ public class Controller {
       return;
     }
 
-    if (ext.equals("zip")) {
-      try {
-        ZipFile zipFile = new ZipFile(path.toAbsolutePath().toString());
-        if (zipFile.isEncrypted()) {
-//            throw new UnsupportedEncryptedArchiveException();
-          LOGGER.warn("unsupported encrypted archive: " + zipFile.getFile().getAbsolutePath());
-          return;
+    switch (ext) {
+      case "zip":
+        processArchive(path);
+        break;
+      case "dll":
+        /* Fall through. */
+      case "exe":
+        if (path.getFileName().toString().equalsIgnoreCase("BWAPI.dll")) {
+          /* BWAPI.dll */
+          this.model.getBWHeadless().setBwapiDll(path.toAbsolutePath().toString());
+        } else {
+          /* Bot file */
+          this.model.getBWHeadless().setBotFile(path.toAbsolutePath().toString());
+          this.model.getBWHeadless().setBotName(AdakiteUtils.getFilenameNoExt(path));
+          this.model.getBWHeadless().setBotRace(Race.RANDOM);
         }
-        Path tmpDir = Paths.get(Constants.TEMP_DIRECTORY).toAbsolutePath();
-        FileUtils.deleteDirectory(tmpDir.toFile());
-        AdakiteUtils.createDirectory(tmpDir);
-        zipFile.extractAll(tmpDir.toString());
-        Path[] tmpList = AdakiteUtils.getDirectoryContents(tmpDir);
-        for (Path tmpPath : tmpList) {
-          if (!AdakiteUtils.directoryExists(tmpPath)) {
-            Path dest = tmpPath.getFileName();
-            FileUtils.copyFile(tmpPath.toFile(), dest.getFileName().toFile());
-            processFile(tmpPath);
-          }
-        }
-      } catch (IOException | ZipException ex) {
-        LOGGER.warn("unable to process ZIP file: " + path.toAbsolutePath().toString(), ex);
+        break;
+      default:
+        /* Treat as a config file. */
+        this.model.getBWHeadless().getExtraBotFiles().add(path);
+        break;
+    }
+  }
+
+  private void processArchive(Path path) {
+    try {
+      ZipFile zipFile = new ZipFile(path.toAbsolutePath().toString());
+      if (zipFile.isEncrypted()) {
+        LOGGER.warn("unsupported encrypted archive: " + zipFile.getFile().getAbsolutePath());
         return;
       }
-    } else if (ext.equals("dll") || ext.equals("exe")) {
-      if (path.getFileName().toString().equalsIgnoreCase("BWAPI.dll")) {
-        /* BWAPI.dll */
-        this.model.getBWHeadless().setBwapiDll(path.toAbsolutePath().toString());
-      } else {
-        /* Bot file */
-        this.model.getBWHeadless().setBotFile(path.toAbsolutePath().toString());
-        this.model.getBWHeadless().setBotName(AdakiteUtils.getFilenameNoExt(path));
-        this.model.getBWHeadless().setBotRace(Race.RANDOM);
+      /* Create temporary directory. */
+      Path tmpDir = Paths.get(Constants.TEMP_DIRECTORY).toAbsolutePath();
+      FileUtils.deleteDirectory(tmpDir.toFile());
+      AdakiteUtils.createDirectory(tmpDir);
+      /* Extract files to temporary directory. */
+      zipFile.extractAll(tmpDir.toString());
+      /* Process contents of temporary directory. */
+      Path[] tmpList = AdakiteUtils.getDirectoryContents(tmpDir);
+      for (Path tmpPath : tmpList) {
+        if (!AdakiteUtils.directoryExists(tmpPath)) {
+          processFile(tmpPath);
+        }
       }
-    } else {
-      /* Treat as a config file. */
-      this.model.getBWHeadless().getExtraBotFiles().add(path);
+    } catch (Exception ex) {
+      LOGGER.error("unable to process ZIP file: " + path.toAbsolutePath().toString(), ex);
     }
   }
 
@@ -208,11 +217,6 @@ public class Controller {
 
   public Race getBotRace() {
     return Race.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_RACE.toString()));
-  }
-
-  public boolean isEnabledLogWindow() {
-    return (this.model.getINI().hasValue(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString())
-        && this.model.getINI().getValue(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString()).equals(Boolean.TRUE.toString()));
   }
 
   /* ************************************************************ */
