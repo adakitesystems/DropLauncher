@@ -1,5 +1,6 @@
 package droplauncher.mvc.controller;
 
+import adakite.debugging.Debugging;
 import adakite.md5sum.MD5Checksum;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
@@ -7,6 +8,8 @@ import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotFile;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.model.State;
+import droplauncher.mvc.view.SettingsWindow;
+import droplauncher.mvc.view.SimpleAlert;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
@@ -20,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import javafx.scene.control.Alert.AlertType;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.lingala.zip4j.core.ZipFile;
 import org.apache.commons.io.FileUtils;
@@ -176,6 +181,8 @@ public class Controller {
     fileList.forEach((path) -> {
       processFile(path);
     });
+
+    this.view.update();
   }
 
   /* ************************************************************ */
@@ -216,7 +223,34 @@ public class Controller {
   /* Events called by a view */
   /* ************************************************************ */
 
-//  public void btnLaunchClicked() {
+  public void mnuFileSelectBotFilesClicked(Stage stage) {
+    FileChooser fc = new FileChooser();
+    fc.setTitle("Select bot files ...");
+    String userDirectory = AdakiteUtils.getUserHomeDirectory().toAbsolutePath().toString();
+    if (userDirectory != null) {
+      fc.setInitialDirectory(new File(userDirectory));
+    }
+    List<File> files = fc.showOpenMultipleDialog(stage);
+    if (files != null && files.size() > 0) {
+      filesDropped(files);
+    }
+    this.view.update();
+  }
+
+  public void mnuFileExitClicked(Stage stage) {
+    closeProgramRequest(stage);
+  }
+
+  public void mnuEditSettingsClicked() {
+    new SettingsWindow(this.model.getINI()).showAndWait();
+  }
+
+  public void mnuHelpAboutClicked() {
+    new SimpleAlert().showAndWait(AlertType.INFORMATION, Constants.PROGRAM_TITLE, Constants.PROGRAM_ABOUT);
+  }
+
+  public void btnLaunchClicked() {
+    LOGGER.info(Debugging.ack());
 //    if (!this.model.getBWHeadless().isRunning()) {
 //      if (!this.model.getBWHeadless().isReady()) {
 //        /* Display error message. */
@@ -248,6 +282,29 @@ public class Controller {
 //        });
 //      }).start();
 //    }
-//  }
+  }
+
+  public void updateRaceChoiceBox() {
+    this.view.setText(this.view.getRaceChoiceBox(), getBotRace().toString());
+    this.view.sizeToScene();
+  }
+
+  public void botRaceChanged(String str) {
+    if (str.equals(Race.TERRAN.toString())) {
+      this.model.getBWHeadless().setBotRace(Race.TERRAN);
+    } else if (str.equals(Race.ZERG.toString())) {
+      this.model.getBWHeadless().setBotRace(Race.ZERG);
+    } else if (str.equals(Race.PROTOSS.toString())) {
+      this.model.getBWHeadless().setBotRace(Race.PROTOSS);
+    } else if (str.equals(Race.RANDOM.toString())) {
+      this.model.getBWHeadless().setBotRace(Race.RANDOM);
+    }
+    updateRaceChoiceBox();
+  }
+
+  public void botNameChanged(String str) {
+    this.model.getBWHeadless().setBotName(str);
+    this.view.update();
+  }
 
 }

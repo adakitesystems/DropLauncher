@@ -59,7 +59,7 @@ public class View implements EventHandler<DragEvent>  {
   private static final String RESOURCE_PATH = "/droplauncher/mvc/view/theme/";
   public static final String DEFAULT_CSS = RESOURCE_PATH + "droplauncher.css";
 
-  private static final String EMPTY_LABEL = "-";
+  private static final String EMPTY_LABEL_TEXT = "-";
 
   private Controller controller;
 
@@ -92,10 +92,10 @@ public class View implements EventHandler<DragEvent>  {
   private void initMenus() {
     /* File */
     MenuItem mnuFileSelectBotFiles = new MenuItem(MenuText.SELECT_BOT_FILES.toString());
-//    mnuFileSelectBotFiles.setOnAction(e -> this.controller.mnuFileSelectBotFilesClicked(this.stage));
+    mnuFileSelectBotFiles.setOnAction(e -> this.controller.mnuFileSelectBotFilesClicked(this.stage));
     MenuItem mnuFileExit = new MenuItem(MenuText.EXIT.toString());
     mnuFileExit.setOnAction(e -> {
-//      this.controller.mnuFileExitClicked(this.stage);
+      this.controller.mnuFileExitClicked(this.stage);
     });
     this.fileMenu = new Menu(MenuText.FILE.toString());
     this.fileMenu.getItems().add(mnuFileSelectBotFiles);
@@ -103,13 +103,13 @@ public class View implements EventHandler<DragEvent>  {
 
     /* Edit */
     MenuItem mnuEditSettings = new MenuItem(MenuText.SETTINGS.toString());
-//    mnuEditSettings.setOnAction(e -> this.controller.mnuEditSettingsClicked());
+    mnuEditSettings.setOnAction(e -> this.controller.mnuEditSettingsClicked());
     this.editMenu = new Menu(MenuText.EDIT.toString());
     this.editMenu.getItems().add(mnuEditSettings);
 
     /* Help */
     MenuItem mnuHelpAbout = new MenuItem(MenuText.ABOUT.toString());
-//    mnuHelpAbout.setOnAction(e -> this.controller.mnuHelpAboutClicked());
+    mnuHelpAbout.setOnAction(e -> this.controller.mnuHelpAboutClicked());
     this.helpMenu = new Menu(MenuText.HELP.toString());
     this.helpMenu.getItems().add(mnuHelpAbout);
 
@@ -123,11 +123,11 @@ public class View implements EventHandler<DragEvent>  {
   private void initComponents() {
     this.lblBwapiVersion = new Label("BWAPI.dll Version:");
     this.lblBwapiVersion.setMinWidth(Region.USE_PREF_SIZE);
-    this.lblBwapiVersionText = new Label(EMPTY_LABEL);
+    this.lblBwapiVersionText = new Label(EMPTY_LABEL_TEXT);
     this.lblBwapiVersionText.setMinWidth(Region.USE_PREF_SIZE);
     this.lblBotFile = new Label("Bot File:");
     this.lblBotFile.setMinWidth(Region.USE_PREF_SIZE);
-    this.lblBotFileText = new Label(EMPTY_LABEL);
+    this.lblBotFileText = new Label(EMPTY_LABEL_TEXT);
     this.lblBotName = new Label("Bot Name (max 24 characters):");
     this.lblBotName.setMinWidth(Region.USE_PREF_SIZE);
     this.txtBotName = new TextField("");
@@ -146,15 +146,15 @@ public class View implements EventHandler<DragEvent>  {
     this.console.get().setMinWidth(500);
     this.console.get().setMinHeight(300);
 
-//    this.txtBotName.setOnKeyReleased(e -> this.controller.botNameChanged(this.txtBotName.getText()));
+    this.txtBotName.setOnKeyReleased(e -> this.controller.botNameChanged(this.txtBotName.getText()));
     this.cbRace.setOnAction(e -> {
       String previous = this.controller.getBotRace().toString();
       String current = this.cbRace.getValue();
       if (!current.equals(previous)) {
-//        this.controller.botRaceChanged(current);
+        this.controller.botRaceChanged(current);
       }
     });
-//    this.btnLaunch.setOnAction(e -> this.controller.btnLaunchClicked());
+    this.btnLaunch.setOnAction(e -> this.controller.btnLaunchClicked());
 
     CustomGridPane fileLabelGridPane = new CustomGridPane();
     fileLabelGridPane.add(this.lblBotFile);
@@ -248,31 +248,31 @@ public class View implements EventHandler<DragEvent>  {
   }
 
   public void update() {
-//    setText(this.lblBwapiVersionText, this.controller.getBwapiDllVersion());
-//
-//    setText(this.lblBotFileText, this.controller.getBotFilename());
-//    if (!AdakiteUtils.isNullOrEmpty(this.controller.getBotFilename())) {
-//      this.cbRace.setVisible(true);
-//      this.controller.updateRaceChoiceBox();
-//    } else {
-//      this.cbRace.setVisible(false);
-//    }
-//
-//    /* Handling for when the user enters an invalid character for the bot name. */
-//    String displayBotName = this.txtBotName.getText();
-//    String internalBotName = this.controller.getBotName();
-//    int caret = txtBotName.getCaretPosition();
-//    if (!displayBotName.equals(internalBotName)) {
-//      if (caret >= internalBotName.length()) {
-//        caret = internalBotName.length();
-//      } else if (caret > 1) {
-//        caret--;
-//      }
-//      setText(this.txtBotName, internalBotName);
-//      txtBotName.positionCaret(caret);
-//    }
-//
-//    sizeToScene();
+    setText(this.lblBwapiVersionText, this.controller.getBwapiDllVersion());
+
+    setText(this.lblBotFileText, this.controller.getBotFilename());
+    if (!AdakiteUtils.isNullOrEmpty(this.controller.getBotFilename())) {
+      this.cbRace.setVisible(true);
+      this.controller.updateRaceChoiceBox();
+    } else {
+      this.cbRace.setVisible(false);
+    }
+
+    /* Handling for when the user enters an invalid character for the bot name. */
+    String displayBotName = this.txtBotName.getText();
+    String internalBotName = this.controller.getBotName();
+    int caret = txtBotName.getCaretPosition();
+    if (!displayBotName.equals(internalBotName)) {
+      if (caret >= internalBotName.length()) {
+        caret = internalBotName.length();
+      } else if (caret > 1) {
+        caret--;
+      }
+      setText(this.txtBotName, internalBotName);
+      txtBotName.positionCaret(caret);
+    }
+
+    sizeToScene();
   }
 
   public void sizeToScene() {
@@ -281,7 +281,7 @@ public class View implements EventHandler<DragEvent>  {
 
   public static void setText(Node node, String str) {
     if (AdakiteUtils.isNullOrEmpty(str)) {
-      str = EMPTY_LABEL;
+      str = EMPTY_LABEL_TEXT;
     }
 
     if (node instanceof Button) {
