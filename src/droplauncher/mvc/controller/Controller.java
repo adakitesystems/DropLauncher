@@ -37,18 +37,6 @@ public class Controller {
     this.state = State.IDLE;
   }
 
-  public void debug() {
-    this.model.getBWHeadless().setBotRace(Race.TERRAN);
-    processArchive(Paths.get("V:\\files\\BWAPI\\Bots\\krasi0.zip"));
-    startBWHeadless();
-    try {
-      Thread.sleep(30000);
-    } catch (InterruptedException ex) {
-      LOGGER.error(ex);
-    }
-    stopBWHeadless();
-  }
-
   public void setModel(Model model) {
     this.model = model;
   }
