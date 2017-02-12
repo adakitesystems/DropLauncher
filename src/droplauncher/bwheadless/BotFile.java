@@ -3,8 +3,6 @@ package droplauncher.bwheadless;
 import adakite.util.AdakiteUtils;
 import java.nio.file.Path;
 import java.util.Locale;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Container class for bot files.
@@ -16,8 +14,6 @@ public class BotFile {
     CLIENT,
     UNKNOWN
   }
-
-  private static final Logger LOGGER = LogManager.getLogger();
 
   private Type type;
   private Path path;

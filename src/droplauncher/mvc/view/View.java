@@ -26,12 +26,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class View implements EventHandler<DragEvent>  {
-
-  private static final Logger LOGGER = LogManager.getLogger();
 
   public enum DefaultSetting {
 
