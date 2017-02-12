@@ -15,7 +15,7 @@ bwheadless*
 *.log
 
 # Checkstyle
-checkstyle/*
+checkstyle/*.txt
 
 # WIP themes
 src/droplauncher/mvc/view/theme/*
