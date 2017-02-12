@@ -156,7 +156,7 @@ public class BWHeadless {
    * Configures BWAPI in the specified StarCraft directory.
    *
    * @param starcraftDirectory path to the specified StarCraft directory
-   * @throws IOException
+   * @throws IOException if an I/O error occurs
    * @throws InvalidBotTypeException if bot type is not recognized
    */
   private void configureBwapi(Path starcraftDirectory)
@@ -298,7 +298,7 @@ public class BWHeadless {
         setBotRace(Race.ZERG);
       } else if (val.equalsIgnoreCase(Race.PROTOSS.toString())) {
         setBotRace(Race.PROTOSS);
-      } else if(val.equalsIgnoreCase((Race.RANDOM.toString()))) {
+      } else if (val.equalsIgnoreCase((Race.RANDOM.toString()))) {
         setBotRace(Race.RANDOM);
       } else {
         /* Unrecognized Race. */
@@ -308,7 +308,7 @@ public class BWHeadless {
       /* Race wasn't set. */
       setBotRace(DEFAULT_BOT_RACE);
     }
-    if (AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.NETWORK_PROVIDER.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.NETWORK_PROVIDER.toString()))) {
       if (val.equalsIgnoreCase(NetworkProvider.LAN.toString())) {
         setNetworkProvider(NetworkProvider.LAN);
       } else {
@@ -319,7 +319,7 @@ public class BWHeadless {
       /* NetworkProvider wasn't set. */
       setNetworkProvider(DEFAULT_NETWORK_PROVIDER);
     }
-    if (AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.CONNECT_MODE.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.CONNECT_MODE.toString()))) {
       if (val.equalsIgnoreCase(ConnectMode.JOIN.toString())) {
         setConnectMode(ConnectMode.JOIN);
       } else {

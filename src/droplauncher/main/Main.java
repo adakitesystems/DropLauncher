@@ -14,13 +14,8 @@ public class Main {
 
     LOGGER.info("start of main");
 
-    /* Try-catch for sending all exceptions to log4j2. */
-    try {
-      new MVC();
-    } catch (Exception ex) {
-      LOGGER.error("droplauncher", ex);
-    }
-
+    new MVC();
+    
     LOGGER.info("end of main");
   }
 

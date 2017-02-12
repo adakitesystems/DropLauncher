@@ -36,11 +36,6 @@ public class BotFile {
 
   /**
    * Returns the path which represents this object.
-   *
-   * @return
-   *     the path which represents this object
-   * @throws IllegalStateException If path is null. Another possible cause
-   *     is if {@link #setPath(java.nio.file.Path) has NOT been called yet.
    */
   public Path getPath() {
     if (this.path == null) {
@@ -49,15 +44,24 @@ public class BotFile {
     return this.path;
   }
 
+  /**
+   * Sets the path to the bot file.
+   *
+   * @param path specified path
+   */
   public void setPath(Path path) {
     this.path = path;
     String ext = AdakiteUtils.getFileExtension(this.path).toLowerCase(Locale.US);
-    if (ext.equals("dll")) {
-      this.type = Type.DLL;
-    } else if (ext.equals("exe")) {
-      this.type = Type.CLIENT;
-    } else {
-      this.type = Type.UNKNOWN;
+    switch (ext) {
+      case "dll":
+        this.type = Type.DLL;
+        break;
+      case "exe":
+        this.type = Type.CLIENT;
+        break;
+      default:
+        this.type = Type.UNKNOWN;
+        break;
     }
   }
 

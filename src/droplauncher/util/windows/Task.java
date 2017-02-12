@@ -100,7 +100,7 @@ public class Task {
     return this.cpuTime;
   }
 
-   public void setCpuTime(String cpuTime) {
+  public void setCpuTime(String cpuTime) {
     this.cpuTime = cpuTime;
   }
 

@@ -16,7 +16,7 @@ public class Windows {
 
     CMD("C:\\Windows\\System32\\cmd.exe"),
     TASKLIST("C:\\Windows\\System32\\tasklist.exe"),
-    TASKKILL("C:\\Windows\\System32\\taskkill.exe");
+    TASKKILL("C:\\Windows\\System32\\taskkill.exe")
     ;
 
     private String str;

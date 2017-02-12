@@ -39,7 +39,7 @@ public class CustomProcess {
    * Creates and opens the pipe to the specified executable.
    *
    * @param args specified command and arguments to run
-   * @throws IOException
+   * @throws IOException if an I/O error occurs
    */
   public void start(String[] args) throws IOException {
     if (args == null) {
