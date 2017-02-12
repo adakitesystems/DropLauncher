@@ -7,6 +7,7 @@ import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotFile;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.model.State;
+import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import droplauncher.util.SettingsKey;
@@ -30,6 +31,7 @@ public class Controller {
   private static final Logger LOGGER = LogManager.getLogger();
 
   private Model model;
+  private View view;
   private State state;
 
   public Controller() {
@@ -39,6 +41,10 @@ public class Controller {
 
   public void setModel(Model model) {
     this.model = model;
+  }
+
+  public void setView(View view) {
+    this.view = view;
   }
 
   public State getState() {
