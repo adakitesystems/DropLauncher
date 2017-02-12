@@ -45,7 +45,7 @@ public class Model {
   }
 
   public void startBWHeadless() throws IOException, InvalidBotTypeException {
-    this.taskTracker.update();
+    this.taskTracker.reset();
     this.bwheadless.start();
   }
 

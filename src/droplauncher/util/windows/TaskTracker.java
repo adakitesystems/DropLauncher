@@ -31,9 +31,9 @@ public class TaskTracker {
   }
 
   /**
-   * Updates both the current and previous tasklists.
+   * Resets both the current and previous tasklists.
    */
-  public void update() throws IOException {
+  public void reset() throws IOException {
     this.previousTasklist.update();
     this.currentTasklist.update();
   }
