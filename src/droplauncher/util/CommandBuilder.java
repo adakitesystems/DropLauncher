@@ -3,6 +3,7 @@ package droplauncher.util;
 import adakite.debugging.Debugging;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Class for building objects to pass to process objects such as ProcessBuilder.
@@ -64,9 +65,7 @@ public class CommandBuilder {
    */
   public void setArgs(String[] args) {
     clearArgs();
-    for (String arg : args) {
-      this.args.add(arg);
-    }
+    this.args.addAll(Arrays.asList(args));
   }
 
   /**
@@ -102,9 +101,9 @@ public class CommandBuilder {
     } else {
       sb.append(this.path.toString());
     }
-    for (String arg : this.args) {
-      sb.append(" " + arg);
-    }
+    this.args.forEach((arg) -> {
+      sb.append(" ").append(arg);
+    });
     return sb.toString();
   }
 

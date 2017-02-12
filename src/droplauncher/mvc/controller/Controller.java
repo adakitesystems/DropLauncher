@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import javafx.stage.Stage;
@@ -162,13 +163,11 @@ public class Controller {
        dropping a directory does NOT include all subdirectories and
        files by default. */
     ArrayList<Path> fileList = new ArrayList<>();
-    for (File file : files) {
+    files.forEach((file) -> {
       if (file.isDirectory()) {
         try {
           Path[] tmpList = AdakiteUtils.getDirectoryContents(file.toPath(), true);
-          for (Path tmpPath : tmpList) {
-            fileList.add(tmpPath);
-          }
+          fileList.addAll(Arrays.asList(tmpList));
         } catch (IOException ex) {
           LOGGER.error("unable to get directory contents for: " + file.getAbsolutePath(), ex);
         }
@@ -177,12 +176,12 @@ public class Controller {
       } else {
         LOGGER.warn("unknown file dropped: " + file.getAbsolutePath());
       }
-    }
+    });
 
     /* Process all files. */
-    for (Path path : fileList) {
+    fileList.forEach((path) -> {
       processFile(path);
-    }
+    });
   }
 
   /* ************************************************************ */
