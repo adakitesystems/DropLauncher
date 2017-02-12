@@ -13,9 +13,7 @@ public class Main {
     System.out.println(Constants.PROGRAM_ABOUT);
 
     LOGGER.info("start of main");
-
     new MVC();
-    
     LOGGER.info("end of main");
   }
 

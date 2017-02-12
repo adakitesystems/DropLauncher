@@ -157,7 +157,7 @@ public class BWHeadless {
    *
    * @param starcraftDirectory path to the specified StarCraft directory
    * @throws IOException if an I/O error occurs
-   * @throws InvalidBotTypeException if bot type is not recognized
+   * @throws InvalidBotTypeException if the bot type is not recognized
    */
   private void configureBwapi(Path starcraftDirectory)
       throws IOException,
@@ -166,7 +166,7 @@ public class BWHeadless {
     INI bwapiIni = new INI();
     bwapiIni.open(Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_INI_PATH.toString()));
     if (this.botFile.getType() == BotFile.Type.DLL) {
-      bwapiIni.set("ai", "ai", BWAPI.BWAPI_DATA_AI_PATH + AdakiteUtils.FILE_SEPARATOR + this.botFile.getPath().getFileName().toString());
+      bwapiIni.set("ai", "ai", BWAPI.BWAPI_DATA_AI_PATH.toString() + AdakiteUtils.FILE_SEPARATOR + this.botFile.getPath().getFileName().toString());
     } else {
       bwapiIni.disableVariable("ai", "ai");
     }
@@ -286,6 +286,7 @@ public class BWHeadless {
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_NAME.toString()))) {
       setBotName(val);
     } else {
+      /* Name wasn't set. */
       setBotName(DEFAULT_BOT_NAME);
     }
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_FILE.toString()))) {

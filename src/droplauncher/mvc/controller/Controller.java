@@ -38,13 +38,12 @@ public class Controller {
   }
 
   public void debug() {
-    processFile(Paths.get("V:\\files\\BWAPI\\Bots\\krasi0 zip\\krasi0_BjYnC4.zip"));
     this.model.getBWHeadless().setBotRace(Race.TERRAN);
     startBWHeadless();
     try {
       Thread.sleep(30000);
     } catch (InterruptedException ex) {
-//      java.util.logging.Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+      LOGGER.error(ex);
     }
     stopBWHeadless();
   }
