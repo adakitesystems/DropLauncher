@@ -8,6 +8,7 @@ Designed to be a simple tool to aid players in setting up and playing 1v1 StarCr
 * Apache's [Commons IO](https://commons.apache.org/proper/commons-io/) library
 * [zip4j](http://www.lingala.net/zip4j/) library
 * [bwheadless.exe](https://github.com/tscmoo/bwheadless) to load the bots into StarCraft.exe
+* [log4j2](https://logging.apache.org/log4j/2.x/)
 
 ## Estimated Release Date
 ~~Between 2017-02-05 and 2017-02-11.~~
