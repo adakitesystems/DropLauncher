@@ -1,13 +1,19 @@
+# WIP theme
 src/droplauncher/mvc/view/theme/
+
+# Misc
 bwheadless.exe
 commit.txt
 diff.txt
+tmp/
+droplauncher.ini
+droplauncher.log
+checkstyle/checkstyle-7.5.1-all.jar
+gitlog.txt
+
+# NetBeans
 nbproject/
 build.xml
 build/
 manifest.mf
 dist/
-tmp/
-droplauncher.ini
-droplauncher.log
-checkstyle/checkstyle-7.5.1-all.jar
