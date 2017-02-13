@@ -1,7 +1,7 @@
 package droplauncher.util.windows;
 
 import adakite.util.AdakiteUtils;
-import droplauncher.util.SimpleProcess;
+import droplauncher.util.process.SimpleProcess;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;

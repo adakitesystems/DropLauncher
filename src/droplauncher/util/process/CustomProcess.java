@@ -1,7 +1,8 @@
-package droplauncher.util;
+package droplauncher.util.process;
 
 import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
+import droplauncher.util.StreamGobbler;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.apache.logging.log4j.LogManager;
