@@ -8,6 +8,7 @@ import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotFile;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.model.State;
+import droplauncher.mvc.view.LaunchButtonText;
 import droplauncher.mvc.view.SettingsWindow;
 import droplauncher.mvc.view.SimpleAlert;
 import droplauncher.mvc.view.View;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -38,10 +40,12 @@ public class Controller {
   private Model model;
   private View view;
   private State state;
+  private final Object stateLock;
 
   public Controller() {
     this.model = null;
     this.state = State.IDLE;
+    this.stateLock = new Object();
   }
 
   public void setModel(Model model) {
@@ -56,28 +60,37 @@ public class Controller {
     return this.state;
   }
 
+  private void setState(State state) {
+    LOGGER.info(Debugging.ack());
+    synchronized(this.stateLock) {
+      LOGGER.info("lock acquired: " + this.state.toString());
+      this.state = state;
+    }
+    LOGGER.info("lock released: " + this.state.toString());
+  }
+
   private void startBWHeadless() {
-    if (this.state != State.IDLE) {
-      throw new IllegalStateException("state != " + State.IDLE.toString());
-    }
-    if (!this.model.getBWHeadless().isReady()) {
-      throw new IllegalStateException("BWH not ready: " + this.model.getBWHeadless().getReadyError().toString());
-    }
+//    if (this.state != State.IDLE) {
+//      throw new IllegalStateException("state != " + State.IDLE.toString());
+//    }
+//    if (!this.model.getBWHeadless().isReady()) {
+//      throw new IllegalStateException("BWH not ready: " + this.model.getBWHeadless().getReadyError().toString());
+//    }
+//
 
     try {
       this.model.startBWHeadless();
     } catch (Exception ex) {
       LOGGER.error(ex);
-      return;
     }
 
-    this.state = State.RUNNING;
+    setState(State.RUNNING);
   }
 
   private void stopBWHeadless() {
-    if (this.state != State.RUNNING) {
-      throw new IllegalStateException("state != " + State.RUNNING.toString());
-    }
+//    if (this.state != State.RUNNING) {
+//      throw new IllegalStateException("state != " + State.RUNNING.toString());
+//    }
 
     try {
       this.model.stopBWHeadless();
@@ -86,13 +99,25 @@ public class Controller {
       return;
     }
 
-    this.state = State.IDLE;
+    setState(State.IDLE);
   }
 
   public void closeProgramRequest(Stage stage) {
-    if (this.state == State.RUNNING) {
-      stopBWHeadless();
+    switch (this.state) {
+      case LOCKED:
+        return;
+      case RUNNING:
+        stopBWHeadless();
+        break;
+      default:
+        /* Do nothing; */
+        break;
     }
+
+    if (this.state != State.IDLE) {
+      return;
+    }
+
     stage.close();
   }
 
@@ -250,38 +275,49 @@ public class Controller {
   }
 
   public void btnLaunchClicked() {
-    LOGGER.info(Debugging.ack());
-//    if (!this.model.getBWHeadless().isRunning()) {
-//      if (!this.model.getBWHeadless().isReady()) {
-//        /* Display error message. */
-//        new SimpleAlert().showAndWait(
-//            AlertType.ERROR,
-//            "Not Ready",
-//            "The program is not ready due to the following error: " + AdakiteUtils.newline(2) +
-//            this.model.getBWHeadless().getReadyError().toString()
-//        );
-//      } else {
-//        /* Start bwheadless. */
-//        this.view.btnLaunchEnabled(false);
-//        new Thread(() -> {
-//          startBWHeadless();
-//          Platform.runLater(() -> {
-//            this.view.btnLaunchSetText(LaunchButtonText.EJECT.toString());
-//            this.view.btnLaunchEnabled(true);
-//          });
-//        }).start();
-//      }
-//    } else {
-//      /* Stop bwheadless. */
-//      this.view.btnLaunchEnabled(false);
-//      new Thread(() -> {
-//        stopBWHeadless();
-//        Platform.runLater(() -> {
-//          this.view.btnLaunchSetText(LaunchButtonText.LAUNCH.toString());
-//          this.view.btnLaunchEnabled(true);
-//        });
-//      }).start();
-//    }
+    State prevState = this.state;
+    setState(State.LOCKED);
+
+    switch (prevState) {
+      case IDLE:
+        if (!this.model.getBWHeadless().isReady()) {
+          /* Display error message. */
+          new SimpleAlert().showAndWait(
+              AlertType.ERROR,
+              "Not Ready",
+              "The program is not ready due to the following error: " + AdakiteUtils.newline(2) +
+              this.model.getBWHeadless().getReadyError().toString()
+          );
+        } else {
+          /* Start bwheadless. */
+          this.view.btnLaunchEnabled(false);
+          new Thread(() -> {
+            startBWHeadless();
+            Platform.runLater(() -> {
+              this.view.btnLaunchSetText(LaunchButtonText.EJECT.toString());
+              this.view.btnLaunchEnabled(true);
+            });
+          }).start();
+        }
+        return;
+      case RUNNING:
+        /* Stop bwheadless. */
+        this.view.btnLaunchEnabled(false);
+        new Thread(() -> {
+          stopBWHeadless();
+          Platform.runLater(() -> {
+            this.view.btnLaunchSetText(LaunchButtonText.LAUNCH.toString());
+            this.view.btnLaunchEnabled(true);
+          });
+        }).start();
+        return;
+      default:
+        break;
+    }
+
+    if (this.state == State.LOCKED) {
+      LOGGER.warn("still locked");
+    }
   }
 
   public void updateRaceChoiceBox() {
