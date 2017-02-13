@@ -1,3 +1,8 @@
+/*
+TODO: Rename "updateNewTasks" to "update".
+TODO: Change ArrayList to List.
+*/
+
 package droplauncher.util.windows;
 
 import java.io.IOException;
