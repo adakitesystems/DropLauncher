@@ -26,9 +26,9 @@ public class CustomGridPane {
 
   public GridPane get() {
     this.gridPane.getChildren().clear();
-    for (Node node : nodes) {
+    this.nodes.forEach((node) -> {
       this.gridPane.getChildren().add(node);
-    }
+    });
 //    this.gridPane.setMinWidth(Region.USE_PREF_SIZE);
     return this.gridPane;
   }

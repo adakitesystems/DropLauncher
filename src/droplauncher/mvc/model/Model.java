@@ -93,7 +93,7 @@ public class Model {
         FileUtils.copyDirectory(src.toFile(), dest.toFile());
       }
     } else {
-      LOGGER.warn("Unable to copy \"StarCraft/bwapi-data/write/\" to \"StarCraft/bwapi-data/read/\"" + starcraftDirectory.toString());
+      LOGGER.warn("Unable to copy \"StarCraft/bwapi-data/write/\" to \"StarCraft/bwapi-data/read/\"");
     }
   }
 
