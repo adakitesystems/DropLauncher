@@ -1,4 +1,4 @@
-package droplauncher.mvc.model;
+package droplauncher.mvc.controller;
 
 public enum State {
 

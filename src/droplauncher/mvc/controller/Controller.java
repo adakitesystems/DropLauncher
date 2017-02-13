@@ -7,7 +7,6 @@ import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotFile;
 import droplauncher.mvc.model.Model;
-import droplauncher.mvc.model.State;
 import droplauncher.mvc.view.LaunchButtonText;
 import droplauncher.mvc.view.SettingsWindow;
 import droplauncher.mvc.view.SimpleAlert;
