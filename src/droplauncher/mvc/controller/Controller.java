@@ -80,7 +80,9 @@ public class Controller {
     try {
       this.model.startBWHeadless();
     } catch (Exception ex) {
+      setState(State.IDLE);
       LOGGER.error(ex);
+      return;
     }
 
     setState(State.RUNNING);
@@ -94,6 +96,7 @@ public class Controller {
     try {
       this.model.stopBWHeadless();
     } catch (Exception ex) {
+      setState(State.RUNNING);
       LOGGER.error(ex);
       return;
     }
