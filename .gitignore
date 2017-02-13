@@ -1,0 +1,13 @@
+src/droplauncher/mvc/view/theme/
+bwheadless.exe
+commit.txt
+diff.txt
+nbproject/
+build.xml
+build/
+manifest.mf
+dist/
+tmp/
+droplauncher.ini
+droplauncher.log
+checkstyle/checkstyle-7.5.1-all.jar
