@@ -5,6 +5,8 @@ TaskTracker.updateNewTasks appropiately.
 
 package droplauncher.util.windows;
 
+import java.util.Objects;
+
 /**
  * Container class for process information obtained from
  * Windows Tasklist.
@@ -115,6 +117,23 @@ public class Task {
 
   public void setWindowTitle(String windowTitle) {
     this.windowTitle = windowTitle;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null || !(obj instanceof Task)) {
+      return false;
+    } else if (this == obj) {
+      return true;
+    } else {
+      Task task = (Task) obj;
+      return getPID().equals(task.getPID());
+    }
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getPID());
   }
 
 }

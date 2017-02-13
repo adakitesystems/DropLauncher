@@ -1,8 +1,5 @@
 /*
-TODO: Rename "updateNewTasks" to "update".
 TODO: Change ArrayList to List.
-TODO: After "equals" and "hashCode" in TaskTracker have been overridden,
-change nested loops in updateNewTasks to use "contains".
 */
 
 package droplauncher.util.windows;
@@ -48,44 +45,20 @@ public class TaskTracker {
 
   /**
    * Updates the current tasklist and compares it against the previous
-   * tasklist to determine which currently running tasks are new.
+   * tasklist to determine which currently running tasks are new. Once
+   * the new task list is populated, the previous task list is updated.
    *
-   * @param updatePreviousTasks whether to update the previous
-   *     tasklist after comparison
+   * @see #getNewTasks()
    */
-  public void updateNewTasks(boolean updatePreviousTasks) throws IOException {
+  public void update() throws IOException {
     this.newTasks.clear();
-
     this.currentTasklist.update();
-    if (!this.currentTasklist.equals(this.previousTasklist)) {
-      for (Task currTask : this.currentTasklist.getTasks()) {
-        boolean isFound = false;
-        for (Task prevTask : this.previousTasklist.getTasks()) {
-          if (currTask.getPID().equals(prevTask.getPID())) {
-            isFound = true;
-            break;
-          }
-        }
-        if (!isFound) {
-          this.newTasks.add(new Task(currTask));
-        }
+    for (Task currTask : this.currentTasklist.getTasks()) {
+      if (!this.previousTasklist.getTasks().contains(currTask)) {
+        this.newTasks.add(currTask);
       }
     }
-
-    if (updatePreviousTasks && this.newTasks.size() > 0) {
-      this.previousTasklist.update();
-    }
-  }
-
-  /**
-   * Updates the current tasklist and compares it against the previous
-   * tasklist to determine which currently running tasks are new. Note:
-   * this call does NOT update the previous tasklist.
-   *
-   * @see #updateNewTasks(boolean)
-   */
-  public void updateNewTasks() throws IOException {
-    updateNewTasks(false);
+    this.previousTasklist.update();
   }
 
 }

@@ -137,7 +137,7 @@ public class Tasklist {
   public boolean equals(Object obj) {
     if (obj == null || !(obj instanceof Tasklist)) {
       return false;
-    } else if (obj == this) {
+    } else if (this == obj) {
       return true;
     } else {
       try {

@@ -55,7 +55,7 @@ public class Model {
 
   public void stopBWHeadless() throws IOException {
     /* Kill new tasks that were started with bwheadless. */
-    this.taskTracker.updateNewTasks();
+    this.taskTracker.update();
     ArrayList<Task> tasks = this.taskTracker.getNewTasks();
     Tasklist tasklist = new Tasklist();
     boolean isClient = this.bwheadless.getBotFile().getType() == BotFile.Type.CLIENT;

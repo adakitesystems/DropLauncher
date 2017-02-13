@@ -70,7 +70,8 @@ public class DirectoryMonitor {
 
   /**
    * Refreshes the current files list and fills the new files list by comparing
-   * the previous files list to the current files list.
+   * the previous files list to the current files list. The current files
+   * list is copied to the previous files list.
    *
    * @see #getNewFiles()
    * @throws IOException if an I/O error occurs
