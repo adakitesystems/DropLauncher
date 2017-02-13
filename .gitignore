@@ -17,3 +17,6 @@ build.xml
 build/
 manifest.mf
 dist/
+
+# Tests
+test/
