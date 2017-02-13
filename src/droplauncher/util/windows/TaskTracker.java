@@ -1,6 +1,8 @@
 /*
 TODO: Rename "updateNewTasks" to "update".
 TODO: Change ArrayList to List.
+TODO: After "equals" and "hashCode" in TaskTracker have been overridden,
+change nested loops in updateNewTasks to use "contains".
 */
 
 package droplauncher.util.windows;
@@ -39,6 +41,7 @@ public class TaskTracker {
    * Resets both the current and previous tasklists.
    */
   public void reset() throws IOException {
+    this.newTasks.clear();
     this.previousTasklist.update();
     this.currentTasklist.update();
   }

@@ -1,3 +1,8 @@
+/*
+TODO: Override equals and hashCode methods and change
+TaskTracker.updateNewTasks appropiately.
+*/
+
 package droplauncher.util.windows;
 
 /**
