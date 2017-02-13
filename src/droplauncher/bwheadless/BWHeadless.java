@@ -178,35 +178,38 @@ public class BWHeadless {
     Path dest = null;
     switch (this.botFile.getType()) {
       case DLL:
-        /* Prepare to copy DLL to bwapi-data directory. */
+        /* Copy DLL to bwapi-data directory. */
         src = this.botFile.getPath();
         dest = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_AI_PATH.toString(), Paths.get(this.botFile.toString()).getFileName().toString());
+        AdakiteUtils.createDirectory(dest.getParent());
+        Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+        LOGGER.info("Copy: \"" + src.toString() + "\" -> \"" + dest.toString() + "\"");
         this.botFile.setPath(dest);
         break;
       case CLIENT:
-        /* Prepare to copy client to StarCraft root directory. */
+        /* Copy client to StarCraft root directory. */
         src = this.botFile.getPath();
         dest = Paths.get(starcraftDirectory.toString(), this.botFile.getPath().getFileName().toString());
+        AdakiteUtils.createDirectory(dest.getParent());
+        Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+        LOGGER.info("Copy: \"" + src.toString() + "\" -> \"" + dest.toString() + "\"");
         this.botFile.setPath(dest);
         break;
       default:
         throw new InvalidBotTypeException();
     }
-    /* Copy files. */
-    AdakiteUtils.createDirectory(dest.getParent());
-    Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
 
     /* Copy misc files to common bot I/O directories. */
-    Path readPath = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_READ_PATH.toString()).toAbsolutePath();
-    Path writePath = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_WRITE_PATH.toString()).toAbsolutePath();
-    Path aiPath = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_AI_PATH.toString()).toAbsolutePath();
-    AdakiteUtils.createDirectory(readPath);
-    AdakiteUtils.createDirectory(writePath);
-    AdakiteUtils.createDirectory(aiPath);
+    Path bwapiReadPath = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_READ_PATH.toString()).toAbsolutePath();
+    Path bwapiWritePath = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_WRITE_PATH.toString()).toAbsolutePath();
+    Path bwapiAiPath = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_AI_PATH.toString()).toAbsolutePath();
+    AdakiteUtils.createDirectory(bwapiReadPath);
+    AdakiteUtils.createDirectory(bwapiWritePath);
+    AdakiteUtils.createDirectory(bwapiAiPath);
     for (Path path : this.extraBotFiles) {
-      Files.copy(path, Paths.get(readPath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
-      Files.copy(path, Paths.get(writePath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
-      Files.copy(path, Paths.get(aiPath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
+      Files.copy(path, Paths.get(bwapiReadPath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
+      Files.copy(path, Paths.get(bwapiWritePath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
+      Files.copy(path, Paths.get(bwapiAiPath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
     }
   }
 

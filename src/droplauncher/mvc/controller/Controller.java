@@ -13,6 +13,7 @@ import droplauncher.mvc.view.SimpleAlert;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
+import droplauncher.util.DirectoryMonitor;
 import droplauncher.util.SettingsKey;
 import java.io.File;
 import java.io.IOException;
@@ -40,11 +41,13 @@ public class Controller {
   private View view;
   private State state;
   private final Object stateLock;
+  private DirectoryMonitor directoryMonitor;
 
   public Controller() {
     this.model = null;
     this.state = State.IDLE;
     this.stateLock = new Object();
+    this.directoryMonitor = null;
   }
 
   public void setModel(Model model) {
@@ -78,10 +81,21 @@ public class Controller {
 //
 
     try {
-      this.model.startBWHeadless();
+      Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
+      if (starcraftDirectory != null) {
+        this.directoryMonitor = new DirectoryMonitor(starcraftDirectory);
+        this.directoryMonitor.reset();
+      }
     } catch (Exception ex) {
       setState(State.IDLE);
-      LOGGER.error(ex);
+      LOGGER.error("directoryMonitor", ex);
+      return;
+    }
+
+    try {
+      this.model.startBWHeadless();
+    } catch (Exception ex) {
+      LOGGER.error("startBWHeadless", ex);
       return;
     }
 
@@ -95,6 +109,33 @@ public class Controller {
 
     try {
       this.model.stopBWHeadless();
+
+      /* Perform I/O operations. */
+      this.directoryMonitor.update();
+      Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
+      if (starcraftDirectory != null) {
+        Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
+        Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
+
+        /* Clean up StarCraft directory. */
+        this.directoryMonitor.update();
+        for (Path path : this.directoryMonitor.getNewFiles()) {
+          System.out.println(path.toAbsolutePath().toString());
+          if (!path.toAbsolutePath().startsWith(bwapiWritePath)) {
+            if (AdakiteUtils.fileExists(path)) {
+              AdakiteUtils.deleteFile(path);
+            } else if (AdakiteUtils.directoryExists(path)) {
+              FileUtils.deleteDirectory(path.toFile());
+            }
+          }
+        }
+
+        /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
+        if (AdakiteUtils.directoryExists(bwapiWritePath)) {
+          LOGGER.info("Copy: \"" + bwapiWritePath.toString() + "\" -> \"" + bwapiReadPath.toString() + "\"");
+          FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
+        }
+      }
     } catch (Exception ex) {
       setState(State.RUNNING);
       LOGGER.error(ex);

@@ -45,8 +45,7 @@ public class TaskTracker {
 
   /**
    * Updates the current tasklist and compares it against the previous
-   * tasklist to determine which currently running tasks are new. Once
-   * the new task list is populated, the previous task list is updated.
+   * tasklist to determine which currently running tasks are new.
    *
    * @see #getNewTasks()
    */
@@ -58,7 +57,6 @@ public class TaskTracker {
         this.newTasks.add(currTask);
       }
     }
-    this.previousTasklist.update();
   }
 
 }

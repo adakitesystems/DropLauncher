@@ -2,21 +2,16 @@ package droplauncher.mvc.model;
 
 import adakite.ini.INI;
 import adakite.util.AdakiteUtils;
-import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotFile;
 import droplauncher.bwheadless.KillableTask;
 import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.util.Constants;
-import droplauncher.util.SettingsKey;
 import droplauncher.util.windows.Task;
 import droplauncher.util.windows.TaskTracker;
 import droplauncher.util.windows.Tasklist;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -82,19 +77,6 @@ public class Model {
       }
     }
     this.bwheadless.stop();
-
-    /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
-    Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.bwheadless.getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
-    if (starcraftDirectory != null) {
-      Path src = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
-      Path dest = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
-      if (AdakiteUtils.directoryExists(src)) {
-        LOGGER.info("Copy: \"" + src.toString() + "\" -> \"" + dest.toString() + "\"");
-        FileUtils.copyDirectory(src.toFile(), dest.toFile());
-      }
-    } else {
-      LOGGER.warn("Unable to copy \"StarCraft/bwapi-data/write/\" to \"StarCraft/bwapi-data/read/\"");
-    }
   }
 
 }
