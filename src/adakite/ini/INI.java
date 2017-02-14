@@ -7,15 +7,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Class for manipulating a Windows INI file while attemping to preserve
  * the file's original structure.
  */
 public class INI {
-
-  private static final Logger LOGGER = Logger.getLogger(INI.class.getName());
 
   public static final String FILE_EXTENSION = ".ini";
   public static final String VARIABLE_DELIMITER = "=";
@@ -24,12 +21,9 @@ public class INI {
   private MemoryFile memoryFile;
   private HashMap<String, IniSection> sections;
 
-  private boolean autoUpdateFile;
-
   public INI() {
     this.memoryFile = new MemoryFile();
     this.sections = new HashMap<>();
-    this.autoUpdateFile = true;
 
     this.sections.clear();
     this.sections.put(IniSectionName.NONE.toString(), new IniSection());
@@ -51,15 +45,6 @@ public class INI {
   }
 
   /**
-   * Whether to auto-update the physical file after updating a setting.
-   *
-   * @param enabled whether to enable or disable
-   */
-  public void setAutoUpdateFile(boolean enabled) {
-    this.autoUpdateFile = enabled;
-  }
-
-  /**
    * Tests whether a value exists for the specified name and key
    *
    * @param name specified section name
@@ -73,16 +58,16 @@ public class INI {
   }
 
   /**
-   * Opens the specified INI file and parses its variables.
+   * Reads the specified INI file and parses its variables.
    *
    * @param path specified path to the INI file
    * @throws IOException
    */
-  public void open(Path path) throws IOException {
+  public void read(Path path) throws IOException {
     clear();
 
     /* Create a copy of the file into a MemoryFile object. */
-    this.memoryFile.open(path);
+    this.memoryFile.read(path);
 
     /* Parse sections and variables into the class HashMap object. */
     String currSection = IniSectionName.NONE.toString();
@@ -133,16 +118,6 @@ public class INI {
   }
 
   /**
-   * Re-opens the INI file and reads its values after clearing.
-   *
-   * @see #open(java.nio.file.Path)
-   * @throws IOException
-   */
-  private void reload() throws IOException {
-    open(this.memoryFile.getPath());
-  }
-
-  /**
    * Sets the specified variable and immediately writes the changes to disk.
    *
    * @param name specified section name
@@ -160,9 +135,7 @@ public class INI {
       val = "";
     }
 
-    if (this.autoUpdateFile) {
-      enableVariable(name, key);
-    }
+    enableVariable(name, key);
 
     boolean sectionExists = this.sections.containsKey(name);
     boolean keyExists = false;
@@ -179,53 +152,44 @@ public class INI {
     /* Add the variable to the section. */
     this.sections.get(name).getKeys().put(key, val);
 
-    /* Modify the file. */
-    if (this.autoUpdateFile) {
-      if (sectionExists) {
-        int sectionIndex = getSectionIndex(name);
-        if (keyExists) {
-          /* Update the variable in-place. */
-          int keyIndex = getKeyIndex(name, key);
-          String line = this.memoryFile.getLines().get(keyIndex);
-          String comment = getComment(line);
-          String updated = key + VARIABLE_DELIMITER + val;
-          if (comment != null) {
-            comment = comment.trim();
-            updated += " " + COMMENT_DELIMITER + comment;
-          }
-          this.memoryFile.getLines().set(keyIndex, updated);
-        } else {
-          /* Find the end of the section. */
-          int i;
-          if (name.equalsIgnoreCase(IniSectionName.NONE.toString())) {
-            i = sectionIndex;
-          } else {
-            i = sectionIndex + 1;
-          }
-          while (i < this.memoryFile.getLines().size()
-              && !(this.memoryFile.getLines().get(i).startsWith("[")
-                && this.memoryFile.getLines().get(i).endsWith("]"))) {
-            i++;
-          }
-          /* Add the variable. */
-          this.memoryFile.getLines().add(i, key + VARIABLE_DELIMITER + val);
+    /* Modify the memory file. */
+    if (sectionExists) {
+      int sectionIndex = getSectionIndex(name);
+      if (keyExists) {
+        /* Update the variable in-place. */
+        int keyIndex = getKeyIndex(name, key);
+        String line = this.memoryFile.getLines().get(keyIndex);
+        String comment = getComment(line);
+        String updated = key + VARIABLE_DELIMITER + val;
+        if (comment != null) {
+          comment = comment.trim();
+          updated += " " + COMMENT_DELIMITER + comment;
         }
+        this.memoryFile.getLines().set(keyIndex, updated);
       } else {
-        /* Add the section at the end of the file and add the variable.
-           By default, the INI protocol does not accept blank lines. So,
-           don't separate the new section from the previous section. */
-        String formattedName = "[" + name + "]";
-        this.memoryFile.getLines().add(formattedName);
-        this.memoryFile.getLines().add(key + VARIABLE_DELIMITER + val);
+        /* Find the end of the section. */
+        int i;
+        if (name.equalsIgnoreCase(IniSectionName.NONE.toString())) {
+          i = sectionIndex;
+        } else {
+          i = sectionIndex + 1;
+        }
+        while (i < this.memoryFile.getLines().size()
+            && !(this.memoryFile.getLines().get(i).startsWith("[")
+              && this.memoryFile.getLines().get(i).endsWith("]"))) {
+          i++;
+        }
+        /* Add the variable. */
+        this.memoryFile.getLines().add(i, key + VARIABLE_DELIMITER + val);
       }
-
-      try {
-        this.memoryFile.dumpToFile();
-      } catch (IOException ex) {
-        LOGGER.log(Debugging.getLogLevel(), null, ex);
-      }
+    } else {
+      /* Add the section at the end of the file and add the variable.
+         By default, the INI protocol does not accept blank lines. So,
+         don't separate the new section from the previous section. */
+      String formattedName = "[" + name + "]";
+      this.memoryFile.getLines().add(formattedName);
+      this.memoryFile.getLines().add(key + VARIABLE_DELIMITER + val);
     }
-
   }
 
   /**
@@ -259,12 +223,6 @@ public class INI {
             int commentIndex = line.indexOf(COMMENT_DELIMITER.charAt(0));
             line = line.substring(commentIndex + COMMENT_DELIMITER.length(), line.length()).trim();
             this.memoryFile.getLines().set(i, line);
-            try {
-              this.memoryFile.dumpToFile();
-              reload();
-            } catch (IOException ex) {
-              LOGGER.log(Debugging.getLogLevel(), null, ex);
-            }
             break;
           }
         }
@@ -279,9 +237,8 @@ public class INI {
    *
    * @param name specified section name
    * @param key specified key
-   * @throws IOException
    */
-  public void disableVariable(String name, String key) throws IOException {
+  public void disableVariable(String name, String key) {
     if (name == null) {
       name = "";
     }
@@ -298,8 +255,6 @@ public class INI {
     String line = this.memoryFile.getLines().get(keyIndex);
     line = COMMENT_DELIMITER + line;
     this.memoryFile.getLines().set(keyIndex, line);
-    this.memoryFile.dumpToFile();
-    reload();
   }
 
   /**
@@ -324,17 +279,6 @@ public class INI {
     } else {
       return null;
     }
-  }
-
-  /**
-   * Returns the value assoicated with the specified key.
-   *
-   * @param key specified key
-   * @return
-   *     the value assoicated with the specified key
-   */
-  public String getValue(String key) {
-    return getValue(null, key);
   }
 
   /**

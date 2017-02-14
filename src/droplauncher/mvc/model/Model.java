@@ -33,7 +33,7 @@ public class Model {
       if (!AdakiteUtils.fileExists(Constants.DROPLAUNCHER_INI_PATH)) {
         AdakiteUtils.createFile(Constants.DROPLAUNCHER_INI_PATH);
       }
-      this.ini.open(Constants.DROPLAUNCHER_INI_PATH);
+      this.ini.read(Constants.DROPLAUNCHER_INI_PATH);
       this.bwheadless.parseSettings(this.ini);
     } catch (IOException ex) {
       LOGGER.error(ex);

@@ -31,6 +31,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.lingala.zip4j.core.ZipFile;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -180,7 +181,7 @@ public class Controller {
         } else {
           /* Bot file */
           this.model.getBWHeadless().setBotFile(path.toAbsolutePath().toString());
-          this.model.getBWHeadless().setBotName(AdakiteUtils.getFilenameNoExt(path));
+          this.model.getBWHeadless().setBotName(FilenameUtils.getBaseName(path.getFileName().toString()));
           this.model.getBWHeadless().setBotRace(Race.RANDOM);
         }
         break;

@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,7 +13,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Optional;
 import javax.swing.filechooser.FileSystemView;
-import org.apache.commons.io.FilenameUtils;
 
 public class AdakiteUtils {
 
@@ -275,8 +273,10 @@ public class AdakiteUtils {
     if (!fileExists(path)) {
       createFile(path);
     }
-    FileOutputStream fos = new FileOutputStream(path.toString(), true);
-    try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8))) {
+    try (
+        FileOutputStream fos = new FileOutputStream(path.toString(), true);
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8))
+    ) {
       bw.write(str + newline());
     }
   }
@@ -297,64 +297,6 @@ public class AdakiteUtils {
     String pathStr = path.getFileName().toString();
     int index = pathStr.lastIndexOf('.');
     return (index < 0) ? null : pathStr.substring(index + 1, pathStr.length());
-  }
-
-  /**
-   * Returns the path with no file extension.
-   *
-   * @param path specified path
-   * @return
-   *     the original string without the file extension
-   * @throws IllegalArgumentException if the specified path is not a file
-   */
-  public static String getFilenameNoExt(Path path) {
-    if (!AdakiteUtils.fileExists(path)) {
-      throw new IllegalArgumentException(Debugging.fileDoesNotExist(path));
-    }
-    return FilenameUtils.getBaseName(path.toString());
-  }
-
-  /**
-   * Returns the number of lines in the specified plain text file.
-   *
-   * @param path specified path to file
-   * @param ignoreEmpty whether to ignore empty lines containing whitespace only
-   * @return
-   *     the number of lines in the file
-   * @throws UnsupportedEncodingException
-   * @throws IOException
-   */
-  public static int getNumberOfLines(Path path, boolean ignoreEmpty)
-      throws UnsupportedEncodingException,
-             IOException {
-    int count = 0;
-
-    ReadFile rf = new ReadFile();
-    rf.open(path);
-
-    String line;
-    while ((line = rf.getNextLine()) != null) {
-      if (ignoreEmpty && line.trim().isEmpty())  {
-        continue;
-      }
-      count++;
-    }
-
-    return count;
-  }
-
-  /**
-   * Returns the number of lines in the specified plain text file including
-   * empty lines.
-   *
-   * @param path specified path to file
-   * @return
-   *     the number of lines in the file
-   * @throws IOException
-   * @see #getNumberOfLines(Path, boolean)
-   */
-  public static int getNumberOfLines(Path path) throws IOException {
-    return getNumberOfLines(path, false);
   }
 
   /**

@@ -164,7 +164,7 @@ public class BWHeadless {
              InvalidBotTypeException {
     /* Configure BWAPI INI file. */
     INI bwapiIni = new INI();
-    bwapiIni.open(Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_INI_PATH.toString()));
+    bwapiIni.read(Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_INI_PATH.toString()));
     if (this.botFile.getType() == BotFile.Type.DLL) {
       bwapiIni.set("ai", "ai", BWAPI.BWAPI_DATA_AI_PATH.toString() + AdakiteUtils.FILE_SEPARATOR + this.botFile.getPath().getFileName().toString());
     } else {

@@ -1,6 +1,10 @@
 package adakite.util;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -45,12 +49,13 @@ public class MemoryFile  {
   }
 
   /**
-   * Reads the specified file into memory.
+   * Clears the current memory file and reads the specified
+   * file into the memory file.
    *
    * @param path specified file to read/create
    * @throws IOException
    */
-  public void open(Path path) throws IOException {
+  public void read(Path path) throws IOException {
     clear();
     this.path = path;
     this.lines = Files.readAllLines(this.path, StandardCharsets.UTF_8);
@@ -60,17 +65,17 @@ public class MemoryFile  {
    * Dumps the currently stored lines to the specified file.
    *
    * @param path the specified file to dump lines
-   * @throws UnsupportedEncodingException
-   * @throws IOException
+   * @throws FileNotFoundException
    */
-  public void dumpToFile(Path path) throws UnsupportedEncodingException,
-                                           IOException {
-    WriteFile wf = new WriteFile();
-    wf.open(path);
-    for (String line : this.lines) {
-      wf.writeLine(line);
+  public void dumpToFile(Path path) throws FileNotFoundException, IOException {
+    try (
+        FileOutputStream fos = new FileOutputStream(path.toString());
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8))
+    ) {
+      for (String line : this.lines) {
+        bw.write(line + AdakiteUtils.newline());
+      }
     }
-    wf.close();
   }
 
   /**
