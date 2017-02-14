@@ -316,6 +316,8 @@ public class Controller {
               "The program is not ready due to the following error: " + AdakiteUtils.newline(2) +
               this.model.getBWHeadless().getReadyError().toString()
           );
+          setState(State.IDLE);
+          return;
         } else {
           /* Start bwheadless. */
           this.view.btnLaunchEnabled(false);
