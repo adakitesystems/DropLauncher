@@ -139,7 +139,7 @@ public class AdakiteUtils {
    *     otherwise false
    */
   public static boolean fileExists(Path path) {
-    return Files.isRegularFile(path);
+    return (path != null && Files.isRegularFile(path));
   }
 
   /**
@@ -151,7 +151,7 @@ public class AdakiteUtils {
    *     otherwise false
    */
   public static boolean directoryExists(Path path) {
-    return Files.isDirectory(path);
+    return (path != null && Files.isDirectory(path));
   }
 
   /**
