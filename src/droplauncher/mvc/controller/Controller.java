@@ -250,8 +250,8 @@ public class Controller {
   /* ************************************************************ */
 
   public String getBotFilename() {
-    if (this.model.getBWHeadless().getBotFile().getType() != BotFile.Type.UNKNOWN) {
-      return this.model.getBWHeadless().getBotFile().getPath().getFileName().toString();
+    if (this.model.getBWHeadless().getBotType() != BotFile.Type.UNKNOWN) {
+      return this.model.getBWHeadless().getBotPath().getFileName().toString();
     } else {
       return null;
     }

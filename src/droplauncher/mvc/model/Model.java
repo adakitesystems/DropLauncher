@@ -58,8 +58,8 @@ public class Model {
     this.taskTracker.update();
     ArrayList<Task> tasks = this.taskTracker.getNewTasks();
     Tasklist tasklist = new Tasklist();
-    boolean isClient = this.bwheadless.getBotFile().getType() == BotFile.Type.CLIENT;
-    String botName = this.bwheadless.getBotFile().getPath().getFileName().toString();
+    boolean isClient = this.bwheadless.getBotType() == BotFile.Type.CLIENT;
+    String botName = this.bwheadless.getBotPath().getFileName().toString();
     for (Task task : tasks) {
       /* Kill bot client. */
       if (isClient && botName.contains(task.getImageName())) {

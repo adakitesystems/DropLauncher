@@ -240,8 +240,12 @@ public class BWHeadless {
     }
   }
 
-  public BotFile getBotFile() {
-    return this.botFile;
+  public BotFile.Type getBotType() {
+    return this.botFile.getType();
+  }
+
+  public Path getBotPath() {
+    return this.botFile.getPath();
   }
 
   public void setBotFile(String botFile) {
