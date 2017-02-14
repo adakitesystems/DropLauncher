@@ -125,7 +125,7 @@ public class BWHeadless {
   public void start() throws IOException, InvalidBotTypeException {
     this.taskTracker.reset();
 
-    Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString()))).toAbsolutePath();
+    Path starcraftDirectory = getStarcraftDirectory();
 
     configureBwapi(starcraftDirectory);
 

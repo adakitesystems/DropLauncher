@@ -80,7 +80,7 @@ public class Controller {
 
   private void startBWHeadless() throws IOException, InvalidBotTypeException {
     /* Init DirectoryMonitor if required. */
-    Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
+    Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
     if (this.directoryMonitor == null) {
       this.directoryMonitor = new DirectoryMonitor(starcraftDirectory);
       this.directoryMonitor.reset();
@@ -95,7 +95,7 @@ public class Controller {
     this.model.getBWHeadless().stop();
 
     /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
-    Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
+    Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
     Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
     Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
     LOGGER.info("Copy: \"" + bwapiWritePath.toString() + "\" -> \"" + bwapiReadPath.toString() + "\"");
@@ -124,7 +124,7 @@ public class Controller {
     try {
       if (this.directoryMonitor != null) {
         LOGGER.info("clean up StarCraft directory");
-        Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
+        Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
         Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
         Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
         this.directoryMonitor.update();
