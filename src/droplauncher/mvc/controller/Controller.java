@@ -74,57 +74,27 @@ public class Controller {
   }
 
   private void startBWHeadless() throws IOException, InvalidBotTypeException {
-//    if (this.state != State.IDLE) {
-//      throw new IllegalStateException("state != " + State.IDLE.toString());
-//    }
-//    if (!this.model.getBWHeadless().isReady()) {
-//      throw new IllegalStateException("BWH not ready: " + this.model.getBWHeadless().getReadyError().toString());
-//    }
-//
-
+    /* Init DirectoryMonitor if required. */
     Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
-    if (starcraftDirectory != null) {
+    if (this.directoryMonitor == null) {
       this.directoryMonitor = new DirectoryMonitor(starcraftDirectory);
       this.directoryMonitor.reset();
     }
 
     setState(State.RUNNING);
-    this.model.startBWHeadless();
+
+    this.model.getBWHeadless().start();
   }
 
   private void stopBWHeadless() throws IOException {
-//    if (this.state != State.RUNNING) {
-//      throw new IllegalStateException("state != " + State.RUNNING.toString());
-//    }
+    this.model.getBWHeadless().stop();
 
-    this.model.stopBWHeadless();
-
-    /* Perform I/O operations. */
-    this.directoryMonitor.update();
+    /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
     Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
-    if (starcraftDirectory != null) {
-      Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
-      Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
-
-      /* Clean up StarCraft directory. */
-      this.directoryMonitor.update();
-      for (Path path : this.directoryMonitor.getNewFiles()) {
-        System.out.println(path.toAbsolutePath().toString());
-        if (!path.toAbsolutePath().startsWith(bwapiWritePath)) {
-          if (AdakiteUtils.fileExists(path)) {
-            AdakiteUtils.deleteFile(path);
-          } else if (AdakiteUtils.directoryExists(path)) {
-            FileUtils.deleteDirectory(path.toFile());
-          }
-        }
-      }
-
-      /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
-      if (AdakiteUtils.directoryExists(bwapiWritePath)) {
-        LOGGER.info("Copy: \"" + bwapiWritePath.toString() + "\" -> \"" + bwapiReadPath.toString() + "\"");
-        FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
-      }
-    }
+    Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
+    Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
+    LOGGER.info("Copy: \"" + bwapiWritePath.toString() + "\" -> \"" + bwapiReadPath.toString() + "\"");
+    FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
 
     setState(State.IDLE);
   }
@@ -132,17 +102,11 @@ public class Controller {
   public void closeProgramRequest(Stage stage) {
     switch (this.state) {
       case LOCKED:
-        LOGGER.warn("closeProgramRequest denied, state = " + this.state.toString());
-        return;
+        /* Fall through. */
       case RUNNING:
-    {
-      try {
-        stopBWHeadless();
-      } catch (IOException ex) {
-        LOGGER.error(ex);
-      }
-    }
-        break;
+        LOGGER.warn("closeProgramRequest denied, state = " + this.state.toString());
+        new SimpleAlert().showAndWait(AlertType.ERROR, "Still running", "Eject the bot before trying to close the program.");
+        return;
       default:
         /* Do nothing; */
         break;
@@ -151,6 +115,30 @@ public class Controller {
     if (this.state != State.IDLE) {
       LOGGER.warn("state still not " + State.IDLE.toString());
       return;
+    }
+
+    try {
+      /* Clean up StarCraft directory. */
+      Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
+      Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
+      Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
+      this.directoryMonitor.update();
+      for (Path path : this.directoryMonitor.getNewFiles()) {
+        if (!path.toAbsolutePath().startsWith(bwapiWritePath)
+            && !path.toAbsolutePath().startsWith(bwapiReadPath)) {
+          if (AdakiteUtils.fileExists(path)) {
+            LOGGER.info("Delete file: " + path.toString());
+            AdakiteUtils.deleteFile(path);
+          } else if (AdakiteUtils.directoryExists(path)) {
+            LOGGER.info("Delete directory: " + path.toString());
+            FileUtils.deleteDirectory(path.toFile());
+          }
+        }
+      }
+
+      this.model.getINI().saveTo(Constants.DROPLAUNCHER_INI_PATH);
+    } catch (Exception ex) {
+      LOGGER.error(ex);
     }
 
     stage.close();
@@ -311,6 +299,11 @@ public class Controller {
 
   public void btnLaunchClicked() {
     State prevState = this.state;
+
+    if (prevState == State.LOCKED) {
+      return;
+    }
+
     setState(State.LOCKED);
 
     switch (prevState) {

@@ -9,6 +9,9 @@ import droplauncher.starcraft.Starcraft;
 import droplauncher.util.process.CommandBuilder;
 import droplauncher.util.process.CustomProcess;
 import droplauncher.util.SettingsKey;
+import droplauncher.util.windows.Task;
+import droplauncher.util.windows.TaskTracker;
+import droplauncher.util.windows.Tasklist;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,7 +42,9 @@ public class BWHeadless {
   private CustomProcess botProcess;
 
   private BotFile botFile;
-  private ArrayList<Path> extraBotFiles;
+  private ArrayList<Path> extraBotFiles; /* config files, e.g.: .json, .txt */
+
+  private TaskTracker taskTracker;
 
   public BWHeadless() {
     this.ini = null;
@@ -49,6 +54,8 @@ public class BWHeadless {
 
     this.botFile = new BotFile();
     this.extraBotFiles = new ArrayList<>();
+
+    this.taskTracker = new TaskTracker();
   }
 
   public INI getINI() {
@@ -108,9 +115,13 @@ public class BWHeadless {
   }
 
   /**
-   * Attempts to start bwheadless after configuring and checking settings.
+   * Starts bwheadless after configuring and checking settings.
+   * @throws IOException if an I/O error occurs
+   * @throws InvalidBotTypeException if the bot type is not recognized
    */
   public void start() throws IOException, InvalidBotTypeException {
+    this.taskTracker.reset();
+
     Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString()))).toAbsolutePath();
 
     configureBwapi(starcraftDirectory);
@@ -145,7 +156,35 @@ public class BWHeadless {
     }
   }
 
-  public void stop() {
+  /**
+   * Stops the bwheadless and bot processes.
+   *
+   * @throws IOException if an I/O error occurs
+   */
+  public void stop() throws IOException {
+    /* Kill new tasks that were started with bwheadless. */
+    this.taskTracker.update();
+    ArrayList<Task> tasks = this.taskTracker.getNewTasks();
+    Tasklist tasklist = new Tasklist();
+    boolean isClient = getBotType() == BotFile.Type.CLIENT;
+    String botName = getBotPath().getFileName().toString();
+    for (Task task : tasks) {
+      /* Kill bot client. */
+      if (isClient && botName.contains(task.getImageName())) {
+        LOGGER.info("Kill: " + task.getPID() + ":" + task.getImageName());
+        tasklist.kill(task.getPID());
+        continue;
+      }
+      /* Only kill tasks whose names match known associated tasks. */
+      for (KillableTask kt : KillableTask.values()) {
+        if (kt.toString().equalsIgnoreCase(task.getImageName())) {
+          LOGGER.info("Kill: " + task.getPID() + ":" + task.getImageName());
+          tasklist.kill(task.getPID());
+          break;
+        }
+      }
+    }
+
     this.bwheadlessProcess.stop();
     if (this.botFile.getType() == BotFile.Type.CLIENT) {
       this.botProcess.stop();
@@ -159,53 +198,52 @@ public class BWHeadless {
    * @throws IOException if an I/O error occurs
    * @throws InvalidBotTypeException if the bot type is not recognized
    */
-  private void configureBwapi(Path starcraftDirectory)
-      throws IOException,
-             InvalidBotTypeException {
-    /* Configure BWAPI INI file. */
-    INI bwapiIni = new INI();
-    bwapiIni.read(Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_INI_PATH.toString()));
-    if (this.botFile.getType() == BotFile.Type.DLL) {
-      bwapiIni.set("ai", "ai", BWAPI.BWAPI_DATA_AI_PATH.toString() + AdakiteUtils.FILE_SEPARATOR + this.botFile.getPath().getFileName().toString());
-    } else {
-      bwapiIni.disableVariable("ai", "ai");
-    }
-    /* Not tested yet whether it matters if ai_dbg is enabled. Disable anyway. */
-    bwapiIni.disableVariable("ai", "ai_dbg");
+  private void configureBwapi(Path starcraftDirectory) throws IOException, InvalidBotTypeException {
+    /* Create common BWAPI paths. */
+    Path bwapiAiPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_AI_PATH);
+    Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
+    Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
+    AdakiteUtils.createDirectory(bwapiAiPath);
+    AdakiteUtils.createDirectory(bwapiReadPath);
+    AdakiteUtils.createDirectory(bwapiWritePath);
 
-    /* Prepare to copy bot files to StarCraft directory. */
-    Path src = null;
-    Path dest = null;
+    /* Read the BWAPI.ini file. */
+    Path bwapiIniPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_INI_PATH);
+    INI bwapiIni = new INI();
+    bwapiIni.read(bwapiIniPath);
+
+    Path src;
+    Path dest;
     switch (this.botFile.getType()) {
       case DLL:
         /* Copy DLL to bwapi-data directory. */
         src = this.botFile.getPath();
-        dest = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_AI_PATH.toString(), Paths.get(this.botFile.toString()).getFileName().toString());
+        dest = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_AI_PATH.toString(), this.botFile.getPath().getFileName().toString());
         AdakiteUtils.createDirectory(dest.getParent());
-        Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
         LOGGER.info("Copy: \"" + src.toString() + "\" -> \"" + dest.toString() + "\"");
+        Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
         this.botFile.setPath(dest);
+        bwapiIni.set("ai", "ai", BWAPI.BWAPI_DATA_AI_PATH.toString() + AdakiteUtils.FILE_SEPARATOR + this.botFile.getPath().getFileName().toString());
         break;
       case CLIENT:
         /* Copy client to StarCraft root directory. */
         src = this.botFile.getPath();
         dest = Paths.get(starcraftDirectory.toString(), this.botFile.getPath().getFileName().toString());
-        AdakiteUtils.createDirectory(dest.getParent());
-        Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
         LOGGER.info("Copy: \"" + src.toString() + "\" -> \"" + dest.toString() + "\"");
+        Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
         this.botFile.setPath(dest);
+        bwapiIni.disableVariable("ai", "ai");
         break;
       default:
         throw new InvalidBotTypeException();
     }
+    /* Not tested yet whether it matters if ai_dbg is enabled. Disable anyway. */
+    bwapiIni.disableVariable("ai", "ai_dbg");
+    
+    /* Update BWAPI.ini file. */
+    bwapiIni.saveTo(bwapiIniPath);
 
     /* Copy misc files to common bot I/O directories. */
-    Path bwapiReadPath = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_READ_PATH.toString()).toAbsolutePath();
-    Path bwapiWritePath = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_WRITE_PATH.toString()).toAbsolutePath();
-    Path bwapiAiPath = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_AI_PATH.toString()).toAbsolutePath();
-    AdakiteUtils.createDirectory(bwapiReadPath);
-    AdakiteUtils.createDirectory(bwapiWritePath);
-    AdakiteUtils.createDirectory(bwapiAiPath);
     for (Path path : this.extraBotFiles) {
       Files.copy(path, Paths.get(bwapiReadPath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
       Files.copy(path, Paths.get(bwapiWritePath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);

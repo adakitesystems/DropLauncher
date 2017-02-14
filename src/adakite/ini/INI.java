@@ -338,6 +338,16 @@ public class INI {
   }
 
   /**
+   * Saves the current INI configuration to the specified file.
+   *
+   * @param path specified path to the file
+   * @throws IOException if an I/O error occurs
+   */
+  public void saveTo(Path path) throws IOException {
+    this.memoryFile.dumpToFile(path);
+  }
+
+  /**
    * Returns the specified string excluding a comment if present.
    *
    * @param line specified string to scan
@@ -390,13 +400,15 @@ public class INI {
   }
 
   public void debug() {
+    StringBuilder sb = new StringBuilder(getSections().size() + getSections().keySet().size());
     for (String name : getSections().keySet()) {
       IniSection section = getSections().get(name);
-      System.out.println("[" + section.getName() + "]");
+      sb.append("[").append(section.getName()).append("]").append(AdakiteUtils.newline());
       for (String key : section.getKeys().keySet()) {
-        System.out.println("key" + VARIABLE_DELIMITER + section.getKeys().get(key));
+        sb.append("key" + VARIABLE_DELIMITER).append(section.getKeys().get(key)).append(AdakiteUtils.newline());
       }
     }
+    System.out.println(sb.toString());
   }
 
 }

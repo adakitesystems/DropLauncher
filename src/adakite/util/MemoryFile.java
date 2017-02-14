@@ -89,18 +89,4 @@ public class MemoryFile  {
     this.dumpToFile(this.path);
   }
 
-  /**
-   * Dumps the currently stored lines to the console.
-   */
-  public void dumpToConsole() {
-    if (this.lines.size() < 1) {
-      return;
-    }
-    StringBuilder sb = new StringBuilder();
-    this.lines.forEach((line) -> {
-      sb.append(line).append(System.lineSeparator());
-    });
-    System.out.print(sb.toString());
-  }
-
 }
