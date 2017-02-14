@@ -109,6 +109,9 @@ public class BWHeadless {
       return ReadyError.NETWORK_PROVIDER;
     } else if (!this.ini.hasValue(DEFAULT_INI_SECTION_NAME, SettingsKey.CONNECT_MODE.toString())) {
       return ReadyError.CONNECT_MODE;
+    } else if (!AdakiteUtils.directoryExists(getBwapiDirectory()) || !AdakiteUtils.fileExists(getBwapiDirectory().resolve(BWAPI.BWAPI_DATA_INI_PATH.getFileName()))) {
+      /* If the BWAPI.ini file is not found at "StarCraft/bwapi-data/bwapi.ini". */
+      return ReadyError.BWAPI_INSTALL;
     } else {
       return ReadyError.NONE;
     }
@@ -239,7 +242,7 @@ public class BWHeadless {
     }
     /* Not tested yet whether it matters if ai_dbg is enabled. Disable anyway. */
     bwapiIni.disableVariable("ai", "ai_dbg");
-    
+
     /* Update BWAPI.ini file. */
     bwapiIni.saveTo(bwapiIniPath);
 
@@ -248,6 +251,23 @@ public class BWHeadless {
       Files.copy(path, Paths.get(bwapiReadPath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
       Files.copy(path, Paths.get(bwapiWritePath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
       Files.copy(path, Paths.get(bwapiAiPath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
+    }
+  }
+
+  public Path getStarcraftDirectory() {
+    if (this.ini.hasValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())) {
+      return AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
+    } else {
+      return null;
+    }
+  }
+
+  public Path getBwapiDirectory() {
+    Path starcraftDirectory = getStarcraftDirectory();
+    if (starcraftDirectory != null) {
+      return starcraftDirectory.resolve(BWAPI.BWAPI_DATA_PATH);
+    } else {
+      return null;
     }
   }
 

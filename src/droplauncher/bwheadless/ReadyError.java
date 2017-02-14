@@ -13,10 +13,11 @@ public enum ReadyError {
   BOT_FILE("unable to read/locate bot file (*.dll, *.exe)"),
   BOT_RACE("invalid bot race"),
   NETWORK_PROVIDER("invalid network provider"),
-  CONNECT_MODE("invalid connect mode")
+  CONNECT_MODE("invalid connect mode"),
+  BWAPI_INSTALL("corrupt or missing BWAPI installation")
   ;
 
-  public String name;
+  private final String name;
 
   private ReadyError(String name) {
     this.name = name;
