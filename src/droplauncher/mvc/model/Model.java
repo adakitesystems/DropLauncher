@@ -63,7 +63,7 @@ public class Model {
     for (Task task : tasks) {
       /* Kill bot client. */
       if (isClient && botName.contains(task.getImageName())) {
-        LOGGER.info("Killing: " + task.getPID() + ":" + task.getImageName());
+        LOGGER.info("Kill: " + task.getPID() + ":" + task.getImageName());
         tasklist.kill(task.getPID());
         continue;
       }
