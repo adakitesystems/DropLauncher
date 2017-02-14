@@ -6,10 +6,10 @@
 			<PatternLayout pattern="%msg%n" />
 		</Console>
     <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="> %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] [%C.%M:%L] [%msg]%n"/>
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] [%C.%M:%L] [%msg]%n"/>
     </Console>
     <File name="LogFile" fileName="droplauncher.log" immediateFlush="false" append="true">
-      <PatternLayout pattern="> %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] [%C.%M:%L] [%msg]%n"/>
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] [%C.%M:%L] [%msg]%n"/>
     </File>
   </Appenders>
   <Loggers>
