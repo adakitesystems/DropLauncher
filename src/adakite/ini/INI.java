@@ -161,11 +161,7 @@ public class INI {
     }
 
     if (this.autoUpdateFile) {
-      try {
-        enableVariable(name, key);
-      } catch (IOException ex) {
-        LOGGER.log(Debugging.getLogLevel(), null, ex);
-      }
+      enableVariable(name, key);
     }
 
     boolean sectionExists = this.sections.containsKey(name);
@@ -238,9 +234,8 @@ public class INI {
    *
    * @param name specified section name
    * @param key specified key
-   * @throws IOException
    */
-  public void enableVariable(String name, String key) throws IOException {
+  public void enableVariable(String name, String key) {
     if (name == null) {
       name = IniSectionName.NONE.toString();
     }
@@ -264,8 +259,12 @@ public class INI {
             int commentIndex = line.indexOf(COMMENT_DELIMITER.charAt(0));
             line = line.substring(commentIndex + COMMENT_DELIMITER.length(), line.length()).trim();
             this.memoryFile.getLines().set(i, line);
-            this.memoryFile.dumpToFile();
-            reload();
+            try {
+              this.memoryFile.dumpToFile();
+              reload();
+            } catch (IOException ex) {
+              LOGGER.log(Debugging.getLogLevel(), null, ex);
+            }
             break;
           }
         }

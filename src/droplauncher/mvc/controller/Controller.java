@@ -6,6 +6,7 @@ import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotFile;
+import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.LaunchButtonText;
 import droplauncher.mvc.view.SettingsWindow;
@@ -71,7 +72,7 @@ public class Controller {
     LOGGER.info("lock released: " + this.state.toString());
   }
 
-  private void startBWHeadless() {
+  private void startBWHeadless() throws IOException, InvalidBotTypeException {
 //    if (this.state != State.IDLE) {
 //      throw new IllegalStateException("state != " + State.IDLE.toString());
 //    }
@@ -80,66 +81,48 @@ public class Controller {
 //    }
 //
 
-    try {
-      Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
-      if (starcraftDirectory != null) {
-        this.directoryMonitor = new DirectoryMonitor(starcraftDirectory);
-        this.directoryMonitor.reset();
-      }
-    } catch (Exception ex) {
-      setState(State.IDLE);
-      LOGGER.error("directoryMonitor", ex);
-      return;
-    }
-
-    try {
-      this.model.startBWHeadless();
-    } catch (Exception ex) {
-      LOGGER.error("startBWHeadless", ex);
-      return;
+    Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
+    if (starcraftDirectory != null) {
+      this.directoryMonitor = new DirectoryMonitor(starcraftDirectory);
+      this.directoryMonitor.reset();
     }
 
     setState(State.RUNNING);
+    this.model.startBWHeadless();
   }
 
-  private void stopBWHeadless() {
+  private void stopBWHeadless() throws IOException {
 //    if (this.state != State.RUNNING) {
 //      throw new IllegalStateException("state != " + State.RUNNING.toString());
 //    }
 
-    try {
-      this.model.stopBWHeadless();
+    this.model.stopBWHeadless();
 
-      /* Perform I/O operations. */
+    /* Perform I/O operations. */
+    this.directoryMonitor.update();
+    Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
+    if (starcraftDirectory != null) {
+      Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
+      Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
+
+      /* Clean up StarCraft directory. */
       this.directoryMonitor.update();
-      Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
-      if (starcraftDirectory != null) {
-        Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
-        Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
-
-        /* Clean up StarCraft directory. */
-        this.directoryMonitor.update();
-        for (Path path : this.directoryMonitor.getNewFiles()) {
-          System.out.println(path.toAbsolutePath().toString());
-          if (!path.toAbsolutePath().startsWith(bwapiWritePath)) {
-            if (AdakiteUtils.fileExists(path)) {
-              AdakiteUtils.deleteFile(path);
-            } else if (AdakiteUtils.directoryExists(path)) {
-              FileUtils.deleteDirectory(path.toFile());
-            }
+      for (Path path : this.directoryMonitor.getNewFiles()) {
+        System.out.println(path.toAbsolutePath().toString());
+        if (!path.toAbsolutePath().startsWith(bwapiWritePath)) {
+          if (AdakiteUtils.fileExists(path)) {
+            AdakiteUtils.deleteFile(path);
+          } else if (AdakiteUtils.directoryExists(path)) {
+            FileUtils.deleteDirectory(path.toFile());
           }
         }
-
-        /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
-        if (AdakiteUtils.directoryExists(bwapiWritePath)) {
-          LOGGER.info("Copy: \"" + bwapiWritePath.toString() + "\" -> \"" + bwapiReadPath.toString() + "\"");
-          FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
-        }
       }
-    } catch (Exception ex) {
-      setState(State.RUNNING);
-      LOGGER.error(ex);
-      return;
+
+      /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
+      if (AdakiteUtils.directoryExists(bwapiWritePath)) {
+        LOGGER.info("Copy: \"" + bwapiWritePath.toString() + "\" -> \"" + bwapiReadPath.toString() + "\"");
+        FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
+      }
     }
 
     setState(State.IDLE);
@@ -148,9 +131,16 @@ public class Controller {
   public void closeProgramRequest(Stage stage) {
     switch (this.state) {
       case LOCKED:
+        LOGGER.warn("closeProgramRequest denied, state = " + this.state.toString());
         return;
       case RUNNING:
+    {
+      try {
         stopBWHeadless();
+      } catch (IOException ex) {
+        LOGGER.error(ex);
+      }
+    }
         break;
       default:
         /* Do nothing; */
@@ -158,6 +148,7 @@ public class Controller {
     }
 
     if (this.state != State.IDLE) {
+      LOGGER.warn("state still not " + State.IDLE.toString());
       return;
     }
 
@@ -335,7 +326,11 @@ public class Controller {
           /* Start bwheadless. */
           this.view.btnLaunchEnabled(false);
           new Thread(() -> {
-            startBWHeadless();
+            try {
+              startBWHeadless();
+            } catch (Exception ex) {
+              LOGGER.error(ex);
+            }
             Platform.runLater(() -> {
               this.view.btnLaunchSetText(LaunchButtonText.EJECT.toString());
               this.view.btnLaunchEnabled(true);
@@ -347,7 +342,11 @@ public class Controller {
         /* Stop bwheadless. */
         this.view.btnLaunchEnabled(false);
         new Thread(() -> {
-          stopBWHeadless();
+          try {
+            stopBWHeadless();
+          } catch (Exception ex) {
+            LOGGER.error(ex);
+          }
           Platform.runLater(() -> {
             this.view.btnLaunchSetText(LaunchButtonText.LAUNCH.toString());
             this.view.btnLaunchEnabled(true);
