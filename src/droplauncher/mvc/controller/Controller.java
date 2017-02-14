@@ -64,6 +64,11 @@ public class Controller {
     return this.state;
   }
 
+  /**
+   * Sets the program state after acquiring access to an intrinsic lock object.
+   *
+   * @param state
+   */
   private void setState(State state) {
     LOGGER.info(Debugging.ack());
     synchronized(this.stateLock) {
@@ -100,45 +105,52 @@ public class Controller {
   }
 
   public void closeProgramRequest(Stage stage) {
+    /* Check the program's current state. */
     switch (this.state) {
+      case IDLE:
+        /* Do nothing. */
+        break;
+      case RUNNING:
+        /* Fall through. */
       case LOCKED:
         /* Fall through. */
-      case RUNNING:
-        LOGGER.warn("closeProgramRequest denied, state = " + this.state.toString());
-        new SimpleAlert().showAndWait(AlertType.ERROR, "Still running", "Eject the bot before trying to close the program.");
-        return;
       default:
-        /* Do nothing; */
-        break;
+        LOGGER.warn("state should be " + State.IDLE.toString() + ", but state is " + this.state.toString());
+        new SimpleAlert().showAndWait(AlertType.ERROR, "Program state error: " + this.state.toString(), "The program's state is: " + this.state.toString() + AdakiteUtils.newline(2) + "Try ejecting the bot first or wait for the current operation to finish.");
+        return;
     }
 
-    if (this.state != State.IDLE) {
-      LOGGER.warn("state still not " + State.IDLE.toString());
-      return;
-    }
-
+    /* Clean up StarCraft directory. */
     try {
-      /* Clean up StarCraft directory. */
-      Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
-      Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
-      Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
-      this.directoryMonitor.update();
-      for (Path path : this.directoryMonitor.getNewFiles()) {
-        if (!path.toAbsolutePath().startsWith(bwapiWritePath)
-            && !path.toAbsolutePath().startsWith(bwapiReadPath)) {
-          if (AdakiteUtils.fileExists(path)) {
-            LOGGER.info("Delete file: " + path.toString());
-            AdakiteUtils.deleteFile(path);
-          } else if (AdakiteUtils.directoryExists(path)) {
-            LOGGER.info("Delete directory: " + path.toString());
-            FileUtils.deleteDirectory(path.toFile());
+      if (this.directoryMonitor != null) {
+        LOGGER.info("clean up StarCraft directory");
+        Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
+        Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
+        Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
+        this.directoryMonitor.update();
+        for (Path path : this.directoryMonitor.getNewFiles()) {
+          if (!path.toAbsolutePath().startsWith(bwapiWritePath)
+              && !path.toAbsolutePath().startsWith(bwapiReadPath)) {
+            if (AdakiteUtils.fileExists(path)) {
+              LOGGER.info("Delete file: " + path.toString());
+              AdakiteUtils.deleteFile(path);
+            } else if (AdakiteUtils.directoryExists(path)) {
+              LOGGER.info("Delete directory: " + path.toString());
+              FileUtils.deleteDirectory(path.toFile());
+            }
           }
         }
       }
+    } catch (Exception ex) {
+      LOGGER.error("clean up StarCraft directory", ex);
+    }
 
+    /* Save INI settings to file. */
+    try {
+      LOGGER.info("save INI settings to file: " + Constants.DROPLAUNCHER_INI_PATH.toString());
       this.model.getINI().saveTo(Constants.DROPLAUNCHER_INI_PATH);
     } catch (Exception ex) {
-      LOGGER.error(ex);
+      LOGGER.error("save INI configuration", ex);
     }
 
     stage.close();
