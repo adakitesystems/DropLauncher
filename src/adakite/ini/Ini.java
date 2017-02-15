@@ -45,19 +45,6 @@ public class Ini {
   }
 
   /**
-   * Tests whether a value exists for the specified name and key
-   *
-   * @param name specified section name
-   * @param key specified key
-   * @return
-   *     true if a value exists,
-   *     otherwise false
-   */
-  public boolean hasValue(String name, String key) {
-    return !AdakiteUtils.isNullOrEmpty(getValue(name, key));
-  }
-
-  /**
    * Reads the specified INI file and parses its variables.
    *
    * @param path specified path to the INI file
@@ -255,6 +242,47 @@ public class Ini {
     String line = this.memoryFile.getLines().get(keyIndex);
     line = COMMENT_DELIMITER + line;
     this.memoryFile.getLines().set(keyIndex, line);
+  }
+
+  /**
+   * Tests if the current variable is set to TRUE. Note: This is different
+   * from {@link #enableVariable(java.lang.String, java.lang.String)} and
+   * {@link #disableVariable(java.lang.String, java.lang.String)}.
+   *
+   * @param name specified section name
+   * @param key specified key
+   */
+  public boolean isEnabled(String name, String key) {
+    return (hasValue(name, key) && getValue(name, key).equalsIgnoreCase(Boolean.TRUE.toString()));
+  }
+
+  /**
+   * Sets the current variable to the specified boolean value. Note: this is different
+   * from {@link #enableVariable(java.lang.String, java.lang.String)} and
+   * {@link #disableVariable(java.lang.String, java.lang.String)}.
+   *
+   * @param name specified section name
+   * @param key specified key
+   * @param enabled whether the variable should be set to TRUE
+   */
+  public void setEnabled(String name, String key, boolean enabled) {
+    if (hasValue(name, key) && !isEnabled(name, key)) {
+      String val = new Boolean(enabled).toString();
+      set(name, key, val);
+    }
+  }
+
+  /**
+   * Tests whether a value exists for the specified name and key
+   *
+   * @param name specified section name
+   * @param key specified key
+   * @return
+   *     true if a value exists,
+   *     otherwise false
+   */
+  public boolean hasValue(String name, String key) {
+    return !AdakiteUtils.isNullOrEmpty(getValue(name, key));
   }
 
   /**
