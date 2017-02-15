@@ -300,7 +300,7 @@ public class AdakiteUtils {
   }
 
   /**
-   * Pad the specified string with spaces if its length is less than the
+   * Pads the specified string with spaces if its length is less than the
    * specified length.
    *
    * @param str specified string

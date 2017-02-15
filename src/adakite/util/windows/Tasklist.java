@@ -35,6 +35,8 @@ public class Tasklist {
    * Returns a list of Task objects.
    *
    * @param update whether to update the list before returning
+   *
+   * @throws IOException if an I/O error occurs
    */
   public ArrayList<Task> getTasks(boolean update) throws IOException {
     if (update) {
@@ -48,6 +50,7 @@ public class Tasklist {
    * before returning.
    *
    * @see #getTasks(boolean)
+   * @throws IOException if an I/O error occurs
    */
   public ArrayList<Task> getTasks() throws IOException {
     return getTasks(false);

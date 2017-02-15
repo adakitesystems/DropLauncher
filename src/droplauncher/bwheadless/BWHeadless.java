@@ -125,6 +125,8 @@ public class BWHeadless {
 
   /**
    * Starts bwheadless after configuring and checking settings.
+   *
+   * @param co specified ConsoleOutput to display process output stream
    * @throws IOException if an I/O error occurs
    * @throws InvalidBotTypeException if the bot type is not recognized
    */

@@ -267,7 +267,7 @@ public class Ini {
    */
   public void setEnabled(String name, String key, boolean enabled) {
     if (hasValue(name, key)) {
-      String val = new Boolean(enabled).toString();
+      String val = Boolean.toString(enabled);
       set(name, key, val);
     }
   }

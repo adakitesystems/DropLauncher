@@ -36,6 +36,8 @@ public class TaskTracker {
 
   /**
    * Resets both the current and previous tasklists.
+   *
+   * @throws IOException if an I/O error occurs
    */
   public void reset() throws IOException {
     this.newTasks.clear();
@@ -47,6 +49,7 @@ public class TaskTracker {
    * Updates the current tasklist and compares it against the previous
    * tasklist to determine which currently running tasks are new.
    *
+   * @throws IOException if an I/O error occurs
    * @see #getNewTasks()
    */
   public void update() throws IOException {
