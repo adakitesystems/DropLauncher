@@ -55,7 +55,7 @@ public class SettingsWindow {
       this.chkKeepClientWindow.setSelected(false);
     }
     this.chkKeepClientWindow.setOnAction(e -> {
-      this.ini.set(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString(), Boolean.toString(this.chkKeepClientWindow.isSelected()));
+      this.ini.setEnabled(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString(), this.chkKeepClientWindow.isSelected());
     });
 
     this.chkBwapiWriteRead.setText("Copy contents of \"bwapi-data/write/\" to \"bwapi-data/read/\" after eject");
@@ -65,7 +65,7 @@ public class SettingsWindow {
       this.chkBwapiWriteRead.setSelected(false);
     }
     this.chkBwapiWriteRead.setOnAction(e -> {
-      this.ini.set(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString(), Boolean.toString(this.chkBwapiWriteRead.isSelected()));
+      this.ini.setEnabled(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString(), this.chkBwapiWriteRead.isSelected());
     });
 
     this.chkCleanStarcraftDirectory.setText("Clean StarCraft directory before closing program");
@@ -75,7 +75,7 @@ public class SettingsWindow {
       this.chkCleanStarcraftDirectory.setSelected(false);
     }
     this.chkCleanStarcraftDirectory.setOnAction(e -> {
-      this.ini.set(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.CLEAN_SC_DIR.toString(), Boolean.toString(this.chkCleanStarcraftDirectory.isSelected()));
+      this.ini.setEnabled(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.CLEAN_SC_DIR.toString(), this.chkCleanStarcraftDirectory.isSelected());
     });
 
     this.lblChangeStarcraftExe.setText("StarCraft.exe:");

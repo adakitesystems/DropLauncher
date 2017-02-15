@@ -266,10 +266,8 @@ public class Ini {
    * @param enabled whether the variable should be set to TRUE
    */
   public void setEnabled(String name, String key, boolean enabled) {
-    if (hasValue(name, key)) {
-      String val = Boolean.toString(enabled);
-      set(name, key, val);
-    }
+    String val = Boolean.toString(enabled);
+    set(name, key, val);
   }
 
   /**
