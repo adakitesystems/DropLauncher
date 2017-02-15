@@ -98,7 +98,7 @@ public class Controller {
     Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
     Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
     Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
-    String copyMessage = "Copy: \"" + bwapiWritePath.toString() + "\" -> \"" + bwapiReadPath.toString() + "\"";
+    String copyMessage = "copy: \"" + bwapiWritePath.toString() + "\" -> \"" + bwapiReadPath.toString() + "\"";
     LOGGER.info(copyMessage);
     this.view.getConsoleOutput().println(MessagePrefix.DROPLAUNCHER.toString() + ": " + copyMessage);
     FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
