@@ -10,12 +10,11 @@ import javafx.scene.control.TextArea;
  */
 public class ConsoleOutput {
 
-  private TextArea obj;
+  private TextArea outputObject;
   private boolean printToStdout;
 
   public ConsoleOutput() {
-    this.obj = new TextArea("");
-    this.obj.setEditable(false);
+    this.outputObject = new TextArea("");
     this.printToStdout = true;
   }
 
@@ -23,13 +22,13 @@ public class ConsoleOutput {
    * Returns the object to which data is printed.
    */
   public TextArea get() {
-    return this.obj;
+    return this.outputObject;
   }
 
   /**
    * Sets whether printed data should also be printed to STDOUT.
    */
-  public void setPrintToStdout(boolean enabled) {
+  public void printToStdoutEnabled(boolean enabled) {
     this.printToStdout = enabled;
   }
 
@@ -37,20 +36,20 @@ public class ConsoleOutput {
    * Prints the specified string to the output object.
    *
    * @param str specified string
-   * @param writeToStdout whether to also print to STDOUT
+   * @param printToStdout whether to also print to STDOUT
    */
-  public void print(String str, boolean writeToStdout) {
+  public void print(String str, boolean printToStdout) {
     Platform.runLater(() -> {
-      this.obj.appendText(str);
+      this.outputObject.appendText(str);
     });
-    if (writeToStdout) {
+    if (printToStdout) {
       System.out.print(str);
     }
   }
 
   /**
    * @see #print(java.lang.String, boolean)
-   * @see #setPrintToStdout(boolean)
+   * @see #printToStdoutEnabled(boolean)
    */
   public void print(String str) {
     print(str, this.printToStdout);
@@ -58,7 +57,7 @@ public class ConsoleOutput {
 
   /**
    * @see #print(java.lang.String, boolean)
-   * @see #setPrintToStdout(boolean)
+   * @see #printToStdoutEnabled(boolean)
    */
   public void println(String line) {
     line += AdakiteUtils.newline();

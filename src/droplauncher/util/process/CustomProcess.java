@@ -2,6 +2,7 @@ package droplauncher.util.process;
 
 import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
+import droplauncher.mvc.view.ConsoleOutput;
 import droplauncher.util.StreamGobbler;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -42,7 +43,7 @@ public class CustomProcess {
    * @param args specified command and arguments to run
    * @throws IOException if an I/O error occurs
    */
-  public void start(String[] args) throws IOException {
+  public void start(String[] args, ConsoleOutput co) throws IOException {
     if (args == null) {
       throw new IllegalArgumentException(Debugging.nullObject("args"));
     }
@@ -55,8 +56,12 @@ public class CustomProcess {
 
     this.process = pb.start();
 
-    this.gobblerStdout = new StreamGobbler(this.process.getInputStream());
-    this.gobblerStderr = new StreamGobbler(this.process.getErrorStream());
+    this.gobblerStdout = new StreamGobbler()
+        .setInputStream(this.process.getInputStream())
+        .setConsoleOutput(co);
+    this.gobblerStderr = new StreamGobbler()
+        .setInputStream(this.process.getErrorStream())
+        .setConsoleOutput(co);
     this.gobblerStdout.start();
     this.gobblerStderr.start();
   }

@@ -88,7 +88,7 @@ public class Controller {
 
     setState(State.RUNNING);
 
-    this.model.getBWHeadless().start();
+    this.model.getBWHeadless().start(this.view.getConsoleOutput());
   }
 
   private void stopBWHeadless() throws IOException {
@@ -248,6 +248,11 @@ public class Controller {
   /* ************************************************************ */
   /* Accessible data */
   /* ************************************************************ */
+
+  public boolean isEnabledLogWindow() {
+    String val = this.model.getINI().getValue(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString());
+    return !AdakiteUtils.isNullOrEmpty(val) && val.equals(Boolean.TRUE.toString());
+  }
 
   public String getBotFilename() {
     if (this.model.getBWHeadless().getBotType() != BotFile.Type.UNKNOWN) {

@@ -4,6 +4,7 @@ import adakite.ini.INI;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.exception.InvalidBotTypeException;
+import droplauncher.mvc.view.ConsoleOutput;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.process.CommandBuilder;
@@ -122,7 +123,7 @@ public class BWHeadless {
    * @throws IOException if an I/O error occurs
    * @throws InvalidBotTypeException if the bot type is not recognized
    */
-  public void start() throws IOException, InvalidBotTypeException {
+  public void start(ConsoleOutput co) throws IOException, InvalidBotTypeException {
     this.taskTracker.reset();
 
     Path starcraftDirectory = getStarcraftDirectory();
@@ -147,7 +148,7 @@ public class BWHeadless {
 
     /* Start bwheadless. */
     this.bwheadlessProcess.setCWD(starcraftDirectory);
-    this.bwheadlessProcess.start(bwhCommand.get());
+    this.bwheadlessProcess.start(bwhCommand.get(), co);
 
     if (this.botFile.getType() == BotFile.Type.CLIENT) {
       /* Compile bot client arguments. */
@@ -155,7 +156,7 @@ public class BWHeadless {
       clientCommand.setPath(this.botFile.getPath().toAbsolutePath());
       /* Start bot client. */
       this.botProcess.setCWD(starcraftDirectory);
-      this.botProcess.start(clientCommand.get());
+      this.botProcess.start(clientCommand.get(), co);
     }
   }
 

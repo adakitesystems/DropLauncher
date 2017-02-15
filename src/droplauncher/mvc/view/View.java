@@ -75,7 +75,7 @@ public class View implements EventHandler<DragEvent>  {
   private TextField txtBotName;
   private ChoiceBox<String> cbRace;
   private Button btnLaunch;
-  private ConsoleOutput console;
+  private ConsoleOutput consoleOutput;
 
   public View() {
     /* Do nothing. */
@@ -137,10 +137,11 @@ public class View implements EventHandler<DragEvent>  {
     this.btnLaunch.setMinWidth(250);
     this.btnLaunch.setMinHeight(30);
     this.btnLaunch.getStyleClass().add("launch-btn");
-    this.console = new ConsoleOutput();
-    this.console.get().getStyleClass().add("console-output");
-    this.console.get().setMinWidth(500);
-    this.console.get().setMinHeight(300);
+    this.consoleOutput = new ConsoleOutput();
+    this.consoleOutput.get().getStyleClass().add("console-output");
+    this.consoleOutput.get().setMinWidth(500);
+    this.consoleOutput.get().setMinHeight(300);
+    this.consoleOutput.get().setEditable(false);
 
     this.txtBotName.setOnKeyReleased(e -> this.controller.botNameChanged(this.txtBotName.getText()));
     this.cbRace.setOnAction(e -> {
@@ -183,9 +184,9 @@ public class View implements EventHandler<DragEvent>  {
     VBox hbox = new VBox();
     this.btnLaunch.setAlignment(Pos.CENTER);
     hbox.getChildren().add(this.btnLaunch);
-//    if (this.controller.isEnabledLogWindow()) {
-//      hbox.getChildren().add(this.console.get());
-//    }
+    if (this.controller.isEnabledLogWindow()) {
+      hbox.getChildren().add(this.consoleOutput.get());
+    }
     hbox.setSpacing(DefaultSetting.GAP.getValue());
     hbox.setAlignment(Pos.CENTER);
     hbox.setMinWidth(Region.USE_PREF_SIZE);
@@ -213,7 +214,11 @@ public class View implements EventHandler<DragEvent>  {
     this.scene = new Scene(borderPane);
     this.scene.setOnDragOver(this);
     this.scene.setOnDragDropped(this);
-    this.scene.getStylesheets().add(View.class.getResource(DEFAULT_CSS).toString());
+    try {
+      this.scene.getStylesheets().add(View.class.getResource(DEFAULT_CSS).toString());
+    } catch (Exception ex) {
+      /* Do nothing. */
+    }
 
     this.stage.setOnCloseRequest(e -> {
       this.controller.closeProgramRequest(this.stage);
@@ -225,7 +230,7 @@ public class View implements EventHandler<DragEvent>  {
   }
 
   public ConsoleOutput getConsoleOutput() {
-    return this.console;
+    return this.consoleOutput;
   }
 
   public ChoiceBox getRaceChoiceBox() {
