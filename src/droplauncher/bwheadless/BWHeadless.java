@@ -1,6 +1,6 @@
 package droplauncher.bwheadless;
 
-import adakite.ini.INI;
+import adakite.ini.Ini;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.exception.InvalidBotTypeException;
@@ -8,7 +8,7 @@ import droplauncher.mvc.view.ConsoleOutput;
 import droplauncher.mvc.view.MessagePrefix;
 import droplauncher.starcraft.Race;
 import droplauncher.starcraft.Starcraft;
-import droplauncher.util.process.CommandBuilder;
+import adakite.util.process.CommandBuilder;
 import droplauncher.util.process.CustomProcess;
 import droplauncher.util.SettingsKey;
 import adakite.util.windows.Task;
@@ -38,7 +38,7 @@ public class BWHeadless {
   public static final NetworkProvider DEFAULT_NETWORK_PROVIDER = NetworkProvider.LAN;
   public static final ConnectMode DEFAULT_CONNECT_MODE = ConnectMode.JOIN;
 
-  private INI ini;
+  private Ini ini;
 
   private CustomProcess bwheadlessProcess;
   private CustomProcess botProcess;
@@ -60,11 +60,11 @@ public class BWHeadless {
     this.taskTracker = new TaskTracker();
   }
 
-  public INI getINI() {
+  public Ini getINI() {
     return this.ini;
   }
 
-  public void setINI(INI ini) {
+  public void setINI(Ini ini) {
     this.ini = ini;
   }
 
@@ -222,7 +222,7 @@ public class BWHeadless {
 
     /* Read the BWAPI.ini file. */
     Path bwapiIniPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_INI_PATH);
-    INI bwapiIni = new INI();
+    Ini bwapiIni = new Ini();
     bwapiIni.read(bwapiIniPath);
 
     Path src;
@@ -361,7 +361,7 @@ public class BWHeadless {
    *
    * @param ini specified INI object
    */
-  public void parseSettings(INI ini) {
+  public void parseSettings(Ini ini) {
     String val;
     if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString()))) {
       setStarcraftExe(val);

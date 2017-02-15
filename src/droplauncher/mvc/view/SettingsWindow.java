@@ -1,6 +1,6 @@
 package droplauncher.mvc.view;
 
-import adakite.ini.INI;
+import adakite.ini.Ini;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.util.Constants;
@@ -29,11 +29,11 @@ public class SettingsWindow {
   private Label lblChangeStarcraftExeText;
   private Button btnChangeStarcraftExe;
 
-  private INI ini;
+  private Ini ini;
 
   private SettingsWindow() {}
 
-  public SettingsWindow(INI ini) {
+  public SettingsWindow(Ini ini) {
     this.chkKeepClientWindow = new CheckBox();
     this.lblChangeStarcraftExe = new Label();
     this.lblChangeStarcraftExeText = new Label();

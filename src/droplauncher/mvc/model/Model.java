@@ -1,6 +1,6 @@
 package droplauncher.mvc.model;
 
-import adakite.ini.INI;
+import adakite.ini.Ini;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.util.Constants;
@@ -12,11 +12,11 @@ public class Model {
 
   private static final Logger LOGGER = LogManager.getLogger();
 
-  private INI ini;
+  private Ini ini;
   private BWHeadless bwheadless;
 
   public Model() {
-    this.ini = new INI();
+    this.ini = new Ini();
     this.bwheadless = new BWHeadless();
 
     this.bwheadless.setINI(this.ini);
@@ -31,7 +31,7 @@ public class Model {
     }
   }
 
-  public INI getINI() {
+  public Ini getINI() {
     return this.ini;
   }
 

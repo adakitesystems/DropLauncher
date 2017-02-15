@@ -12,7 +12,7 @@ import java.util.List;
  * Class for manipulating a Windows INI file while attemping to preserve
  * the file's original structure.
  */
-public class INI {
+public class Ini {
 
   public static final String FILE_EXTENSION = ".ini";
   public static final String VARIABLE_DELIMITER = "=";
@@ -21,7 +21,7 @@ public class INI {
   private MemoryFile memoryFile;
   private HashMap<String, IniSection> sections;
 
-  public INI() {
+  public Ini() {
     this.memoryFile = new MemoryFile();
     this.sections = new HashMap<>();
 

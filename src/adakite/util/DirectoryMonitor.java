@@ -1,6 +1,5 @@
-package droplauncher.util;
+package adakite.util;
 
-import adakite.util.AdakiteUtils;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;

@@ -15,7 +15,7 @@ import droplauncher.mvc.view.SimpleAlert;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
-import droplauncher.util.DirectoryMonitor;
+import adakite.util.DirectoryMonitor;
 import droplauncher.util.SettingsKey;
 import java.io.File;
 import java.io.IOException;
