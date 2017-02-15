@@ -27,6 +27,7 @@ public class SettingsWindow {
 
   private CheckBox chkKeepClientWindow;
   private CheckBox chkBwapiWriteRead;
+  private CheckBox chkCleanStarcraftDirectory;
   private Label lblChangeStarcraftExe;
   private Label lblChangeStarcraftExeText;
   private Button btnChangeStarcraftExe;
@@ -38,6 +39,7 @@ public class SettingsWindow {
   public SettingsWindow(Ini ini) {
     this.chkKeepClientWindow = new CheckBox();
     this.chkBwapiWriteRead = new CheckBox();
+    this.chkCleanStarcraftDirectory = new CheckBox();
     this.lblChangeStarcraftExe = new Label();
     this.lblChangeStarcraftExeText = new Label();
     this.btnChangeStarcraftExe = new Button();
@@ -64,6 +66,16 @@ public class SettingsWindow {
     }
     this.chkBwapiWriteRead.setOnAction(e -> {
       this.ini.setEnabled(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString(), this.chkBwapiWriteRead.isSelected());
+    });
+
+    this.chkCleanStarcraftDirectory.setText("Clean StarCraft directory before closing program");
+    if (this.ini.isEnabled(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.CLEAN_SC_DIR.toString())) {
+      this.chkCleanStarcraftDirectory.setSelected(true);
+    } else {
+      this.chkCleanStarcraftDirectory.setSelected(false);
+    }
+    this.chkCleanStarcraftDirectory.setOnAction(e -> {
+      this.ini.setEnabled(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.CLEAN_SC_DIR.toString(), this.chkCleanStarcraftDirectory.isSelected());
     });
 
     this.lblChangeStarcraftExe.setText("StarCraft.exe:");
@@ -99,8 +111,9 @@ public class SettingsWindow {
     CustomGridPane mainGridPane = new CustomGridPane();
     mainGridPane.add(fileSelectPane.get(), true);
     mainGridPane.add(new Separator(), true);
-    mainGridPane.add(this.chkKeepClientWindow, true);
+    mainGridPane.add(this.chkCleanStarcraftDirectory, true);
     mainGridPane.add(this.chkBwapiWriteRead, true);
+    mainGridPane.add(this.chkKeepClientWindow, true);
     mainGridPane.setGaps(View.DefaultSetting.GAP.getValue(), View.DefaultSetting.GAP.getValue());
     mainGridPane.get().setPadding(new Insets(
         View.DefaultSetting.TOP_PADDING.getValue(),

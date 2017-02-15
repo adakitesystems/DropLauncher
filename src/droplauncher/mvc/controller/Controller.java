@@ -132,29 +132,31 @@ public class Controller {
         return;
     }
 
-    /* Clean up StarCraft directory. */
-    try {
-      if (this.directoryMonitor != null) {
-        LOGGER.info("clean up StarCraft directory");
-        Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
-        Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
-        Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
-        this.directoryMonitor.update();
-        for (Path path : this.directoryMonitor.getNewFiles()) {
-          if (!path.toAbsolutePath().startsWith(bwapiWritePath)
-              && !path.toAbsolutePath().startsWith(bwapiReadPath)) {
-            if (AdakiteUtils.fileExists(path)) {
-              LOGGER.info("Delete file: " + path.toString());
-              AdakiteUtils.deleteFile(path);
-            } else if (AdakiteUtils.directoryExists(path)) {
-              LOGGER.info("Delete directory: " + path.toString());
-              FileUtils.deleteDirectory(path.toFile());
+    if (this.model.getINI().isEnabled(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.CLEAN_SC_DIR.toString())) {
+      /* Clean up StarCraft directory. */
+      try {
+        if (this.directoryMonitor != null) {
+          LOGGER.info("clean up StarCraft directory");
+          Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
+          Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
+          Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
+          this.directoryMonitor.update();
+          for (Path path : this.directoryMonitor.getNewFiles()) {
+            if (!path.toAbsolutePath().startsWith(bwapiWritePath)
+                && !path.toAbsolutePath().startsWith(bwapiReadPath)) {
+              if (AdakiteUtils.fileExists(path)) {
+                LOGGER.info("Delete file: " + path.toString());
+                AdakiteUtils.deleteFile(path);
+              } else if (AdakiteUtils.directoryExists(path)) {
+                LOGGER.info("Delete directory: " + path.toString());
+                FileUtils.deleteDirectory(path.toFile());
+              }
             }
           }
         }
+      } catch (Exception ex) {
+        LOGGER.error("clean up StarCraft directory", ex);
       }
-    } catch (Exception ex) {
-      LOGGER.error("clean up StarCraft directory", ex);
     }
 
     /* Save INI settings to file. */
