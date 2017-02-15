@@ -28,6 +28,10 @@ public class ConsoleOutput {
     return this.outputObject;
   }
 
+  /**
+   * Returns the list of strings which indicate that a line containing
+   * these strings should be ignored.
+   */
   public ArrayList<String> getBlacklist() {
     return this.blacklist;
   }

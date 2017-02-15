@@ -68,6 +68,10 @@ public class BWHeadless {
     this.ini = ini;
   }
 
+  /**
+   * Returns a list of extra bot files such as config files, JSON files,
+   * TXT files, etc. Any file that may be required to run the bot.
+   */
   public ArrayList<Path> getExtraBotFiles() {
     return this.extraBotFiles;
   }
@@ -260,6 +264,10 @@ public class BWHeadless {
     }
   }
 
+  /**
+   * Returns the path to the StarCraft directory determined by
+   * {@link #setStarcraftExe(java.lang.String)}.
+   */
   public Path getStarcraftDirectory() {
     if (this.ini.hasValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())) {
       return AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
@@ -268,6 +276,13 @@ public class BWHeadless {
     }
   }
 
+  /**
+   * Returns the path to the "StarCraft/bwapi-data/" directory.
+   * The StarCraft directory is determined by {@link #getStarcraftDirectory()}
+   * which is set by {@link #setStarcraftExe(java.lang.String)}.
+   *
+   * @see #getStarcraftDirectory()
+   */
   public Path getBwapiDirectory() {
     Path starcraftDirectory = getStarcraftDirectory();
     if (starcraftDirectory != null) {

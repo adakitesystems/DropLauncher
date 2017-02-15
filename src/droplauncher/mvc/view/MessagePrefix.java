@@ -1,5 +1,8 @@
 package droplauncher.mvc.view;
 
+/**
+ * Enum for prepending strings to messages.
+ */
 public enum MessagePrefix {
 
   BWHEADLESS("bwh"),

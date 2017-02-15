@@ -61,12 +61,9 @@ public class Controller {
     this.view = view;
   }
 
-  public State getState() {
-    return this.state;
-  }
-
   /**
-   * Sets the program state after acquiring access to an intrinsic lock object.
+   * Manually sets the program state indicator after acquiring
+   * access to an intrinsic lock object.
    *
    * @param state
    */
@@ -109,6 +106,11 @@ public class Controller {
     this.view.getConsoleOutput().println(MessagePrefix.DROPLAUNCHER.toString() + ": ejected bot");
   }
 
+  /**
+   * Attempts to close the specified stage. May fail if conditions are not met.
+   *
+   * @param stage specified stage to close
+   */
   public void closeProgramRequest(Stage stage) {
     /* Check the program's current state. */
     switch (this.state) {
@@ -197,6 +199,12 @@ public class Controller {
     }
   }
 
+  /**
+   * Processes an archived file such as a ZIP.
+   *
+   * @param path specified path to the file
+   * @see #processFile(java.nio.file.Path)
+   */
   private void processArchive(Path path) {
     try {
       ZipFile zipFile = new ZipFile(path.toAbsolutePath().toString());
@@ -253,6 +261,13 @@ public class Controller {
   /* ************************************************************ */
   /* Accessible data */
   /* ************************************************************ */
+
+  /**
+   * Gets the manually set state indicator of the program.
+   */
+  public State getState() {
+    return this.state;
+  }
 
   public boolean isEnabledLogWindow() {
     String val = this.model.getINI().getValue(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString());
