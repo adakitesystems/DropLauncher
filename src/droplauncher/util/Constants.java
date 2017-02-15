@@ -1,3 +1,15 @@
+/*
+Software versioning:
+
+major.minor[.build[status]]
+
+Statuses:
+a for alpha
+b for beta
+rc for release candidate
+omit for (final) release
+*/
+
 package droplauncher.util;
 
 import adakite.util.AdakiteUtils;
@@ -10,7 +22,7 @@ import java.nio.file.Paths;
 public class Constants {
 
   public static final String PROGRAM_NAME = "DropLauncher";
-  public static final String PROGRAM_VERSION = "0.0.2a";
+  public static final String PROGRAM_VERSION = "0.2.1a";
   public static final String PROGRAM_AUTHOR = "Adakite";
   public static final String PROGRAM_TITLE = PROGRAM_NAME + " v" + PROGRAM_VERSION;
   public static final String PROGRAM_GITHUB = "https://github.com/AdakiteSystems/DropLauncher";
