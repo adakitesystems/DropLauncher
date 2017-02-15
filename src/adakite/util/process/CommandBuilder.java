@@ -1,6 +1,7 @@
 package adakite.util.process;
 
 import adakite.debugging.Debugging;
+import adakite.util.AdakiteUtils;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,8 +38,23 @@ public class CommandBuilder {
     this.path = path;
   }
 
+  /**
+   * Returns a String array of the command and args.
+   */
+  public String[] get() {
+    if (this.path == null) {
+      throw new IllegalStateException(Debugging.nullObject("path"));
+    }
+    String[] command = new String[1 + this.args.size()];
+    command[0] = this.path.toString();
+    for (int i = 0; i < this.args.size(); i++) {
+      command[i + 1] = this.args.get(i);
+    }
+    return command;
+  }
+
   public void addArg(String arg) {
-    if (arg == null) {
+    if (AdakiteUtils.isNullOrEmpty(arg)) {
       throw new IllegalArgumentException(Debugging.emptyString("arg"));
     }
     this.args.add(arg);
@@ -73,21 +89,6 @@ public class CommandBuilder {
    */
   public void clearArgs() {
     this.args.clear();
-  }
-
-  /**
-   * Returns a String array of the command and args.
-   */
-  public String[] get() {
-    if (this.path == null) {
-      throw new IllegalStateException(Debugging.nullObject("path"));
-    }
-    String[] command = new String[1 + this.args.size()];
-    command[0] = this.path.toString();
-    for (int i = 0; i < this.args.size(); i++) {
-      command[i + 1] = this.args.get(i);
-    }
-    return command;
   }
 
   /**
