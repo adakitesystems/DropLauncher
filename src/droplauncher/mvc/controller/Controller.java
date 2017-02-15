@@ -275,8 +275,7 @@ public class Controller {
   }
 
   public boolean isEnabledLogWindow() {
-    String val = this.model.getINI().getValue(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString());
-    return !AdakiteUtils.isNullOrEmpty(val) && val.equals(Boolean.TRUE.toString());
+    return this.model.getINI().isEnabled(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString());
   }
 
   public String getBotFilename() {

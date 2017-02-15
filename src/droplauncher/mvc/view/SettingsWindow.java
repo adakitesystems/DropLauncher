@@ -47,37 +47,23 @@ public class SettingsWindow {
 
   public SettingsWindow showAndWait() {
     this.chkKeepClientWindow.setText("Show log window for executable bot clients (requires program restart)");
-    if (this.ini.hasValue(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString())
-        && this.ini.getValue(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString()).equalsIgnoreCase(Boolean.TRUE.toString())) {
+    if (this.ini.isEnabled(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString())) {
       this.chkKeepClientWindow.setSelected(true);
     } else {
       this.chkKeepClientWindow.setSelected(false);
     }
     this.chkKeepClientWindow.setOnAction(e -> {
-      String val;
-      if (this.chkKeepClientWindow.isSelected()) {
-        val = Boolean.TRUE.toString();
-      } else {
-        val = Boolean.FALSE.toString();
-      }
-      this.ini.set(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString(), val);
+      this.ini.setEnabled(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString(), this.chkKeepClientWindow.isSelected());
     });
 
     this.chkBwapiWriteRead.setText("Copy contents of \"bwapi-data/write/\" to \"bwapi-data/read/\" after eject");
-    if (this.ini.hasValue(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString())
-        && this.ini.getValue(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString()).equalsIgnoreCase(Boolean.TRUE.toString())) {
+    if (this.ini.isEnabled(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString())) {
       this.chkBwapiWriteRead.setSelected(true);
     } else {
       this.chkBwapiWriteRead.setSelected(false);
     }
     this.chkBwapiWriteRead.setOnAction(e -> {
-      String val;
-      if (this.chkBwapiWriteRead.isSelected()) {
-        val = Boolean.TRUE.toString();
-      } else {
-        val = Boolean.FALSE.toString();
-      }
-      this.ini.set(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString(), val);
+      this.ini.setEnabled(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString(), this.chkBwapiWriteRead.isSelected());
     });
 
     this.lblChangeStarcraftExe.setText("StarCraft.exe:");
