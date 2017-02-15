@@ -16,6 +16,8 @@ public class BWAPI {
   public static final Path BWAPI_DATA_WRITE_PATH = BWAPI_DATA_PATH.resolve(Paths.get("write"));
   public static final String BWAPI_DLL_UNKNOWN = "Unknown";
 
+  public static final String DEFAULT_INI_SECTION_NAME = "bwapi";
+
   private BWAPI() {}
 
   /**

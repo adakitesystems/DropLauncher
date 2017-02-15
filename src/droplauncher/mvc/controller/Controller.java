@@ -94,14 +94,17 @@ public class Controller {
   private void stopBWHeadless() throws IOException {
     this.model.getBWHeadless().stop();
 
-    /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
-    Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
-    Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
-    Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
-    String copyMessage = MessagePrefix.COPY.get() + bwapiWritePath.toString() + " -> " + bwapiReadPath.toString();
-    LOGGER.info(copyMessage);
-    this.view.getConsoleOutput().println(MessagePrefix.DROPLAUNCHER.get() + copyMessage);
-    FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
+    if (this.model.getINI().hasValue(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString())
+        && this.model.getINI().getValue(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString()).equalsIgnoreCase(Boolean.TRUE.toString())) {
+      /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
+      Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
+      Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
+      Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
+      String copyMessage = MessagePrefix.COPY.get() + bwapiWritePath.toString() + " -> " + bwapiReadPath.toString();
+      LOGGER.info(copyMessage);
+      this.view.getConsoleOutput().println(MessagePrefix.DROPLAUNCHER.get() + copyMessage);
+      FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
+    }
 
     setState(State.IDLE);
 

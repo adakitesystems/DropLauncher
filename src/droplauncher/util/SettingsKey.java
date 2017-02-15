@@ -5,6 +5,9 @@ public enum SettingsKey {
   /* Program keys */
   SHOW_LOG_WINDOW("show_log_window"),
 
+  /* BWAPI keys */
+  COPY_WRITE_READ("bwapi_write_read"),
+
   /* BWHeadless keys */
   STARCRAFT_EXE("starcraft_exe"),
   BWAPI_DLL("bwapi_dll"),

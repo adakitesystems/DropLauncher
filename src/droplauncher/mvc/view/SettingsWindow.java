@@ -2,6 +2,7 @@ package droplauncher.mvc.view;
 
 import adakite.ini.Ini;
 import adakite.util.AdakiteUtils;
+import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.util.Constants;
 import droplauncher.util.SettingsKey;
@@ -25,6 +26,7 @@ public class SettingsWindow {
   private Scene scene;
 
   private CheckBox chkKeepClientWindow;
+  private CheckBox chkBwapiWriteRead;
   private Label lblChangeStarcraftExe;
   private Label lblChangeStarcraftExeText;
   private Button btnChangeStarcraftExe;
@@ -35,6 +37,7 @@ public class SettingsWindow {
 
   public SettingsWindow(Ini ini) {
     this.chkKeepClientWindow = new CheckBox();
+    this.chkBwapiWriteRead = new CheckBox();
     this.lblChangeStarcraftExe = new Label();
     this.lblChangeStarcraftExeText = new Label();
     this.btnChangeStarcraftExe = new Button();
@@ -58,6 +61,23 @@ public class SettingsWindow {
         val = Boolean.FALSE.toString();
       }
       this.ini.set(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString(), val);
+    });
+
+    this.chkBwapiWriteRead.setText("Copy contents of \"bwapi-data/write/\" to \"bwapi-data/read/\" after eject");
+    if (this.ini.hasValue(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString())
+        && this.ini.getValue(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString()).equalsIgnoreCase(Boolean.TRUE.toString())) {
+      this.chkBwapiWriteRead.setSelected(true);
+    } else {
+      this.chkBwapiWriteRead.setSelected(false);
+    }
+    this.chkBwapiWriteRead.setOnAction(e -> {
+      String val;
+      if (this.chkBwapiWriteRead.isSelected()) {
+        val = Boolean.TRUE.toString();
+      } else {
+        val = Boolean.FALSE.toString();
+      }
+      this.ini.set(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString(), val);
     });
 
     this.lblChangeStarcraftExe.setText("StarCraft.exe:");
@@ -94,6 +114,7 @@ public class SettingsWindow {
     mainGridPane.add(fileSelectPane.get(), true);
     mainGridPane.add(new Separator(), true);
     mainGridPane.add(this.chkKeepClientWindow, true);
+    mainGridPane.add(this.chkBwapiWriteRead, true);
     mainGridPane.setGaps(View.DefaultSetting.GAP.getValue(), View.DefaultSetting.GAP.getValue());
     mainGridPane.get().setPadding(new Insets(
         View.DefaultSetting.TOP_PADDING.getValue(),

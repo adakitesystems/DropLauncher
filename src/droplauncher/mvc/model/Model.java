@@ -2,8 +2,10 @@ package droplauncher.mvc.model;
 
 import adakite.ini.Ini;
 import adakite.util.AdakiteUtils;
+import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.util.Constants;
+import droplauncher.util.SettingsKey;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,6 +27,7 @@ public class Model {
         AdakiteUtils.createFile(Constants.DROPLAUNCHER_INI_PATH);
       }
       this.ini.read(Constants.DROPLAUNCHER_INI_PATH);
+      parseSettings(this.ini);
       this.bwheadless.parseSettings(this.ini);
     } catch (IOException ex) {
       LOGGER.error(ex);
@@ -37,6 +40,13 @@ public class Model {
 
   public BWHeadless getBWHeadless() {
     return this.bwheadless;
+  }
+
+  private void parseSettings(Ini ini) {
+    String val;
+    if (AdakiteUtils.isNullOrEmpty(val = ini.getValue(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString()))) {
+      ini.set(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString(), Boolean.TRUE.toString());
+    }
   }
 
 }
