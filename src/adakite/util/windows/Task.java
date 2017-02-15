@@ -3,7 +3,7 @@ TODO: Override equals and hashCode methods and change
 TaskTracker.updateNewTasks appropiately.
 */
 
-package droplauncher.util.windows;
+package adakite.util.windows;
 
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package droplauncher.util.windows;
+package adakite.util.windows;
 
 import adakite.util.AdakiteUtils;
 import droplauncher.util.process.SimpleProcess;

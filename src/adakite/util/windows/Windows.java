@@ -1,4 +1,4 @@
-package droplauncher.util.windows;
+package adakite.util.windows;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

@@ -2,7 +2,7 @@
 TODO: Change ArrayList to List.
 */
 
-package droplauncher.util.windows;
+package adakite.util.windows;
 
 import java.io.IOException;
 import java.util.ArrayList;
