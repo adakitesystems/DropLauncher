@@ -1,6 +1,7 @@
 package droplauncher.mvc.view;
 
 import adakite.util.AdakiteUtils;
+import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 
@@ -12,10 +13,12 @@ public class ConsoleOutput {
 
   private TextArea outputObject;
   private boolean printToStdout;
+  private ArrayList<String> blacklist; /* lines to be ignored which contain this text */
 
   public ConsoleOutput() {
     this.outputObject = new TextArea("");
     this.printToStdout = true;
+    this.blacklist = new ArrayList<>();
   }
 
   /**
@@ -23,6 +26,10 @@ public class ConsoleOutput {
    */
   public TextArea get() {
     return this.outputObject;
+  }
+
+  public ArrayList<String> getBlacklist() {
+    return this.blacklist;
   }
 
   /**
@@ -39,6 +46,11 @@ public class ConsoleOutput {
    * @param printToStdout whether to also print to STDOUT
    */
   public void print(String str, boolean printToStdout) {
+    for (String item : this.blacklist) {
+      if (str.contains(item)) {
+        return;
+      }
+    }
     Platform.runLater(() -> {
       this.outputObject.appendText(str);
     });

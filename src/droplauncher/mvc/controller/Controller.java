@@ -9,6 +9,7 @@ import droplauncher.bwheadless.BotFile;
 import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.LaunchButtonText;
+import droplauncher.mvc.view.MessagePrefix;
 import droplauncher.mvc.view.SettingsWindow;
 import droplauncher.mvc.view.SimpleAlert;
 import droplauncher.mvc.view.View;
@@ -79,6 +80,8 @@ public class Controller {
   }
 
   private void startBWHeadless() throws IOException, InvalidBotTypeException {
+    this.view.getConsoleOutput().println(MessagePrefix.DROPLAUNCHER.toString() + ": connecting bot to StarCraft");
+
     /* Init DirectoryMonitor if required. */
     Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
     if (this.directoryMonitor == null) {
@@ -102,6 +105,8 @@ public class Controller {
     FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
 
     setState(State.IDLE);
+
+    this.view.getConsoleOutput().println(MessagePrefix.DROPLAUNCHER.toString() + ": ejected bot");
   }
 
   public void closeProgramRequest(Stage stage) {

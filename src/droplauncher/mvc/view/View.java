@@ -138,6 +138,7 @@ public class View implements EventHandler<DragEvent>  {
     this.btnLaunch.setMinHeight(30);
     this.btnLaunch.getStyleClass().add("launch-btn");
     this.consoleOutput = new ConsoleOutput();
+    this.consoleOutput.getBlacklist().add("fps: "); /* bwheadless.exe spam */
     this.consoleOutput.get().getStyleClass().add("console-output");
     this.consoleOutput.get().setMinWidth(500);
     this.consoleOutput.get().setMinHeight(300);

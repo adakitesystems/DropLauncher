@@ -20,12 +20,14 @@ public class CustomProcess {
   private Path cwd;
   private StreamGobbler gobblerStdout;
   private StreamGobbler gobblerStderr;
+  private String processName;
 
   public CustomProcess() {
     this.process = null;
     this.cwd = null;
     this.gobblerStdout = null;
     this.gobblerStderr = null;
+    this.processName = null;
   }
 
   /**
@@ -33,8 +35,14 @@ public class CustomProcess {
    *
    * @param path specified current working directory
    */
-  public void setCWD(Path path) {
+  public CustomProcess setCWD(Path path) {
     this.cwd = path;
+    return this;
+  }
+
+  public CustomProcess setProcessName(String name) {
+    this.processName = name;
+    return this;
   }
 
   /**
@@ -58,10 +66,12 @@ public class CustomProcess {
 
     this.gobblerStdout = new StreamGobbler()
         .setInputStream(this.process.getInputStream())
-        .setConsoleOutput(co);
+        .setConsoleOutput(co)
+        .setStreamName(this.processName);
     this.gobblerStderr = new StreamGobbler()
         .setInputStream(this.process.getErrorStream())
-        .setConsoleOutput(co);
+        .setConsoleOutput(co)
+        .setStreamName(this.processName);
     this.gobblerStdout.start();
     this.gobblerStderr.start();
   }
