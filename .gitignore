@@ -8,8 +8,10 @@ diff.txt
 tmp/
 droplauncher.ini
 droplauncher.log
-checkstyle/checkstyle-7.5.1-all.jar
 gitlog.txt
+
+# Checkstyle
+checkstyle/checkstyle-7.5.1-all.jar
 
 # NetBeans
 nbproject/
