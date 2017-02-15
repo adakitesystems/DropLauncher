@@ -1,5 +1,5 @@
-# DropLauncher 0.0.2a
-This version is still in development. It is expected to be released soon.
+# DropLauncher
+This program is still in development. It is expected to be released soon.
 
 ## Description
 Designed to be a simple tool to aid players in setting up and playing 1v1 StarCraft: Brood War against [BWAPI bots](https://github.com/bwapi/bwapi) using Local Area Network (UDP) as the connection type.
