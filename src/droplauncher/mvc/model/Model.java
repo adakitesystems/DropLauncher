@@ -22,16 +22,15 @@ public class Model {
     this.bwheadless = new BWHeadless();
 
     this.bwheadless.setINI(this.ini);
-    try {
-      if (!AdakiteUtils.fileExists(Constants.DROPLAUNCHER_INI_PATH)) {
-        AdakiteUtils.createFile(Constants.DROPLAUNCHER_INI_PATH);
-      }
-      this.ini.read(Constants.DROPLAUNCHER_INI_PATH);
-      parseSettings(this.ini);
-      this.bwheadless.parseSettings(this.ini);
-    } catch (IOException ex) {
-      LOGGER.error(ex);
+  }
+
+  public void setup() throws IOException {
+    if (!AdakiteUtils.fileExists(Constants.DROPLAUNCHER_INI_PATH)) {
+      AdakiteUtils.createFile(Constants.DROPLAUNCHER_INI_PATH);
     }
+    this.ini.read(Constants.DROPLAUNCHER_INI_PATH);
+    parseSettings(this.ini);
+    this.bwheadless.parseSettings(this.ini);
   }
 
   public Ini getINI() {

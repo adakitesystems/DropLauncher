@@ -249,6 +249,8 @@ public class View implements EventHandler<DragEvent>  {
 
     this.stage.show();
 
+    this.controller.viewInitComplete();
+
     update();
   }
 
@@ -270,7 +272,7 @@ public class View implements EventHandler<DragEvent>  {
     String displayBotName = this.txtBotName.getText();
     String internalBotName = this.controller.getBotName();
     int caret = txtBotName.getCaretPosition();
-    if (!displayBotName.equals(internalBotName)) {
+    if (!AdakiteUtils.isNonNullAndEqual(displayBotName, internalBotName)) {
       if (caret >= internalBotName.length()) {
         caret = internalBotName.length();
       } else if (caret > 1) {

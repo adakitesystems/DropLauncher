@@ -433,4 +433,12 @@ public class Controller {
     this.view.update();
   }
 
+  public void viewInitComplete() {
+    try {
+      this.model.setup();
+    } catch (Exception ex) {
+      LOGGER.error(ex);
+    }
+  }
+
 }
