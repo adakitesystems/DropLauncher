@@ -6,15 +6,14 @@ import droplauncher.mvc.view.ConsoleOutput;
 import droplauncher.util.StreamGobbler;
 import java.io.IOException;
 import java.nio.file.Path;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Container class for starting and stopping a new process.
  */
 public class CustomProcess {
 
-  private static final Logger LOGGER = LogManager.getLogger();
+  private static final Logger LOGGER = Logger.getLogger(CustomProcess.class.getName());
 
   private Process process;
   private Path cwd;
@@ -85,7 +84,7 @@ public class CustomProcess {
     this.gobblerStdout.interrupt();
     this.process.destroy();
     if (this.process.isAlive()) {
-      LOGGER.warn("process is still alive after destroy attempt");
+      LOGGER.log(Debugging.getLogLevel(), "process is still alive after destroy attempt");
     }
   }
 

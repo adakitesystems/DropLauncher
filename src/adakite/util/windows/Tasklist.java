@@ -1,13 +1,13 @@
 package adakite.util.windows;
 
+import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
 import adakite.util.process.SimpleProcess;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.StringTokenizer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Class for getting and storing a list of processes using
@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Tasklist {
 
-  private static final Logger LOGGER = LogManager.getLogger();
+  private static final Logger LOGGER = Logger.getLogger(Tasklist.class.getName());
 
   private ArrayList<Task> tasks;
 
@@ -84,7 +84,7 @@ public class Tasklist {
     }
     if (index >= process.getLog().size()) {
       //TODO: Throw built-in or custom exception.
-      LOGGER.error("error parsing Tasklist output");
+      LOGGER.log(Debugging.getLogLevel(), "error parsing Tasklist output");
       return;
     }
 
@@ -111,7 +111,7 @@ public class Tasklist {
       ArrayList<String> tokens = tokenizeTaskEntry(line, colLengths);
       if (tokens.size() < TasklistTitle.values().length) {
         //TODO: Throw built-in or custom exception.
-        LOGGER.error("error parsing task entry line");
+        LOGGER.log(Debugging.getLogLevel(), "error parsing task entry line");
         return;
       }
 
@@ -168,7 +168,7 @@ public class Tasklist {
           }
         }
       } catch (IOException ex) {
-        LOGGER.error(ex);
+        LOGGER.log(Debugging.getLogLevel(), null, ex);
         return false;
       }
     }

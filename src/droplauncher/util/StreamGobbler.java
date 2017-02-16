@@ -1,20 +1,20 @@
 package droplauncher.util;
 
+import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.view.ConsoleOutput;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Class for consuming output from an input stream.
  */
 public class StreamGobbler extends Thread {
 
-  private static final Logger LOGGER = LogManager.getLogger();
+  private static final Logger LOGGER = Logger.getLogger(StreamGobbler.class.getName());
 
   private InputStream inputStream;
   private String line;
@@ -57,7 +57,7 @@ public class StreamGobbler extends Thread {
         }
       }
     } catch (Exception ex) {
-      LOGGER.error(ex);
+      LOGGER.log(Debugging.getLogLevel(), null, ex);
     }
   }
 

@@ -1,5 +1,6 @@
 package droplauncher.bwheadless;
 
+import adakite.debugging.Debugging;
 import adakite.ini.Ini;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
@@ -22,15 +23,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Class for handling execution and communication with bwheadless.
  */
 public class BWHeadless {
 
-  private static final Logger LOGGER = LogManager.getLogger();
+  private static final Logger LOGGER = Logger.getLogger(BWHeadless.class.getName());
 
   public static final Path DEFAULT_EXE_PATH = Paths.get("bwheadless.exe");
   public static final String DEFAULT_INI_SECTION_NAME = "bwheadless";
@@ -174,7 +174,7 @@ public class BWHeadless {
           break;
         case "jar":
           if (!AdakiteUtils.fileExists(Constants.JRE_EXE)) {
-            LOGGER.error("JRE not found");
+            LOGGER.log(Debugging.getLogLevel(), "JRE not found");
             throw new FileNotFoundException(Constants.JRE_EXE.toString());
           }
           clientCommand.setPath(Constants.JRE_EXE.toAbsolutePath());
@@ -314,20 +314,14 @@ public class BWHeadless {
   }
 
   public void setStarcraftExe(String starcraftExe) {
-    LOGGER.info(starcraftExe);
-
     this.ini.set(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString(), starcraftExe);
   }
 
   public void setBwapiDll(String bwapiDll) {
-    LOGGER.info(bwapiDll);
-
     this.ini.set(DEFAULT_INI_SECTION_NAME, SettingsKey.BWAPI_DLL.toString(), bwapiDll);
   }
 
   public void setBotName(String botName) {
-    LOGGER.info(botName);
-
     String cleaned = Starcraft.cleanProfileName(botName);
     if (cleaned.equals(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_NAME.toString()))) {
       return;
@@ -349,8 +343,6 @@ public class BWHeadless {
   }
 
   public void setBotFile(String botFile) {
-    LOGGER.info(botFile);
-
     this.extraBotFiles.clear();
     Path path = Paths.get(botFile);
     if (AdakiteUtils.fileExists(path)) {
@@ -360,20 +352,14 @@ public class BWHeadless {
   }
 
   public void setBotRace(Race botRace) {
-    LOGGER.info(botRace);
-
     this.ini.set(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_RACE.toString(), botRace.toString());
   }
 
   public void setNetworkProvider(NetworkProvider networkProvider) {
-    LOGGER.info(networkProvider);
-
     this.ini.set(DEFAULT_INI_SECTION_NAME, SettingsKey.NETWORK_PROVIDER.toString(), networkProvider.toString());
   }
 
   public void setConnectMode(ConnectMode connectMode) {
-    LOGGER.info(connectMode);
-
     this.ini.set(DEFAULT_INI_SECTION_NAME, SettingsKey.CONNECT_MODE.toString(), connectMode.toString());
   }
 

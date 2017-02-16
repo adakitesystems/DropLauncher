@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
@@ -33,12 +34,10 @@ import javafx.stage.Stage;
 import net.lingala.zip4j.core.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class Controller {
 
-  private static final Logger LOGGER = LogManager.getLogger();
+  private static final Logger LOGGER = Logger.getLogger(Controller.class.getName());
 
   private Model model;
   private View view;
@@ -68,12 +67,12 @@ public class Controller {
    * @param state specified state
    */
   private void setState(State state) {
-    LOGGER.info(Debugging.ack());
+    LOGGER.log(Debugging.getLogLevel(), Debugging.ack());
     synchronized(this.stateLock) {
-      LOGGER.info("lock acquired: " + this.state.toString());
+      LOGGER.log(Debugging.getLogLevel(), "lock acquired: " + this.state.toString());
       this.state = state;
     }
-    LOGGER.info("lock released: " + this.state.toString());
+    LOGGER.log(Debugging.getLogLevel(), "lock released: " + this.state.toString());
   }
 
   private void startBWHeadless() throws IOException, InvalidBotTypeException {
@@ -127,7 +126,7 @@ public class Controller {
       case LOCKED:
         /* Fall through. */
       default:
-        LOGGER.warn("state should be " + State.IDLE.toString() + ", but state is " + this.state.toString());
+        LOGGER.log(Debugging.getLogLevel(), "state should be " + State.IDLE.toString() + ", but state is " + this.state.toString());
         new SimpleAlert().showAndWait(AlertType.ERROR, "Program state error: " + this.state.toString(), "The program's state is: " + this.state.toString() + AdakiteUtils.newline(2) + "Try ejecting the bot first or wait for the current operation to finish.");
         return;
     }
@@ -156,7 +155,7 @@ public class Controller {
           }
         }
       } catch (Exception ex) {
-        LOGGER.error("clean up StarCraft directory", ex);
+        LOGGER.log(Debugging.getLogLevel(), "clean up StarCraft directory", ex);
       }
     }
 
@@ -165,7 +164,7 @@ public class Controller {
       LOGGER.info("save INI settings to file: " + Constants.DROPLAUNCHER_INI_PATH.toString());
       this.model.getINI().saveTo(Constants.DROPLAUNCHER_INI_PATH);
     } catch (Exception ex) {
-      LOGGER.error("save INI configuration", ex);
+      LOGGER.log(Debugging.getLogLevel(), "save INI configuration", ex);
     }
 
     stage.close();
@@ -225,7 +224,7 @@ public class Controller {
     try {
       ZipFile zipFile = new ZipFile(path.toAbsolutePath().toString());
       if (zipFile.isEncrypted()) {
-        LOGGER.warn("unsupported encrypted archive: " + zipFile.getFile().getAbsolutePath());
+        LOGGER.log(Debugging.getLogLevel(), "unsupported encrypted archive: " + zipFile.getFile().getAbsolutePath());
         return;
       }
       /* Create temporary directory. */
@@ -242,7 +241,7 @@ public class Controller {
         }
       }
     } catch (Exception ex) {
-      LOGGER.error("unable to process ZIP file: " + path.toAbsolutePath().toString(), ex);
+      LOGGER.log(Debugging.getLogLevel(), "unable to process ZIP file: " + path.toAbsolutePath().toString(), ex);
     }
   }
 
@@ -257,12 +256,12 @@ public class Controller {
           Path[] tmpList = AdakiteUtils.getDirectoryContents(file.toPath(), true);
           fileList.addAll(Arrays.asList(tmpList));
         } catch (IOException ex) {
-          LOGGER.error("unable to get directory contents for: " + file.getAbsolutePath(), ex);
+          LOGGER.log(Debugging.getLogLevel(), "unable to get directory contents for: " + file.getAbsolutePath(), ex);
         }
       } else if (file.isFile()) {
         fileList.add(file.toPath());
       } else {
-        LOGGER.warn("unknown file dropped: " + file.getAbsolutePath());
+        LOGGER.log(Debugging.getLogLevel(), "unknown file dropped: " + file.getAbsolutePath());
       }
     });
 
@@ -305,7 +304,7 @@ public class Controller {
       try {
         return BWAPI.getBwapiVersion(MD5Checksum.get(Paths.get(dll)));
       } catch (IOException | NoSuchAlgorithmException ex) {
-        LOGGER.error(ex);
+        LOGGER.log(Debugging.getLogLevel(), null, ex);
         return BWAPI.BWAPI_DLL_UNKNOWN;
       }
     }
@@ -382,7 +381,7 @@ public class Controller {
                   + "unable to connect bot due to the following error:" + AdakiteUtils.newline(2)
                   + ex.toString() + AdakiteUtils.newline()
               );
-              LOGGER.error(ex);
+              LOGGER.log(Debugging.getLogLevel(), null, ex);
             }
             Platform.runLater(() -> {
               this.view.btnLaunchSetText(LaunchButtonText.EJECT.toString());
@@ -398,7 +397,7 @@ public class Controller {
           try {
             stopBWHeadless();
           } catch (Exception ex) {
-            LOGGER.error(ex);
+            LOGGER.log(Debugging.getLogLevel(), null, ex);
           }
           Platform.runLater(() -> {
             this.view.btnLaunchSetText(LaunchButtonText.LAUNCH.toString());
@@ -411,7 +410,7 @@ public class Controller {
     }
 
     if (this.state == State.LOCKED) {
-      LOGGER.warn("still locked");
+      LOGGER.log(Debugging.getLogLevel(), "still locked");
     }
   }
 
@@ -437,7 +436,7 @@ public class Controller {
     try {
       this.model.setup();
     } catch (Exception ex) {
-      LOGGER.error(ex);
+      LOGGER.log(Debugging.getLogLevel(), null, ex);
     }
   }
 

@@ -7,12 +7,8 @@ import droplauncher.bwheadless.BWHeadless;
 import droplauncher.util.Constants;
 import droplauncher.util.SettingsKey;
 import java.io.IOException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class Model {
-
-  private static final Logger LOGGER = LogManager.getLogger();
 
   private Ini ini;
   private BWHeadless bwheadless;
