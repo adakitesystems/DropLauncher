@@ -126,7 +126,11 @@ public class SettingsWindow {
     ));
 
     this.scene = new Scene(mainGridPane.get());
-    this.scene.getStylesheets().add(View.DEFAULT_CSS);
+    try {
+      this.scene.getStylesheets().add(View.DEFAULT_CSS);
+    } catch (Exception ex) {
+      /* Do nothing. */
+    }
 
     this.stage = new Stage();
     this.stage.setTitle("Settings");
