@@ -6,4 +6,8 @@ public class InvalidBotTypeException extends Exception {
     super();
   }
 
+  public InvalidBotTypeException(String message) {
+    super(message);
+  }
+
 }
