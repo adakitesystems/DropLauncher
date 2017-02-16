@@ -4,6 +4,10 @@ import adakite.util.AdakiteUtils;
 import java.nio.file.Path;
 import java.util.logging.Level;
 
+/**
+ * Debugging utilities class mainly for debugging and logging messages or
+ * anything related to debugging and logging.
+ */
 public class Debugging {
 
   /* Predefined logger messages */

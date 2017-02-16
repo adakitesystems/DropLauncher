@@ -1,5 +1,8 @@
 package adakite;
 
+/**
+ * Constants class for AdakiteLibrary.
+ */
 public class Adakite {
 
   public static final String LIB_AUTHOR = "Adakite";

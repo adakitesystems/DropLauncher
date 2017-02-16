@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Class for manipulating a Windows INI file while attemping to preserve
- * the file's original structure.
+ * Class for using the Windows INI protocol to store settings in memory,
+ * write settings to INI files, or reading and parsing INI files.
  */
 public class Ini {
 
@@ -105,7 +105,7 @@ public class Ini {
   }
 
   /**
-   * Sets the specified variable and immediately writes the changes to disk.
+   * Sets the specified variable in memory.
    *
    * @param name specified section name
    * @param key specified key
@@ -251,6 +251,7 @@ public class Ini {
    *
    * @param name specified section name
    * @param key specified key
+   * @see #setEnabled(java.lang.String, java.lang.String, boolean)
    */
   public boolean isEnabled(String name, String key) {
     return (hasValue(name, key) && getValue(name, key).equalsIgnoreCase(Boolean.TRUE.toString()));
@@ -264,6 +265,7 @@ public class Ini {
    * @param name specified section name
    * @param key specified key
    * @param enabled whether the variable should be set to TRUE
+   * @see #isEnabled(java.lang.String, java.lang.String)
    */
   public void setEnabled(String name, String key, boolean enabled) {
     String val = Boolean.toString(enabled);
@@ -271,13 +273,10 @@ public class Ini {
   }
 
   /**
-   * Tests whether a value exists for the specified name and key
+   * Tests whether a value exists for the specified name and key.
    *
    * @param name specified section name
    * @param key specified key
-   * @return
-   *     true if a value exists,
-   *     otherwise false
    */
   public boolean hasValue(String name, String key) {
     return !AdakiteUtils.isNullOrEmpty(getValue(name, key));
@@ -289,7 +288,8 @@ public class Ini {
    * @param name specified section name
    * @param key specified key
    * @return
-   *     the value assoicated with the specified INI section and key
+   *     the value assoicated with the specified INI section and key if found,
+   *     otherwise null
    */
   public String getValue(String name, String key) {
     if (name == null) {
@@ -312,7 +312,8 @@ public class Ini {
    *
    * @param name specified section name
    * @return
-   *     the section line index
+   *     the section line index if found,
+   *     otherwise -1
    */
   private int getSectionIndex(String name) {
     if (AdakiteUtils.isNullOrEmpty(name, true) && this.memoryFile.getLines().size() >= 0) {
@@ -336,7 +337,8 @@ public class Ini {
    * @param name specified section name
    * @param key specified key
    * @return
-   *     the key line index
+   *     the key line index if found,
+   *     otherwise -1
    */
   private int getKeyIndex(String name, String key) {
     if (name == null) {
@@ -378,7 +380,8 @@ public class Ini {
    *
    * @param line specified string to scan
    * @return
-   *     the specified string excluding a comment if present
+   *     the specified string excluding a comment if present,
+   *     otherwise an empty string
    */
   public static String removeComment(String line) {
     if (AdakiteUtils.isNullOrEmpty(line, true)) {
@@ -425,6 +428,9 @@ public class Ini {
     return ret;
   }
 
+  /**
+   * Prints the contents of the INI configuration to STDOUT.
+   */
   public void debug() {
     StringBuilder sb = new StringBuilder(getSections().size() + getSections().keySet().size());
     for (String name : getSections().keySet()) {

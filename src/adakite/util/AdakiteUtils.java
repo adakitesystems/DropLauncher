@@ -27,7 +27,7 @@ public class AdakiteUtils {
    * @param str the specified string
    * @param trim whether to trim the specified string
    * @return
-   *     true if string is null or length is less than one,
+   *     true if string is null or the length is less than one,
    *     otherwise false
    */
   public static boolean isNullOrEmpty(String str, boolean trim) {
@@ -45,9 +45,8 @@ public class AdakiteUtils {
    *
    * @param str the specified string
    * @return
-   *     true if string is null or length is less than one,
+   *     true if string is null or the length is less than one,
    *     otherwise false
-   * @see #isNullOrEmpty(String, boolean)
    */
   public static boolean isNullOrEmpty(String str) {
     return (str == null || str.length() < 1);
@@ -59,7 +58,7 @@ public class AdakiteUtils {
    * @param str the specified string to convert to an integer
    * @return
    *     the integer value of the specified string,
-   *     otherwise Optional.empty() if an error occurred
+   *     otherwise Optional.empty() if an error occurs
    */
   public static Optional<Integer> toInteger(String str) {
     try {
@@ -75,8 +74,6 @@ public class AdakiteUtils {
    * Returns n number of system-dependent newline characters.
    *
    * @param n number of newline characters to return
-   * @return
-   *     n number of system-dependent newline characters
    */
   public static String newline(int n) {
     if (n < 1) {
@@ -89,6 +86,11 @@ public class AdakiteUtils {
     return sb.toString();
   }
 
+  /**
+   * Returns one system-dependent newline character.
+   *
+   * @see #newline(int)
+   */
   public static String newline() {
     return NEWLINE;
   }
@@ -112,9 +114,6 @@ public class AdakiteUtils {
    * Tests if the specified file is readable.
    *
    * @param path specified path to file
-   * @return
-   *     true if the file is readable,
-   *     otherwise false
    */
   public static boolean fileReadable(Path path) {
     return Files.isReadable(path);
@@ -124,31 +123,24 @@ public class AdakiteUtils {
    * Tests if the specified file is writable.
    *
    * @param path specified path to file
-   * @return
    */
   public static boolean fileWritable(Path path) {
     return Files.isWritable(path);
   }
 
   /**
-   * Tests if the specified file exists.
+   * Tests if the specified file is not null and exists.
    *
    * @param path the specified path to file
-   * @return
-   *     true if file exists and is not a directory,
-   *     otherwise false
    */
   public static boolean fileExists(Path path) {
     return (path != null && Files.isRegularFile(path));
   }
 
   /**
-   * Tests if the specified directory exists.
+   * Tests if the specified directory is not null and exists.
    *
    * @param path the specified path to directory
-   * @return
-   *     true if directory exists,
-   *     otherwise false
    */
   public static boolean directoryExists(Path path) {
     return (path != null && Files.isDirectory(path));
@@ -159,8 +151,8 @@ public class AdakiteUtils {
    *
    * @param path the specified path
    * @return
-   *     the parent directory of the specified path,
-   *     otherwise null if parent does not exist
+   *     the parent directory of the specified path if parent exists,
+   *     otherwise null
    */
   public static Path getParentDirectory(Path path) {
     return path.getParent();
@@ -206,7 +198,8 @@ public class AdakiteUtils {
    *
    * @param path the specified path to directory
    * @return
-   *     a list of all files and subdirectories
+   *     a list of all files and subdirectories,
+   *     otherwise an empty list if directory does not exist or is empty
    * @see #getDirectoryContents(Path, boolean)
    * @throws IOException
    */
@@ -232,7 +225,7 @@ public class AdakiteUtils {
    * does not throw an exception if the parent directory is null.
    *
    * @param path the specified path
-   * @throws IOException
+   * @throws IOException if an I/O error occurs
    */
   public static void createParentDirectory(Path path) throws IOException {
     Path parent = getParentDirectory(path);
@@ -246,7 +239,7 @@ public class AdakiteUtils {
    * Creates the specified file.
    *
    * @param path the specified path to the file
-   * @throws IOException
+   * @throws IOException if an I/O error occurs
    */
   public static void createFile(Path path) throws IOException {
     if (fileExists(path)) {
@@ -260,7 +253,7 @@ public class AdakiteUtils {
    * Deletes the specified file.
    *
    * @param path the specified path to the file
-   * @throws IOException
+   * @throws IOException if an I/O error occurs
    */
   public static void deleteFile(Path path) throws IOException {
     if (!fileExists(path)) {
@@ -269,6 +262,13 @@ public class AdakiteUtils {
     Files.delete(path);
   }
 
+  /**
+   * Appends the specified string to the specified file.
+   *
+   * @param path specified path to the file
+   * @param str specified string
+   * @throws IOException if an I/O error occurs
+   */
   public static void appendToFile(Path path, String str) throws IOException {
     if (!fileExists(path)) {
       createFile(path);

@@ -3,7 +3,7 @@ package adakite.ini;
 import java.util.HashMap;
 
 /**
- * Container class for sections of an INI file.
+ * Container class for sections of an INI configuration.
  */
 public class IniSection {
 
