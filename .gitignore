@@ -22,3 +22,6 @@ dist/
 
 # Tests
 test/
+
+# Standalone Java install
+jre/
