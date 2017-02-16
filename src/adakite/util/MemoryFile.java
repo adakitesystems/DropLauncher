@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,7 +26,7 @@ public class MemoryFile  {
   }
 
   /**
-   * Clears the memory file.
+   * Clears the memory file and path.
    */
   public void clear() {
     this.path = null;
@@ -35,7 +34,8 @@ public class MemoryFile  {
   }
 
   /**
-   * Returns a copy of the associated File object.
+   * Returns the path to the physical file which would be set by
+   * {@link #read(java.nio.file.Path)}.
    */
   public Path getPath() {
     return this.path;
@@ -49,11 +49,11 @@ public class MemoryFile  {
   }
 
   /**
-   * Clears the current memory file and reads the specified
-   * file into the memory file.
+   * Clears the current memory file and reads the specified file into memory.
    *
    * @param path specified file to read/create
-   * @throws IOException
+   * @see #clear()
+   * @throws IOException if an I/O error occurs
    */
   public void read(Path path) throws IOException {
     clear();
@@ -66,6 +66,7 @@ public class MemoryFile  {
    *
    * @param path the specified file to dump lines
    * @throws FileNotFoundException
+   * @throws IOException if an I/O error occurs
    */
   public void dumpToFile(Path path) throws FileNotFoundException, IOException {
     try (
@@ -82,8 +83,7 @@ public class MemoryFile  {
    * Dumps the currently stored lines to the stored File object.
    *
    * @see #dumpToFile(java.nio.file.Path)
-   * @throws UnsupportedEncodingException
-   * @throws IOException
+   * @throws IOException if an I/O error occurs
    */
   public void dumpToFile() throws IOException {
     this.dumpToFile(this.path);

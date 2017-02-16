@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Class for building objects to pass to process objects such as ProcessBuilder.
+ * Class for building objects to pass to process objects
+ * (e.g. passing arguments to a ProcessBuilder object).
  */
 public class CommandBuilder {
 
@@ -39,7 +40,7 @@ public class CommandBuilder {
   }
 
   /**
-   * Returns a String array of the command and args.
+   * Returns a String array of the command and arguments.
    */
   public String[] get() {
     if (this.path == null) {
@@ -92,7 +93,7 @@ public class CommandBuilder {
   }
 
   /**
-   * Returns the command and args as one string.
+   * Returns the command and arguments as one string.
    */
   @Override
   public String toString() {

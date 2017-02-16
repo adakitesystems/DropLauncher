@@ -4,14 +4,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Constants class for Windows-related programs and variables.
+ * Utilities class for Windows-related implementations.
  */
 public class Windows {
 
-  public enum FileType {
-    EXE, DLL
-  }
-
+  /**
+   * Enum class for Windows programs and predefined arguments.
+   */
   public enum Program {
 
     CMD("C:\\Windows\\System32\\cmd.exe"),

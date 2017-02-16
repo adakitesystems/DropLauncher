@@ -4,6 +4,8 @@ TODO: Move these values to a dedicated text file and read into a HashMap.
 
 package droplauncher.bwapi;
 
+import adakite.md5sum.MD5Checksum;
+
 /**
  * Enum for BWAPI.dll MD5 checksums.
  */
@@ -15,7 +17,7 @@ public enum Checksum {
   BWAPI_DLL_410B("4814396fba36916fdb7cf3803b39ab51"),
   BWAPI_DLL_411B("5d5128709ba714aa9c6095598bcf4624"),
   BWAPI_DLL_412("1364390d0aa085fba6ac11b7177797b0"),
-  UNKNOWN("00000000000000000000000000000000")
+  UNKNOWN(MD5Checksum.EMPTY_MD5_CHECKSUM)
   ;
 
   private final String str;

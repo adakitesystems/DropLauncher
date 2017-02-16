@@ -5,7 +5,7 @@ import java.nio.file.Paths;
 import java.util.Locale;
 
 /**
- * Utilities and constants class for BWAPI.
+ * Utilities class for BWAPI-related implementations.
  */
 public class BWAPI {
 

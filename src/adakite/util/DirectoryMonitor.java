@@ -7,7 +7,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Class for monitoring a directory structure.
+ * Class for monitoring a directory structure. This class can be used to
+ * observe the changes in a directory from time A to time B using the
+ * {@link #reset()} and {@link #update()} methods and retrieving the changes
+ * via {@link #getNewFiles()}.
  */
 public class DirectoryMonitor {
 

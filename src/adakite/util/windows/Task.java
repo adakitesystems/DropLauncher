@@ -3,8 +3,7 @@ package adakite.util.windows;
 import java.util.Objects;
 
 /**
- * Container class for process information obtained from
- * Windows Tasklist.
+ * Container class for process information obtained from Windows Tasklist.
  */
 public class Task {
 

@@ -23,6 +23,13 @@ public class Tasklist {
     this.tasks = new ArrayList<>();
   }
 
+  //TODO: Use a CommandBuilder object.
+  /**
+   * Kill the task indicated by the specified process ID.
+   *
+   * @param pid specified process ID
+   * @throws IOException if an I/O error occurs
+   */
   public void kill(String pid) throws IOException {
     String[] args = new String[Windows.Program.TASKKILL.getPredefinedArgs().length + 1];
     System.arraycopy(Windows.Program.TASKKILL.getPredefinedArgs(), 0, args, 0, Windows.Program.TASKKILL.getPredefinedArgs().length);
@@ -56,7 +63,12 @@ public class Tasklist {
     return getTasks(false);
   }
 
-  public boolean update() throws IOException {
+  /**
+   * Runs the Windows Tasklist program and updates the internal tasklist.
+   *
+   * @throws IOException if an I/O error occurs
+   */
+  public void update() throws IOException {
     this.tasks.clear();
 
     SimpleProcess process = new SimpleProcess();
@@ -73,7 +85,7 @@ public class Tasklist {
     if (index >= process.getLog().size()) {
       //TODO: Throw built-in or custom exception.
       LOGGER.error("error parsing Tasklist output");
-      return false;
+      return;
     }
 
     /* Determine length of each column. */
@@ -100,7 +112,7 @@ public class Tasklist {
       if (tokens.size() < TasklistTitle.values().length) {
         //TODO: Throw built-in or custom exception.
         LOGGER.error("error parsing task entry line");
-        return false;
+        return;
       }
 
       /* Set task information. */
@@ -119,8 +131,6 @@ public class Tasklist {
       /* Add task to main task list. */
       this.tasks.add(task);
     }
-
-    return true;
   }
 
   private ArrayList<String> tokenizeTaskEntry(String str, ArrayList<Integer> colLengths) {
