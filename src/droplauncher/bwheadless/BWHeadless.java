@@ -14,12 +14,14 @@ import droplauncher.util.SettingsKey;
 import adakite.util.windows.Task;
 import adakite.util.windows.TaskTracker;
 import adakite.util.windows.Tasklist;
+import droplauncher.util.Constants;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -159,14 +161,24 @@ public class BWHeadless {
         .setProcessName(MessagePrefix.BWHEADLESS.toString());
     this.bwheadlessProcess.start(bwhCommand.get(), co);
 
+    /* Start bot client. */
     if (this.botFile.getType() == BotFile.Type.CLIENT) {
       /* Compile bot client arguments. */
       CommandBuilder clientCommand = new CommandBuilder();
-      clientCommand.setPath(this.botFile.getPath().toAbsolutePath());
-      /* Start bot client. */
-      this.botProcess
-          .setCWD(starcraftDirectory)
-          .setProcessName(MessagePrefix.CLIENT.toString());
+      switch (FilenameUtils.getExtension(this.botFile.getPath().getFileName().toString())) {
+        case "exe":
+          clientCommand.setPath(this.botFile.getPath().toAbsolutePath());
+          break;
+        case "jar":
+          clientCommand.setPath(Constants.JRE_EXE.toAbsolutePath());
+          clientCommand.addArg("-jar");
+          clientCommand.addArg(this.botFile.getPath().toAbsolutePath().toString());
+          break;
+        default:
+          throw new InvalidBotTypeException("bot file is not EXE or JAR type");
+      }
+      this.botProcess.setCWD(starcraftDirectory);
+      this.botProcess.setProcessName(MessagePrefix.CLIENT.toString());
       this.botProcess.start(clientCommand.get(), co);
     }
   }

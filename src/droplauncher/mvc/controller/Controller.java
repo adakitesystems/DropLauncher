@@ -189,6 +189,8 @@ public class Controller {
       case "dll":
         /* Fall through. */
       case "exe":
+        /* Fall through. */
+      case "jar":
         if (path.getFileName().toString().equalsIgnoreCase("BWAPI.dll")) {
           /* BWAPI.dll */
           this.model.getBWHeadless().setBwapiDll(path.toAbsolutePath().toString());

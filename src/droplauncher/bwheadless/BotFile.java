@@ -53,6 +53,8 @@ public class BotFile {
         this.type = Type.DLL;
         break;
       case "exe":
+        /* Fall through. */
+      case "jar":
         this.type = Type.CLIENT;
         break;
       default:
