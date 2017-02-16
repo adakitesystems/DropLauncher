@@ -23,6 +23,9 @@ public enum Race {
    * Returns the corresponding Race object.
    *
    * @param str specified string
+   * @return
+   *     the corresponding Race object if valid,
+   *     otherwise null
    */
   public static Race get(String str) {
     str = str.toLowerCase(Locale.US);

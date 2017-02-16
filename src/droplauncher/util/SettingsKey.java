@@ -1,5 +1,9 @@
 package droplauncher.util;
 
+/**
+ * Enum for predefined settings keys for use with settings objects
+ * such as {@link adakite.ini.Ini}.
+ */
 public enum SettingsKey {
 
   /* Program keys */

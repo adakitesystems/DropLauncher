@@ -65,7 +65,7 @@ public class Controller {
    * Manually sets the program state indicator after acquiring
    * access to an intrinsic lock object.
    *
-   * @param state
+   * @param state specified state
    */
   private void setState(State state) {
     LOGGER.info(Debugging.ack());
@@ -184,7 +184,7 @@ public class Controller {
 
     switch (ext) {
       case "zip":
-        processArchive(path);
+        processZipFile(path);
         break;
       case "dll":
         /* Fall through. */
@@ -207,12 +207,18 @@ public class Controller {
   }
 
   /**
-   * Processes an archived file such as a ZIP.
+   * Processes a ZIP file. Extracts the ZIP file and processes its contents
+   * via {@link #processFile(java.nio.file.Path)}.
    *
-   * @param path specified path to the file
+   * @param path specified path to the ZIP file
    * @see #processFile(java.nio.file.Path)
+   * @throws IllegalArgumentException if the path does not appear to be a ZIP file
    */
-  private void processArchive(Path path) {
+  private void processZipFile(Path path) {
+    if (!AdakiteUtils.fileExists(path)
+        || !FilenameUtils.getExtension(path.getFileName().toString()).equalsIgnoreCase("zip")) {
+      throw new IllegalArgumentException("path does not appear to be a ZIP file");
+    }
     try {
       ZipFile zipFile = new ZipFile(path.toAbsolutePath().toString());
       if (zipFile.isEncrypted()) {
@@ -401,11 +407,6 @@ public class Controller {
     }
   }
 
-  public void updateRaceChoiceBox() {
-    this.view.setText(this.view.getRaceChoiceBox(), getBotRace().toString());
-    this.view.sizeToScene();
-  }
-
   public void botRaceChanged(String str) {
     if (str.equals(Race.TERRAN.toString())) {
       this.model.getBWHeadless().setBotRace(Race.TERRAN);
@@ -416,7 +417,7 @@ public class Controller {
     } else if (str.equals(Race.RANDOM.toString())) {
       this.model.getBWHeadless().setBotRace(Race.RANDOM);
     }
-    updateRaceChoiceBox();
+    this.view.updateRaceChoiceBox();
   }
 
   public void botNameChanged(String str) {

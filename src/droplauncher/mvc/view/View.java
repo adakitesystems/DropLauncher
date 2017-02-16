@@ -255,7 +255,7 @@ public class View implements EventHandler<DragEvent>  {
     setText(this.lblBotFileText, this.controller.getBotFilename());
     if (!AdakiteUtils.isNullOrEmpty(this.controller.getBotFilename())) {
       this.cbRace.setVisible(true);
-      this.controller.updateRaceChoiceBox();
+      updateRaceChoiceBox();
     } else {
       this.cbRace.setVisible(false);
     }
@@ -300,6 +300,11 @@ public class View implements EventHandler<DragEvent>  {
       TextField textField = (TextField) node;
       textField.setText(str);
     }
+  }
+
+  public void updateRaceChoiceBox() {
+    setText(getRaceChoiceBox(), this.controller.getBotRace().toString());
+    sizeToScene();
   }
 
   public void btnLaunchSetText(String str) {
