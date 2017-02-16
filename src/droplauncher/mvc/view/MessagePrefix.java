@@ -9,6 +9,7 @@ public enum MessagePrefix {
 
   COPY("copy"),
   KILL("kill"),
+  DELETE("delete"),
   BWHEADLESS("bwh"),
   CLIENT("client"),
   DROPLAUNCHER("DropLauncher")

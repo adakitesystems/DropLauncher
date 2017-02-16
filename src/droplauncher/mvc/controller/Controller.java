@@ -144,11 +144,12 @@ public class Controller {
           for (Path path : this.directoryMonitor.getNewFiles()) {
             if (!path.toAbsolutePath().startsWith(bwapiWritePath)
                 && !path.toAbsolutePath().startsWith(bwapiReadPath)) {
+              /* Delete file/directory if not in the read/write directory. */
               if (AdakiteUtils.fileExists(path)) {
-                LOGGER.info("Delete file: " + path.toString());
+                LOGGER.info(MessagePrefix.DELETE.get() + path.toString());
                 AdakiteUtils.deleteFile(path);
               } else if (AdakiteUtils.directoryExists(path)) {
-                LOGGER.info("Delete directory: " + path.toString());
+                LOGGER.info(MessagePrefix.DELETE.get() + path.toString() + File.separator);
                 FileUtils.deleteDirectory(path.toFile());
               }
             }
