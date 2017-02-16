@@ -3,6 +3,9 @@ package droplauncher.mvc.view;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
+/**
+ * Simple wrapper class for the JavaFX Alert object.
+ */
 public class SimpleAlert {
 
   public SimpleAlert() {

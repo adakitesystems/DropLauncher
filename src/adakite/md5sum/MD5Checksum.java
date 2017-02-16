@@ -1,5 +1,7 @@
 /*
-TODO: Use a lock for MessageDigest or remove the static attribute from all methods.
+TODO: Use a lock for MessageDigest or remove the static attribute from
+all methods and make the programmer instantiate a new object to get the
+checksum.
 */
 
 package adakite.md5sum;
@@ -14,6 +16,9 @@ import java.util.Locale;
 import java.util.logging.Logger;
 import javax.xml.bind.DatatypeConverter;
 
+/**
+ * Utilities class for getting the MD5 checksum of a file.
+ */
 public class MD5Checksum {
 
   private static final Logger LOGGER = Logger.getLogger(MD5Checksum.class.getName());
@@ -30,6 +35,16 @@ public class MD5Checksum {
     }
   }
 
+  /**
+   * Returns the MD5 checksum of the specified file.
+   *
+   * @param path specified path to the file
+   * @return
+   *     the MD5 checksum of the specified file,
+   *     otherwise {@link #EMPTY_MD5_CHECKSUM} if an error occurs
+   * @throws IOException if an I/O error occurs
+   * @throws NoSuchAlgorithmException if the cryptographic algorithm is not available
+   */
   public static String get(Path path) throws IOException, NoSuchAlgorithmException {
     ensureInit();
     if (Files.size(path) < 128 * 1024 * 1024) {

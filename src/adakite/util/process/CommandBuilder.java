@@ -54,6 +54,11 @@ public class CommandBuilder {
     return command;
   }
 
+  /**
+   * Adds the specified argument to the list of arguments.
+   *
+   * @param arg specified argument
+   */
   public void addArg(String arg) {
     if (AdakiteUtils.isNullOrEmpty(arg)) {
       throw new IllegalArgumentException(Debugging.emptyString("arg"));

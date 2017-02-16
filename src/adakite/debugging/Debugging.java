@@ -29,6 +29,9 @@ public class Debugging {
 
   private static final int STATUS_LENGTH = 4;
 
+  /**
+   * Enum for operation statuses.
+   */
   public enum Status {
     REQ, OK, FAIL
   }

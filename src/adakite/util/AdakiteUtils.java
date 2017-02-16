@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Optional;
 import javax.swing.filechooser.FileSystemView;
 
+/**
+ * Utitilies class for useful or wrapped variables and methods.
+ */
 public class AdakiteUtils {
 
   private static final String NEWLINE = System.lineSeparator();

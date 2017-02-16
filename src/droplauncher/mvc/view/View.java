@@ -29,6 +29,9 @@ import javafx.stage.Stage;
 
 public class View implements EventHandler<DragEvent>  {
 
+  /**
+   * Enum for UI component default settings.
+   */
   public enum DefaultSetting {
 
     PADDING(20),
@@ -249,6 +252,9 @@ public class View implements EventHandler<DragEvent>  {
     update();
   }
 
+  /**
+   * Updates the components to display the internal values.
+   */
   public void update() {
     setText(this.lblBwapiVersionText, this.controller.getBwapiDllVersion());
 
@@ -277,6 +283,12 @@ public class View implements EventHandler<DragEvent>  {
     sizeToScene();
   }
 
+  /**
+   * Wrapper for setting the width and height of this Window to match the
+   * size of the content of this Window's Scene.
+   *
+   * @see javafx.stage.Window#sizeToScene()
+   */
   public void sizeToScene() {
     this.stage.sizeToScene();
   }

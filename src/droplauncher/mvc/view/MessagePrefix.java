@@ -21,6 +21,12 @@ public enum MessagePrefix {
     this.str = str;
   }
 
+  /**
+   * Returns the string version of this enum with an appended
+   * colon character and space.
+   *
+   * @param str specified message to include
+   */
   public String get(String str) {
     String ret = this.str + ": ";
     if (!AdakiteUtils.isNullOrEmpty(str)) {

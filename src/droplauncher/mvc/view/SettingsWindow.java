@@ -20,6 +20,9 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/**
+ * Class for the specific main settings popup window.
+ */
 public class SettingsWindow {
 
   private Stage stage;
