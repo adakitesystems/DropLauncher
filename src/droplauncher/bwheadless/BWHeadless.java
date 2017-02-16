@@ -15,13 +15,13 @@ import adakite.util.windows.Task;
 import adakite.util.windows.TaskTracker;
 import adakite.util.windows.Tasklist;
 import droplauncher.util.Constants;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -120,6 +120,9 @@ public class BWHeadless {
     } else if (!AdakiteUtils.directoryExists(getBwapiDirectory()) || !AdakiteUtils.fileExists(getBwapiDirectory().resolve(BWAPI.BWAPI_DATA_INI_PATH.getFileName()))) {
       /* If the BWAPI.ini file is not found at "StarCraft/bwapi-data/bwapi.ini". */
       return ReadyError.BWAPI_INSTALL;
+    } else if (AdakiteUtils.getFileExtension(this.botFile.getPath()).equalsIgnoreCase("jar")
+        && !AdakiteUtils.fileExists(Constants.JRE_EXE)) {
+      return ReadyError.JRE_INSTALL;
     } else {
       return ReadyError.NONE;
     }
@@ -165,11 +168,15 @@ public class BWHeadless {
     if (this.botFile.getType() == BotFile.Type.CLIENT) {
       /* Compile bot client arguments. */
       CommandBuilder clientCommand = new CommandBuilder();
-      switch (FilenameUtils.getExtension(this.botFile.getPath().getFileName().toString())) {
+      switch (AdakiteUtils.getFileExtension(this.botFile.getPath())) {
         case "exe":
           clientCommand.setPath(this.botFile.getPath().toAbsolutePath());
           break;
         case "jar":
+          if (!AdakiteUtils.fileExists(Constants.JRE_EXE)) {
+            LOGGER.error("JRE not found");
+            throw new FileNotFoundException(Constants.JRE_EXE.toString());
+          }
           clientCommand.setPath(Constants.JRE_EXE.toAbsolutePath());
           clientCommand.addArg("-jar");
           clientCommand.addArg(this.botFile.getPath().toAbsolutePath().toString());

@@ -14,7 +14,8 @@ public enum ReadyError {
   BOT_RACE("invalid bot race"),
   NETWORK_PROVIDER("invalid network provider"),
   CONNECT_MODE("invalid connect mode"),
-  BWAPI_INSTALL("corrupt or missing BWAPI installation")
+  BWAPI_INSTALL("corrupt or missing BWAPI installation"),
+  JRE_INSTALL("corrupt or missing JRE installation")
   ;
 
   private final String name;

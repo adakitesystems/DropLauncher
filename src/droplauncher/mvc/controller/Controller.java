@@ -6,7 +6,6 @@ import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotFile;
-import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.LaunchButtonText;
 import droplauncher.mvc.view.MessagePrefix;
@@ -16,6 +15,7 @@ import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Race;
 import droplauncher.util.Constants;
 import adakite.util.DirectoryMonitor;
+import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.util.SettingsKey;
 import java.io.File;
 import java.io.IOException;
@@ -77,6 +77,8 @@ public class Controller {
   }
 
   private void startBWHeadless() throws IOException, InvalidBotTypeException {
+    setState(State.RUNNING);
+
     this.view.getConsoleOutput().println(MessagePrefix.DROPLAUNCHER.toString() + ": connecting bot to StarCraft");
 
     /* Init DirectoryMonitor if required. */
@@ -86,12 +88,12 @@ public class Controller {
       this.directoryMonitor.reset();
     }
 
-    setState(State.RUNNING);
-
     this.model.getBWHeadless().start(this.view.getConsoleOutput());
   }
 
   private void stopBWHeadless() throws IOException {
+    setState(State.IDLE);
+
     this.model.getBWHeadless().stop();
 
     if (this.model.getINI().hasValue(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString())
@@ -105,8 +107,6 @@ public class Controller {
       this.view.getConsoleOutput().println(MessagePrefix.DROPLAUNCHER.get() + copyMessage);
       FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
     }
-
-    setState(State.IDLE);
 
     this.view.getConsoleOutput().println(MessagePrefix.DROPLAUNCHER.get() + "ejected bot");
   }
@@ -219,7 +219,7 @@ public class Controller {
    */
   private void processZipFile(Path path) {
     if (!AdakiteUtils.fileExists(path)
-        || !FilenameUtils.getExtension(path.getFileName().toString()).equalsIgnoreCase("zip")) {
+        || !AdakiteUtils.getFileExtension(path).equalsIgnoreCase("zip")) {
       throw new IllegalArgumentException("path does not appear to be a ZIP file");
     }
     try {
@@ -377,6 +377,11 @@ public class Controller {
             try {
               startBWHeadless();
             } catch (Exception ex) {
+              this.view.getConsoleOutput().println(
+                  MessagePrefix.DROPLAUNCHER.get()
+                  + "unable to connect bot due to the following error:" + AdakiteUtils.newline(2)
+                  + ex.toString() + AdakiteUtils.newline()
+              );
               LOGGER.error(ex);
             }
             Platform.runLater(() -> {
