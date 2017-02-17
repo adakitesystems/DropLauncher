@@ -3,7 +3,6 @@ package adakite.util;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,6 +17,7 @@ public class DirectoryMonitor {
   private List<Path> prevFiles;
   private List<Path> currFiles;
   private List<Path> newFiles;
+  private List<String> ignoreList;
 
   private DirectoryMonitor() {}
 
@@ -26,6 +26,7 @@ public class DirectoryMonitor {
     this.prevFiles = new ArrayList<>();
     this.currFiles = new ArrayList<>();
     this.newFiles = new ArrayList<>();
+    this.ignoreList = new ArrayList<>();
   }
 
   /**
@@ -59,6 +60,14 @@ public class DirectoryMonitor {
   }
 
   /**
+   * Returns the ignore list which contains the names of files or directories
+   * that should be ignored.
+   */
+  public List<String> getIgnoreList() {
+    return this.ignoreList;
+  }
+
+  /**
    * Resets the new files list and refreshes both previous and current files
    * lists.
    *
@@ -66,7 +75,24 @@ public class DirectoryMonitor {
    */
   public void reset() throws IOException {
     this.newFiles.clear();
-    this.prevFiles = Arrays.asList(AdakiteUtils.getDirectoryContents(this.path));
+    this.prevFiles.clear();
+
+    boolean found;
+    Path[] contents = AdakiteUtils.getDirectoryContents(this.path);
+    for (Path path : contents) {
+      String pathLower = path.toAbsolutePath().toString().toLowerCase();
+      found = false;
+      for (String str : this.ignoreList) {
+        if (pathLower.contains(str)) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        this.prevFiles.add(path);
+      }
+    }
+
     this.currFiles = new ArrayList<>(this.prevFiles);
   }
 
@@ -79,10 +105,27 @@ public class DirectoryMonitor {
    */
   public void update() throws IOException {
     this.newFiles.clear();
-    this.currFiles = Arrays.asList(AdakiteUtils.getDirectoryContents(this.path));
-    for (Path currFile : this.currFiles) {
-      if (!this.prevFiles.contains(currFile)) {
-        this.newFiles.add(currFile);
+    this.currFiles.clear();
+
+    boolean found;
+    Path[] contents = AdakiteUtils.getDirectoryContents(this.path);
+    for (Path path : contents) {
+      String pathLower = path.toAbsolutePath().toString().toLowerCase();
+      found = false;
+      for (String str : this.ignoreList) {
+        if (pathLower.contains(str)) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        this.currFiles.add(path);
+      }
+    }
+
+    for (Path path : this.currFiles) {
+      if (!this.prevFiles.contains(path)) {
+        this.newFiles.add(path);
       }
     }
   }

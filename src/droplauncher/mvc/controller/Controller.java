@@ -84,6 +84,7 @@ public class Controller {
     Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
     if (this.directoryMonitor == null) {
       this.directoryMonitor = new DirectoryMonitor(starcraftDirectory);
+      this.directoryMonitor.getIgnoreList().add("maps");
       this.directoryMonitor.reset();
     }
 
