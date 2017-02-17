@@ -25,8 +25,7 @@ public class Ini {
     this.memoryFile = new MemoryFile();
     this.sections = new HashMap<>();
 
-    this.sections.clear();
-    this.sections.put(IniSectionName.NONE.toString(), new IniSection());
+    clear();
   }
 
   public HashMap<String, IniSection> getSections() {
@@ -122,7 +121,7 @@ public class Ini {
       val = "";
     }
 
-    enableVariable(name, key);
+    uncommentVariable(name, key);
 
     boolean sectionExists = this.sections.containsKey(name);
     boolean keyExists = false;
@@ -148,9 +147,8 @@ public class Ini {
         String line = this.memoryFile.getLines().get(keyIndex);
         String comment = getComment(line);
         String updated = key + VARIABLE_DELIMITER + val;
-        if (comment != null) {
-          comment = comment.trim();
-          updated += " " + COMMENT_DELIMITER + comment;
+        if (!AdakiteUtils.isNullOrEmpty(comment)) {
+          updated += " " + COMMENT_DELIMITER + comment.trim();
         }
         this.memoryFile.getLines().set(keyIndex, updated);
       } else {
@@ -186,7 +184,7 @@ public class Ini {
    * @param name specified section name
    * @param key specified key
    */
-  public void enableVariable(String name, String key) {
+  public void uncommentVariable(String name, String key) {
     if (name == null) {
       name = IniSectionName.NONE.toString();
     }
@@ -225,10 +223,11 @@ public class Ini {
    * @param name specified section name
    * @param key specified key
    */
-  public void disableVariable(String name, String key) {
+  public void commentVariable(String name, String key) {
     if (name == null) {
       name = "";
     }
+
     if (AdakiteUtils.isNullOrEmpty(key, true)) {
       throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("key"));
     }
@@ -238,6 +237,7 @@ public class Ini {
       /* Key not found. */
       return;
     }
+
     /* Key found, disable it. */
     String line = this.memoryFile.getLines().get(keyIndex);
     line = COMMENT_DELIMITER + line;
@@ -246,8 +246,8 @@ public class Ini {
 
   /**
    * Tests if the current variable is set to TRUE. Note: This is different
-   * from {@link #enableVariable(java.lang.String, java.lang.String)} and
-   * {@link #disableVariable(java.lang.String, java.lang.String)}.
+   * from {@link #uncommentVariable(java.lang.String, java.lang.String)} and
+   * {@link #commentVariable(java.lang.String, java.lang.String)}.
    *
    * @param name specified section name
    * @param key specified key
@@ -259,8 +259,8 @@ public class Ini {
 
   /**
    * Sets the current variable to the specified boolean value. Note: this is different
-   * from {@link #enableVariable(java.lang.String, java.lang.String)} and
-   * {@link #disableVariable(java.lang.String, java.lang.String)}.
+   * from {@link #uncommentVariable(java.lang.String, java.lang.String)} and
+   * {@link #commentVariable(java.lang.String, java.lang.String)}.
    *
    * @param name specified section name
    * @param key specified key
@@ -316,7 +316,7 @@ public class Ini {
    *     otherwise -1
    */
   private int getSectionIndex(String name) {
-    if (AdakiteUtils.isNullOrEmpty(name, true) && this.memoryFile.getLines().size() >= 0) {
+    if (AdakiteUtils.isNullOrEmpty(name, true) && this.memoryFile.getLines() != null) {
       return 0;
     }
 
@@ -409,10 +409,6 @@ public class Ini {
    *     otherwise null
    */
   public static String getComment(String str) {
-    if (AdakiteUtils.isNullOrEmpty(str, true)) {
-      throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("line"));
-    }
-
     String ret = str.trim();
 
     int commentIndex = ret.indexOf(COMMENT_DELIMITER.charAt(0));

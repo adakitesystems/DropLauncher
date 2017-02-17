@@ -5,8 +5,7 @@ import java.nio.file.Path;
 import java.util.logging.Level;
 
 /**
- * Debugging utilities class mainly for debugging and logging messages or
- * anything related to debugging and logging.
+ * Debugging utilities class for anything related to debugging and logging.
  */
 public class Debugging {
 
@@ -14,7 +13,6 @@ public class Debugging {
   private static final String EMPTY_STRING = "null or empty string";
   private static final String ACK = "ack";
   private static final String NULL_OBJECT = "null object";
-  private static final String INDEX_OOB = "index out of bounds";
   private static final String FILE_DOES_NOT_EXIST = "file inaccessible or does not exist";
   private static final String FILE_ALREADY_EXISTS = "file already exists";
   private static final String OPEN_FAIL = "open failed";
@@ -26,15 +24,6 @@ public class Debugging {
   private static final String CANNOT_BE_NULL_OR_EMPTY = "cannot be null or empty";
 
   private static Level logLevel = Level.SEVERE;
-
-  private static final int STATUS_LENGTH = 4;
-
-  /**
-   * Enum for operation statuses.
-   */
-  public enum Status {
-    REQ, OK, FAIL
-  }
 
   private Debugging() {}
 
@@ -75,10 +64,6 @@ public class Debugging {
 
   public static String nullObject(String message) {
     return Debugging.NULL_OBJECT + ": " + message;
-  }
-
-  public static String indexOutOfBounds() {
-    return Debugging.INDEX_OOB;
   }
 
   public static String fileDoesNotExist(Path path) {
@@ -123,10 +108,6 @@ public class Debugging {
 
   public static String cannotBeNullOrEmpty(String objName) {
     return (objName + " " + Debugging.CANNOT_BE_NULL_OR_EMPTY);
-  }
-
-  public static String status(Status status, String message) {
-    return AdakiteUtils.pad(status.toString(), STATUS_LENGTH) + " " + message;
   }
 
 }

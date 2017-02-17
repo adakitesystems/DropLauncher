@@ -266,13 +266,13 @@ public class BWHeadless {
         LOGGER.info(MessagePrefix.COPY.get() + src.toString() + " -> " + dest.toString());
         Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
         this.botFile.setPath(dest);
-        bwapiIni.disableVariable("ai", "ai");
+        bwapiIni.commentVariable("ai", "ai");
         break;
       default:
         throw new InvalidBotTypeException();
     }
     /* Not tested yet whether it matters if ai_dbg is enabled. Disable anyway. */
-    bwapiIni.disableVariable("ai", "ai_dbg");
+    bwapiIni.commentVariable("ai", "ai_dbg");
 
     /* Update BWAPI.ini file. */
     bwapiIni.saveTo(bwapiIniPath);
