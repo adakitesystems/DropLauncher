@@ -255,6 +255,12 @@ public class BWHeadless {
     AdakiteUtils.createDirectory(bwapiReadPath);
     AdakiteUtils.createDirectory(bwapiWritePath);
 
+    /* Create BWTA/BWTA2 paths. */
+    Path bwtaPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_PATH).resolve("BWTA");
+    Path bwta2Path = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_PATH).resolve("BWTA2");
+    AdakiteUtils.createDirectory(bwtaPath);
+    AdakiteUtils.createDirectory(bwta2Path);
+
     /* Read the BWAPI.ini file. */
     Path bwapiIniPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_INI_PATH);
     Ini bwapiIni = new Ini();
