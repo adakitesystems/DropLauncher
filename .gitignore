@@ -1,6 +1,9 @@
 # WIP theme
 src/droplauncher/mvc/view/theme/
 
+# Libraries
+lib/
+
 # Misc
 bwheadless.exe
 commit.txt
