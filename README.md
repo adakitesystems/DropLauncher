@@ -8,15 +8,14 @@ Designed to be a simple tool to aid players in setting up and playing 1v1 StarCr
 * [bwheadless.exe](https://github.com/tscmoo/bwheadless): starts a separate StarCraft instance and injects the BWAPI bot
 * [commons-io-2.5.jar](https://commons.apache.org/proper/commons-io/): Apache's Commons IO library
 * [zip4j_1.3.2.jar](http://www.lingala.net/zip4j/): zip4j library
-* [log4j-api-2.8.jar, log4j-core-2.8.jar](https://logging.apache.org/log4j/2.x/): log4j2 logger framework
 
 ## Estimated Release Date
 ~~Between 2017-02-05 and 2017-02-11.~~
 Saturday, February 18, 2017
 
 ## Pending Actions Before Release
-* Complete a few in-house tests.
-* Create an installer for binary distribution.
+* ~~Complete a few in-house tests.~~ Complete
+* ~~Compile a standalone archive for binary distribution~~ Complete
 
 ## Screenshots
 
