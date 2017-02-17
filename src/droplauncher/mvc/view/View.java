@@ -249,8 +249,6 @@ public class View implements EventHandler<DragEvent>  {
 
     this.stage.show();
 
-    this.controller.viewInitComplete();
-
     update();
   }
 
