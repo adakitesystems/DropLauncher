@@ -205,14 +205,12 @@ public class BWHeadless {
     for (Task task : tasks) {
       /* Kill bot client. */
       if (isClient && botName.contains(task.getImageName())) {
-        LOGGER.info(MessagePrefix.KILL.get() + task.getPID() + ":" + task.getImageName());
         tasklist.kill(task.getPID());
         continue;
       }
       /* Only kill tasks whose names match known associated tasks. */
       for (KillableTask kt : KillableTask.values()) {
         if (kt.toString().equalsIgnoreCase(task.getImageName())) {
-          LOGGER.info(MessagePrefix.KILL.get() + task.getPID() + ":" + task.getImageName());
           tasklist.kill(task.getPID());
           break;
         }
@@ -254,7 +252,6 @@ public class BWHeadless {
         src = this.botFile.getPath();
         dest = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_AI_PATH.toString(), this.botFile.getPath().getFileName().toString());
         AdakiteUtils.createDirectory(dest.getParent());
-        LOGGER.info(MessagePrefix.COPY.get() + src.toString() + " -> " + dest.toString());
         Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
         this.botFile.setPath(dest);
         bwapiIni.set("ai", "ai", BWAPI.BWAPI_DATA_AI_PATH.toString() + AdakiteUtils.FILE_SEPARATOR + this.botFile.getPath().getFileName().toString());
@@ -263,7 +260,6 @@ public class BWHeadless {
         /* Copy client to StarCraft root directory. */
         src = this.botFile.getPath();
         dest = Paths.get(starcraftDirectory.toString(), this.botFile.getPath().getFileName().toString());
-        LOGGER.info(MessagePrefix.COPY.get() + src.toString() + " -> " + dest.toString());
         Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
         this.botFile.setPath(dest);
         bwapiIni.commentVariable("ai", "ai");

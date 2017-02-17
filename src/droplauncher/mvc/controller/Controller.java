@@ -67,12 +67,9 @@ public class Controller {
    * @param state specified state
    */
   private void setState(State state) {
-    LOGGER.log(Debugging.getLogLevel(), Debugging.ack());
     synchronized(this.stateLock) {
-      LOGGER.log(Debugging.getLogLevel(), "lock acquired: " + this.state.toString());
       this.state = state;
     }
-    LOGGER.log(Debugging.getLogLevel(), "lock released: " + this.state.toString());
   }
 
   private void startBWHeadless() throws IOException, InvalidBotTypeException {
@@ -103,7 +100,6 @@ public class Controller {
       Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
       Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
       String copyMessage = MessagePrefix.COPY.get() + bwapiWritePath.toString() + " -> " + bwapiReadPath.toString();
-      LOGGER.info(copyMessage);
       this.view.getConsoleOutput().println(MessagePrefix.DROPLAUNCHER.get() + copyMessage);
       FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
     }
@@ -136,7 +132,6 @@ public class Controller {
       /* Clean up StarCraft directory. */
       try {
         if (this.directoryMonitor != null) {
-          LOGGER.info("clean up StarCraft directory");
           Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
           Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
           Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
@@ -146,10 +141,8 @@ public class Controller {
                 && !path.toAbsolutePath().startsWith(bwapiReadPath)) {
               /* Delete file/directory if not in the read/write directory. */
               if (AdakiteUtils.fileExists(path)) {
-                LOGGER.info(MessagePrefix.DELETE.get() + path.toString());
                 AdakiteUtils.deleteFile(path);
               } else if (AdakiteUtils.directoryExists(path)) {
-                LOGGER.info(MessagePrefix.DELETE.get() + path.toString() + File.separator);
                 FileUtils.deleteDirectory(path.toFile());
               }
             }
@@ -162,7 +155,6 @@ public class Controller {
 
     /* Save INI settings to file. */
     try {
-      LOGGER.info("save INI settings to file: " + Constants.DROPLAUNCHER_INI_PATH.toString());
       this.model.getINI().saveTo(Constants.DROPLAUNCHER_INI_PATH);
     } catch (Exception ex) {
       LOGGER.log(Debugging.getLogLevel(), "save INI configuration", ex);
@@ -178,6 +170,10 @@ public class Controller {
    * @param path specified file to process
    */
   private void processFile(Path path) {
+    if (this.state != State.IDLE) {
+      return;
+    }
+
     String ext = AdakiteUtils.getFileExtension(path).toLowerCase(Locale.US);
     if (AdakiteUtils.isNullOrEmpty(ext)) {
       return;
