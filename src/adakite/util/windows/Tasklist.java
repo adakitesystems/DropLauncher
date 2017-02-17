@@ -30,7 +30,7 @@ public class Tasklist {
    * @param pid specified process ID
    * @throws IOException if an I/O error occurs
    */
-  public void kill(String pid) throws IOException {
+  public static void kill(String pid) throws IOException {
     String[] args = new String[Windows.Program.TASKKILL.getPredefinedArgs().length + 1];
     System.arraycopy(Windows.Program.TASKKILL.getPredefinedArgs(), 0, args, 0, Windows.Program.TASKKILL.getPredefinedArgs().length);
     args[args.length - 1] = pid;

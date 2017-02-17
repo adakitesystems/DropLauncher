@@ -98,7 +98,7 @@ public class Controller {
     Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
     if (this.directoryMonitor == null) {
       this.directoryMonitor = new DirectoryMonitor(starcraftDirectory);
-      this.directoryMonitor.getIgnoreList().add("maps");
+      this.directoryMonitor.getIgnoreList().add("maps"); /* ignore "StarCraft/maps/" directory */
       this.directoryMonitor.reset();
     }
 
@@ -110,8 +110,7 @@ public class Controller {
 
     this.model.getBWHeadless().stop();
 
-    if (this.model.getINI().hasValue(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString())
-        && this.model.getINI().getValue(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString()).equalsIgnoreCase(Boolean.TRUE.toString())) {
+    if (this.model.getINI().isEnabled(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString())) {
       /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
       Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
       Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
@@ -195,7 +194,6 @@ public class Controller {
     if (AdakiteUtils.isNullOrEmpty(ext)) {
       return;
     }
-
     switch (ext) {
       case "zip":
         processZipFile(path);

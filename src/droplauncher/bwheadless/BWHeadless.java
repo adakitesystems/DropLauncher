@@ -40,6 +40,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 /**
@@ -185,7 +186,7 @@ public class BWHeadless {
     if (this.botFile.getType() == BotFile.Type.CLIENT) {
       /* Compile bot client arguments. */
       CommandBuilder clientCommand = new CommandBuilder();
-      switch (AdakiteUtils.getFileExtension(this.botFile.getPath())) {
+      switch (AdakiteUtils.getFileExtension(this.botFile.getPath()).toLowerCase(Locale.US)) {
         case "exe":
           clientCommand.setPath(this.botFile.getPath().toAbsolutePath());
           break;
@@ -199,10 +200,11 @@ public class BWHeadless {
           clientCommand.addArg(this.botFile.getPath().toAbsolutePath().toString());
           break;
         default:
-          throw new InvalidBotTypeException("bot file is not EXE or JAR type");
+          throw new InvalidBotTypeException("bot file type is not EXE or JAR");
       }
-      this.botProcess.setCWD(starcraftDirectory);
-      this.botProcess.setProcessName(MessagePrefix.CLIENT.toString());
+      this.botProcess
+          .setCWD(starcraftDirectory)
+          .setProcessName(MessagePrefix.CLIENT.toString());
       this.botProcess.start(clientCommand.get(), co);
     }
   }
@@ -214,21 +216,18 @@ public class BWHeadless {
    */
   public void stop() throws IOException {
     /* Kill new tasks that were started with bwheadless. */
-    this.taskTracker.update();
-    ArrayList<Task> tasks = this.taskTracker.getNewTasks();
-    Tasklist tasklist = new Tasklist();
-    boolean isClient = getBotType() == BotFile.Type.CLIENT;
     String botName = getBotPath().getFileName().toString();
-    for (Task task : tasks) {
+    this.taskTracker.update();
+    for (Task task : this.taskTracker.getNewTasks()) {
       /* Kill bot client. */
-      if (isClient && botName.contains(task.getImageName())) {
-        tasklist.kill(task.getPID());
+      if (getBotType() == BotFile.Type.CLIENT && botName.contains(task.getImageName())) {
+        Tasklist.kill(task.getPID());
         continue;
       }
       /* Only kill tasks whose names match known associated tasks. */
       for (KillableTask kt : KillableTask.values()) {
         if (kt.toString().equalsIgnoreCase(task.getImageName())) {
-          tasklist.kill(task.getPID());
+          Tasklist.kill(task.getPID());
           break;
         }
       }
@@ -265,7 +264,7 @@ public class BWHeadless {
     Path dest;
     switch (this.botFile.getType()) {
       case DLL:
-        /* Copy DLL to bwapi-data directory. */
+        /* Copy DLL to "bwapi-data/AI/" directory. */
         src = this.botFile.getPath();
         dest = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_AI_PATH.toString(), this.botFile.getPath().getFileName().toString());
         AdakiteUtils.createDirectory(dest.getParent());
@@ -292,8 +291,8 @@ public class BWHeadless {
 
     /* Copy misc files to common bot I/O directories. */
     for (Path path : this.extraBotFiles) {
-      Files.copy(path, Paths.get(bwapiReadPath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
-      Files.copy(path, Paths.get(bwapiWritePath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
+//      Files.copy(path, Paths.get(bwapiReadPath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
+//      Files.copy(path, Paths.get(bwapiWritePath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
       Files.copy(path, Paths.get(bwapiAiPath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
     }
   }
@@ -319,11 +318,7 @@ public class BWHeadless {
    */
   public Path getBwapiDirectory() {
     Path starcraftDirectory = getStarcraftDirectory();
-    if (starcraftDirectory != null) {
-      return starcraftDirectory.resolve(BWAPI.BWAPI_DATA_PATH);
-    } else {
-      return null;
-    }
+    return (starcraftDirectory == null) ? null : starcraftDirectory.resolve(BWAPI.BWAPI_DATA_PATH);
   }
 
   public void setStarcraftExe(String starcraftExe) {
