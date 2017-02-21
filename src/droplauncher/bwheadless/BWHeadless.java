@@ -19,6 +19,7 @@ package droplauncher.bwheadless;
 
 import adakite.debugging.Debugging;
 import adakite.ini.Ini;
+import adakite.ini.IniParseException;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.exception.InvalidBotTypeException;
@@ -153,7 +154,7 @@ public class BWHeadless {
    * @throws IOException if an I/O error occurs
    * @throws InvalidBotTypeException if the bot type is not recognized
    */
-  public void start(ConsoleOutput co) throws IOException, InvalidBotTypeException {
+  public void start(ConsoleOutput co) throws IOException, InvalidBotTypeException, IniParseException {
     this.taskTracker.reset();
 
     Path starcraftDirectory = getStarcraftDirectory();
@@ -246,7 +247,7 @@ public class BWHeadless {
    * @throws IOException if an I/O error occurs
    * @throws InvalidBotTypeException if the bot type is not recognized
    */
-  private void configureBwapi(Path starcraftDirectory) throws IOException, InvalidBotTypeException {
+  private void configureBwapi(Path starcraftDirectory) throws IOException, InvalidBotTypeException, IniParseException {
     /* Create common BWAPI paths. */
     Path bwapiAiPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_AI_PATH);
     Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
@@ -264,7 +265,7 @@ public class BWHeadless {
     /* Read the BWAPI.ini file. */
     Path bwapiIniPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_INI_PATH);
     Ini bwapiIni = new Ini();
-    bwapiIni.read(bwapiIniPath);
+    bwapiIni.parse(bwapiIniPath);
 
     Path src;
     Path dest;
@@ -293,7 +294,7 @@ public class BWHeadless {
     bwapiIni.commentVariable("ai", "ai_dbg");
 
     /* Update BWAPI.ini file. */
-    bwapiIni.saveTo(bwapiIniPath);
+    bwapiIni.store(bwapiIniPath);
 
     /* Copy misc files to common bot I/O directories. */
     for (Path path : this.extraBotFiles) {

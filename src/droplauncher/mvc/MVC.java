@@ -21,7 +21,6 @@ import adakite.debugging.Debugging;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.View;
-import java.io.IOException;
 import java.util.logging.Logger;
 import javafx.stage.Stage;
 
@@ -45,7 +44,7 @@ public class MVC {
 
     try {
       this.model.setup();
-    } catch (IOException ex) {
+    } catch (Exception ex) {
       LOGGER.log(Debugging.getLogLevel(), null, ex);
     }
   }

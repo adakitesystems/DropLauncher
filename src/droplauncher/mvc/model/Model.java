@@ -18,6 +18,7 @@
 package droplauncher.mvc.model;
 
 import adakite.ini.Ini;
+import adakite.ini.IniParseException;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
@@ -37,11 +38,11 @@ public class Model {
     this.bwheadless.setINI(this.ini);
   }
 
-  public void setup() throws IOException {
+  public void setup() throws IOException, IniParseException {
     if (!AdakiteUtils.fileExists(Constants.DROPLAUNCHER_INI_PATH)) {
       AdakiteUtils.createFile(Constants.DROPLAUNCHER_INI_PATH);
     }
-    this.ini.read(Constants.DROPLAUNCHER_INI_PATH);
+    this.ini.parse(Constants.DROPLAUNCHER_INI_PATH);
     parseSettings(this.ini);
     this.bwheadless.parseSettings(this.ini);
   }

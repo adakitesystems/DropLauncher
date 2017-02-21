@@ -18,6 +18,7 @@
 package droplauncher.mvc.controller;
 
 import adakite.debugging.Debugging;
+import adakite.ini.IniParseException;
 import adakite.md5sum.MD5Checksum;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
@@ -89,7 +90,7 @@ public class Controller {
     }
   }
 
-  private void startBWHeadless() throws IOException, InvalidBotTypeException {
+  private void startBWHeadless() throws IOException, InvalidBotTypeException, IniParseException {
     setState(State.RUNNING);
 
     this.view.getConsoleOutput().println(MessagePrefix.DROPLAUNCHER.toString() + ": connecting bot to StarCraft");
@@ -171,7 +172,7 @@ public class Controller {
 
     /* Save INI settings to file. */
     try {
-      this.model.getINI().saveTo(Constants.DROPLAUNCHER_INI_PATH);
+      this.model.getINI().store(Constants.DROPLAUNCHER_INI_PATH);
     } catch (Exception ex) {
       LOGGER.log(Debugging.getLogLevel(), "save INI configuration", ex);
     }

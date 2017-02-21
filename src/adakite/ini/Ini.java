@@ -1,442 +1,343 @@
 package adakite.ini;
 
-import adakite.debugging.Debugging;
+import adakite.settings.Settings;
 import adakite.util.AdakiteUtils;
 import adakite.util.MemoryFile;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Enumeration;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
-/**
- * Class for using the Windows INI protocol to store settings in memory,
- * write settings to INI files, or reading and parsing INI files.
- */
 public class Ini {
+
+  private static final Logger LOGGER = Logger.getLogger(Ini.class.getName());
+
+  private class Section {
+
+    private String name;
+    private Settings settings;
+
+    private Section() {}
+
+    public Section(String name) {
+      this.name = name;
+      this.settings = new Settings();
+    }
+
+    public String getName() {
+      return this.name;
+    }
+
+    public Settings getSettings() {
+      return this.settings;
+    }
+
+  }
 
   public static final String FILE_EXTENSION = ".ini";
   public static final String VARIABLE_DELIMITER = "=";
   public static final String COMMENT_DELIMITER = ";";
+  public static final String NULL_SECTION_NAME = "";
 
   private MemoryFile memoryFile;
-  private HashMap<String, IniSection> sections;
+  private ConcurrentHashMap<String, Section> sections;
 
   public Ini() {
     this.memoryFile = new MemoryFile();
-    this.sections = new HashMap<>();
-
+    this.sections = new ConcurrentHashMap<>();
     clear();
   }
 
-  public HashMap<String, IniSection> getSections() {
-    return this.sections;
-  }
-
-  /**
-   * Clears relevant class members and, specifically, the HashMap object
-   * which contains the Section objects. Always adds a section with no
-   * name to hold the place of variables which do not belong to any section.
-   */
   private void clear() {
-    this.memoryFile.getLines().clear();
+    this.memoryFile.clear();
     this.sections.clear();
-    this.sections.put(IniSectionName.NONE.toString(), new IniSection());
+    this.sections.put(NULL_SECTION_NAME, new Section(NULL_SECTION_NAME));
   }
 
   /**
-   * Reads the specified INI file and parses its variables.
+   * Parses the specified INI file.
    *
-   * @param path specified path to the INI file
-   * @throws IOException
+   * @param path path to the specified file to parse
+   * @throws IOException if an I/O error occurs
    */
-  public void read(Path path) throws IOException {
+  public void parse(Path path) throws IOException, IniParseException {
     clear();
 
-    /* Create a copy of the file into a MemoryFile object. */
     this.memoryFile.read(path);
 
-    /* Parse sections and variables into the class HashMap object. */
-    String currSection = IniSectionName.NONE.toString();
-    List<String> lines = this.memoryFile.getLines();
-    for (int i = 0; i < lines.size(); i++) {
-      String line = lines.get(i);
-      line = line.trim();
-      if (line.isEmpty() || line.startsWith(COMMENT_DELIMITER)) {
+    String currSection = NULL_SECTION_NAME;
+    int i = 0;
+    while (i < this.memoryFile.getLines().size()) {
+      String line = this.memoryFile.getLines().get(i);
+      if (AdakiteUtils.isNullOrEmpty(line)
+          || AdakiteUtils.isNullOrEmpty(removeComment(line), true)) {
+        /* Line does not contain any data. Skip it. */
+        i++;
         continue;
       }
-      int commentIndex = line.indexOf(COMMENT_DELIMITER.charAt(0));
-      if (commentIndex > 0) {
-        line = line.substring(0, commentIndex).trim();
+      if (isSectionHeader(line)) {
+        /* Add the section and read the next line. */
+        String sectionName = parseSectionName(line);
+        this.sections.put(sectionName, new Section(sectionName));
+        currSection = sectionName;
+        i++;
+        continue;
       }
-      if (line.startsWith("[")) {
-        if (!line.endsWith("]")) {
-          /* Skip entire section if something appears off with
-             the section header. */
-          i++;
-          while (!lines.get(i).startsWith("[") && i < lines.size()) {
-            i++;
-          }
-          if (i < lines.size()) {
-            /* Since we are not at EOF, rewind so the next loop iteration
-               can read this line as a new section. */
-            i--;
-            /* This is an intentional unnecessary continue statement. */
-            continue;
-          }
-        } else {
-          /* New section */
-          String name = line.substring(1, line.length() - 1).trim();
-          this.sections.put(name, new IniSection(name));
-          currSection = name;
-        }
-      } else {
-        /* New variable */
-        int varIndex = line.indexOf(VARIABLE_DELIMITER.charAt(0));
-        if (varIndex < 0) {
-          /* Skip line if the variable delimiter is not found. */
-          continue;
-        }
-        String key = line.substring(0, varIndex).trim();
-        String val = line.substring(varIndex + VARIABLE_DELIMITER.length(), line.length()).trim();
-        this.sections.get(currSection).getKeys().put(key, val);
+      /* Add the variable. */
+      String key = parseKey(line);
+      String value = parseValue(line);
+      if (AdakiteUtils.isNullOrEmpty(key)) {
+        throw new IniParseException(path.toString() + ":" + (i + 1) + ":" + line);
       }
+      if (AdakiteUtils.isNullOrEmpty(value)) {
+        value = "";
+      }
+      this.sections.get(currSection).getSettings().set(key, value);
+      i++;
     }
   }
 
-  /**
-   * Sets the specified variable in memory.
-   *
-   * @param name specified section name
-   * @param key specified key
-   * @param val specified value
-   */
-  public void set(String name, String key, String val) {
-    if (name == null) {
-      name = "";
+  public String getValue(String name, String key) {
+    if (AdakiteUtils.isNullOrEmpty(name)) {
+      name = NULL_SECTION_NAME;
     }
-    if (AdakiteUtils.isNullOrEmpty(key, true)) {
-      throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("key"));
+    if (AdakiteUtils.isNullOrEmpty(key)) {
+      throw new IllegalArgumentException("key cannot be null or empty");
     }
-    if (val == null) {
-      val = "";
+    if (!this.sections.containsKey(name)) {
+      return null;
     }
+    return this.sections.get(name).getSettings().getValue(key);
+  }
 
+  public boolean hasValue(String name, String key) {
+    return (getValue(name, key) != null);
+  }
+
+  public boolean isEnabled(String name, String key) {
+    return (hasValue(name, key) && getValue(name, key).equalsIgnoreCase(Boolean.TRUE.toString()));
+  }
+
+  public void setEnabled(String name, String key, boolean enabled) throws IniParseException {
+    set(name, key, Boolean.toString(enabled));
+  }
+
+  public void set(String name, String key, String value) {
     uncommentVariable(name, key);
 
-    boolean sectionExists = this.sections.containsKey(name);
-    boolean keyExists = false;
-
-    if (sectionExists) {
-      /* If the section already exists, remove the key from the section.
-         The HashMap will check whether or not the key exists before removing. */
-      keyExists = ((this.sections.get(name).getKeys().remove(key)) != null);
+    int sectionIndex = getSectionIndex(name);
+    if (sectionIndex < 0) {
+      /* Add section and variable to settings. */
+      this.sections.put(name, new Section(name));
+      this.sections.get(name).getSettings().set(key, value);
+      /* Add section and variable to memory file. */
+      String line = key + VARIABLE_DELIMITER + value;
+      this.memoryFile.getLines().add("[" + name + "]");
+      this.memoryFile.getLines().add(line);
     } else {
-      /* Add the section. */
-      this.sections.put(name, new IniSection(name));
-    }
-
-    /* Add the variable to the section. */
-    this.sections.get(name).getKeys().put(key, val);
-
-    /* Modify the memory file. */
-    if (sectionExists) {
-      int sectionIndex = getSectionIndex(name);
-      if (keyExists) {
-        /* Update the variable in-place. */
-        int keyIndex = getKeyIndex(name, key);
-        String line = this.memoryFile.getLines().get(keyIndex);
-        String comment = getComment(line);
-        String updated = key + VARIABLE_DELIMITER + val;
-        if (!AdakiteUtils.isNullOrEmpty(comment)) {
-          updated += " " + COMMENT_DELIMITER + comment.trim();
-        }
-        this.memoryFile.getLines().set(keyIndex, updated);
-      } else {
-        /* Find the end of the section. */
-        int i;
-        if (name.equalsIgnoreCase(IniSectionName.NONE.toString())) {
-          i = sectionIndex;
-        } else {
-          i = sectionIndex + 1;
-        }
-        while (i < this.memoryFile.getLines().size()
-            && !(this.memoryFile.getLines().get(i).startsWith("[")
-              && this.memoryFile.getLines().get(i).endsWith("]"))) {
+      int keyIndex = getKeyIndex(name, key);
+      if (keyIndex < 0) {
+        /* Add key to settings. */
+        this.sections.get(name).getSettings().set(key, value);
+        /* Add key to the end of the section in the memory file. */
+        int i = sectionIndex + 1;
+        while (i < this.memoryFile.getLines().size() && !isSectionHeader(this.memoryFile.getLines().get(i))) {
           i++;
         }
-        /* Add the variable. */
-        this.memoryFile.getLines().add(i, key + VARIABLE_DELIMITER + val);
-      }
-    } else {
-      /* Add the section at the end of the file and add the variable.
-         By default, the INI protocol does not accept blank lines. So,
-         don't separate the new section from the previous section. */
-      String formattedName = "[" + name + "]";
-      this.memoryFile.getLines().add(formattedName);
-      this.memoryFile.getLines().add(key + VARIABLE_DELIMITER + val);
-    }
-  }
-
-  /**
-   * If the sepcified variable is present in the INI file but disabled via
-   * a comment character, it will be enabled by removing the comment character.
-   *
-   * @param name specified section name
-   * @param key specified key
-   */
-  public void uncommentVariable(String name, String key) {
-    if (name == null) {
-      name = IniSectionName.NONE.toString();
-    }
-    if (AdakiteUtils.isNullOrEmpty(key, true)) {
-      throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("key"));
-    }
-
-    if (this.sections.containsKey(name)) {
-      int sectionIndex = getSectionIndex(name);
-      /* Section exists. */
-      if (!this.sections.get(name).getKeys().containsKey(key)) {
-        /* Variable needs to be uncommented. */
-        for (int i = sectionIndex; i < this.memoryFile.getLines().size(); i++) {
-          String line = this.memoryFile.getLines().get(i);
-          line = line.trim();
-          if (line.startsWith(COMMENT_DELIMITER)
-              && line.contains(key)
-              && line.contains(VARIABLE_DELIMITER)
-              && line.indexOf(COMMENT_DELIMITER.charAt(0)) < line.indexOf(key)
-              && line.indexOf(key) < line.indexOf(VARIABLE_DELIMITER.charAt(0))) {
-            int commentIndex = line.indexOf(COMMENT_DELIMITER.charAt(0));
-            line = line.substring(commentIndex + COMMENT_DELIMITER.length(), line.length()).trim();
-            this.memoryFile.getLines().set(i, line);
-            break;
-          }
+        if (i >= this.memoryFile.getLines().size()) {
+          /* End of file reached. Add here. */
+          String line = key + VARIABLE_DELIMITER + value;
+          this.memoryFile.getLines().add(line);
+        } else {
+          /* Found end of section. Add here. */
+          i--; /* Rewind from current header to end of previous section. */
+          String line = key + VARIABLE_DELIMITER + value;
+          this.memoryFile.getLines().add(i, line);
         }
+      } else {
+        /* Change key to new value in settings. */
+        this.sections.get(name).getSettings().set(key, value);
+        /* Change key to new value in memory file. */
+        String parsedKey = parseKey(this.memoryFile.getLines().get(keyIndex));
+        String line = parsedKey + VARIABLE_DELIMITER + value;
+        this.memoryFile.getLines().set(keyIndex, line);
       }
     }
   }
 
   /**
-   * If the sepcified variable is present in the INI file and enabled,
-   * it will be disabled by adding a comment character to the beginning of
-   * the line.
+   * Disables the variable by placing a character delimiter at the beginning
+   * of the line.
    *
    * @param name specified section name
    * @param key specified key
    */
   public void commentVariable(String name, String key) {
-    if (name == null) {
-      name = "";
-    }
-
-    if (AdakiteUtils.isNullOrEmpty(key, true)) {
-      throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("key"));
-    }
-
     int keyIndex = getKeyIndex(name, key);
     if (keyIndex < 0) {
-      /* Key not found. */
+//      throw new IniParseException("variable not found: section=" + name + ", key=" + key);
       return;
     }
-
-    /* Key found, disable it. */
-    String line = this.memoryFile.getLines().get(keyIndex);
-    line = COMMENT_DELIMITER + line;
+    String line = COMMENT_DELIMITER + this.memoryFile.getLines().get(keyIndex).trim();
     this.memoryFile.getLines().set(keyIndex, line);
+    this.sections.get(name).settings.remove(key);
   }
 
-  /**
-   * Tests if the current variable is set to TRUE. Note: This is different
-   * from {@link #uncommentVariable(java.lang.String, java.lang.String)} and
-   * {@link #commentVariable(java.lang.String, java.lang.String)}.
-   *
-   * @param name specified section name
-   * @param key specified key
-   * @see #setEnabled(java.lang.String, java.lang.String, boolean)
-   */
-  public boolean isEnabled(String name, String key) {
-    return (hasValue(name, key) && getValue(name, key).equalsIgnoreCase(Boolean.TRUE.toString()));
-  }
-
-  /**
-   * Sets the current variable to the specified boolean value. Note: this is different
-   * from {@link #uncommentVariable(java.lang.String, java.lang.String)} and
-   * {@link #commentVariable(java.lang.String, java.lang.String)}.
-   *
-   * @param name specified section name
-   * @param key specified key
-   * @param enabled whether the variable should be set to TRUE
-   * @see #isEnabled(java.lang.String, java.lang.String)
-   */
-  public void setEnabled(String name, String key, boolean enabled) {
-    String val = Boolean.toString(enabled);
-    set(name, key, val);
-  }
-
-  /**
-   * Tests whether a value exists for the specified name and key.
-   *
-   * @param name specified section name
-   * @param key specified key
-   */
-  public boolean hasValue(String name, String key) {
-    return !AdakiteUtils.isNullOrEmpty(getValue(name, key));
-  }
-
-  /**
-   * Returns the value assoicated with the specified INI section and key.
-   *
-   * @param name specified section name
-   * @param key specified key
-   * @return
-   *     the value assoicated with the specified INI section and key if found,
-   *     otherwise null
-   */
-  public String getValue(String name, String key) {
-    if (name == null) {
-      name = "";
-    }
-    if (AdakiteUtils.isNullOrEmpty(key, true)) {
-      throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("key"));
-    }
-
-    if (this.sections.containsKey(name)
-        && this.sections.get(name).getKeys().containsKey(key)) {
-      return this.sections.get(name).getKeys().get(key);
-    } else {
-      return null;
-    }
-  }
-
-  /**
-   * Returns the section line index.
-   *
-   * @param name specified section name
-   * @return
-   *     the section line index if found,
-   *     otherwise -1
-   */
-  private int getSectionIndex(String name) {
-    if (AdakiteUtils.isNullOrEmpty(name, true) && this.memoryFile.getLines() != null) {
-      return 0;
-    }
-
-    for (int i = 0; i < this.memoryFile.getLines().size(); i++) {
-      String line = this.memoryFile.getLines().get(i);
-      line = line.trim();
-      if (line.startsWith("[" + name + "]")) {
-        return i;
-      }
-    }
-
-    return -1;
-  }
-
-  /**
-   * Returns the key line index.
-   *
-   * @param name specified section name
-   * @param key specified key
-   * @return
-   *     the key line index if found,
-   *     otherwise -1
-   */
-  private int getKeyIndex(String name, String key) {
-    if (name == null) {
-      name = "";
-    }
-    if (AdakiteUtils.isNullOrEmpty(key, true)) {
-      throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("key"));
-    }
-
+  public void uncommentVariable(String name, String key) {
     int sectionIndex = getSectionIndex(name);
     if (sectionIndex < 0) {
-      return -1;
+//      throw new IniParseException("section not found: " + name);
+      return;
     }
-    for (int i = sectionIndex; i < this.memoryFile.getLines().size(); i++) {
-      String line = this.memoryFile.getLines().get(i);
-      line = line.trim();
-      line = removeComment(line);
-      if ((line.startsWith(key + " ") || line.startsWith(key + VARIABLE_DELIMITER))
-          && line.contains(VARIABLE_DELIMITER)) {
-        return i;
+    if (getKeyIndex(name, key) >= 0) {
+//      throw new IniParseException("variable is not commented: section=" + name + ", key=" + key);
+      return;
+    }
+    for (int i = sectionIndex + 1; i < this.memoryFile.getLines().size(); i++) {
+      String line = this.memoryFile.getLines().get(i).trim();
+      if (AdakiteUtils.isNullOrEmpty(line)) {
+        continue;
+      }
+      if (isSectionHeader(line)) {
+//        throw new IniParseException("reached end of section before uncommenting variable: section=" + name + ", key=" + key);
+        return;
+      }
+      int commentIndex = line.indexOf(COMMENT_DELIMITER);
+      if (commentIndex < 0) {
+        continue;
+      }
+      line = line.substring(commentIndex + 1, line.length()).trim();
+      String parsedKey = parseKey(line);
+      String parsedValue = parseValue(line);
+      if (AdakiteUtils.isNullOrEmpty(parsedKey)) {
+        continue;
+      }
+      if (parsedKey.equalsIgnoreCase(key)) {
+        this.memoryFile.getLines().set(i, line);
+        this.sections.get(name).settings.set(parsedKey, parsedValue);
+        return;
       }
     }
+//    throw new IniParseException("reached end of file before uncommenting variable: section=" + name + ", key=" + key);
+  }
 
-    return -1;
+  public void store(Path path) throws IOException {
+    this.memoryFile.dumpToFile(path);
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    for (String name : this.sections.keySet()) {
+      sb.append("[" + name + "]" + AdakiteUtils.newline());
+      Section section = this.sections.get(name);
+      Enumeration<String> keys = section.getSettings().getKeys();
+      while (keys.hasMoreElements()) {
+        String key = keys.nextElement();
+        sb.append("  " + key + VARIABLE_DELIMITER + section.getSettings().getValue(key) + AdakiteUtils.newline());
+      }
+    }
+    return sb.toString();
+  }
+
+  private boolean isSectionHeader(String str) {
+    if (AdakiteUtils.isNullOrEmpty(str)) {
+      return false;
+    }
+    return (str.length() >= 3 && str.startsWith("[") && str.endsWith("]"));
+  }
+
+  private String parseSectionName(String str) {
+    return (str.length() < 3) ? null : str.substring(1, str.length() - 1).trim();
   }
 
   /**
-   * Saves the current INI configuration to the specified file.
+   * Returns the key in the specified string.
    *
-   * @param path specified path to the file
-   * @throws IOException if an I/O error occurs
+   * @param str specified string
+   * @return
+   *     the key in the specified string if it exists,
+   *     otherwise null
    */
-  public void saveTo(Path path) throws IOException {
-    this.memoryFile.dumpToFile(path);
+  private String parseKey(String str) {
+    int varIndex = str.indexOf(VARIABLE_DELIMITER);
+    return (varIndex < 1) ? null : str.substring(0, varIndex).trim();
+  }
+
+  /**
+   * Returns the value in the specified string.
+   *
+   * @param str specified string
+   * @return
+   *     the non-empty value in the specified string if it exists,
+   *     otherwise null if a key does not exist,
+   *     otherwise an empty string if the value is empty
+   */
+  private String parseValue(String str) {
+    int varIndex = str.indexOf(VARIABLE_DELIMITER);
+    if (varIndex < 1) {
+      return null;
+    } else if (varIndex + 1 >= str.length()) {
+      return "";
+    } else {
+      return str.substring(varIndex + 1, str.length()).trim();
+    }
   }
 
   /**
    * Returns the specified string excluding a comment if present.
    *
-   * @param line specified string to scan
+   * @param str specified string to scan
    * @return
    *     the specified string excluding a comment if present,
    *     otherwise an empty string
    */
-  public static String removeComment(String line) {
-    if (AdakiteUtils.isNullOrEmpty(line, true)) {
-      return "";
-    }
-
-    String ret = line.trim();
-
-    int commentIndex = ret.indexOf(COMMENT_DELIMITER.charAt(0));
-    if (commentIndex == 0) {
-      return "";
-    } else if (commentIndex > 0) {
-      ret = ret.substring(0, commentIndex).trim();
-    }
-
-    return ret;
+  private String removeComment(String str) {
+    int commentIndex = str.indexOf(COMMENT_DELIMITER.charAt(0));
+    return (commentIndex < 0) ? str : str.substring(0, commentIndex).trim();
   }
 
-  /**
-   * Scans the specified string for a comment and returns that string.
-   *
-   * @param str specified string to scan
-   * @return
-   *     the comment if present,
-   *     otherwise null
-   */
-  public static String getComment(String str) {
-    String ret = str.trim();
-
-    int commentIndex = ret.indexOf(COMMENT_DELIMITER.charAt(0));
-    if (commentIndex < 0) {
-      return null;
-    }
-    ret = ret.substring(commentIndex, ret.length()).trim();
-    if (ret.length() < 2) {
-      /* Comment only contains the comment delimiter. */
-      return null;
-    }
-
-    return ret;
-  }
-
-  /**
-   * Prints the contents of the INI configuration to STDOUT.
-   */
-  public void debug() {
-    StringBuilder sb = new StringBuilder(getSections().size() + getSections().keySet().size());
-    for (String name : getSections().keySet()) {
-      IniSection section = getSections().get(name);
-      sb.append("[").append(section.getName()).append("]").append(AdakiteUtils.newline());
-      for (String key : section.getKeys().keySet()) {
-        sb.append("key" + VARIABLE_DELIMITER).append(section.getKeys().get(key)).append(AdakiteUtils.newline());
+  private int getSectionIndex(String name) {
+    for (int i = 0; i < this.memoryFile.getLines().size(); i++) {
+      String line = this.memoryFile.getLines().get(i);
+      if (AdakiteUtils.isNullOrEmpty(line)
+          || AdakiteUtils.isNullOrEmpty(removeComment(line), true)) {
+        continue;
+      }
+      if (isSectionHeader(line) && parseSectionName(line).equalsIgnoreCase(name)) {
+        return i;
       }
     }
-    System.out.println(sb.toString());
+    return -1;
+  }
+
+  private String getComment(String str) {
+    int commentIndex = str.indexOf(COMMENT_DELIMITER);
+    return (commentIndex < 0) ? null : str.substring(commentIndex + 1, str.length()).trim();
+  }
+
+  private int getKeyIndex(String name, String key) {
+    int sectionIndex = getSectionIndex(name);
+    if (sectionIndex < 0) {
+      return -1;
+    }
+    for (int i = sectionIndex + 1; i < this.memoryFile.getLines().size(); i++) {
+      String line = this.memoryFile.getLines().get(i);
+      if (AdakiteUtils.isNullOrEmpty(line)
+          || AdakiteUtils.isNullOrEmpty(removeComment(line), true)) {
+        continue;
+      }
+      if (isSectionHeader(line)) {
+        /* End of section reached. */
+        return -1;
+      }
+      String parsedKey = parseKey(line);
+      if (parsedKey.equalsIgnoreCase(key)) {
+        return i;
+      }
+    }
+    return -1;
   }
 
 }
