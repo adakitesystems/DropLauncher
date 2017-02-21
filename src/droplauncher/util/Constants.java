@@ -39,7 +39,7 @@ import java.nio.file.Paths;
 public class Constants {
 
   public static final String PROGRAM_NAME = "DropLauncher";
-  public static final String PROGRAM_VERSION = "0.2.18a";
+  public static final String PROGRAM_VERSION = "0.2.19a";
   public static final String PROGRAM_AUTHOR = "Adakite";
   public static final String PROGRAM_TITLE = PROGRAM_NAME + " v" + PROGRAM_VERSION;
   public static final String PROGRAM_GITHUB = "https://github.com/AdakiteSystems/DropLauncher";

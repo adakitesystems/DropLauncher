@@ -17,6 +17,7 @@
 
 package droplauncher.mvc.view;
 
+import adakite.debugging.Debugging;
 import adakite.ini.Ini;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
@@ -25,6 +26,7 @@ import droplauncher.util.Constants;
 import droplauncher.util.SettingsKey;
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -41,6 +43,8 @@ import javafx.stage.Stage;
  * Class for the specific main settings popup window.
  */
 public class SettingsWindow {
+
+  private static final Logger LOGGER = Logger.getLogger(SettingsWindow.class.getName());
 
   private Stage stage;
   private Scene scene;
@@ -78,7 +82,7 @@ public class SettingsWindow {
       try {
         this.ini.setEnabled(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString(), this.chkKeepClientWindow.isSelected());
       } catch (Exception ex) {
-        /* Do nothing. */
+        LOGGER.log(Debugging.getLogLevel(), null, ex);
       }
     });
 
@@ -92,7 +96,7 @@ public class SettingsWindow {
       try {
         this.ini.setEnabled(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString(), this.chkBwapiWriteRead.isSelected());
       } catch (Exception ex) {
-        /* Do nothing. */
+        LOGGER.log(Debugging.getLogLevel(), null, ex);
       }
     });
 
@@ -106,7 +110,7 @@ public class SettingsWindow {
       try {
         this.ini.setEnabled(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.CLEAN_SC_DIR.toString(), this.chkCleanStarcraftDirectory.isSelected());
       } catch (Exception ex) {
-        /* Do nothing. */
+        LOGGER.log(Debugging.getLogLevel(), null, ex);
       }
     });
 
@@ -158,7 +162,7 @@ public class SettingsWindow {
     try {
       this.scene.getStylesheets().add(View.DEFAULT_CSS);
     } catch (Exception ex) {
-      /* Do nothing. */
+      LOGGER.log(Debugging.getLogLevel(), null, ex);
     }
 
     this.stage = new Stage();
