@@ -1,6 +1,6 @@
 # DropLauncher
 
-## Version 0.2.17a has been released!
+## Version 0.2.18a has been released!
 
 [Download](https://github.com/adakitesystems/DropLauncher/releases)
 
