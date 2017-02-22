@@ -99,7 +99,9 @@ public class Controller {
     Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
     if (this.directoryMonitor == null) {
       this.directoryMonitor = new DirectoryMonitor(starcraftDirectory);
-      this.directoryMonitor.getIgnoreList().add("maps"); /* ignore "StarCraft/maps/" directory */
+      this.directoryMonitor.getIgnoreList().add("maps"); /* ignore any "*maps*" file/directory */
+      this.directoryMonitor.getIgnoreList().add("bwta"); /* ignore any "*bwta*" file/directory */
+      this.directoryMonitor.getIgnoreList().add("bwta2"); /* ignore any "*bwta2*" file/directory */
       this.directoryMonitor.reset();
     }
 
