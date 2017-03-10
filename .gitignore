@@ -12,6 +12,7 @@ tmp/
 droplauncher.ini
 droplauncher.log
 gitlog.txt
+fatjar/
 
 # Checkstyle
 checkstyle/checkstyle-7.5.1-all.jar
