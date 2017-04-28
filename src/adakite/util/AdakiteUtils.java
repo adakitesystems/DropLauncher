@@ -67,24 +67,6 @@ public class AdakiteUtils {
   }
 
   /**
-   * Returns the integer value of the specified string.
-   *
-   * @param str the specified string to convert to an integer
-   * @return
-   *     the integer value of the specified string,
-   *     otherwise Optional.empty() if an error occurs
-   */
-  public static Optional<Integer> toInteger(String str) {
-    try {
-      int i = Integer.parseInt(str);
-      Optional<Integer> val = Optional.of(i);
-      return val;
-    } catch (Exception ex) {
-      return Optional.empty();
-    }
-  }
-
-  /**
    * Returns n number of system-dependent newline characters.
    *
    * @param n number of newline characters to return
