@@ -13,7 +13,7 @@ public class Ini {
 
   private static final Logger LOGGER = Logger.getLogger(Ini.class.getName());
 
-  private class Section {
+  private static class Section {
 
     private String name;
     private Settings settings;
@@ -60,6 +60,7 @@ public class Ini {
    *
    * @param path path to the specified file to parse
    * @throws IOException if an I/O error occurs
+   * @throws IniParseException
    */
   public void parse(Path path) throws IOException, IniParseException {
     clear();
@@ -74,27 +75,25 @@ public class Ini {
           || AdakiteUtils.isNullOrEmpty(removeComment(line), true)) {
         /* Line does not contain any data. Skip it. */
         i++;
-        continue;
-      }
-      if (isSectionHeader(line)) {
-        /* Add the section and read the next line. */
+      } else if (isSectionHeader(line)) {
+        /* Add the section and go to the next loop iteration. */
         String sectionName = parseSectionName(line);
         this.sections.put(sectionName, new Section(sectionName));
         currSection = sectionName;
         i++;
-        continue;
+      } else {
+        /* Add the variable. */
+        String key = parseKey(line);
+        String value = parseValue(line);
+        if (AdakiteUtils.isNullOrEmpty(key)) {
+          throw new IniParseException(path.toString() + ":" + (i + 1) + ":" + line);
+        }
+        if (AdakiteUtils.isNullOrEmpty(value)) {
+          value = "";
+        }
+        this.sections.get(currSection).getSettings().set(key, value);
+        i++;
       }
-      /* Add the variable. */
-      String key = parseKey(line);
-      String value = parseValue(line);
-      if (AdakiteUtils.isNullOrEmpty(key)) {
-        throw new IniParseException(path.toString() + ":" + (i + 1) + ":" + line);
-      }
-      if (AdakiteUtils.isNullOrEmpty(value)) {
-        value = "";
-      }
-      this.sections.get(currSection).getSettings().set(key, value);
-      i++;
     }
   }
 
@@ -159,9 +158,15 @@ public class Ini {
         /* Change key to new value in settings. */
         this.sections.get(name).getSettings().set(key, value);
         /* Change key to new value in memory file. */
-        String parsedKey = parseKey(this.memoryFile.getLines().get(keyIndex));
-        String line = parsedKey + VARIABLE_DELIMITER + value;
-        this.memoryFile.getLines().set(keyIndex, line);
+        String line = this.memoryFile.getLines().get(keyIndex);
+        String comment = getComment(line);
+        line = removeComment(line);
+        String parsedKey = parseKey(line);
+        String modifiedLine = parsedKey + VARIABLE_DELIMITER + value;
+        if (!AdakiteUtils.isNullOrEmpty(comment)) {
+          modifiedLine += " " + COMMENT_DELIMITER + " " + comment;
+        }
+        this.memoryFile.getLines().set(keyIndex, modifiedLine);
       }
     }
   }
@@ -285,6 +290,11 @@ public class Ini {
     }
   }
 
+  private String getComment(String str) {
+    int commentIndex = str.indexOf(COMMENT_DELIMITER);
+    return (commentIndex < 0) ? null : str.substring(commentIndex + 1, str.length()).trim();
+  }
+
   /**
    * Returns the specified string excluding a comment if present.
    *
@@ -310,11 +320,6 @@ public class Ini {
       }
     }
     return -1;
-  }
-
-  private String getComment(String str) {
-    int commentIndex = str.indexOf(COMMENT_DELIMITER);
-    return (commentIndex < 0) ? null : str.substring(commentIndex + 1, str.length()).trim();
   }
 
   private int getKeyIndex(String name, String key) {
