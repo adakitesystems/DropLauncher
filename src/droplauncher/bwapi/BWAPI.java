@@ -26,6 +26,22 @@ import java.util.Locale;
  */
 public class BWAPI {
 
+  public enum Property {
+
+    COPY_WRITE_READ("bwapi_write_read");
+
+    private final String str;
+
+    private Property(String str) {
+      this.str = str;
+    }
+
+    public String toString() {
+      return this.str;
+    }
+
+  }
+
   /**
    * Enum for BWAPI.dll MD5 checksums.
    */

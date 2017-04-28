@@ -113,7 +113,7 @@ public class Controller {
 
     this.model.getBWHeadless().stop();
 
-    if (this.model.getINI().isEnabled(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString())) {
+    if (this.model.getINI().isEnabled(BWAPI.DEFAULT_INI_SECTION_NAME, BWAPI.Property.COPY_WRITE_READ.toString())) {
       /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
       Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
       Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);

@@ -59,8 +59,8 @@ public class Model {
     if (!ini.hasValue(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString())) {
       ini.set(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString(), Boolean.FALSE.toString());
     }
-    if (!ini.hasValue(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString())) {
-      ini.set(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString(), Boolean.TRUE.toString());
+    if (!ini.hasValue(BWAPI.DEFAULT_INI_SECTION_NAME, BWAPI.Property.COPY_WRITE_READ.toString())) {
+      ini.set(BWAPI.DEFAULT_INI_SECTION_NAME, BWAPI.Property.COPY_WRITE_READ.toString(), Boolean.TRUE.toString());
     }
     if (!ini.hasValue(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.CLEAN_SC_DIR.toString())) {
       ini.set(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.CLEAN_SC_DIR.toString(), Boolean.TRUE.toString());

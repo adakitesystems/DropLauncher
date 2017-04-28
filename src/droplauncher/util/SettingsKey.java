@@ -26,10 +26,6 @@ public enum SettingsKey {
   /* Program keys */
   SHOW_LOG_WINDOW("show_log_window"),
   CLEAN_SC_DIR("clean_sc_dir"),
-
-  /* BWAPI keys */
-  COPY_WRITE_READ("bwapi_write_read"),
-  
   ;
 
   private final String str;

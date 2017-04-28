@@ -87,14 +87,14 @@ public class SettingsWindow {
     });
 
     this.chkBwapiWriteRead.setText("Copy contents of \"bwapi-data/write/\" to \"bwapi-data/read/\" after eject");
-    if (this.ini.isEnabled(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString())) {
+    if (this.ini.isEnabled(BWAPI.DEFAULT_INI_SECTION_NAME, BWAPI.Property.COPY_WRITE_READ.toString())) {
       this.chkBwapiWriteRead.setSelected(true);
     } else {
       this.chkBwapiWriteRead.setSelected(false);
     }
     this.chkBwapiWriteRead.setOnAction(e -> {
       try {
-        this.ini.setEnabled(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString(), this.chkBwapiWriteRead.isSelected());
+        this.ini.setEnabled(BWAPI.DEFAULT_INI_SECTION_NAME, BWAPI.Property.COPY_WRITE_READ.toString(), this.chkBwapiWriteRead.isSelected());
       } catch (Exception ex) {
         LOGGER.log(Debugging.getLogLevel(), null, ex);
       }
