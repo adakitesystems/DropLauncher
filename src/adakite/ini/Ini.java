@@ -36,8 +36,8 @@ public class Ini {
   }
 
   public static final String FILE_EXTENSION = ".ini";
-  public static final String VARIABLE_DELIMITER = "=";
-  public static final String COMMENT_DELIMITER = ";";
+  public static final char VARIABLE_DELIMITER = '=';
+  public static final char COMMENT_DELIMITER = ';';
   public static final String NULL_SECTION_NAME = "";
 
   private MemoryFile memoryFile;
@@ -294,7 +294,7 @@ public class Ini {
    *     otherwise an empty string
    */
   private String removeComment(String str) {
-    int commentIndex = str.indexOf(COMMENT_DELIMITER.charAt(0));
+    int commentIndex = str.indexOf(COMMENT_DELIMITER);
     return (commentIndex < 0) ? str : str.substring(0, commentIndex).trim();
   }
 
