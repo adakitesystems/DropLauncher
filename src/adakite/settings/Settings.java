@@ -1,5 +1,6 @@
 package adakite.settings;
 
+import adakite.util.AdakiteUtils;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -60,7 +61,7 @@ public class Settings {
    * @param key specified key
    */
   public boolean hasValue(String key) {
-    return (getValue(key) != null);
+    return (!AdakiteUtils.isNullOrEmpty(getValue(key), true));
   }
 
 }
