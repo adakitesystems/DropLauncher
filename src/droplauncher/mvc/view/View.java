@@ -46,6 +46,22 @@ import javafx.stage.Stage;
 
 public class View implements EventHandler<DragEvent>  {
 
+  public enum Property {
+
+    SHOW_LOG_WINDOW("show_log_window");
+
+    private final String str;
+
+    private Property(String str) {
+      this.str = str;
+    }
+
+    public String toString() {
+      return this.str;
+    }
+
+  }
+
   /**
    * Enum for UI component default settings.
    */

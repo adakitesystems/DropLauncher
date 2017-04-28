@@ -33,7 +33,7 @@ public class Starcraft {
     TERRAN("Terran"),
     PROTOSS("Protoss"),
     ZERG("Zerg"),
-    RANDOM("Random"),
+    RANDOM("Random")
     ;
 
     private final String str;

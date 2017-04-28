@@ -146,7 +146,7 @@ public class Controller {
         return;
     }
 
-    if (this.model.getINI().isEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.CLEAN_SC_DIR.toString())) {
+    if (this.model.getINI().isEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, BWHeadless.Property.CLEAN_SC_DIR.toString())) {
       /* Clean up StarCraft directory. */
       try {
         if (this.directoryMonitor != null) {
@@ -299,7 +299,7 @@ public class Controller {
   }
 
   public boolean isEnabledLogWindow() {
-    return this.model.getINI().isEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.SHOW_LOG_WINDOW.toString());
+    return this.model.getINI().isEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, View.Property.SHOW_LOG_WINDOW.toString());
   }
 
   public String getBotFilename() {

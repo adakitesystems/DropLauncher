@@ -22,6 +22,7 @@ import adakite.ini.IniParseException;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
+import droplauncher.mvc.view.View;
 import droplauncher.util.DropLauncher;
 import java.io.IOException;
 
@@ -55,14 +56,14 @@ public class Model {
   }
 
   private void parseSettings(Ini ini) {
-    if (!ini.hasValue(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.SHOW_LOG_WINDOW.toString())) {
-      ini.set(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.SHOW_LOG_WINDOW.toString(), Boolean.FALSE.toString());
+    if (!ini.hasValue(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, View.Property.SHOW_LOG_WINDOW.toString())) {
+      ini.set(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, View.Property.SHOW_LOG_WINDOW.toString(), Boolean.FALSE.toString());
     }
     if (!ini.hasValue(BWAPI.DEFAULT_INI_SECTION_NAME, BWAPI.Property.COPY_WRITE_READ.toString())) {
       ini.set(BWAPI.DEFAULT_INI_SECTION_NAME, BWAPI.Property.COPY_WRITE_READ.toString(), Boolean.TRUE.toString());
     }
-    if (!ini.hasValue(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.CLEAN_SC_DIR.toString())) {
-      ini.set(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.CLEAN_SC_DIR.toString(), Boolean.TRUE.toString());
+    if (!ini.hasValue(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, BWHeadless.Property.CLEAN_SC_DIR.toString())) {
+      ini.set(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, BWHeadless.Property.CLEAN_SC_DIR.toString(), Boolean.TRUE.toString());
     }
   }
 

@@ -72,14 +72,14 @@ public class SettingsWindow {
 
   public SettingsWindow showAndWait() {
     this.chkKeepClientWindow.setText("Show log window for executable bot clients (requires program restart)");
-    if (this.ini.isEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.SHOW_LOG_WINDOW.toString())) {
+    if (this.ini.isEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, View.Property.SHOW_LOG_WINDOW.toString())) {
       this.chkKeepClientWindow.setSelected(true);
     } else {
       this.chkKeepClientWindow.setSelected(false);
     }
     this.chkKeepClientWindow.setOnAction(e -> {
       try {
-        this.ini.setEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.SHOW_LOG_WINDOW.toString(), this.chkKeepClientWindow.isSelected());
+        this.ini.setEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, View.Property.SHOW_LOG_WINDOW.toString(), this.chkKeepClientWindow.isSelected());
       } catch (Exception ex) {
         LOGGER.log(Debugging.getLogLevel(), null, ex);
       }
@@ -100,14 +100,14 @@ public class SettingsWindow {
     });
 
     this.chkCleanStarcraftDirectory.setText("Clean StarCraft directory before closing program");
-    if (this.ini.isEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.CLEAN_SC_DIR.toString())) {
+    if (this.ini.isEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, BWHeadless.Property.CLEAN_SC_DIR.toString())) {
       this.chkCleanStarcraftDirectory.setSelected(true);
     } else {
       this.chkCleanStarcraftDirectory.setSelected(false);
     }
     this.chkCleanStarcraftDirectory.setOnAction(e -> {
       try {
-        this.ini.setEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.CLEAN_SC_DIR.toString(), this.chkCleanStarcraftDirectory.isSelected());
+        this.ini.setEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, BWHeadless.Property.CLEAN_SC_DIR.toString(), this.chkCleanStarcraftDirectory.isSelected());
       } catch (Exception ex) {
         LOGGER.log(Debugging.getLogLevel(), null, ex);
       }

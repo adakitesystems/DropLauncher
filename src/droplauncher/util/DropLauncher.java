@@ -38,24 +38,6 @@ import java.nio.file.Paths;
  */
 public class DropLauncher {
 
-  public enum Property {
-
-    SHOW_LOG_WINDOW("show_log_window"),
-    CLEAN_SC_DIR("clean_sc_dir")
-    ;
-
-    private final String str;
-
-    private Property(String str) {
-      this.str = str;
-    }
-
-    public String toString() {
-      return this.str;
-    }
-
-  }
-
   public static final String PROGRAM_NAME = "DropLauncher";
   public static final String PROGRAM_VERSION = "0.2.21a";
   public static final String PROGRAM_AUTHOR = "Adakite";
