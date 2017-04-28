@@ -50,7 +50,7 @@ public class Starcraft {
       }
     }
 
-    String ret = sb.toString();
+    String ret = sb.toString().trim();
     if (ret.length() > MAX_PROFILE_NAME_LENGTH) {
       ret = ret.substring(0, MAX_PROFILE_NAME_LENGTH);
     }
