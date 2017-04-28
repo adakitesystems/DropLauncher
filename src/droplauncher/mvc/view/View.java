@@ -19,7 +19,7 @@ package droplauncher.mvc.view;
 
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.controller.Controller;
-import droplauncher.starcraft.Race;
+import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.util.Constants;
 import java.io.File;
 import java.util.ArrayList;
