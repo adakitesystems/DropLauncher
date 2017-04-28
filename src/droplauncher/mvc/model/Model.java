@@ -22,8 +22,7 @@ import adakite.ini.IniParseException;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
-import droplauncher.util.Constants;
-import droplauncher.util.SettingsKey;
+import droplauncher.util.DropLauncher;
 import java.io.IOException;
 
 public class Model {
@@ -39,10 +38,10 @@ public class Model {
   }
 
   public void setup() throws IOException, IniParseException {
-    if (!AdakiteUtils.fileExists(Constants.DROPLAUNCHER_INI_PATH)) {
-      AdakiteUtils.createFile(Constants.DROPLAUNCHER_INI_PATH);
+    if (!AdakiteUtils.fileExists(DropLauncher.DROPLAUNCHER_INI_PATH)) {
+      AdakiteUtils.createFile(DropLauncher.DROPLAUNCHER_INI_PATH);
     }
-    this.ini.parse(Constants.DROPLAUNCHER_INI_PATH);
+    this.ini.parse(DropLauncher.DROPLAUNCHER_INI_PATH);
     parseSettings(this.ini);
     this.bwheadless.parseSettings(this.ini);
   }
@@ -56,14 +55,14 @@ public class Model {
   }
 
   private void parseSettings(Ini ini) {
-    if (!ini.hasValue(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString())) {
-      ini.set(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString(), Boolean.FALSE.toString());
+    if (!ini.hasValue(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.SHOW_LOG_WINDOW.toString())) {
+      ini.set(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.SHOW_LOG_WINDOW.toString(), Boolean.FALSE.toString());
     }
     if (!ini.hasValue(BWAPI.DEFAULT_INI_SECTION_NAME, BWAPI.Property.COPY_WRITE_READ.toString())) {
       ini.set(BWAPI.DEFAULT_INI_SECTION_NAME, BWAPI.Property.COPY_WRITE_READ.toString(), Boolean.TRUE.toString());
     }
-    if (!ini.hasValue(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.CLEAN_SC_DIR.toString())) {
-      ini.set(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.CLEAN_SC_DIR.toString(), Boolean.TRUE.toString());
+    if (!ini.hasValue(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.CLEAN_SC_DIR.toString())) {
+      ini.set(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.CLEAN_SC_DIR.toString(), Boolean.TRUE.toString());
     }
   }
 

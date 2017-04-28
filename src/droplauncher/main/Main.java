@@ -18,14 +18,14 @@
 package droplauncher.main;
 
 import droplauncher.mvc.MVC;
-import droplauncher.util.Constants;
+import droplauncher.util.DropLauncher;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
   public static void main(String[] args) {
-    System.out.println(Constants.PROGRAM_ABOUT);
+    System.out.println(DropLauncher.PROGRAM_ABOUT);
 
     launch(args);
   }

@@ -22,8 +22,7 @@ import adakite.ini.Ini;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
-import droplauncher.util.Constants;
-import droplauncher.util.SettingsKey;
+import droplauncher.util.DropLauncher;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
@@ -73,14 +72,14 @@ public class SettingsWindow {
 
   public SettingsWindow showAndWait() {
     this.chkKeepClientWindow.setText("Show log window for executable bot clients (requires program restart)");
-    if (this.ini.isEnabled(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString())) {
+    if (this.ini.isEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.SHOW_LOG_WINDOW.toString())) {
       this.chkKeepClientWindow.setSelected(true);
     } else {
       this.chkKeepClientWindow.setSelected(false);
     }
     this.chkKeepClientWindow.setOnAction(e -> {
       try {
-        this.ini.setEnabled(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString(), this.chkKeepClientWindow.isSelected());
+        this.ini.setEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.SHOW_LOG_WINDOW.toString(), this.chkKeepClientWindow.isSelected());
       } catch (Exception ex) {
         LOGGER.log(Debugging.getLogLevel(), null, ex);
       }
@@ -101,14 +100,14 @@ public class SettingsWindow {
     });
 
     this.chkCleanStarcraftDirectory.setText("Clean StarCraft directory before closing program");
-    if (this.ini.isEnabled(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.CLEAN_SC_DIR.toString())) {
+    if (this.ini.isEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.CLEAN_SC_DIR.toString())) {
       this.chkCleanStarcraftDirectory.setSelected(true);
     } else {
       this.chkCleanStarcraftDirectory.setSelected(false);
     }
     this.chkCleanStarcraftDirectory.setOnAction(e -> {
       try {
-        this.ini.setEnabled(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.CLEAN_SC_DIR.toString(), this.chkCleanStarcraftDirectory.isSelected());
+        this.ini.setEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.CLEAN_SC_DIR.toString(), this.chkCleanStarcraftDirectory.isSelected());
       } catch (Exception ex) {
         LOGGER.log(Debugging.getLogLevel(), null, ex);
       }

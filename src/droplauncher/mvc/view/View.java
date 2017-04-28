@@ -20,7 +20,7 @@ package droplauncher.mvc.view;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.starcraft.Starcraft.Race;
-import droplauncher.util.Constants;
+import droplauncher.util.DropLauncher;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -246,7 +246,7 @@ public class View implements EventHandler<DragEvent>  {
       e.consume();
     });
     this.stage.setResizable(false);
-    this.stage.setTitle(Constants.PROGRAM_TITLE);
+    this.stage.setTitle(DropLauncher.PROGRAM_TITLE);
     this.stage.setScene(this.scene);
   }
 

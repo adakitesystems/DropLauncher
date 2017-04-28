@@ -36,7 +36,25 @@ import java.nio.file.Paths;
 /**
  * Constants class for global constants.
  */
-public class Constants {
+public class DropLauncher {
+
+  public enum Property {
+
+    SHOW_LOG_WINDOW("show_log_window"),
+    CLEAN_SC_DIR("clean_sc_dir")
+    ;
+
+    private final String str;
+
+    private Property(String str) {
+      this.str = str;
+    }
+
+    public String toString() {
+      return this.str;
+    }
+
+  }
 
   public static final String PROGRAM_NAME = "DropLauncher";
   public static final String PROGRAM_VERSION = "0.2.21a";
@@ -47,14 +65,14 @@ public class Constants {
   public static final String PROGRAM_LICENSE_LINK = "https://www.gnu.org/licenses/agpl-3.0.en.html";
   public static final String PROGRAM_DESC = "Designed to be a simple tool to aid players in setting up and playing 1v1 StarCraft: Brood War against BWAPI bots using Local Area Network (UDP) as the connection type.";
   public static final String PROGRAM_ABOUT
-      = Constants.PROGRAM_NAME + AdakiteUtils.newline()
-      + "Author: " + Constants.PROGRAM_AUTHOR + AdakiteUtils.newline()
-      + "Version: " + Constants.PROGRAM_VERSION + AdakiteUtils.newline(2)
-      + Constants.PROGRAM_DESC + AdakiteUtils.newline(2)
-      + "License: " + Constants.PROGRAM_LICENSE + AdakiteUtils.newline()
-      + Constants.PROGRAM_LICENSE_LINK + AdakiteUtils.newline(2)
+      = DropLauncher.PROGRAM_NAME + AdakiteUtils.newline()
+      + "Author: " + DropLauncher.PROGRAM_AUTHOR + AdakiteUtils.newline()
+      + "Version: " + DropLauncher.PROGRAM_VERSION + AdakiteUtils.newline(2)
+      + DropLauncher.PROGRAM_DESC + AdakiteUtils.newline(2)
+      + "License: " + DropLauncher.PROGRAM_LICENSE + AdakiteUtils.newline()
+      + DropLauncher.PROGRAM_LICENSE_LINK + AdakiteUtils.newline(2)
       + "Source:" + AdakiteUtils.newline()
-      + Constants.PROGRAM_GITHUB + AdakiteUtils.newline()
+      + DropLauncher.PROGRAM_GITHUB + AdakiteUtils.newline()
       ;
 
 //  public static final String TEMP_DIRECTORY = Paths.get(System.getProperty("user.home"), "DropLauncher").toString();
@@ -66,6 +84,6 @@ public class Constants {
   public static final Path JRE_DIR = Paths.get("jre");
   public static final Path JRE_EXE = JRE_DIR.resolve("bin").resolve("java.exe");
 
-  private Constants() {}
+  private DropLauncher() {}
 
 }

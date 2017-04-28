@@ -32,7 +32,7 @@ import adakite.util.windows.Task;
 import adakite.util.windows.TaskTracker;
 import adakite.util.windows.Tasklist;
 import droplauncher.starcraft.Starcraft.Race;
-import droplauncher.util.Constants;
+import droplauncher.util.DropLauncher;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -244,7 +244,7 @@ public class BWHeadless {
       /* If the BWAPI.ini file is not found at "StarCraft/bwapi-data/bwapi.ini". */
       return ReadyError.BWAPI_INSTALL;
     } else if (AdakiteUtils.getFileExtension(this.botFile.getPath()).equalsIgnoreCase("jar")
-        && !AdakiteUtils.fileExists(Constants.JRE_EXE)) {
+        && !AdakiteUtils.fileExists(DropLauncher.JRE_EXE)) {
       return ReadyError.JRE_INSTALL;
     } else {
       return ReadyError.NONE;
@@ -296,11 +296,11 @@ public class BWHeadless {
           clientCommand.setPath(this.botFile.getPath().toAbsolutePath());
           break;
         case "jar":
-          if (!AdakiteUtils.fileExists(Constants.JRE_EXE)) {
+          if (!AdakiteUtils.fileExists(DropLauncher.JRE_EXE)) {
             LOGGER.log(Debugging.getLogLevel(), "JRE not found");
-            throw new FileNotFoundException(Constants.JRE_EXE.toString());
+            throw new FileNotFoundException(DropLauncher.JRE_EXE.toString());
           }
-          clientCommand.setPath(Constants.JRE_EXE.toAbsolutePath());
+          clientCommand.setPath(DropLauncher.JRE_EXE.toAbsolutePath());
           clientCommand.addArg("-jar");
           clientCommand.addArg(this.botFile.getPath().toAbsolutePath().toString());
           break;

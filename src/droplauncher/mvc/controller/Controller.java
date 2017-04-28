@@ -30,11 +30,10 @@ import droplauncher.mvc.view.MessagePrefix;
 import droplauncher.mvc.view.SettingsWindow;
 import droplauncher.mvc.view.SimpleAlert;
 import droplauncher.mvc.view.View;
-import droplauncher.util.Constants;
+import droplauncher.util.DropLauncher;
 import adakite.util.DirectoryMonitor;
 import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.starcraft.Starcraft.Race;
-import droplauncher.util.SettingsKey;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -147,7 +146,7 @@ public class Controller {
         return;
     }
 
-    if (this.model.getINI().isEnabled(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.CLEAN_SC_DIR.toString())) {
+    if (this.model.getINI().isEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.CLEAN_SC_DIR.toString())) {
       /* Clean up StarCraft directory. */
       try {
         if (this.directoryMonitor != null) {
@@ -174,7 +173,7 @@ public class Controller {
 
     /* Save INI settings to file. */
     try {
-      this.model.getINI().store(Constants.DROPLAUNCHER_INI_PATH);
+      this.model.getINI().store(DropLauncher.DROPLAUNCHER_INI_PATH);
     } catch (Exception ex) {
       LOGGER.log(Debugging.getLogLevel(), "save INI configuration", ex);
     }
@@ -243,7 +242,7 @@ public class Controller {
         return;
       }
       /* Create temporary directory. */
-      Path tmpDir = Paths.get(Constants.TEMP_DIRECTORY).toAbsolutePath();
+      Path tmpDir = Paths.get(DropLauncher.TEMP_DIRECTORY).toAbsolutePath();
       FileUtils.deleteDirectory(tmpDir.toFile());
       AdakiteUtils.createDirectory(tmpDir);
       /* Extract files to temporary directory. */
@@ -300,7 +299,7 @@ public class Controller {
   }
 
   public boolean isEnabledLogWindow() {
-    return this.model.getINI().isEnabled(Constants.DROPLAUNCHER_INI_SECTION_NAME, SettingsKey.SHOW_LOG_WINDOW.toString());
+    return this.model.getINI().isEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, DropLauncher.Property.SHOW_LOG_WINDOW.toString());
   }
 
   public String getBotFilename() {
@@ -360,7 +359,7 @@ public class Controller {
   }
 
   public void mnuHelpAboutClicked() {
-    new SimpleAlert().showAndWait(AlertType.INFORMATION, Constants.PROGRAM_TITLE, Constants.PROGRAM_ABOUT);
+    new SimpleAlert().showAndWait(AlertType.INFORMATION, DropLauncher.PROGRAM_TITLE, DropLauncher.PROGRAM_ABOUT);
   }
 
   public void btnLaunchClicked() {
