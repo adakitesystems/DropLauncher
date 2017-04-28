@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Class for monitoring a directory structure. This class can be used to
@@ -80,7 +81,7 @@ public class DirectoryMonitor {
     boolean found;
     Path[] contents = AdakiteUtils.getDirectoryContents(this.path);
     for (Path path : contents) {
-      String pathLower = path.toAbsolutePath().toString().toLowerCase();
+      String pathLower = path.toAbsolutePath().toString().toLowerCase(Locale.US);
       found = false;
       for (String str : this.ignoreList) {
         if (pathLower.contains(str)) {
@@ -110,7 +111,7 @@ public class DirectoryMonitor {
     boolean found;
     Path[] contents = AdakiteUtils.getDirectoryContents(this.path);
     for (Path path : contents) {
-      String pathLower = path.toAbsolutePath().toString().toLowerCase();
+      String pathLower = path.toAbsolutePath().toString().toLowerCase(Locale.US);
       found = false;
       for (String str : this.ignoreList) {
         if (pathLower.contains(str)) {
