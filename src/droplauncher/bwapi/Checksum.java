@@ -34,6 +34,7 @@ public enum Checksum {
   BWAPI_DLL_410B("4814396fba36916fdb7cf3803b39ab51"),
   BWAPI_DLL_411B("5d5128709ba714aa9c6095598bcf4624"),
   BWAPI_DLL_412("1364390d0aa085fba6ac11b7177797b0"),
+  BWAPI_DLL_420("2f6fb401c0dcf65925ee7ad34dc6414a"),
   UNKNOWN(MD5Checksum.EMPTY_MD5_CHECKSUM)
   ;
 
@@ -54,6 +55,7 @@ public enum Checksum {
       case BWAPI_DLL_410B: return "4.1.0b";
       case BWAPI_DLL_411B: return "4.1.1b";
       case BWAPI_DLL_412: return "4.1.2";
+      case BWAPI_DLL_420: return "4.2.0";
       default: return "Unknown";
     }
   }

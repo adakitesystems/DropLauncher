@@ -59,6 +59,8 @@ public class BWAPI {
       return Checksum.BWAPI_DLL_411B.getName();
     } else if (checksum.equals(Checksum.BWAPI_DLL_412.toString())) {
       return Checksum.BWAPI_DLL_412.getName();
+    } else if (checksum.equals(Checksum.BWAPI_DLL_420.toString())) {
+      return Checksum.BWAPI_DLL_420.getName();
     } else {
       return Checksum.UNKNOWN.getName();
     }
