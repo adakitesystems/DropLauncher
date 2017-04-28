@@ -116,8 +116,8 @@ public class Controller {
     if (this.model.getINI().isEnabled(BWAPI.DEFAULT_INI_SECTION_NAME, SettingsKey.COPY_WRITE_READ.toString())) {
       /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
       Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
-      Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
-      Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
+      Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);
+      Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.DATA_READ_PATH);
       String copyMessage = MessagePrefix.COPY.get() + bwapiWritePath.toString() + " -> " + bwapiReadPath.toString();
       this.view.getConsoleOutput().println(MessagePrefix.DROPLAUNCHER.get() + copyMessage);
       FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
@@ -152,8 +152,8 @@ public class Controller {
       try {
         if (this.directoryMonitor != null) {
           Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
-          Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
-          Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
+          Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);
+          Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.DATA_READ_PATH);
           this.directoryMonitor.update();
           for (Path path : this.directoryMonitor.getNewFiles()) {
             if (!path.toAbsolutePath().startsWith(bwapiWritePath)
@@ -320,7 +320,7 @@ public class Controller {
         return BWAPI.getBwapiVersion(MD5Checksum.get(Paths.get(dll)));
       } catch (IOException | NoSuchAlgorithmException ex) {
         LOGGER.log(Debugging.getLogLevel(), null, ex);
-        return BWAPI.BWAPI_DLL_UNKNOWN;
+        return BWAPI.DLL_UNKNOWN;
       }
     }
   }

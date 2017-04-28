@@ -240,7 +240,7 @@ public class BWHeadless {
       return ReadyError.NETWORK_PROVIDER;
     } else if (!this.ini.hasValue(DEFAULT_INI_SECTION_NAME, Property.CONNECT_MODE.toString())) {
       return ReadyError.CONNECT_MODE;
-    } else if (!AdakiteUtils.directoryExists(getBwapiDirectory()) || !AdakiteUtils.fileExists(getBwapiDirectory().resolve(BWAPI.BWAPI_DATA_INI_PATH.getFileName()))) {
+    } else if (!AdakiteUtils.directoryExists(getBwapiDirectory()) || !AdakiteUtils.fileExists(getBwapiDirectory().resolve(BWAPI.DATA_INI_PATH.getFileName()))) {
       /* If the BWAPI.ini file is not found at "StarCraft/bwapi-data/bwapi.ini". */
       return ReadyError.BWAPI_INSTALL;
     } else if (AdakiteUtils.getFileExtension(this.botFile.getPath()).equalsIgnoreCase("jar")
@@ -353,21 +353,21 @@ public class BWHeadless {
    */
   private void configureBwapi(Path starcraftDirectory) throws IOException, InvalidBotTypeException, IniParseException {
     /* Create common BWAPI paths. */
-    Path bwapiAiPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_AI_PATH);
-    Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_READ_PATH);
-    Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_WRITE_PATH);
+    Path bwapiAiPath = starcraftDirectory.resolve(BWAPI.DATA_AI_PATH);
+    Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.DATA_READ_PATH);
+    Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);
     AdakiteUtils.createDirectory(bwapiAiPath);
     AdakiteUtils.createDirectory(bwapiReadPath);
     AdakiteUtils.createDirectory(bwapiWritePath);
 
     /* Create BWTA/BWTA2 paths. */
-    Path bwtaPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_PATH).resolve("BWTA");
-    Path bwta2Path = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_PATH).resolve("BWTA2");
+    Path bwtaPath = starcraftDirectory.resolve(BWAPI.DATA_PATH).resolve("BWTA");
+    Path bwta2Path = starcraftDirectory.resolve(BWAPI.DATA_PATH).resolve("BWTA2");
     AdakiteUtils.createDirectory(bwtaPath);
     AdakiteUtils.createDirectory(bwta2Path);
 
     /* Read the BWAPI.ini file. */
-    Path bwapiIniPath = starcraftDirectory.resolve(BWAPI.BWAPI_DATA_INI_PATH);
+    Path bwapiIniPath = starcraftDirectory.resolve(BWAPI.DATA_INI_PATH);
     Ini bwapiIni = new Ini();
     bwapiIni.parse(bwapiIniPath);
 
@@ -377,11 +377,11 @@ public class BWHeadless {
       case DLL:
         /* Copy DLL to "bwapi-data/AI/" directory. */
         src = this.botFile.getPath();
-        dest = Paths.get(starcraftDirectory.toString(), BWAPI.BWAPI_DATA_AI_PATH.toString(), this.botFile.getPath().getFileName().toString());
+        dest = Paths.get(starcraftDirectory.toString(), BWAPI.DATA_AI_PATH.toString(), this.botFile.getPath().getFileName().toString());
         AdakiteUtils.createDirectory(dest.getParent());
         Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
         this.botFile.setPath(dest);
-        bwapiIni.set("ai", "ai", BWAPI.BWAPI_DATA_AI_PATH.toString() + AdakiteUtils.FILE_SEPARATOR + this.botFile.getPath().getFileName().toString());
+        bwapiIni.set("ai", "ai", BWAPI.DATA_AI_PATH.toString() + AdakiteUtils.FILE_SEPARATOR + this.botFile.getPath().getFileName().toString());
         break;
       case CLIENT:
         /* Copy client to StarCraft root directory. */
@@ -429,7 +429,7 @@ public class BWHeadless {
    */
   public Path getBwapiDirectory() {
     Path starcraftDirectory = getStarcraftDirectory();
-    return (starcraftDirectory == null) ? null : starcraftDirectory.resolve(BWAPI.BWAPI_DATA_PATH);
+    return (starcraftDirectory == null) ? null : starcraftDirectory.resolve(BWAPI.DATA_PATH);
   }
 
   public void setStarcraftExe(String starcraftExe) {

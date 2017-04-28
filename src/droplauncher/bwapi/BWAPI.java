@@ -31,13 +31,13 @@ public class BWAPI {
    */
   public enum Checksum {
 
-    BWAPI_DLL_374("6e940dc6acc76b6e459b39a9cdd466ae"),
-    BWAPI_DLL_375("5e590ea55c2d3c66a36bf75537f8655a"),
-    BWAPI_DLL_401B("84f413409387ae80a4b4acc51fed3923"),
-    BWAPI_DLL_410B("4814396fba36916fdb7cf3803b39ab51"),
-    BWAPI_DLL_411B("5d5128709ba714aa9c6095598bcf4624"),
-    BWAPI_DLL_412("1364390d0aa085fba6ac11b7177797b0"),
-    BWAPI_DLL_420("2f6fb401c0dcf65925ee7ad34dc6414a"),
+    DLL_374("6e940dc6acc76b6e459b39a9cdd466ae"),
+    DLL_375("5e590ea55c2d3c66a36bf75537f8655a"),
+    DLL_401B("84f413409387ae80a4b4acc51fed3923"),
+    DLL_410B("4814396fba36916fdb7cf3803b39ab51"),
+    DLL_411B("5d5128709ba714aa9c6095598bcf4624"),
+    DLL_412("1364390d0aa085fba6ac11b7177797b0"),
+    DLL_420("2f6fb401c0dcf65925ee7ad34dc6414a"),
     ;
 
     private final String str;
@@ -51,13 +51,13 @@ public class BWAPI {
      */
     public String getName() {
       switch (this) {
-        case BWAPI_DLL_374: return "3.7.4";
-        case BWAPI_DLL_375: return "3.7.5";
-        case BWAPI_DLL_401B: return "4.0.1b";
-        case BWAPI_DLL_410B: return "4.1.0b";
-        case BWAPI_DLL_411B: return "4.1.1b";
-        case BWAPI_DLL_412: return "4.1.2";
-        case BWAPI_DLL_420: return "4.2.0";
+        case DLL_374: return "3.7.4";
+        case DLL_375: return "3.7.5";
+        case DLL_401B: return "4.0.1b";
+        case DLL_410B: return "4.1.0b";
+        case DLL_411B: return "4.1.1b";
+        case DLL_412: return "4.1.2";
+        case DLL_420: return "4.2.0";
         default:
           throw new IllegalArgumentException();
       }
@@ -73,12 +73,12 @@ public class BWAPI {
 
   }
 
-  public static final Path BWAPI_DATA_PATH = Paths.get("bwapi-data");
-  public static final Path BWAPI_DATA_AI_PATH = BWAPI_DATA_PATH.resolve(Paths.get("AI"));
-  public static final Path BWAPI_DATA_INI_PATH = BWAPI_DATA_PATH.resolve(Paths.get("bwapi.ini"));
-  public static final Path BWAPI_DATA_READ_PATH = BWAPI_DATA_PATH.resolve(Paths.get("read"));
-  public static final Path BWAPI_DATA_WRITE_PATH = BWAPI_DATA_PATH.resolve(Paths.get("write"));
-  public static final String BWAPI_DLL_UNKNOWN = "Unknown";
+  public static final Path DATA_PATH = Paths.get("bwapi-data");
+  public static final Path DATA_AI_PATH = DATA_PATH.resolve(Paths.get("AI"));
+  public static final Path DATA_INI_PATH = DATA_PATH.resolve(Paths.get("bwapi.ini"));
+  public static final Path DATA_READ_PATH = DATA_PATH.resolve(Paths.get("read"));
+  public static final Path DATA_WRITE_PATH = DATA_PATH.resolve(Paths.get("write"));
+  public static final String DLL_UNKNOWN = "Unknown";
 
   public static final String DEFAULT_INI_SECTION_NAME = "bwapi";
 
@@ -99,7 +99,7 @@ public class BWAPI {
         return checksumValue.getName();
       }
     }
-    return BWAPI_DLL_UNKNOWN;
+    return DLL_UNKNOWN;
   }
 
 }
