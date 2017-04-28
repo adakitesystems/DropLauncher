@@ -51,6 +51,30 @@ public class BWHeadless {
 
   private static final Logger LOGGER = Logger.getLogger(BWHeadless.class.getName());
 
+  public enum Property {
+
+    STARCRAFT_EXE("starcraft_exe"),
+    BWAPI_DLL("bwapi_dll"),
+    BOT_NAME("bot_name"),
+    BOT_FILE("bot_file"),
+    BOT_RACE("bot_race"),
+    NETWORK_PROVIDER("network"),
+    CONNECT_MODE("connect_mode"),
+    GAME_NAME("game_name"),
+    MAP("map");
+
+    private final String str;
+
+    private Property(String str) {
+      this.str = str;
+    }
+
+    public String toString() {
+      return this.str;
+    }
+
+  }
+
   public static final Path DEFAULT_EXE_PATH = Paths.get("bwheadless.exe");
   public static final String DEFAULT_INI_SECTION_NAME = "bwheadless";
 
@@ -118,23 +142,23 @@ public class BWHeadless {
   public ReadyError getReadyError() {
     if (!AdakiteUtils.fileExists(DEFAULT_EXE_PATH)) {
       return ReadyError.BWHEADLESS_EXE;
-    } else if (!this.ini.hasValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())
-        || !AdakiteUtils.fileExists(Paths.get(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())))) {
+    } else if (!this.ini.hasValue(DEFAULT_INI_SECTION_NAME, Property.STARCRAFT_EXE.toString())
+        || !AdakiteUtils.fileExists(Paths.get(this.ini.getValue(DEFAULT_INI_SECTION_NAME, Property.STARCRAFT_EXE.toString())))) {
       return ReadyError.STARTCRAFT_EXE;
-    } else if (!this.ini.hasValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BWAPI_DLL.toString())
-        || !AdakiteUtils.fileExists(Paths.get(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BWAPI_DLL.toString())))) {
+    } else if (!this.ini.hasValue(DEFAULT_INI_SECTION_NAME, Property.BWAPI_DLL.toString())
+        || !AdakiteUtils.fileExists(Paths.get(this.ini.getValue(DEFAULT_INI_SECTION_NAME, Property.BWAPI_DLL.toString())))) {
       return ReadyError.BWAPI_DLL;
-    } else if (!this.ini.hasValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_NAME.toString())) {
+    } else if (!this.ini.hasValue(DEFAULT_INI_SECTION_NAME, Property.BOT_NAME.toString())) {
       return ReadyError.BOT_NAME;
     } else if (this.botFile.getType() == BotFile.Type.UNKNOWN
         || !AdakiteUtils.fileExists(this.botFile.getPath())) {
       /* If both the bot DLL and bot client fields are missing. */
       return ReadyError.BOT_FILE;
-    } else if (!this.ini.hasValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_RACE.toString())) {
+    } else if (!this.ini.hasValue(DEFAULT_INI_SECTION_NAME, Property.BOT_RACE.toString())) {
       return ReadyError.BOT_RACE;
-    } else if (!this.ini.hasValue(DEFAULT_INI_SECTION_NAME, SettingsKey.NETWORK_PROVIDER.toString())) {
+    } else if (!this.ini.hasValue(DEFAULT_INI_SECTION_NAME, Property.NETWORK_PROVIDER.toString())) {
       return ReadyError.NETWORK_PROVIDER;
-    } else if (!this.ini.hasValue(DEFAULT_INI_SECTION_NAME, SettingsKey.CONNECT_MODE.toString())) {
+    } else if (!this.ini.hasValue(DEFAULT_INI_SECTION_NAME, Property.CONNECT_MODE.toString())) {
       return ReadyError.CONNECT_MODE;
     } else if (!AdakiteUtils.directoryExists(getBwapiDirectory()) || !AdakiteUtils.fileExists(getBwapiDirectory().resolve(BWAPI.BWAPI_DATA_INI_PATH.getFileName()))) {
       /* If the BWAPI.ini file is not found at "StarCraft/bwapi-data/bwapi.ini". */
@@ -165,14 +189,14 @@ public class BWHeadless {
     CommandBuilder bwhCommand = new CommandBuilder();
     bwhCommand.setPath(DEFAULT_EXE_PATH.toAbsolutePath());
     bwhCommand.addArg(Argument.STARCRAFT_EXE.toString());
-    bwhCommand.addArg(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString()));
+    bwhCommand.addArg(this.ini.getValue(DEFAULT_INI_SECTION_NAME, Property.STARCRAFT_EXE.toString()));
     bwhCommand.addArg(Argument.JOIN_GAME.toString());
     bwhCommand.addArg(Argument.BOT_NAME.toString());
-    bwhCommand.addArg(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_NAME.toString()));
+    bwhCommand.addArg(this.ini.getValue(DEFAULT_INI_SECTION_NAME, Property.BOT_NAME.toString()));
     bwhCommand.addArg(Argument.BOT_RACE.toString());
-    bwhCommand.addArg(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_RACE.toString()));
+    bwhCommand.addArg(this.ini.getValue(DEFAULT_INI_SECTION_NAME, Property.BOT_RACE.toString()));
     bwhCommand.addArg(Argument.LOAD_DLL.toString());
-    bwhCommand.addArg(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BWAPI_DLL.toString()));
+    bwhCommand.addArg(this.ini.getValue(DEFAULT_INI_SECTION_NAME, Property.BWAPI_DLL.toString()));
     bwhCommand.addArg(Argument.ENABLE_LAN.toString());
     bwhCommand.addArg(Argument.STARCRAFT_INSTALL_PATH.toString());
     bwhCommand.addArg(starcraftDirectory.toString());
@@ -309,8 +333,8 @@ public class BWHeadless {
    * {@link #setStarcraftExe(java.lang.String)}.
    */
   public Path getStarcraftDirectory() {
-    if (this.ini.hasValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())) {
-      return AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString())));
+    if (this.ini.hasValue(DEFAULT_INI_SECTION_NAME, Property.STARCRAFT_EXE.toString())) {
+      return AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(DEFAULT_INI_SECTION_NAME, Property.STARCRAFT_EXE.toString())));
     } else {
       return null;
     }
@@ -329,23 +353,23 @@ public class BWHeadless {
   }
 
   public void setStarcraftExe(String starcraftExe) {
-    this.ini.set(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString(), starcraftExe);
+    this.ini.set(DEFAULT_INI_SECTION_NAME, Property.STARCRAFT_EXE.toString(), starcraftExe);
   }
 
   public void setBwapiDll(String bwapiDll) {
-    this.ini.set(DEFAULT_INI_SECTION_NAME, SettingsKey.BWAPI_DLL.toString(), bwapiDll);
+    this.ini.set(DEFAULT_INI_SECTION_NAME, Property.BWAPI_DLL.toString(), bwapiDll);
   }
 
   public void setBotName(String botName) {
     String cleaned = Starcraft.cleanProfileName(botName);
-    if (cleaned.equals(this.ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_NAME.toString()))) {
+    if (cleaned.equals(this.ini.getValue(DEFAULT_INI_SECTION_NAME, Property.BOT_NAME.toString()))) {
       return;
     }
 
     if (AdakiteUtils.isNullOrEmpty(cleaned)) {
-      this.ini.set(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_NAME.toString(), DEFAULT_BOT_NAME);
+      this.ini.set(DEFAULT_INI_SECTION_NAME, Property.BOT_NAME.toString(), DEFAULT_BOT_NAME);
     } else {
-      this.ini.set(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_NAME.toString(), cleaned);
+      this.ini.set(DEFAULT_INI_SECTION_NAME, Property.BOT_NAME.toString(), cleaned);
     }
   }
 
@@ -362,20 +386,20 @@ public class BWHeadless {
     Path path = Paths.get(botFile);
     if (AdakiteUtils.fileExists(path)) {
       this.botFile.setPath(path);
-      this.ini.set(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_FILE.toString(), botFile);
+      this.ini.set(DEFAULT_INI_SECTION_NAME, Property.BOT_FILE.toString(), botFile);
     }
   }
 
   public void setBotRace(Race botRace) {
-    this.ini.set(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_RACE.toString(), botRace.toString());
+    this.ini.set(DEFAULT_INI_SECTION_NAME, Property.BOT_RACE.toString(), botRace.toString());
   }
 
   public void setNetworkProvider(NetworkProvider networkProvider) {
-    this.ini.set(DEFAULT_INI_SECTION_NAME, SettingsKey.NETWORK_PROVIDER.toString(), networkProvider.toString());
+    this.ini.set(DEFAULT_INI_SECTION_NAME, Property.NETWORK_PROVIDER.toString(), networkProvider.toString());
   }
 
   public void setConnectMode(ConnectMode connectMode) {
-    this.ini.set(DEFAULT_INI_SECTION_NAME, SettingsKey.CONNECT_MODE.toString(), connectMode.toString());
+    this.ini.set(DEFAULT_INI_SECTION_NAME, Property.CONNECT_MODE.toString(), connectMode.toString());
   }
 
   /**
@@ -385,22 +409,22 @@ public class BWHeadless {
    */
   public void parseSettings(Ini ini) {
     String val;
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, Property.STARCRAFT_EXE.toString()))) {
       setStarcraftExe(val);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BWAPI_DLL.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, Property.BWAPI_DLL.toString()))) {
       setBwapiDll(val);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_NAME.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, Property.BOT_NAME.toString()))) {
       setBotName(val);
     } else {
       /* Name wasn't set. */
       setBotName(DEFAULT_BOT_NAME);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_FILE.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, Property.BOT_FILE.toString()))) {
       setBotFile(val);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_RACE.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, Property.BOT_RACE.toString()))) {
       if (val.equalsIgnoreCase(Race.TERRAN.toString())) {
         setBotRace(Race.TERRAN);
       } else if (val.equalsIgnoreCase(Race.ZERG.toString())) {
@@ -417,7 +441,7 @@ public class BWHeadless {
       /* Race wasn't set. */
       setBotRace(DEFAULT_BOT_RACE);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.NETWORK_PROVIDER.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, Property.NETWORK_PROVIDER.toString()))) {
       if (val.equalsIgnoreCase(NetworkProvider.LAN.toString())) {
         setNetworkProvider(NetworkProvider.LAN);
       } else {
@@ -428,7 +452,7 @@ public class BWHeadless {
       /* NetworkProvider wasn't set. */
       setNetworkProvider(DEFAULT_NETWORK_PROVIDER);
     }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, SettingsKey.CONNECT_MODE.toString()))) {
+    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(DEFAULT_INI_SECTION_NAME, Property.CONNECT_MODE.toString()))) {
       if (val.equalsIgnoreCase(ConnectMode.JOIN.toString())) {
         setConnectMode(ConnectMode.JOIN);
       } else {

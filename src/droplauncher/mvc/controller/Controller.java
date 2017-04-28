@@ -312,7 +312,7 @@ public class Controller {
   }
 
   public String getBwapiDllVersion() {
-    String dll = this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.BWAPI_DLL.toString());
+    String dll = this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, BWHeadless.Property.BWAPI_DLL.toString());
     if (AdakiteUtils.isNullOrEmpty(dll)) {
       return null;
     } else {
@@ -326,11 +326,11 @@ public class Controller {
   }
 
   public String getBotName() {
-    return this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_NAME.toString());
+    return this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, BWHeadless.Property.BOT_NAME.toString());
   }
 
   public Race getBotRace() {
-    return Race.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.BOT_RACE.toString()));
+    return Race.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, BWHeadless.Property.BOT_RACE.toString()));
   }
 
   /* ************************************************************ */

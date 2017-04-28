@@ -117,7 +117,7 @@ public class SettingsWindow {
     this.lblChangeStarcraftExe.setText("StarCraft.exe:");
     this.btnChangeStarcraftExe.setText("...");
     this.lblChangeStarcraftExeText.setText("");
-    String starcraftExe = this.ini.getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString());
+    String starcraftExe = this.ini.getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, BWHeadless.Property.STARCRAFT_EXE.toString());
     if (!AdakiteUtils.isNullOrEmpty(starcraftExe)
         && AdakiteUtils.fileExists(Paths.get(starcraftExe))) {
       this.lblChangeStarcraftExeText.setText(starcraftExe);
@@ -133,8 +133,8 @@ public class SettingsWindow {
       }
       File file = fc.showOpenDialog(this.stage);
       if (file != null) {
-        this.ini.set(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString(), file.getAbsolutePath());
-        this.lblChangeStarcraftExeText.setText(this.ini.getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, SettingsKey.STARCRAFT_EXE.toString()));
+        this.ini.set(BWHeadless.DEFAULT_INI_SECTION_NAME, BWHeadless.Property.STARCRAFT_EXE.toString(), file.getAbsolutePath());
+        this.lblChangeStarcraftExeText.setText(this.ini.getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, BWHeadless.Property.STARCRAFT_EXE.toString()));
       }
     });
 
