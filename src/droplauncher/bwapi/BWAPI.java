@@ -28,7 +28,9 @@ public class BWAPI {
 
   public enum Property {
 
-    COPY_WRITE_READ("bwapi_write_read")
+    COPY_WRITE_READ("bwapi_write_read"),
+    CLEAN_SC_DIR("clean_sc_dir"),
+    WARN_UNKNOWN_BWAPI_DLL("warn_bwapi_dll")
     ;
 
     private final String str;

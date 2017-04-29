@@ -60,8 +60,8 @@ public class DropLauncher {
 //  public static final String TEMP_DIRECTORY = Paths.get(System.getProperty("user.home"), "DropLauncher").toString();
   public static final String TEMP_DIRECTORY = "tmp";
 
-  public static final Path DROPLAUNCHER_INI_PATH = Paths.get("droplauncher.ini");
-  public static final String DROPLAUNCHER_INI_SECTION_NAME = "droplauncher";
+  public static final Path DEFAULT_INI_PATH = Paths.get("droplauncher.ini");
+  public static final String DEFAULT_INI_SECTION_NAME = "droplauncher";
 
   public static final Path JRE_DIR = Paths.get("jre");
   public static final Path JRE_EXE = JRE_DIR.resolve("bin").resolve("java.exe");

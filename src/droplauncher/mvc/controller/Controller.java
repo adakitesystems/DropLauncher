@@ -112,7 +112,7 @@ public class Controller {
 
     this.model.getBWHeadless().stop();
 
-    if (this.model.getINI().isEnabled(BWAPI.DEFAULT_INI_SECTION_NAME, BWAPI.Property.COPY_WRITE_READ.toString())) {
+    if (this.model.getINI().isEnabled(Model.getIniSection(BWAPI.Property.COPY_WRITE_READ.toString()), BWAPI.Property.COPY_WRITE_READ.toString())) {
       /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
       Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
       Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);
@@ -146,7 +146,7 @@ public class Controller {
         return;
     }
 
-    if (this.model.getINI().isEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, BWHeadless.Property.CLEAN_SC_DIR.toString())) {
+    if (this.model.getINI().isEnabled(Model.getIniSection(BWAPI.Property.CLEAN_SC_DIR.toString()), BWAPI.Property.CLEAN_SC_DIR.toString())) {
       /* Clean up StarCraft directory. */
       try {
         if (this.directoryMonitor != null) {
@@ -173,7 +173,7 @@ public class Controller {
 
     /* Save INI settings to file. */
     try {
-      this.model.getINI().store(DropLauncher.DROPLAUNCHER_INI_PATH);
+      this.model.getINI().store(DropLauncher.DEFAULT_INI_PATH);
     } catch (Exception ex) {
       LOGGER.log(Debugging.getLogLevel(), "save INI configuration", ex);
     }
@@ -299,7 +299,7 @@ public class Controller {
   }
 
   public boolean isEnabledLogWindow() {
-    return this.model.getINI().isEnabled(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, View.Property.SHOW_LOG_WINDOW.toString());
+    return this.model.getINI().isEnabled(Model.getIniSection(View.Property.SHOW_LOG_WINDOW.toString()), View.Property.SHOW_LOG_WINDOW.toString());
   }
 
   public String getBotFilename() {
@@ -311,7 +311,7 @@ public class Controller {
   }
 
   public String getBwapiDllVersion() {
-    String dll = this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, BWHeadless.Property.BWAPI_DLL.toString());
+    String dll = this.model.getBWHeadless().getINI().getValue(Model.getIniSection(BWHeadless.Property.BWAPI_DLL.toString()), BWHeadless.Property.BWAPI_DLL.toString());
     if (AdakiteUtils.isNullOrEmpty(dll)) {
       return null;
     } else {
@@ -325,11 +325,11 @@ public class Controller {
   }
 
   public String getBotName() {
-    return this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, BWHeadless.Property.BOT_NAME.toString());
+    return this.model.getBWHeadless().getINI().getValue(Model.getIniSection(BWHeadless.Property.BOT_NAME.toString()), BWHeadless.Property.BOT_NAME.toString());
   }
 
   public Race getBotRace() {
-    return Race.get(this.model.getBWHeadless().getINI().getValue(BWHeadless.DEFAULT_INI_SECTION_NAME, BWHeadless.Property.BOT_RACE.toString()));
+    return Race.get(this.model.getBWHeadless().getINI().getValue(Model.getIniSection(BWHeadless.Property.BOT_RACE.toString()), BWHeadless.Property.BOT_RACE.toString()));
   }
 
   /* ************************************************************ */

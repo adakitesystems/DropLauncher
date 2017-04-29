@@ -25,6 +25,7 @@ import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.view.View;
 import droplauncher.util.DropLauncher;
 import java.io.IOException;
+import java.util.Locale;
 
 public class Model {
 
@@ -39,10 +40,10 @@ public class Model {
   }
 
   public void setup() throws IOException, IniParseException {
-    if (!AdakiteUtils.fileExists(DropLauncher.DROPLAUNCHER_INI_PATH)) {
-      AdakiteUtils.createFile(DropLauncher.DROPLAUNCHER_INI_PATH);
+    if (!AdakiteUtils.fileExists(DropLauncher.DEFAULT_INI_PATH)) {
+      AdakiteUtils.createFile(DropLauncher.DEFAULT_INI_PATH);
     }
-    this.ini.parse(DropLauncher.DROPLAUNCHER_INI_PATH);
+    this.ini.parse(DropLauncher.DEFAULT_INI_PATH);
     parseSettings(this.ini);
     this.bwheadless.parseSettings(this.ini);
   }
@@ -56,15 +57,46 @@ public class Model {
   }
 
   private void parseSettings(Ini ini) {
-    if (!ini.hasValue(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, View.Property.SHOW_LOG_WINDOW.toString())) {
-      ini.set(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, View.Property.SHOW_LOG_WINDOW.toString(), Boolean.FALSE.toString());
+    if (!ini.hasValue(Model.getIniSection(View.Property.SHOW_LOG_WINDOW.toString()), View.Property.SHOW_LOG_WINDOW.toString())) {
+      ini.set(Model.getIniSection(View.Property.SHOW_LOG_WINDOW.toString()), View.Property.SHOW_LOG_WINDOW.toString(), Boolean.FALSE.toString());
     }
-    if (!ini.hasValue(BWAPI.DEFAULT_INI_SECTION_NAME, BWAPI.Property.COPY_WRITE_READ.toString())) {
-      ini.set(BWAPI.DEFAULT_INI_SECTION_NAME, BWAPI.Property.COPY_WRITE_READ.toString(), Boolean.TRUE.toString());
+    if (!ini.hasValue(Model.getIniSection(BWAPI.Property.COPY_WRITE_READ.toString()), BWAPI.Property.COPY_WRITE_READ.toString())) {
+      ini.set(Model.getIniSection(BWAPI.Property.COPY_WRITE_READ.toString()), BWAPI.Property.COPY_WRITE_READ.toString(), Boolean.TRUE.toString());
     }
-    if (!ini.hasValue(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, BWHeadless.Property.CLEAN_SC_DIR.toString())) {
-      ini.set(DropLauncher.DROPLAUNCHER_INI_SECTION_NAME, BWHeadless.Property.CLEAN_SC_DIR.toString(), Boolean.TRUE.toString());
+    if (!ini.hasValue(Model.getIniSection(BWAPI.Property.CLEAN_SC_DIR.toString()), BWAPI.Property.CLEAN_SC_DIR.toString())) {
+      ini.set(Model.getIniSection(BWAPI.Property.CLEAN_SC_DIR.toString()), BWAPI.Property.CLEAN_SC_DIR.toString(), Boolean.TRUE.toString());
     }
+    if (!ini.hasValue(Model.getIniSection(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString()), BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString())) {
+      ini.set(Model.getIniSection(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString()), BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString(), Boolean.TRUE.toString());
+    }
+  }
+
+  /**
+   * Returns the INI section name associated with the specified
+   * unique key. Using this method removes the programmer's
+   * requirement of knowing which unique settings key belongs to which
+   * INI section. This also makes the moving/renaming/adding of keys easier.
+   *
+   * @param uniqueKey specified unique key
+   */
+  public static String getIniSection(String uniqueKey) {
+    uniqueKey = uniqueKey.toLowerCase(Locale.US);
+    for (BWAPI.Property val : BWAPI.Property.values()) {
+      if (uniqueKey.equals(val.toString())) {
+        return BWAPI.DEFAULT_INI_SECTION_NAME;
+      }
+    }
+    for (BWHeadless.Property val : BWHeadless.Property.values()) {
+      if (uniqueKey.equals(val.toString())) {
+        return BWHeadless.DEFAULT_INI_SECTION_NAME;
+      }
+    }
+    for (View.Property val : View.Property.values()) {
+      if (uniqueKey.equals(val.toString())) {
+        return DropLauncher.DEFAULT_INI_SECTION_NAME;
+      }
+    }
+    throw new IllegalArgumentException("not found: uniqueKey=" + uniqueKey);
   }
 
 }
