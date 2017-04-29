@@ -23,7 +23,6 @@ import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.model.Model;
-import droplauncher.util.DropLauncher;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
@@ -116,7 +115,7 @@ public class SettingsWindow {
       }
     });
 
-    this.chkWarnBwapiDll.setText("Warn about unknown BWAPI version");
+    this.chkWarnBwapiDll.setText("Warn about unknown BWAPI versions");
     if (this.ini.isEnabled(Model.getIniSection(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString()), BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString())) {
       this.chkWarnBwapiDll.setSelected(true);
     } else {

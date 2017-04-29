@@ -43,9 +43,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.lingala.zip4j.core.ZipFile;
@@ -363,6 +366,29 @@ public class Controller {
   }
 
   public void btnLaunchClicked() {
+    /* Check if BWAPI.dll is known. */
+    if (this.state == State.IDLE
+        && this.model.getINI().isEnabled(Model.getIniSection(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString()), BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString())
+        && getBwapiDllVersion().equalsIgnoreCase(BWAPI.DLL_UNKNOWN.toString())) {
+      Alert alert = new Alert(AlertType.CONFIRMATION);
+      alert.setTitle("Warning");
+      alert.setContentText("The BWAPI.dll you provided does not match the list of known official BWAPI versions.\n\nDo you want to continue anyway?");
+      alert.setHeaderText(null);
+      alert.getDialogPane().getStylesheets().add(View.DEFAULT_CSS);
+      ButtonType btnNo = new ButtonType("No");
+      ButtonType btnYes = new ButtonType("Yes");
+      alert.getButtonTypes().setAll(btnYes, btnNo);
+      Optional<ButtonType> result = alert.showAndWait();
+      if (result.get() != btnYes) {
+        new SimpleAlert().showAndWait(
+            AlertType.WARNING,
+            "Warning",
+            "Launch aborted!"
+        );
+        return;
+      }
+    }
+
     State prevState = this.state;
 
     if (prevState == State.LOCKED) {
