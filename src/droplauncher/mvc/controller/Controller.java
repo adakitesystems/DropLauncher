@@ -105,6 +105,7 @@ public class Controller {
       this.directoryMonitor.getIgnoreList().add("maps"); /* ignore any "*maps*" file/directory */
       this.directoryMonitor.getIgnoreList().add("bwta"); /* ignore any "*bwta*" file/directory */
       this.directoryMonitor.getIgnoreList().add("bwta2"); /* ignore any "*bwta2*" file/directory */
+      this.directoryMonitor.getIgnoreList().add("bwapi-data"); /* ignore any "*bwapi-data*" file/directory */
       this.directoryMonitor.reset();
     }
 

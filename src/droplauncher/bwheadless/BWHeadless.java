@@ -34,8 +34,10 @@ import adakite.util.windows.Tasklist;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.util.DropLauncher;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,6 +45,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 
 /**
  * Class for handling execution and communication with bwheadless.
@@ -272,9 +275,10 @@ public class BWHeadless {
       return ReadyError.NETWORK_PROVIDER;
     } else if (!this.ini.hasValue(Model.getIniSection(Property.CONNECT_MODE.toString()), Property.CONNECT_MODE.toString())) {
       return ReadyError.CONNECT_MODE;
-    } else if (!AdakiteUtils.directoryExists(getBwapiDirectory()) || !AdakiteUtils.fileExists(getBwapiDirectory().resolve(BWAPI.DATA_INI_PATH.getFileName()))) {
-      /* If the BWAPI.ini file is not found at "StarCraft/bwapi-data/bwapi.ini". */
-      return ReadyError.BWAPI_INSTALL;
+//    } else if (!AdakiteUtils.directoryExists(getBwapiDirectory())
+//        || !AdakiteUtils.fileExists(getBwapiDirectory().resolve(BWAPI.DATA_INI_PATH.getFileName()))) {
+//      /* If the BWAPI.ini file is not found at "StarCraft/bwapi-data/bwapi.ini". */
+//      return ReadyError.BWAPI_INSTALL;
     } else if (AdakiteUtils.getFileExtension(this.botFile.getPath()).equalsIgnoreCase("jar")
         && !AdakiteUtils.fileExists(DropLauncher.JRE_EXE)) {
       return ReadyError.JRE_INSTALL;
@@ -383,14 +387,19 @@ public class BWHeadless {
    * @throws IOException if an I/O error occurs
    * @throws InvalidBotTypeException if the bot type is not recognized
    */
-  private void configureBwapi(Path starcraftDirectory) throws IOException, InvalidBotTypeException, IniParseException {
+  private void configureBwapi(Path starcraftDirectory) throws IOException,
+                                                              InvalidBotTypeException,
+                                                              IniParseException {
     /* Create common BWAPI paths. */
     Path bwapiAiPath = starcraftDirectory.resolve(BWAPI.DATA_AI_PATH);
     Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.DATA_READ_PATH);
     Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);
+    Path bwapiDataDataPath = starcraftDirectory.resolve(BWAPI.DATA_DATA_PATH);
+    Path bwapiIniPath = starcraftDirectory.resolve(BWAPI.DATA_INI_PATH);
     AdakiteUtils.createDirectory(bwapiAiPath);
     AdakiteUtils.createDirectory(bwapiReadPath);
     AdakiteUtils.createDirectory(bwapiWritePath);
+    AdakiteUtils.createDirectory(bwapiDataDataPath);
 
     /* Create BWTA/BWTA2 paths. */
     Path bwtaPath = starcraftDirectory.resolve(BWAPI.DATA_PATH).resolve("BWTA");
@@ -398,8 +407,14 @@ public class BWHeadless {
     AdakiteUtils.createDirectory(bwtaPath);
     AdakiteUtils.createDirectory(bwta2Path);
 
-    /* Read the BWAPI.ini file. */
-    Path bwapiIniPath = starcraftDirectory.resolve(BWAPI.DATA_INI_PATH);
+    /* Check for bwapi.ini existence. */
+    if (!AdakiteUtils.fileExists(bwapiIniPath)) {
+      /* If bwapi.ini is not found, copy the modified BWAPI 4.2.0 bwapi.ini. */
+      URL url = getClass().getResource("/droplauncher/bwapi/files/bwapi.ini");
+      FileUtils.copyURLToFile(url, bwapiIniPath.toFile());
+    }
+
+    /* Read the bwapi.ini file. */
     Ini bwapiIni = new Ini();
     bwapiIni.parse(bwapiIniPath);
 
