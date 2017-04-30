@@ -13,6 +13,10 @@ droplauncher.ini
 droplauncher.log
 gitlog.txt
 fatjar/
+vcredist_x86.exe
+
+# Extractable files
+src/droplauncher/bwapi/files/
 
 # Checkstyle
 checkstyle/checkstyle-7.5.1-all.jar
