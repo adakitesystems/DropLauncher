@@ -368,9 +368,11 @@ public class Controller {
 
   public void btnLaunchClicked() {
     /* Check if BWAPI.dll is known. */
+    String bwapiDllVersion = getBwapiDllVersion();
     if (this.state == State.IDLE
         && this.model.getINI().isEnabled(Model.getIniSection(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString()), BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString())
-        && getBwapiDllVersion().equalsIgnoreCase(BWAPI.DLL_UNKNOWN.toString())) {
+        && !AdakiteUtils.isNullOrEmpty(bwapiDllVersion)
+        && bwapiDllVersion.equalsIgnoreCase(BWAPI.DLL_UNKNOWN.toString())) {
       Alert alert = new Alert(AlertType.CONFIRMATION);
       alert.setTitle("Warning");
       alert.setContentText("The BWAPI.dll you provided does not match the list of known official BWAPI versions.\n\nDo you want to continue anyway?");
