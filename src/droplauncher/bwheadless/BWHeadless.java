@@ -34,7 +34,6 @@ import adakite.util.windows.Tasklist;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.util.DropLauncher;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
@@ -423,6 +422,16 @@ public class BWHeadless {
       /* If Broodwar.map is not found, extract it. */
       URL url = getClass().getResource("/droplauncher/bwapi/files/" + BWAPI.ExtractableFile.BROODWAR_MAP.toString());
       FileUtils.copyURLToFile(url, bwapiBroodwarMap.toFile());
+    }
+
+    /* Check for DLL dependencies. */
+    for (BWAPI.ExtractableDll val : BWAPI.ExtractableDll.values()) {
+      /* If dependency is not found, extract it. */
+      Path dll = starcraftDirectory.resolve(val.toString());
+      if (!AdakiteUtils.fileExists(dll)) {
+        URL url = getClass().getResource("/droplauncher/bwapi/dll/" + val.toString());
+        FileUtils.copyURLToFile(url, dll.toFile());
+      }
     }
 
     Path src;

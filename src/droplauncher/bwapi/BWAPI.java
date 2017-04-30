@@ -97,24 +97,49 @@ public class BWAPI {
    * sha256 checksums:
    * 60e69e90943073696458cd2e5ace9baa39c542cb4ec1ab1d2adfe5dba18035ee *Broodwar.map
    * d16c2909993b9de89b8a285c89cf17e8b16375c876d3ebfd443fde31c9d504a5 *bwapi.ini
-   * 28282d77de250e4c7dd7b5ac1563c62d43465a2dda19119f551b45e7dc0d2aa7 *gmp-vc90-mt-gd.dll
-   * 9f45860228df80656d2c7407a0fa6d82c1b759d47c7dee843877700740eb4b58 *gmp-vc90-mt.dll
-   * b1873ca36d8ff3f0df0bbf1895916cc13e4bb95588e0e711c689bd37ead8100f *mpfr-vc90-mt-gd.dll
-   * 647760f4b63ce1a4c36de4c71176f59cfccdfbb9ad397979725228272c8c67ae *mpfr-vc90-mt.dll
    */
   public enum ExtractableFile {
 
-    BROODWAR_MAP("Broodwar.map"),  /* Exception Filter input file for BWAPI */
-    BWAPI_INI("bwapi.ini"),        /* BWAPI configuration file */
-    GMP("gmp-vc90-mt.dll"),        /* BWTA dependency */
-    GMP_GD("gmp-vc90-mt-gd.dll"),  /* BWTA dependency */
-    MPFR("mpfr-vc90-mt.dll"),      /* BWTA dependency */
-    MPFR_GD("mpfr-vc90-mt-gd.dll") /* BWTA dependency */
+    BROODWAR_MAP("Broodwar.map"), /* Exception Filter input file for BWAPI */
+    BWAPI_INI("bwapi.ini")        /* BWAPI configuration file */
     ;
 
     private final String str;
 
     private ExtractableFile(String str) {
+      this.str = str;
+    }
+
+    public String toString() {
+      return this.str;
+    }
+
+  }
+
+  /**
+   * Enum for extractable DLLs.
+   *
+   * sha256 checksums:
+   * 28282d77de250e4c7dd7b5ac1563c62d43465a2dda19119f551b45e7dc0d2aa7 *gmp-vc90-mt-gd.dll
+   * 9f45860228df80656d2c7407a0fa6d82c1b759d47c7dee843877700740eb4b58 *gmp-vc90-mt.dll
+   * 9be85bd8468363703304d0bbd059c9709dba270d0ff5a1a94823cb5dbbfa5f20 *libgmp-10.dll
+   * 5a72d472e892efd7d94ea287eda354637394805c2f445edec051b5c0a3d0f55b *libmpfr-4.dll
+   * b1873ca36d8ff3f0df0bbf1895916cc13e4bb95588e0e711c689bd37ead8100f *mpfr-vc90-mt-gd.dll
+   * 647760f4b63ce1a4c36de4c71176f59cfccdfbb9ad397979725228272c8c67ae *mpfr-vc90-mt.dll
+   */
+  public enum ExtractableDll {
+
+    LIBGMP("libgmp-10.dll"),
+    GMP("gmp-vc90-mt.dll"),
+    GMP_GD("gmp-vc90-mt-gd.dll"),
+    LIBMPFR("libmpfr-4.dll"),
+    MPFR("mpfr-vc90-mt.dll"),
+    MPFR_GD("mpfr-vc90-mt-gd.dll")
+    ;
+
+    private final String str;
+
+    private ExtractableDll(String str) {
       this.str = str;
     }
 
