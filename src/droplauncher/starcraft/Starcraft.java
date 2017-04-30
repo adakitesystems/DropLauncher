@@ -25,6 +25,23 @@ import java.util.Locale;
  */
 public class Starcraft {
 
+  public enum Property {
+
+    CLEAN_SC_DIR("clean_sc_dir"),
+    ;
+
+    private final String str;
+
+    private Property(String str) {
+      this.str = str;
+    }
+
+    public String toString() {
+      return this.str;
+    }
+
+  }
+
   /**
    * Enum for race selections in StarCraft.
    */
@@ -66,6 +83,8 @@ public class Starcraft {
     }
 
   }
+
+  public static final String DEFAULT_INI_SECTION_NAME = "starcraft";
 
   /* Maximum profile name length in Brood War 1.16.1 */
   public static final int MAX_PROFILE_NAME_LENGTH = 24;

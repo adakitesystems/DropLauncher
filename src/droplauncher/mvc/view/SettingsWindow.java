@@ -23,6 +23,7 @@ import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.model.Model;
+import droplauncher.starcraft.Starcraft;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
@@ -73,7 +74,7 @@ public class SettingsWindow {
   }
 
   public SettingsWindow showAndWait() {
-    this.chkShowLogWindow.setText("Show log window for executable bot clients (requires program restart)");
+    this.chkShowLogWindow.setText("Show log window (requires program restart)");
     if (this.ini.isEnabled(Model.getIniSection(View.Property.SHOW_LOG_WINDOW.toString()), View.Property.SHOW_LOG_WINDOW.toString())) {
       this.chkShowLogWindow.setSelected(true);
     } else {
@@ -101,15 +102,15 @@ public class SettingsWindow {
       }
     });
 
-    this.chkCleanStarcraftDirectory.setText("Clean StarCraft directory before closing program");
-    if (this.ini.isEnabled(Model.getIniSection(BWAPI.Property.CLEAN_SC_DIR.toString()), BWAPI.Property.CLEAN_SC_DIR.toString())) {
+    this.chkCleanStarcraftDirectory.setText("Clean StarCraft directory when closing program");
+    if (this.ini.isEnabled(Model.getIniSection(Starcraft.Property.CLEAN_SC_DIR.toString()), Starcraft.Property.CLEAN_SC_DIR.toString())) {
       this.chkCleanStarcraftDirectory.setSelected(true);
     } else {
       this.chkCleanStarcraftDirectory.setSelected(false);
     }
     this.chkCleanStarcraftDirectory.setOnAction(e -> {
       try {
-        this.ini.setEnabled(Model.getIniSection(BWAPI.Property.CLEAN_SC_DIR.toString()), BWAPI.Property.CLEAN_SC_DIR.toString(), this.chkCleanStarcraftDirectory.isSelected());
+        this.ini.setEnabled(Model.getIniSection(Starcraft.Property.CLEAN_SC_DIR.toString()), Starcraft.Property.CLEAN_SC_DIR.toString(), this.chkCleanStarcraftDirectory.isSelected());
       } catch (Exception ex) {
         LOGGER.log(Debugging.getLogLevel(), null, ex);
       }

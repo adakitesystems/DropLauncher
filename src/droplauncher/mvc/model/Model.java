@@ -23,6 +23,7 @@ import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.view.View;
+import droplauncher.starcraft.Starcraft;
 import droplauncher.util.DropLauncher;
 import java.io.IOException;
 import java.util.Locale;
@@ -58,13 +59,13 @@ public class Model {
 
   private void parseSettings(Ini ini) {
     if (!ini.hasValue(Model.getIniSection(View.Property.SHOW_LOG_WINDOW.toString()), View.Property.SHOW_LOG_WINDOW.toString())) {
-      ini.set(Model.getIniSection(View.Property.SHOW_LOG_WINDOW.toString()), View.Property.SHOW_LOG_WINDOW.toString(), Boolean.FALSE.toString());
+      ini.set(Model.getIniSection(View.Property.SHOW_LOG_WINDOW.toString()), View.Property.SHOW_LOG_WINDOW.toString(), Boolean.TRUE.toString());
     }
     if (!ini.hasValue(Model.getIniSection(BWAPI.Property.COPY_WRITE_READ.toString()), BWAPI.Property.COPY_WRITE_READ.toString())) {
       ini.set(Model.getIniSection(BWAPI.Property.COPY_WRITE_READ.toString()), BWAPI.Property.COPY_WRITE_READ.toString(), Boolean.TRUE.toString());
     }
-    if (!ini.hasValue(Model.getIniSection(BWAPI.Property.CLEAN_SC_DIR.toString()), BWAPI.Property.CLEAN_SC_DIR.toString())) {
-      ini.set(Model.getIniSection(BWAPI.Property.CLEAN_SC_DIR.toString()), BWAPI.Property.CLEAN_SC_DIR.toString(), Boolean.TRUE.toString());
+    if (!ini.hasValue(Model.getIniSection(Starcraft.Property.CLEAN_SC_DIR.toString()), Starcraft.Property.CLEAN_SC_DIR.toString())) {
+      ini.set(Model.getIniSection(Starcraft.Property.CLEAN_SC_DIR.toString()), Starcraft.Property.CLEAN_SC_DIR.toString(), Boolean.TRUE.toString());
     }
     if (!ini.hasValue(Model.getIniSection(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString()), BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString())) {
       ini.set(Model.getIniSection(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString()), BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString(), Boolean.TRUE.toString());
@@ -94,6 +95,11 @@ public class Model {
     for (View.Property val : View.Property.values()) {
       if (uniqueKey.equals(val.toString())) {
         return DropLauncher.DEFAULT_INI_SECTION_NAME;
+      }
+    }
+    for (Starcraft.Property val : Starcraft.Property.values()) {
+      if (uniqueKey.equals(val.toString())) {
+        return Starcraft.DEFAULT_INI_SECTION_NAME;
       }
     }
     throw new IllegalArgumentException("not found: uniqueKey=" + uniqueKey);

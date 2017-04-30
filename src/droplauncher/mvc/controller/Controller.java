@@ -33,6 +33,7 @@ import droplauncher.mvc.view.View;
 import droplauncher.util.DropLauncher;
 import adakite.util.DirectoryMonitor;
 import droplauncher.exception.InvalidBotTypeException;
+import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.Starcraft.Race;
 import java.io.File;
 import java.io.IOException;
@@ -149,7 +150,7 @@ public class Controller {
         return;
     }
 
-    if (this.model.getINI().isEnabled(Model.getIniSection(BWAPI.Property.CLEAN_SC_DIR.toString()), BWAPI.Property.CLEAN_SC_DIR.toString())) {
+    if (this.model.getINI().isEnabled(Model.getIniSection(Starcraft.Property.CLEAN_SC_DIR.toString()), Starcraft.Property.CLEAN_SC_DIR.toString())) {
       /* Clean up StarCraft directory. */
       try {
         if (this.directoryMonitor != null) {
