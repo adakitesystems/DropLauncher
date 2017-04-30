@@ -277,7 +277,7 @@ public class BWHeadless {
       return ReadyError.CONNECT_MODE;
 //    } else if (!AdakiteUtils.directoryExists(getBwapiDirectory())
 //        || !AdakiteUtils.fileExists(getBwapiDirectory().resolve(BWAPI.DATA_INI_PATH.getFileName()))) {
-//      /* If the BWAPI.ini file is not found at "StarCraft/bwapi-data/bwapi.ini". */
+//      /* If the bwapi.ini file is not found at "StarCraft/bwapi-data/bwapi.ini". */
 //      return ReadyError.BWAPI_INSTALL;
     } else if (AdakiteUtils.getFileExtension(this.botFile.getPath()).equalsIgnoreCase("jar")
         && !AdakiteUtils.fileExists(DropLauncher.JRE_EXE)) {
@@ -396,6 +396,7 @@ public class BWHeadless {
     Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);
     Path bwapiDataDataPath = starcraftDirectory.resolve(BWAPI.DATA_DATA_PATH);
     Path bwapiIniPath = starcraftDirectory.resolve(BWAPI.DATA_INI_PATH);
+    Path bwapiBroodwarMap = bwapiDataDataPath.resolve(BWAPI.ExtractableFile.BROODWAR_MAP.toString());
     AdakiteUtils.createDirectory(bwapiAiPath);
     AdakiteUtils.createDirectory(bwapiReadPath);
     AdakiteUtils.createDirectory(bwapiWritePath);
@@ -409,14 +410,20 @@ public class BWHeadless {
 
     /* Check for bwapi.ini existence. */
     if (!AdakiteUtils.fileExists(bwapiIniPath)) {
-      /* If bwapi.ini is not found, copy the modified BWAPI 4.2.0 bwapi.ini. */
-      URL url = getClass().getResource("/droplauncher/bwapi/files/bwapi.ini");
+      /* If bwapi.ini is not found, exract the modified BWAPI 4.2.0 bwapi.ini. */
+      URL url = getClass().getResource("/droplauncher/bwapi/files/" + BWAPI.ExtractableFile.BWAPI_INI.toString());
       FileUtils.copyURLToFile(url, bwapiIniPath.toFile());
     }
-
     /* Read the bwapi.ini file. */
     Ini bwapiIni = new Ini();
     bwapiIni.parse(bwapiIniPath);
+
+    /* Check for the Broodwar.map file. */
+    if (!AdakiteUtils.fileExists(bwapiBroodwarMap)) {
+      /* If Broodwar.map is not found, extract it. */
+      URL url = getClass().getResource("/droplauncher/bwapi/files/" + BWAPI.ExtractableFile.BROODWAR_MAP.toString());
+      FileUtils.copyURLToFile(url, bwapiBroodwarMap.toFile());
+    }
 
     Path src;
     Path dest;
@@ -444,7 +451,7 @@ public class BWHeadless {
     /* Not tested yet whether it matters if ai_dbg is enabled. Disable anyway. */
     bwapiIni.commentVariable("ai", "ai_dbg");
 
-    /* Update BWAPI.ini file. */
+    /* Update bwapi.ini file. */
     bwapiIni.store(bwapiIniPath);
 
     /* Copy misc files to common bot I/O directories. */
