@@ -38,6 +38,7 @@ public class BWAPI {
       this.str = str;
     }
 
+    @Override
     public String toString() {
       return this.str;
     }
@@ -110,6 +111,7 @@ public class BWAPI {
       this.str = str;
     }
 
+    @Override
     public String toString() {
       return this.str;
     }
@@ -143,6 +145,7 @@ public class BWAPI {
       this.str = str;
     }
 
+    @Override
     public String toString() {
       return this.str;
     }
