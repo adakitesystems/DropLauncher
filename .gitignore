@@ -17,6 +17,7 @@ vcredist_x86.exe
 
 # Extractable files
 src/droplauncher/bwapi/files/
+src/droplauncher/bwapi/dll/
 
 # Checkstyle
 checkstyle/checkstyle-7.5.1-all.jar
