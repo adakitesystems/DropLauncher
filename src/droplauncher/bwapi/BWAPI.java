@@ -46,48 +46,61 @@ public class BWAPI {
   }
 
   /**
-   * Enum for BWAPI.dll MD5 checksums.
+   * Enum for BWAPI versions.
    */
-  public enum Checksum {
+  public enum Version {
 
-    DLL_374("6e940dc6acc76b6e459b39a9cdd466ae"),
-    DLL_375("5e590ea55c2d3c66a36bf75537f8655a"),
-    DLL_401B("84f413409387ae80a4b4acc51fed3923"),
-    DLL_410B("4814396fba36916fdb7cf3803b39ab51"),
-    DLL_411B("5d5128709ba714aa9c6095598bcf4624"),
-    DLL_412("1364390d0aa085fba6ac11b7177797b0"),
-    DLL_420("2f6fb401c0dcf65925ee7ad34dc6414a"),
+    VER_374,
+    VER_375,
+    VER_401B,
+    VER_410B,
+    VER_411B,
+    VER_412,
+    VER_420
     ;
 
-    private final String str;
-
-    private Checksum(String str) {
-      this.str = str;
-    }
-
     /**
-     * Returns the version in string format.
+     * Returns the MD5 checksum of the matching BWAPI.dll.
      */
-    public String getName() {
+    public String getMD5Checksum() {
       switch (this) {
-        case DLL_374: return "3.7.4";
-        case DLL_375: return "3.7.5";
-        case DLL_401B: return "4.0.1b";
-        case DLL_410B: return "4.1.0b";
-        case DLL_411B: return "4.1.1b";
-        case DLL_412: return "4.1.2";
-        case DLL_420: return "4.2.0";
+        case VER_374:  return "6e940dc6acc76b6e459b39a9cdd466ae";
+        case VER_375:  return "5e590ea55c2d3c66a36bf75537f8655a";
+        case VER_401B: return "84f413409387ae80a4b4acc51fed3923";
+        case VER_410B: return "4814396fba36916fdb7cf3803b39ab51";
+        case VER_411B: return "5d5128709ba714aa9c6095598bcf4624";
+        case VER_412:  return "1364390d0aa085fba6ac11b7177797b0";
+        case VER_420:  return "2f6fb401c0dcf65925ee7ad34dc6414a";
         default:
           throw new IllegalArgumentException();
       }
     }
 
-    /**
-     * Returns the MD5 checksum.
-     */
     @Override
     public String toString() {
-      return this.str;
+      String ret = "";
+      String name = this.name();
+
+      int index = name.indexOf("_");
+      if (index >= 0) {
+        name = name.substring(index + 1, name.length());
+      }
+
+      ret += name.charAt(0);
+      for (int i = 1; i < name.length(); i++) {
+        try {
+          /* If previous character is a number, append a period to separate
+             version sections. */
+          Integer.parseInt("" + name.charAt(i - 1));
+          ret += ".";
+        } catch (Exception ex) {
+          /* Previous character is not a number. */
+          /* Do nothing. */
+        }
+        ret += name.charAt(i);
+      }
+
+      return ret.toLowerCase(Locale.US);
     }
 
   }
@@ -165,18 +178,19 @@ public class BWAPI {
   private BWAPI() {}
 
   /**
-   * Returns the BWAPI version associated with the specified MD5 checksum.
+   * Returns the BWAPI version associated with the specified MD5 checksum
+   * of target BWAPI.dll file.
    *
-   * @param dllChecksum specified MD5 checksum
+   * @param dllChecksum specified MD5 checksum of target BWAPI.dll
    * @return
    *     the BWAPI version if known,
    *     otherwise an unknown-type indication string
    */
   public static String getBwapiVersion(String dllChecksum) {
-    dllChecksum = dllChecksum.toLowerCase(Locale.US);
-    for (Checksum checksumValue : Checksum.values()) {
-      if (dllChecksum.equals(checksumValue.toString())) {
-        return checksumValue.getName();
+    dllChecksum = dllChecksum.trim().toLowerCase(Locale.US);
+    for (Version checksumValue : Version.values()) {
+      if (dllChecksum.equals(checksumValue.getMD5Checksum())) {
+        return checksumValue.toString();
       }
     }
     return DLL_UNKNOWN;

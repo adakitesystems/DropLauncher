@@ -274,4 +274,9 @@ public class Bot {
     return index;
   }
 
+  //TODO
+  public static void loadProfile(Bot bot, String directory) {
+    throw new UnsupportedOperationException("operation not supported yet");
+  }
+
 }
