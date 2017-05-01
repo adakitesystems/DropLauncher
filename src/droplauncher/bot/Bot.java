@@ -56,6 +56,12 @@ public class Bot {
 
   }
 
+  public enum Type {
+    DLL,
+    CLIENT,
+    UNKNOWN
+  }
+
   public static final String DEFAULT_NAME = "BOT";
 
   private Settings settings;
@@ -226,6 +232,26 @@ public class Bot {
       throw new InvalidArgumentException(Debugging.fileDoesNotExist(Paths.get(path)));
     }
     this.settings.set(Property.EXTRA_FILE.toString() + Integer.toString(getNextExtraFileIndex()), path);
+  }
+
+  /**
+   * Returns the type of this bot.
+   * Example: {@link Type#CLIENT}, {@link Type#DLL}, etc.
+   *
+   * @throws InvalidStateException if an error occurs with {@link #getPath()}.
+   */
+  public Type getType() throws InvalidStateException {
+    String path = getPath();
+    String ext = FilenameUtils.getExtension(path).toLowerCase(Locale.US);
+    switch (ext) {
+      case "dll":
+        return Type.DLL;
+      case "exe":
+      case "jar":
+        return Type.CLIENT;
+      default:
+        return Type.UNKNOWN;
+    }
   }
 
   /**
