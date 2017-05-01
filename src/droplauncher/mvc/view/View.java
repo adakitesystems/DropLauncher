@@ -40,6 +40,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -88,6 +89,29 @@ public class View implements EventHandler<DragEvent>  {
 
   }
 
+  /**
+   * Enum for the launch button text states.
+   */
+  public enum StartButtonText {
+
+    START("Start"),
+    STOP("Stop")
+    ;
+
+    private final String str;
+
+    private StartButtonText(String str) {
+      this.str = str;
+    }
+
+    @Override
+    public String toString() {
+      return this.str;
+    }
+
+  }
+
+
   private static final String RESOURCE_PATH = "/droplauncher/mvc/view/theme/";
   public static final String DEFAULT_CSS = RESOURCE_PATH + "droplauncher.css";
 
@@ -110,7 +134,7 @@ public class View implements EventHandler<DragEvent>  {
   private Label lblBotName;
   private TextField txtBotName;
   private ChoiceBox<String> cbRace;
-  private Button btnLaunch;
+  private Button btnStart;
   private ConsoleOutput consoleOutput;
 
   public View() {
@@ -169,10 +193,12 @@ public class View implements EventHandler<DragEvent>  {
     this.cbRace.getItems().add(Race.ZERG.toString());
     this.cbRace.getItems().add(Race.PROTOSS.toString());
     this.cbRace.getItems().add(Race.RANDOM.toString());
-    this.btnLaunch = new Button(LaunchButtonText.LAUNCH.toString());
-    this.btnLaunch.setMinWidth(250);
-    this.btnLaunch.setMinHeight(30);
-    this.btnLaunch.getStyleClass().add("launch-btn");
+    this.btnStart = new Button(StartButtonText.START.toString());
+    this.btnStart.setMinWidth(250);
+    this.btnStart.setMinHeight(30);
+//    this.btnStart.setMinWidth(120);
+//    this.btnStart.setMinHeight(80);
+    this.btnStart.getStyleClass().add("launch-btn");
     this.consoleOutput = new ConsoleOutput();
     this.consoleOutput.getBlacklist().add("fps: "); /* bwheadless.exe spam */
     this.consoleOutput.get().getStyleClass().add("console-output");
@@ -188,7 +214,7 @@ public class View implements EventHandler<DragEvent>  {
         this.controller.botRaceChanged(current);
       }
     });
-    this.btnLaunch.setOnAction(e -> this.controller.btnLaunchClicked());
+    this.btnStart.setOnAction(e -> this.controller.btnStartClicked());
 
     CustomGridPane fileLabelGridPane = new CustomGridPane();
     fileLabelGridPane.add(this.lblBotFile);
@@ -218,19 +244,26 @@ public class View implements EventHandler<DragEvent>  {
     infoGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
     infoGridPane.get().setAlignment(Pos.CENTER_LEFT);
 
-    VBox hbox = new VBox();
-    this.btnLaunch.setAlignment(Pos.CENTER);
-    hbox.getChildren().add(this.btnLaunch);
+    VBox vbox = new VBox();
+    vbox.getChildren().add(this.btnStart);
     if (this.controller.isEnabledLogWindow()) {
-      hbox.getChildren().add(this.consoleOutput.get());
+      vbox.getChildren().add(this.consoleOutput.get());
     }
+    vbox.setSpacing(DefaultSetting.GAP.getValue());
+    vbox.setAlignment(Pos.CENTER);
+    vbox.setMinWidth(Region.USE_PREF_SIZE);
+
+    HBox hbox = new HBox();
+//    hbox.getChildren().add(this.btnStart);
+    hbox.getChildren().add(infoGridPane.get());
     hbox.setSpacing(DefaultSetting.GAP.getValue());
     hbox.setAlignment(Pos.CENTER);
     hbox.setMinWidth(Region.USE_PREF_SIZE);
 
     CustomGridPane mainGridPane = new CustomGridPane();
-    mainGridPane.add(infoGridPane.get(), true);
+//    mainGridPane.add(infoGridPane.get(), true);
     mainGridPane.add(hbox, true);
+    mainGridPane.add(vbox, true);
     mainGridPane.get().setPadding(new Insets(
         DefaultSetting.TOP_PADDING.getValue(),
         DefaultSetting.RIGHT_PADDING.getValue(),
@@ -352,12 +385,12 @@ public class View implements EventHandler<DragEvent>  {
     sizeToScene();
   }
 
-  public void btnLaunchSetText(String str) {
-    setText(this.btnLaunch, str);
+  public void btnStartSetText(String str) {
+    setText(this.btnStart, str);
   }
 
-  public void btnLaunchEnabled(boolean enabled) {
-    this.btnLaunch.setDisable(!enabled);
+  public void btnStartEnabled(boolean enabled) {
+    this.btnStart.setDisable(!enabled);
   }
 
   @Override

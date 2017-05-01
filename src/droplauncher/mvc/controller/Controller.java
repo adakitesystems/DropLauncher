@@ -25,7 +25,6 @@ import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.bwheadless.BotFile;
 import droplauncher.mvc.model.Model;
-import droplauncher.mvc.view.LaunchButtonText;
 import droplauncher.mvc.view.MessagePrefix;
 import droplauncher.mvc.view.SettingsWindow;
 import droplauncher.mvc.view.SimpleAlert;
@@ -367,7 +366,7 @@ public class Controller {
     new SimpleAlert().showAndWait(AlertType.INFORMATION, DropLauncher.PROGRAM_TITLE, DropLauncher.PROGRAM_ABOUT);
   }
 
-  public void btnLaunchClicked() {
+  public void btnStartClicked() {
     /* Check if BWAPI.dll is known. */
     String bwapiDllVersion = getBwapiDllVersion();
     if (this.state == State.IDLE
@@ -415,7 +414,7 @@ public class Controller {
           return;
         } else {
           /* Start bwheadless. */
-          this.view.btnLaunchEnabled(false);
+          this.view.btnStartEnabled(false);
           new Thread(() -> {
             try {
               startBWHeadless();
@@ -428,15 +427,15 @@ public class Controller {
               LOGGER.log(Debugging.getLogLevel(), null, ex);
             }
             Platform.runLater(() -> {
-              this.view.btnLaunchSetText(LaunchButtonText.EJECT.toString());
-              this.view.btnLaunchEnabled(true);
+              this.view.btnStartSetText(View.StartButtonText.STOP.toString());
+              this.view.btnStartEnabled(true);
             });
           }).start();
         }
         return;
       case RUNNING:
         /* Stop bwheadless. */
-        this.view.btnLaunchEnabled(false);
+        this.view.btnStartEnabled(false);
         new Thread(() -> {
           try {
             stopBWHeadless();
@@ -444,8 +443,8 @@ public class Controller {
             LOGGER.log(Debugging.getLogLevel(), null, ex);
           }
           Platform.runLater(() -> {
-            this.view.btnLaunchSetText(LaunchButtonText.LAUNCH.toString());
-            this.view.btnLaunchEnabled(true);
+            this.view.btnStartSetText(View.StartButtonText.START.toString());
+            this.view.btnStartEnabled(true);
           });
         }).start();
         return;
