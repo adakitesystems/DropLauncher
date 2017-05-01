@@ -115,7 +115,7 @@ public class Bot {
    *
    * @param race specified race
    * @throws InvalidArgumentException if the specified race is not in
-   * {@link droplauncher.starcraft.Starcraft.Race}.
+   *     {@link droplauncher.starcraft.Starcraft.Race}.
    */
   public void setRace(String race) throws InvalidArgumentException {
     Race raceEnum;
@@ -124,7 +124,7 @@ public class Bot {
     } catch (Exception ex) {
       String errorMessage = "invalid race";
       if (!AdakiteUtils.isNullOrEmpty(race)) {
-        errorMessage += " " + race;
+        errorMessage += ": " + race;
       }
       throw new InvalidArgumentException(errorMessage);
     }
@@ -186,8 +186,8 @@ public class Bot {
       throw new InvalidArgumentException(Debugging.emptyString());
     } else if (!AdakiteUtils.fileExists(Paths.get(path))) {
       throw new InvalidArgumentException(Debugging.fileDoesNotExist(Paths.get(path)));
-    } else if (!FilenameUtils.getBaseName(path).toLowerCase(Locale.US).contains("bwapi")) {
-      throw new InvalidArgumentException("filename does not contain \"BWAPI\": " + path);
+    } else if (!FilenameUtils.getBaseName(path).toLowerCase(Locale.US).equals("bwapi")) {
+      throw new InvalidArgumentException("filename does not equal \"BWAPI\": " + path);
     } else if (!FilenameUtils.getExtension(path).toLowerCase(Locale.US).equals("dll")) {
       throw new InvalidArgumentException("file extension is not DLL: " + path);
     }
@@ -195,9 +195,12 @@ public class Bot {
   }
 
   /**
-   * Returns the list of extra bot files. An extra bot file is described as
-   * any file that the bot uses after the bot has been invoked. The list is
-   * an ArrayList of strings which are paths to each bot file.
+   * Returns a copy of the list of extra bot files. An extra bot file is
+   * described as any file that the bot uses after the bot has been invoked.
+   * The list is an ArrayList of strings which are paths to each bot file.
+   * To add an extra bot file, use {@link #addExtraFile(java.lang.String)}.
+   *
+   * @see #addExtraFile(java.lang.String)
    */
   public ArrayList<String> getExtraFiles() {
     ArrayList<String> files = new ArrayList<>();
@@ -217,12 +220,12 @@ public class Bot {
    *     does not exist
    */
   public void addExtraFile(String path) throws InvalidArgumentException {
-    if (AdakiteUtils.isNullOrEmpty(path)
-        || !AdakiteUtils.fileExists(Paths.get(path))) {
-      throw new InvalidArgumentException();
+    if (AdakiteUtils.isNullOrEmpty(path)) {
+      throw new InvalidArgumentException(Debugging.emptyString());
+    } else if (!AdakiteUtils.fileExists(Paths.get(path))) {
+      throw new InvalidArgumentException(Debugging.fileDoesNotExist(Paths.get(path)));
     }
-    int index = getNextExtraFileIndex();
-    this.settings.set(Property.EXTRA_FILE.toString() + Integer.toString(index), path);
+    this.settings.set(Property.EXTRA_FILE.toString() + Integer.toString(getNextExtraFileIndex()), path);
   }
 
   /**
