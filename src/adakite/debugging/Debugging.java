@@ -3,25 +3,43 @@ package adakite.debugging;
 import adakite.util.AdakiteUtils;
 import java.nio.file.Path;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Debugging utilities class for anything related to debugging and logging.
  */
 public class Debugging {
 
-  /* Predefined logger messages */
-  private static final String EMPTY_STRING = "null or empty string";
-  private static final String ACK = "ack";
-  private static final String NULL_OBJECT = "null object";
-  private static final String FILE_DOES_NOT_EXIST = "file inaccessible or does not exist";
-  private static final String FILE_ALREADY_EXISTS = "file already exists";
-  private static final String OPEN_FAIL = "open failed";
-  private static final String CREATE_FAIL = "create failed";
-  private static final String DELETE_FAIL = "delete failed";
-  private static final String OPERATION_FAIL = "operation failed";
-  private static final String APPEND_FAIL = "append failed";
-  private static final String CANNOT_BE_NULL = "cannot be null";
-  private static final String CANNOT_BE_NULL_OR_EMPTY = "cannot be null or empty";
+  private enum Message {
+
+    EMPTY_STRING("null or empty string"),
+    ACK("ack"),
+    NULL_OBJECT("null object"),
+    FILE_DOES_NOT_EXIST("file inaccessible or does not exist"),
+    FILE_ALREADY_EXISTS("file already exists"),
+    OPEN_FAIL("open failed"),
+    CREATE_FAIL("create failed"),
+    DELETE_FAIL("delete failed"),
+    OPERATION_FAIL("operation failed"),
+    APPEND_FAIL("append failed"),
+    CANNOT_BE_NULL("cannot be null"),
+    CANNOT_BE_NULL_OR_EMPTY("cannot be null or empty")
+    ;
+
+    private final String str;
+
+    private Message(String str) {
+      this.str = str;
+    }
+
+    @Override
+    public String toString() {
+      return this.str;
+    }
+
+  }
+
+  private static final Logger LOGGER = Logger.getLogger(Debugging.class.getName());
 
   private static Level logLevel = Level.SEVERE;
 
@@ -33,21 +51,21 @@ public class Debugging {
 
   public static void setLogLevel(Level level) {
     if (level == null) {
-      return;
+      throw new IllegalArgumentException(Debugging.nullObject());
     }
     logLevel = level;
   }
 
   public static String emptyString() {
-    return Debugging.EMPTY_STRING;
+    return Debugging.Message.EMPTY_STRING.toString();
   }
 
   public static String emptyString(String message) {
-    return Debugging.EMPTY_STRING + ": " + message;
+    return Debugging.Message.EMPTY_STRING.toString() + ": " + message;
   }
 
   public static String ack(String message) {
-    String ret = Debugging.ACK;
+    String ret = Debugging.Message.ACK.toString();
     if (!AdakiteUtils.isNullOrEmpty(message)) {
       ret += ": " + message;
     }
@@ -59,39 +77,39 @@ public class Debugging {
   }
 
   public static String nullObject() {
-    return Debugging.NULL_OBJECT;
+    return Debugging.Message.NULL_OBJECT.toString();
   }
 
   public static String nullObject(String message) {
-    return Debugging.NULL_OBJECT + ": " + message;
+    return Debugging.Message.NULL_OBJECT.toString() + ": " + message;
   }
 
   public static String fileDoesNotExist(Path path) {
-    return (Debugging.FILE_DOES_NOT_EXIST + ": " + path.toAbsolutePath().toString());
+    return (Debugging.Message.FILE_DOES_NOT_EXIST.toString() + ": " + path.toAbsolutePath().toString());
   }
 
   public static String fileAlreadyExists(Path path) {
-    return (Debugging.FILE_ALREADY_EXISTS + ": " + path.toAbsolutePath().toString());
+    return (Debugging.Message.FILE_ALREADY_EXISTS.toString() + ": " + path.toAbsolutePath().toString());
   }
 
   public static String openFail(Path path) {
-    return (Debugging.OPEN_FAIL + ": " + path.toAbsolutePath().toString());
+    return (Debugging.Message.OPEN_FAIL.toString() + ": " + path.toAbsolutePath().toString());
   }
 
   public static String createFail(Path path) {
-    return (Debugging.CREATE_FAIL + ": " + path.toAbsolutePath().toString());
+    return (Debugging.Message.CREATE_FAIL.toString() + ": " + path.toAbsolutePath().toString());
   }
 
   public static String deleteFail(Path path) {
-    return (Debugging.DELETE_FAIL + ": " + path.toAbsolutePath().toString());
+    return (Debugging.Message.DELETE_FAIL.toString() + ": " + path.toAbsolutePath().toString());
   }
 
   public static String operationFail(String message) {
-    String ret = Debugging.OPERATION_FAIL;
+    String ret = Debugging.Message.OPERATION_FAIL.toString();
     if (!AdakiteUtils.isNullOrEmpty(message)) {
       ret += ": " + message;
     }
-    return (ret);
+    return ret;
   }
 
   public static String operationFail() {
@@ -99,15 +117,15 @@ public class Debugging {
   }
 
   public static String appendFail(Path path) {
-    return (Debugging.APPEND_FAIL + ": " + path.toAbsolutePath().toString());
+    return (Debugging.Message.APPEND_FAIL.toString() + ": " + path.toAbsolutePath().toString());
   }
 
   public static String cannotBeNull(String objName) {
-    return (objName + " " + Debugging.CANNOT_BE_NULL);
+    return (objName + " " + Debugging.Message.CANNOT_BE_NULL.toString());
   }
 
   public static String cannotBeNullOrEmpty(String objName) {
-    return (objName + " " + Debugging.CANNOT_BE_NULL_OR_EMPTY);
+    return (objName + " " + Debugging.Message.CANNOT_BE_NULL_OR_EMPTY.toString());
   }
 
 }
