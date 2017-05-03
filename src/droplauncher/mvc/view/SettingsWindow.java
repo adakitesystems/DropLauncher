@@ -68,7 +68,7 @@ public class SettingsWindow {
 
   public SettingsWindow showAndWait() {
     this.chkShowLogWindow.setText("Show log window (requires program restart)");
-    this.chkShowLogWindow.setSelected(this.chkShowLogWindow.isSelected());
+    this.chkShowLogWindow.setSelected(Model.isPrefEnabled(View.Property.SHOW_LOG_WINDOW.toString()));
     this.chkShowLogWindow.setOnAction(e -> {
       Model.setPrefEnabled(View.Property.SHOW_LOG_WINDOW.toString(), this.chkShowLogWindow.isSelected());
     });
@@ -80,13 +80,13 @@ public class SettingsWindow {
     });
 
     this.chkCleanStarcraftDirectory.setText("Clean StarCraft directory when closing program");
-    this.chkCleanStarcraftDirectory.setSelected(this.chkCleanStarcraftDirectory.isSelected());
+    this.chkCleanStarcraftDirectory.setSelected(Model.isPrefEnabled(Starcraft.Property.CLEAN_SC_DIR.toString()));
     this.chkCleanStarcraftDirectory.setOnAction(e -> {
       Model.setPrefEnabled(Starcraft.Property.CLEAN_SC_DIR.toString(), this.chkCleanStarcraftDirectory.isSelected());
     });
 
     this.chkWarnBwapiDll.setText("Warn about unknown BWAPI versions");
-    this.chkWarnBwapiDll.setSelected(this.chkWarnBwapiDll.isSelected());
+    this.chkWarnBwapiDll.setSelected(Model.isPrefEnabled(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString()));
     this.chkWarnBwapiDll.setOnAction(e -> {
       Model.setPrefEnabled(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString(), this.chkWarnBwapiDll.isSelected());
     });
