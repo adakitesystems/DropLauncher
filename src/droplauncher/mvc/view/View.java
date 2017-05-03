@@ -19,6 +19,7 @@ package droplauncher.mvc.view;
 
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.controller.Controller;
+import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.util.DropLauncher;
 import java.io.File;
@@ -246,7 +247,7 @@ public class View implements EventHandler<DragEvent>  {
 
     VBox vbox = new VBox();
     vbox.getChildren().add(this.btnStart);
-    if (this.controller.isEnabledLogWindow()) {
+    if (Model.isPrefEnabled(View.Property.SHOW_LOG_WINDOW.toString())) {
       vbox.getChildren().add(this.consoleOutput.get());
     }
     vbox.setSpacing(DefaultSetting.GAP.getValue());
