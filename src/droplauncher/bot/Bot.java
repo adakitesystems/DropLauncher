@@ -23,8 +23,6 @@ import adakite.exception.InvalidStateException;
 import adakite.settings.Settings;
 import adakite.util.AdakiteUtils;
 import droplauncher.starcraft.Starcraft;
-import droplauncher.starcraft.Starcraft.Race;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Locale;
 import org.apache.commons.io.FilenameUtils;
@@ -68,6 +66,7 @@ public class Bot {
 
   public Bot() {
     this.settings = new Settings();
+    this.settings.set(Property.NAME.toString(), DEFAULT_NAME);
   }
 
   /**
@@ -93,11 +92,11 @@ public class Bot {
    */
   public void setName(String name) throws InvalidArgumentException {
     if (AdakiteUtils.isNullOrEmpty(name, true)) {
-      throw new InvalidArgumentException(Debugging.emptyString());
+      throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("name"));
     }
-    name = name.trim();
-    String cleaned = Starcraft.cleanProfileName(name);
-    if (!cleaned.equals(name)) {
+    String nameTrimmed = name.trim();
+    String cleaned = Starcraft.cleanProfileName(nameTrimmed);
+    if (!cleaned.equals(nameTrimmed)) {
       throw new InvalidArgumentException("standard StarCraft profile name violation: " + name);
     }
     this.settings.set(Property.NAME.toString(), name);
@@ -110,7 +109,7 @@ public class Bot {
    */
   public String getRace() throws InvalidStateException {
     String val = this.settings.getValue(Property.RACE.toString());
-    if (AdakiteUtils.isNullOrEmpty(val)) {
+    if (AdakiteUtils.isNullOrEmpty(val, true)) {
       throw new InvalidStateException("race is not set");
     }
     return val;
@@ -124,17 +123,15 @@ public class Bot {
    *     {@link droplauncher.starcraft.Starcraft.Race}.
    */
   public void setRace(String race) throws InvalidArgumentException {
-    Race raceEnum;
-    try {
-      raceEnum = Race.get(race);
-    } catch (Exception ex) {
+    if (!Starcraft.Race.isValid(race)) {
       String errorMessage = "invalid race";
       if (!AdakiteUtils.isNullOrEmpty(race)) {
         errorMessage += ": " + race;
       }
       throw new InvalidArgumentException(errorMessage);
+    } else {
+      this.settings.set(Property.RACE.toString(), race);
     }
-    this.settings.set(Property.RACE.toString(), raceEnum.toString());
   }
 
   /**
@@ -154,14 +151,11 @@ public class Bot {
    * Sets the path of this bot file to the specified input path.
    *
    * @param path specified input path
-   * @throws InvalidArgumentException if the path is null, empty, or
-   *     does not exist
+   * @throws InvalidArgumentException if the path is null or empty
    */
   public void setPath(String path) throws InvalidArgumentException {
     if (AdakiteUtils.isNullOrEmpty(path, true)) {
-      throw new InvalidArgumentException(Debugging.emptyString());
-    } else if (!AdakiteUtils.fileExists(Paths.get(path))) {
-      throw new InvalidArgumentException(Debugging.fileDoesNotExist(Paths.get(path)));
+      throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("path"));
     }
     this.settings.set(Property.PATH.toString(), path);
   }
@@ -183,15 +177,13 @@ public class Bot {
    * Sets the path of the BWAPI.dll to the specified input path.
    *
    * @param path specified input path
-   * @throws InvalidArgumentException if the path is null, empty, does
-   *     not exist, does not contain BWAPI in the filename, or does not
-   *     end with the ".dll" file extension.
+   * @throws InvalidArgumentException if the path is null, empty, does not
+   *     contain BWAPI in the filename, or does not end with the ".dll"
+   *     file extension.
    */
   public void setBwapiDll(String path) throws InvalidArgumentException {
-    if (AdakiteUtils.isNullOrEmpty(path)) {
-      throw new InvalidArgumentException(Debugging.emptyString());
-    } else if (!AdakiteUtils.fileExists(Paths.get(path))) {
-      throw new InvalidArgumentException(Debugging.fileDoesNotExist(Paths.get(path)));
+    if (AdakiteUtils.isNullOrEmpty(path, true)) {
+      throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("path"));
     } else if (!FilenameUtils.getBaseName(path).toLowerCase(Locale.US).equals("bwapi")) {
       throw new InvalidArgumentException("filename does not equal \"BWAPI\": " + path);
     } else if (!FilenameUtils.getExtension(path).toLowerCase(Locale.US).equals("dll")) {
@@ -222,14 +214,11 @@ public class Bot {
    * Adds the specified path as a path to an extra bot file.
    *
    * @param path specified path to file
-   * @throws InvalidArgumentException if path is null, empty, or
-   *     does not exist
+   * @throws InvalidArgumentException if path is null or empty
    */
   public void addExtraFile(String path) throws InvalidArgumentException {
-    if (AdakiteUtils.isNullOrEmpty(path)) {
+    if (AdakiteUtils.isNullOrEmpty(path, true)) {
       throw new InvalidArgumentException(Debugging.emptyString());
-    } else if (!AdakiteUtils.fileExists(Paths.get(path))) {
-      throw new InvalidArgumentException(Debugging.fileDoesNotExist(Paths.get(path)));
     }
     this.settings.set(Property.EXTRA_FILE.toString() + Integer.toString(getNextExtraFileIndex()), path);
   }
@@ -247,6 +236,7 @@ public class Bot {
       case "dll":
         return Type.DLL;
       case "exe":
+        /* Fall through. */
       case "jar":
         return Type.CLIENT;
       default:

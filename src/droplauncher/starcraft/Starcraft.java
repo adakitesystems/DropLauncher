@@ -17,7 +17,9 @@
 
 package droplauncher.starcraft;
 
+import adakite.prefs.Prefs;
 import adakite.util.AdakiteUtils;
+import droplauncher.util.DropLauncher;
 import java.util.Locale;
 
 /**
@@ -74,7 +76,7 @@ public class Starcraft {
           return val;
         }
       }
-      return null;
+      throw new IllegalArgumentException("Race not found: " + str);
     }
 
     @Override
@@ -82,9 +84,23 @@ public class Starcraft {
       return this.str;
     }
 
+    /**
+     * Tests if the specified race is known.
+     *
+     * @param race specified race
+     */
+    public static boolean isValid(String race) {
+      try {
+        Race.get(race);
+      } catch (Exception ex) {
+        return false;
+      }
+      return true;
+    }
+
   }
 
-  public static final String DEFAULT_INI_SECTION_NAME = "starcraft";
+  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("starcraft");
 
   /* Maximum profile name length in Brood War 1.16.1 */
   public static final int MAX_PROFILE_NAME_LENGTH = 24;

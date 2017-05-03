@@ -18,91 +18,74 @@
 package droplauncher.mvc.model;
 
 import adakite.ini.Ini;
-import adakite.ini.IniParseException;
-import adakite.util.AdakiteUtils;
+import adakite.prefs.Prefs;
+import droplauncher.bot.Bot;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.DropLauncher;
-import java.io.IOException;
 import java.util.Locale;
 
 public class Model {
 
   private Ini ini;
+  private Bot bot;
   private BWHeadless bwheadless;
 
   public Model() {
     this.ini = new Ini();
+    this.bot = new Bot();
     this.bwheadless = new BWHeadless();
-
-    this.bwheadless.setINI(this.ini);
   }
 
-  public void setup() throws IOException, IniParseException {
-    if (!AdakiteUtils.fileExists(DropLauncher.DEFAULT_INI_PATH)) {
-      AdakiteUtils.createFile(DropLauncher.DEFAULT_INI_PATH);
-    }
-    this.ini.parse(DropLauncher.DEFAULT_INI_PATH);
-    parseSettings(this.ini);
-    this.bwheadless.parseSettings(this.ini);
-  }
-
-  public Ini getINI() {
-    return this.ini;
+  public Bot getBot() {
+    return this.bot;
   }
 
   public BWHeadless getBWHeadless() {
     return this.bwheadless;
   }
 
-  private void parseSettings(Ini ini) {
-    if (!ini.hasValue(Model.getIniSection(View.Property.SHOW_LOG_WINDOW.toString()), View.Property.SHOW_LOG_WINDOW.toString())) {
-      ini.set(Model.getIniSection(View.Property.SHOW_LOG_WINDOW.toString()), View.Property.SHOW_LOG_WINDOW.toString(), Boolean.TRUE.toString());
-    }
-    if (!ini.hasValue(Model.getIniSection(BWAPI.Property.COPY_WRITE_READ.toString()), BWAPI.Property.COPY_WRITE_READ.toString())) {
-      ini.set(Model.getIniSection(BWAPI.Property.COPY_WRITE_READ.toString()), BWAPI.Property.COPY_WRITE_READ.toString(), Boolean.TRUE.toString());
-    }
-    if (!ini.hasValue(Model.getIniSection(Starcraft.Property.CLEAN_SC_DIR.toString()), Starcraft.Property.CLEAN_SC_DIR.toString())) {
-      ini.set(Model.getIniSection(Starcraft.Property.CLEAN_SC_DIR.toString()), Starcraft.Property.CLEAN_SC_DIR.toString(), Boolean.TRUE.toString());
-    }
-    if (!ini.hasValue(Model.getIniSection(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString()), BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString())) {
-      ini.set(Model.getIniSection(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString()), BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString(), Boolean.TRUE.toString());
-    }
-  }
-
-  /**
-   * Returns the INI section name associated with the specified
-   * unique key. Using this method removes the programmer's
-   * requirement of knowing which unique settings key belongs to which
-   * INI section. This also makes the moving/renaming/adding of keys easier.
-   *
-   * @param uniqueKey specified unique key
-   */
-  public static String getIniSection(String uniqueKey) {
+  private static Prefs getPrefs(String uniqueKey) {
     uniqueKey = uniqueKey.toLowerCase(Locale.US);
     for (BWAPI.Property val : BWAPI.Property.values()) {
       if (uniqueKey.equals(val.toString())) {
-        return BWAPI.DEFAULT_INI_SECTION_NAME;
+        return BWAPI.PREF_ROOT;
       }
     }
     for (BWHeadless.Property val : BWHeadless.Property.values()) {
       if (uniqueKey.equals(val.toString())) {
-        return BWHeadless.DEFAULT_INI_SECTION_NAME;
+        return BWHeadless.PREF_ROOT;
       }
     }
     for (View.Property val : View.Property.values()) {
       if (uniqueKey.equals(val.toString())) {
-        return DropLauncher.DEFAULT_INI_SECTION_NAME;
+        return DropLauncher.PREF_ROOT;
       }
     }
     for (Starcraft.Property val : Starcraft.Property.values()) {
       if (uniqueKey.equals(val.toString())) {
-        return Starcraft.DEFAULT_INI_SECTION_NAME;
+        return Starcraft.PREF_ROOT;
       }
     }
     throw new IllegalArgumentException("not found: uniqueKey=" + uniqueKey);
+  }
+
+  public static String getPref(String key) {
+    return getPrefs(key).get(key);
+  }
+
+  public static void setPref(String key, String val) {
+    getPrefs(key).set(key, val);
+  }
+
+  public static boolean isPrefEnabled(String key) {
+    return getPrefs(key).isEnabled(key);
+  }
+
+  public static void setPrefEnabled(String key, boolean enabled) {
+    getPrefs(key).set(key, Boolean.toString(enabled));
   }
 
 }

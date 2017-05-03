@@ -42,11 +42,11 @@ public class MVC {
 
     this.view.setController(this.controller);
 
-    try {
-      this.model.setup();
-    } catch (Exception ex) {
-      LOGGER.log(Debugging.getLogLevel(), null, ex);
-    }
+//    try {
+//      this.model.setup();
+//    } catch (Exception ex) {
+//      LOGGER.log(Debugging.getLogLevel(), null, ex);
+//    }
   }
 
   public void start(Stage stage) {

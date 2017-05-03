@@ -17,6 +17,8 @@
 
 package droplauncher.bwapi;
 
+import adakite.prefs.Prefs;
+import droplauncher.util.DropLauncher;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
@@ -173,7 +175,7 @@ public class BWAPI {
   public static final Path DATA_DATA_PATH = DATA_PATH.resolve(Paths.get("data")); /* mostly for Broodwar.map */
   public static final String DLL_UNKNOWN = "Unknown";
 
-  public static final String DEFAULT_INI_SECTION_NAME = "bwapi";
+  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("bwapi");
 
   private BWAPI() {}
 

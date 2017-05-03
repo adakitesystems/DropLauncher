@@ -18,12 +18,12 @@
 package droplauncher.mvc.controller;
 
 import adakite.debugging.Debugging;
+import adakite.exception.InvalidArgumentException;
+import adakite.exception.InvalidStateException;
 import adakite.ini.IniParseException;
 import adakite.md5sum.MD5Checksum;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
-import droplauncher.bwheadless.BWHeadless;
-import droplauncher.bwheadless.BotFile;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.MessagePrefix;
 import droplauncher.mvc.view.SettingsWindow;
@@ -38,7 +38,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -92,7 +91,10 @@ public class Controller {
     }
   }
 
-  private void startBWHeadless() throws IOException, InvalidBotTypeException, IniParseException {
+  private void startBWHeadless() throws IOException,
+                                        InvalidBotTypeException,
+                                        IniParseException,
+                                        InvalidStateException {
     setState(State.RUNNING);
 
     this.view.getConsoleOutput().println(MessagePrefix.DROPLAUNCHER.toString() + ": connecting bot to StarCraft");
@@ -111,12 +113,13 @@ public class Controller {
     this.model.getBWHeadless().start(this.view.getConsoleOutput());
   }
 
-  private void stopBWHeadless() throws IOException {
+  private void stopBWHeadless() throws IOException,
+                                       InvalidStateException {
     setState(State.IDLE);
 
     this.model.getBWHeadless().stop();
 
-    if (this.model.getINI().isEnabled(Model.getIniSection(BWAPI.Property.COPY_WRITE_READ.toString()), BWAPI.Property.COPY_WRITE_READ.toString())) {
+    if (Model.isPrefEnabled(BWAPI.Property.COPY_WRITE_READ.toString())) {
       /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
       Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
       Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);
@@ -175,13 +178,6 @@ public class Controller {
       }
     }
 
-    /* Save INI settings to file. */
-    try {
-      this.model.getINI().store(DropLauncher.DEFAULT_INI_PATH);
-    } catch (Exception ex) {
-      LOGGER.log(Debugging.getLogLevel(), "save INI configuration", ex);
-    }
-
     stage.close();
   }
 
@@ -191,7 +187,7 @@ public class Controller {
    *
    * @param path specified file to process
    */
-  private void processFile(Path path) {
+  private void processFile(Path path) throws InvalidArgumentException {
     if (this.state != State.IDLE) {
       return;
     }
@@ -211,17 +207,17 @@ public class Controller {
       case "jar":
         if (path.getFileName().toString().equalsIgnoreCase("BWAPI.dll")) {
           /* BWAPI.dll */
-          this.model.getBWHeadless().setBwapiDll(path.toAbsolutePath().toString());
+          this.model.getBot().setBwapiDll(path.toAbsolutePath().toString());
         } else {
           /* Bot file */
-          this.model.getBWHeadless().setBotFile(path.toAbsolutePath().toString());
-          this.model.getBWHeadless().setBotName(FilenameUtils.getBaseName(path.getFileName().toString()));
-          this.model.getBWHeadless().setBotRace(Race.RANDOM);
+          this.model.getBot().setPath(path.toAbsolutePath().toString());
+          this.model.getBot().setName(FilenameUtils.getBaseName(path.toString()));
+          this.model.getBot().setRace(Race.RANDOM.toString());
         }
         break;
       default:
         /* Treat as a config file. */
-        this.model.getBWHeadless().getExtraBotFiles().add(path);
+        this.model.getBot().addExtraFile(path.toAbsolutePath().toString());
         break;
     }
   }
@@ -268,7 +264,7 @@ public class Controller {
        dropping a directory does NOT include all subdirectories and
        files by default. */
     ArrayList<Path> fileList = new ArrayList<>();
-    files.forEach((file) -> {
+    for (File file : files) {
       if (file.isDirectory()) {
         try {
           Path[] tmpList = AdakiteUtils.getDirectoryContents(file.toPath(), true);
@@ -281,12 +277,16 @@ public class Controller {
       } else {
         LOGGER.log(Debugging.getLogLevel(), "unknown file dropped: " + file.getAbsolutePath());
       }
-    });
+    }
 
     /* Process all files. */
-    fileList.forEach((path) -> {
-      processFile(path);
-    });
+    for (Path path : fileList) {
+      try {
+        processFile(path);
+      } catch (Exception ex) {
+        LOGGER.log(Debugging.getLogLevel(), null, ex);
+      }
+    }
 
     this.view.update();
   }
@@ -307,33 +307,42 @@ public class Controller {
   }
 
   public String getBotFilename() {
-    if (this.model.getBWHeadless().getBotType() != BotFile.Type.UNKNOWN) {
-      return this.model.getBWHeadless().getBotPath().getFileName().toString();
-    } else {
+    try {
+      String name = FilenameUtils.getName(this.model.getBot().getPath());
+      return name;
+    } catch (Exception ex) {
       return null;
     }
   }
 
   public String getBwapiDllVersion() {
-    String dll = this.model.getBWHeadless().getINI().getValue(Model.getIniSection(BWHeadless.Property.BWAPI_DLL.toString()), BWHeadless.Property.BWAPI_DLL.toString());
-    if (AdakiteUtils.isNullOrEmpty(dll)) {
-      return null;
-    } else {
-      try {
-        return BWAPI.getBwapiVersion(MD5Checksum.get(Paths.get(dll)));
-      } catch (IOException | NoSuchAlgorithmException ex) {
-        LOGGER.log(Debugging.getLogLevel(), null, ex);
-        return BWAPI.DLL_UNKNOWN;
-      }
+    try {
+      String dll = this.model.getBot().getBwapiDll();
+      String md5sum = MD5Checksum.get(Paths.get(dll));
+      String version = BWAPI.getBwapiVersion(md5sum);
+      return version;
+    } catch (Exception ex) {
+      LOGGER.log(Debugging.getLogLevel(), null, ex);
+      return "";
     }
   }
 
   public String getBotName() {
-    return this.model.getBWHeadless().getINI().getValue(Model.getIniSection(BWHeadless.Property.BOT_NAME.toString()), BWHeadless.Property.BOT_NAME.toString());
+    try {
+      String name = this.model.getBot().getName();
+      return name;
+    } catch (Exception ex) {
+      return null;
+    }
   }
 
   public Race getBotRace() {
-    return Race.get(this.model.getBWHeadless().getINI().getValue(Model.getIniSection(BWHeadless.Property.BOT_RACE.toString()), BWHeadless.Property.BOT_RACE.toString()));
+    try {
+      Race race = Race.get(this.model.getBot().getRace());
+      return race;
+    } catch (Exception ex) {
+      return null;
+    }
   }
 
   /* ************************************************************ */
@@ -349,7 +358,11 @@ public class Controller {
     }
     List<File> files = fc.showOpenMultipleDialog(stage);
     if (files != null && files.size() > 0) {
-      filesDropped(files);
+      try {
+        filesDropped(files);
+      } catch (Exception ex) {
+        /* Do nothing. */
+      }
     }
     this.view.update();
   }
@@ -398,40 +411,50 @@ public class Controller {
       return;
     }
 
+//    boolean isReady = false;
+//    try {
+//      isReady = this.model.getBWHeadless().isReady();
+//    } catch (Exception ex) {
+//      /* Do nothing. */
+//    }
+//
+//    if (!isReady) {
+//      try {
+//        /* Display error message. */
+//        new SimpleAlert().showAndWait(
+//            AlertType.ERROR,
+//            "Not Ready",
+//            "The program is not ready due to the following error: " + AdakiteUtils.newline(2) +
+//            this.model.getBWHeadless().checkReady().toString()
+//        );
+//        setState(State.IDLE);
+//      } catch (Exception ex) {
+//        LOGGER.log(Debugging.getLogLevel(), null, ex);
+//      }
+//    }
+
     setState(State.LOCKED);
 
     switch (prevState) {
       case IDLE:
-        if (!this.model.getBWHeadless().isReady()) {
-          /* Display error message. */
-          new SimpleAlert().showAndWait(
-              AlertType.ERROR,
-              "Not Ready",
-              "The program is not ready due to the following error: " + AdakiteUtils.newline(2) +
-              this.model.getBWHeadless().getReadyError().toString()
-          );
-          setState(State.IDLE);
-          return;
-        } else {
-          /* Start bwheadless. */
-          this.view.btnStartEnabled(false);
-          new Thread(() -> {
-            try {
-              startBWHeadless();
-            } catch (Exception ex) {
-              this.view.getConsoleOutput().println(
-                  MessagePrefix.DROPLAUNCHER.get()
-                  + "unable to connect bot due to the following error:" + AdakiteUtils.newline(2)
-                  + ex.toString() + AdakiteUtils.newline()
-              );
-              LOGGER.log(Debugging.getLogLevel(), null, ex);
-            }
-            Platform.runLater(() -> {
-              this.view.btnStartSetText(View.StartButtonText.STOP.toString());
-              this.view.btnStartEnabled(true);
-            });
-          }).start();
-        }
+        /* Start bwheadless. */
+        this.view.btnStartEnabled(false);
+        new Thread(() -> {
+          try {
+            startBWHeadless();
+          } catch (Exception ex) {
+            this.view.getConsoleOutput().println(
+                MessagePrefix.DROPLAUNCHER.get()
+                + "unable to connect bot due to the following error:" + AdakiteUtils.newline(2)
+                + ex.toString() + AdakiteUtils.newline()
+            );
+            LOGGER.log(Debugging.getLogLevel(), null, ex);
+          }
+          Platform.runLater(() -> {
+            this.view.btnStartSetText(View.StartButtonText.STOP.toString());
+            this.view.btnStartEnabled(true);
+          });
+        }).start();
         return;
       case RUNNING:
         /* Stop bwheadless. */
@@ -458,21 +481,21 @@ public class Controller {
   }
 
   public void botRaceChanged(String str) {
-    if (str.equals(Race.TERRAN.toString())) {
-      this.model.getBWHeadless().setBotRace(Race.TERRAN);
-    } else if (str.equals(Race.ZERG.toString())) {
-      this.model.getBWHeadless().setBotRace(Race.ZERG);
-    } else if (str.equals(Race.PROTOSS.toString())) {
-      this.model.getBWHeadless().setBotRace(Race.PROTOSS);
-    } else if (str.equals(Race.RANDOM.toString())) {
-      this.model.getBWHeadless().setBotRace(Race.RANDOM);
+    try {
+      this.model.getBot().setRace(str);
+      this.view.updateRaceChoiceBox(); //TODO: Why do we have to do this? Remove?
+    } catch (Exception ex) {
+      LOGGER.log(Debugging.getLogLevel(), null, ex);
     }
-    this.view.updateRaceChoiceBox();
   }
 
   public void botNameChanged(String str) {
-    this.model.getBWHeadless().setBotName(str);
-    this.view.update();
+    try {
+      this.model.getBot().setName(str);
+      this.view.update();
+    } catch (Exception ex) {
+      LOGGER.log(Debugging.getLogLevel(), null, ex);
+    }
   }
 
 }

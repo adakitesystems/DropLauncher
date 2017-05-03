@@ -18,20 +18,22 @@
 package droplauncher.bwheadless;
 
 import adakite.debugging.Debugging;
+import adakite.exception.InvalidStateException;
 import adakite.ini.Ini;
 import adakite.ini.IniParseException;
+import adakite.prefs.Prefs;
+import adakite.settings.Settings;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.mvc.view.ConsoleOutput;
 import droplauncher.mvc.view.MessagePrefix;
-import droplauncher.starcraft.Starcraft;
 import adakite.util.process.CommandBuilder;
 import droplauncher.util.process.CustomProcess;
 import adakite.util.windows.Task;
 import adakite.util.windows.TaskTracker;
 import adakite.util.windows.Tasklist;
-import droplauncher.mvc.model.Model;
+import droplauncher.bot.Bot;
 import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.util.DropLauncher;
 import java.io.FileNotFoundException;
@@ -41,10 +43,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * Class for handling execution and communication with bwheadless.
@@ -56,10 +59,6 @@ public class BWHeadless {
   public enum Property {
 
     STARCRAFT_EXE("starcraft_exe"),
-    BWAPI_DLL("bwapi_dll"),
-    BOT_NAME("bot_name"),
-    BOT_FILE("bot_file"),
-    BOT_RACE("bot_race"),
     NETWORK_PROVIDER("network"),
     CONNECT_MODE("connect_mode"),
     GAME_NAME("game_name"),
@@ -79,7 +78,7 @@ public class BWHeadless {
   }
 
   /**
-   * Enum for passable arguments to bwheadless.
+   * Enum for passable arguments to bwheadless.exe.
    */
   public enum Argument {
 
@@ -138,7 +137,7 @@ public class BWHeadless {
           return val;
         }
       }
-      return null;
+      throw new IllegalArgumentException("ConnectMode not found: " + str);
     }
 
     @Override
@@ -148,6 +147,7 @@ public class BWHeadless {
 
   }
 
+  //TODO: Double-check if LocalPC requires admin privs.
   /**
    * Enum for the passable network argument to the bwheadless process.
    * Currently, only LAN is supported since LocalPC requires admin privileges
@@ -179,7 +179,7 @@ public class BWHeadless {
           return val;
         }
       }
-      return null;
+      throw new IllegalArgumentException("NetworkProvider not found: " + str);
     }
 
     @Override
@@ -199,7 +199,7 @@ public class BWHeadless {
     STARTCRAFT_EXE("unable to read/locate StarCraft.exe"),
     BWAPI_DLL("unable to read/locate BWAPI.dll"),
     BOT_NAME("invalid bot name"),
-    BOT_FILE("unable to read/locate bot file (*.dll, *.exe)"),
+    BOT_FILE("unable to read/locate a bot file (*.dll, *.exe, *.jar)"),
     BOT_RACE("invalid bot race"),
     NETWORK_PROVIDER("invalid network provider"),
     CONNECT_MODE("invalid connect mode"),
@@ -221,101 +221,98 @@ public class BWHeadless {
   }
 
   public static final Path DEFAULT_EXE_PATH = Paths.get("bwheadless.exe");
-  public static final String DEFAULT_INI_SECTION_NAME = "bwheadless";
+
+  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("bwheadless");
 
   public static final String DEFAULT_BOT_NAME = "BOT";
   public static final Race DEFAULT_BOT_RACE = Race.RANDOM;
   public static final NetworkProvider DEFAULT_NETWORK_PROVIDER = NetworkProvider.LAN;
   public static final ConnectMode DEFAULT_CONNECT_MODE = ConnectMode.JOIN;
 
-  private Ini ini;
+  private Settings settings;
 
   private CustomProcess bwheadlessProcess;
   private CustomProcess botProcess;
 
-  private BotFile botFile;
-  private ArrayList<Path> extraBotFiles; /* config files, e.g.: .json, .txt */
+  private Bot bot;
 
   private TaskTracker taskTracker;
 
   public BWHeadless() {
-    this.ini = null;
+    this.settings = new Settings();
 
     this.bwheadlessProcess = new CustomProcess();
     this.botProcess = new CustomProcess();
 
-    this.botFile = new BotFile();
-    this.extraBotFiles = new ArrayList<>();
+    this.bot = new Bot();
 
     this.taskTracker = new TaskTracker();
   }
 
-  public Ini getINI() {
-    return this.ini;
+  public Settings getSettings() {
+    return this.settings;
   }
 
-  public void setINI(Ini ini) {
-    this.ini = ini;
+  public void setSettings(Settings settings) {
+    this.settings = settings;
   }
 
-  /**
-   * Returns a list of extra bot files such as config files, JSON files,
-   * TXT files, etc. Any file that may be required to run the bot.
-   */
-  public ArrayList<Path> getExtraBotFiles() {
-    return this.extraBotFiles;
+  public Bot getBot() {
+    return this.bot;
   }
 
-  /**
-   * Tests if the program has sufficient information to run bwheadless.
-   *
-   * @see #getReadyError()
-   */
-  public boolean isReady() {
-    return (getReadyError() == ReadyError.NONE);
+  public void setBot(Bot bot) {
+    this.bot = bot;
   }
 
-  /**
-   * Returns an error/OK response depending on whether the program is ready
-   * to run bwheadless.
-   *
-   * @return
-   *     {@link ReadyError#NONE} if ready,
-   *     otherwise the corresponding value that is preventing status
-   *     from being ready. E.g. {@link ReadyError#STARTCRAFT_EXE}
-   */
-  public ReadyError getReadyError() {
-    if (!AdakiteUtils.fileExists(DEFAULT_EXE_PATH)) {
-      return ReadyError.BWHEADLESS_EXE;
-    } else if (!this.ini.hasValue(Model.getIniSection(Property.STARCRAFT_EXE.toString()), Property.STARCRAFT_EXE.toString())
-        || !AdakiteUtils.fileExists(Paths.get(this.ini.getValue(Model.getIniSection(Property.STARCRAFT_EXE.toString()), Property.STARCRAFT_EXE.toString())))) {
-      return ReadyError.STARTCRAFT_EXE;
-    } else if (!this.ini.hasValue(Model.getIniSection(Property.BWAPI_DLL.toString()), Property.BWAPI_DLL.toString())
-        || !AdakiteUtils.fileExists(Paths.get(this.ini.getValue(Model.getIniSection(Property.BWAPI_DLL.toString()), Property.BWAPI_DLL.toString())))) {
-      return ReadyError.BWAPI_DLL;
-    } else if (!this.ini.hasValue(Model.getIniSection(Property.BOT_NAME.toString()), Property.BOT_NAME.toString())) {
-      return ReadyError.BOT_NAME;
-    } else if (this.botFile.getType() == BotFile.Type.UNKNOWN
-        || !AdakiteUtils.fileExists(this.botFile.getPath())) {
-      /* If both the bot DLL and bot client fields are missing. */
-      return ReadyError.BOT_FILE;
-    } else if (!this.ini.hasValue(Model.getIniSection(Property.BOT_RACE.toString()), Property.BOT_RACE.toString())) {
-      return ReadyError.BOT_RACE;
-    } else if (!this.ini.hasValue(Model.getIniSection(Property.NETWORK_PROVIDER.toString()), Property.NETWORK_PROVIDER.toString())) {
-      return ReadyError.NETWORK_PROVIDER;
-    } else if (!this.ini.hasValue(Model.getIniSection(Property.CONNECT_MODE.toString()), Property.CONNECT_MODE.toString())) {
-      return ReadyError.CONNECT_MODE;
-//    } else if (!AdakiteUtils.directoryExists(getBwapiDirectory())
-//        || !AdakiteUtils.fileExists(getBwapiDirectory().resolve(BWAPI.DATA_INI_PATH.getFileName()))) {
-//      /* If the bwapi.ini file is not found at "StarCraft/bwapi-data/bwapi.ini". */
-//      return ReadyError.BWAPI_INSTALL;
-    } else if (AdakiteUtils.getFileExtension(this.botFile.getPath()).equalsIgnoreCase("jar")
-        && !AdakiteUtils.fileExists(DropLauncher.JRE_EXE)) {
-      return ReadyError.JRE_INSTALL;
-    } else {
-      return ReadyError.NONE;
-    }
-  }
+//  /**
+//   * Tests if the program has sufficient information to run bwheadless.
+//   *
+//   * @see #checkReady()
+//   */
+//  public boolean isReady(){
+//    try {
+//      checkReady();
+//      return true;
+//    } catch (Exception ex) {
+//      return false;
+//    }
+//  }
+
+//  /**
+//   * Checks required fields.
+//   *
+//   * @throws InvalidStateException if any required field is missing or incorrect
+//   */
+//  public void checkReady() throws InvalidStateException {
+//    if (!AdakiteUtils.fileExists(DEFAULT_EXE_PATH)) {
+//      throw new InvalidStateException(Debugging.fileDoesNotExist(Paths.get("bwheadless.exe")));
+//    } else if (!this.settings.hasValue(Property.STARCRAFT_EXE.toString())
+//        || !AdakiteUtils.fileExists(Paths.get(this.settings.getValue(Property.STARCRAFT_EXE.toString())))) {
+//      throw new InvalidStateException(Debugging.fileDoesNotExist(Paths.get("StarCraft.exe")));
+//    } else if (!AdakiteUtils.fileExists(Paths.get(this.bot.getBwapiDll()))) {
+//      throw new InvalidStateException(Debugging.fileDoesNotExist(Paths.get("BWAPI.dll")));
+//    } else if (AdakiteUtils.isNullOrEmpty(this.bot.getName())) {
+//      throw new InvalidStateException(Debugging.emptyString("bot name"));
+//    } else if (this.bot.getType() == Bot.Type.UNKNOWN) {
+//      throw new InvalidStateException("bot type is not supported");
+//    } else if (!AdakiteUtils.fileExists(Paths.get(this.bot.getPath()))) {
+//      throw new InvalidStateException(Debugging.fileDoesNotExist(Paths.get(this.bot.getPath())));
+//    } else if (!Starcraft.Race.isValid(this.bot.getRace())) {
+//      throw new InvalidStateException("bot race is invalid");
+//    } else if (!this.settings.hasValue(Property.NETWORK_PROVIDER.toString())) {
+//      throw new InvalidStateException("NetworkProvider is not set");
+//    } else if (!this.settings.hasValue(Property.CONNECT_MODE.toString())) {
+//      throw new InvalidStateException("ConnectMode is not set");
+////    } else if (!AdakiteUtils.directoryExists(getBwapiDirectory())
+////        || !AdakiteUtils.fileExists(getBwapiDirectory().resolve(BWAPI.DATA_INI_PATH.getFileName()))) {
+////      /* If the bwapi.ini file is not found at "StarCraft/bwapi-data/bwapi.ini". */
+////      return ReadyError.BWAPI_INSTALL;
+////    } else if (AdakiteUtils.getFileExtension(this.botFile.getPath()).equalsIgnoreCase("jar")
+////        && !AdakiteUtils.fileExists(DropLauncher.JRE_EXE)) {
+////      return ReadyError.JRE_INSTALL;
+//    }
+//  }
 
   /**
    * Starts bwheadless after configuring and checking settings.
@@ -323,8 +320,13 @@ public class BWHeadless {
    * @param co specified ConsoleOutput to display process output stream
    * @throws IOException if an I/O error occurs
    * @throws InvalidBotTypeException if the bot type is not recognized
+   * @throws adakite.ini.IniParseException
+   * @throws adakite.exception.InvalidStateException if a call to a Bot getter method fails
    */
-  public void start(ConsoleOutput co) throws IOException, InvalidBotTypeException, IniParseException {
+  public void start(ConsoleOutput co) throws IOException,
+                                             InvalidBotTypeException,
+                                             IniParseException,
+                                             InvalidStateException {
     this.taskTracker.reset();
 
     Path starcraftDirectory = getStarcraftDirectory();
@@ -335,14 +337,14 @@ public class BWHeadless {
     CommandBuilder bwhCommand = new CommandBuilder();
     bwhCommand.setPath(DEFAULT_EXE_PATH.toAbsolutePath());
     bwhCommand.addArg(Argument.STARCRAFT_EXE.toString());
-    bwhCommand.addArg(this.ini.getValue(Model.getIniSection(Property.STARCRAFT_EXE.toString()), Property.STARCRAFT_EXE.toString()));
+    bwhCommand.addArg(this.settings.getValue(Property.STARCRAFT_EXE.toString()));
     bwhCommand.addArg(Argument.JOIN_GAME.toString());
     bwhCommand.addArg(Argument.BOT_NAME.toString());
-    bwhCommand.addArg(this.ini.getValue(Model.getIniSection(Property.BOT_NAME.toString()), Property.BOT_NAME.toString()));
+    bwhCommand.addArg(this.bot.getName());
     bwhCommand.addArg(Argument.BOT_RACE.toString());
-    bwhCommand.addArg(this.ini.getValue(Model.getIniSection(Property.BOT_RACE.toString()), Property.BOT_RACE.toString()));
+    bwhCommand.addArg(this.bot.getRace());
     bwhCommand.addArg(Argument.LOAD_DLL.toString());
-    bwhCommand.addArg(this.ini.getValue(Model.getIniSection(Property.BWAPI_DLL.toString()), Property.BWAPI_DLL.toString()));
+    bwhCommand.addArg(this.bot.getBwapiDll());
     bwhCommand.addArg(Argument.ENABLE_LAN.toString());
     bwhCommand.addArg(Argument.STARCRAFT_INSTALL_PATH.toString());
     bwhCommand.addArg(starcraftDirectory.toString());
@@ -354,12 +356,12 @@ public class BWHeadless {
     this.bwheadlessProcess.start(bwhCommand.get(), co);
 
     /* Start bot client. */
-    if (this.botFile.getType() == BotFile.Type.CLIENT) {
+    if (this.bot.getType() == Bot.Type.CLIENT) {
       /* Compile bot client arguments. */
       CommandBuilder clientCommand = new CommandBuilder();
-      switch (AdakiteUtils.getFileExtension(this.botFile.getPath()).toLowerCase(Locale.US)) {
+      switch (FilenameUtils.getExtension(this.bot.getPath()).toLowerCase(Locale.US)) {
         case "exe":
-          clientCommand.setPath(this.botFile.getPath().toAbsolutePath());
+          clientCommand.setPath(Paths.get(this.bot.getPath()));
           break;
         case "jar":
           if (!AdakiteUtils.fileExists(DropLauncher.JRE_EXE)) {
@@ -368,7 +370,7 @@ public class BWHeadless {
           }
           clientCommand.setPath(DropLauncher.JRE_EXE.toAbsolutePath());
           clientCommand.addArg("-jar");
-          clientCommand.addArg(this.botFile.getPath().toAbsolutePath().toString());
+          clientCommand.addArg(this.bot.getPath());
           break;
         default:
           throw new InvalidBotTypeException("bot file type is not EXE or JAR");
@@ -385,13 +387,14 @@ public class BWHeadless {
    *
    * @throws IOException if an I/O error occurs
    */
-  public void stop() throws IOException {
+  public void stop() throws IOException,
+                            InvalidStateException {
     /* Kill new tasks that were started with bwheadless. */
-    String botName = getBotPath().getFileName().toString();
+    String botName = FilenameUtils.getBaseName(this.bot.getPath());
     this.taskTracker.update();
     for (Task task : this.taskTracker.getNewTasks()) {
       /* Kill bot client. */
-      if (getBotType() == BotFile.Type.CLIENT && botName.contains(task.getImageName())) {
+      if (this.bot.getType() == Bot.Type.CLIENT && botName.contains(task.getImageName())) {
         Tasklist.kill(task.getPID());
         continue;
       }
@@ -405,7 +408,7 @@ public class BWHeadless {
     }
 
     this.bwheadlessProcess.stop();
-    if (this.botFile.getType() == BotFile.Type.CLIENT) {
+    if (this.bot.getType() == Bot.Type.CLIENT) {
       this.botProcess.stop();
     }
   }
@@ -419,7 +422,8 @@ public class BWHeadless {
    */
   private void configureBwapi(Path starcraftDirectory) throws IOException,
                                                               InvalidBotTypeException,
-                                                              IniParseException {
+                                                              IniParseException,
+                                                              InvalidStateException {
     /* Create common BWAPI paths. */
     Path bwapiAiPath = starcraftDirectory.resolve(BWAPI.DATA_AI_PATH);
     Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.DATA_READ_PATH);
@@ -467,22 +471,22 @@ public class BWHeadless {
 
     Path src;
     Path dest;
-    switch (this.botFile.getType()) {
+    switch (this.bot.getType()) {
       case DLL:
         /* Copy DLL to "bwapi-data/AI/" directory. */
-        src = this.botFile.getPath();
-        dest = Paths.get(starcraftDirectory.toString(), BWAPI.DATA_AI_PATH.toString(), this.botFile.getPath().getFileName().toString());
+        src = Paths.get(this.bot.getPath());
+        dest = Paths.get(starcraftDirectory.toString(), BWAPI.DATA_AI_PATH.toString(), FilenameUtils.getBaseName(this.bot.getPath()));
         AdakiteUtils.createDirectory(dest.getParent());
         Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
-        this.botFile.setPath(dest);
-        bwapiIni.set("ai", "ai", BWAPI.DATA_AI_PATH.toString() + AdakiteUtils.FILE_SEPARATOR + this.botFile.getPath().getFileName().toString());
+//        this.botFile.setPath(dest);
+        bwapiIni.set("ai", "ai", BWAPI.DATA_AI_PATH.toString() + AdakiteUtils.FILE_SEPARATOR + FilenameUtils.getBaseName(this.bot.getPath()));
         break;
       case CLIENT:
         /* Copy client to StarCraft root directory. */
-        src = this.botFile.getPath();
-        dest = Paths.get(starcraftDirectory.toString(), this.botFile.getPath().getFileName().toString());
+        src = Paths.get(this.bot.getPath());
+        dest = Paths.get(starcraftDirectory.toString(), FilenameUtils.getBaseName(this.bot.getPath()));
         Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
-        this.botFile.setPath(dest);
+//        this.botFile.setPath(dest);
         bwapiIni.commentVariable("ai", "ai");
         break;
       default:
@@ -495,10 +499,10 @@ public class BWHeadless {
     bwapiIni.store(bwapiIniPath);
 
     /* Copy misc files to common bot I/O directories. */
-    for (Path path : this.extraBotFiles) {
+    for (String path : this.bot.getExtraFiles()) {
 //      Files.copy(path, Paths.get(bwapiReadPath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
 //      Files.copy(path, Paths.get(bwapiWritePath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
-      Files.copy(path, Paths.get(bwapiAiPath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
+      Files.copy(Paths.get(path), Paths.get(bwapiAiPath.toString(), FilenameUtils.getBaseName(path)), StandardCopyOption.REPLACE_EXISTING);
     }
   }
 
@@ -507,8 +511,8 @@ public class BWHeadless {
    * {@link #setStarcraftExe(java.lang.String)}.
    */
   public Path getStarcraftDirectory() {
-    if (this.ini.hasValue(Model.getIniSection(Property.STARCRAFT_EXE.toString()), Property.STARCRAFT_EXE.toString())) {
-      return AdakiteUtils.getParentDirectory(Paths.get(this.ini.getValue(Model.getIniSection(Property.STARCRAFT_EXE.toString()), Property.STARCRAFT_EXE.toString())));
+    if (this.settings.hasValue(Property.STARCRAFT_EXE.toString())) {
+      return AdakiteUtils.getParentDirectory(Paths.get(this.settings.getValue(Property.STARCRAFT_EXE.toString())));
     } else {
       return null;
     }
@@ -526,117 +530,68 @@ public class BWHeadless {
     return (starcraftDirectory == null) ? null : starcraftDirectory.resolve(BWAPI.DATA_PATH);
   }
 
-  public void setStarcraftExe(String starcraftExe) {
-    this.ini.set(Model.getIniSection(Property.STARCRAFT_EXE.toString()), Property.STARCRAFT_EXE.toString(), starcraftExe);
-  }
-
-  public void setBwapiDll(String bwapiDll) {
-    this.ini.set(Model.getIniSection(Property.BWAPI_DLL.toString()), Property.BWAPI_DLL.toString(), bwapiDll);
-  }
-
-  public void setBotName(String botName) {
-    String cleaned = Starcraft.cleanProfileName(botName);
-    if (cleaned.equals(this.ini.getValue(Model.getIniSection(Property.BOT_NAME.toString()), Property.BOT_NAME.toString()))) {
-      return;
-    }
-
-    if (AdakiteUtils.isNullOrEmpty(cleaned)) {
-      this.ini.set(Model.getIniSection(Property.BOT_NAME.toString()), Property.BOT_NAME.toString(), DEFAULT_BOT_NAME);
-    } else {
-      this.ini.set(Model.getIniSection(Property.BOT_NAME.toString()), Property.BOT_NAME.toString(), cleaned);
-    }
-  }
-
-  public BotFile.Type getBotType() {
-    return this.botFile.getType();
-  }
-
-  public Path getBotPath() {
-    return this.botFile.getPath();
-  }
-
-  public void setBotFile(String botFile) {
-    this.extraBotFiles.clear();
-    Path path = Paths.get(botFile);
-    if (AdakiteUtils.fileExists(path)) {
-      this.botFile.setPath(path);
-      this.ini.set(Model.getIniSection(Property.BOT_FILE.toString()), Property.BOT_FILE.toString(), botFile);
-    }
-  }
-
-  public void setBotRace(Race botRace) {
-    this.ini.set(Model.getIniSection(Property.BOT_RACE.toString()), Property.BOT_RACE.toString(), botRace.toString());
-  }
-
-  public void setNetworkProvider(NetworkProvider networkProvider) {
-    this.ini.set(Model.getIniSection(Property.NETWORK_PROVIDER.toString()), Property.NETWORK_PROVIDER.toString(), networkProvider.toString());
-  }
-
-  public void setConnectMode(ConnectMode connectMode) {
-    this.ini.set(Model.getIniSection(Property.CONNECT_MODE.toString()), Property.CONNECT_MODE.toString(), connectMode.toString());
-  }
-
-  /**
-   * Reads the specified INI and sets class member variables accordingly.
-   *
-   * @param ini specified INI object
-   */
-  public void parseSettings(Ini ini) {
-    String val;
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.STARCRAFT_EXE.toString()), Property.STARCRAFT_EXE.toString()))) {
-      setStarcraftExe(val);
-    }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.BWAPI_DLL.toString()), Property.BWAPI_DLL.toString()))) {
-      setBwapiDll(val);
-    }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.BOT_NAME.toString()), Property.BOT_NAME.toString()))) {
-      setBotName(val);
-    } else {
-      /* Name wasn't set. */
-      setBotName(DEFAULT_BOT_NAME);
-    }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.BOT_FILE.toString()), Property.BOT_FILE.toString()))) {
-      setBotFile(val);
-    }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.BOT_RACE.toString()), Property.BOT_RACE.toString()))) {
-      if (val.equalsIgnoreCase(Race.TERRAN.toString())) {
-        setBotRace(Race.TERRAN);
-      } else if (val.equalsIgnoreCase(Race.ZERG.toString())) {
-        setBotRace(Race.ZERG);
-      } else if (val.equalsIgnoreCase(Race.PROTOSS.toString())) {
-        setBotRace(Race.PROTOSS);
-      } else if (val.equalsIgnoreCase((Race.RANDOM.toString()))) {
-        setBotRace(Race.RANDOM);
-      } else {
-        /* Unrecognized Race. */
-        setBotRace(DEFAULT_BOT_RACE);
-      }
-    } else {
-      /* Race wasn't set. */
-      setBotRace(DEFAULT_BOT_RACE);
-    }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.NETWORK_PROVIDER.toString()), Property.NETWORK_PROVIDER.toString()))) {
-      if (val.equalsIgnoreCase(NetworkProvider.LAN.toString())) {
-        setNetworkProvider(NetworkProvider.LAN);
-      } else {
-        /* Unrecognized NetworkProvider. */
-        setNetworkProvider(DEFAULT_NETWORK_PROVIDER);
-      }
-    } else {
-      /* NetworkProvider wasn't set. */
-      setNetworkProvider(DEFAULT_NETWORK_PROVIDER);
-    }
-    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.CONNECT_MODE.toString()), Property.CONNECT_MODE.toString()))) {
-      if (val.equalsIgnoreCase(ConnectMode.JOIN.toString())) {
-        setConnectMode(ConnectMode.JOIN);
-      } else {
-        /* Unrecognized JoinMode. */
-        setConnectMode(DEFAULT_CONNECT_MODE);
-      }
-    } else {
-      /* JoinMode wasn't set. */
-      setConnectMode(DEFAULT_CONNECT_MODE);
-    }
-  }
+  /* Disable this and implement a "loadSettings" method. */
+//  /**
+//   * Reads the specified INI and sets class member variables accordingly.
+//   *
+//   * @param ini specified INI object
+//   */
+//  public void parseSettings(Ini ini) {
+//    String val;
+//    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.STARCRAFT_EXE.toString()), Property.STARCRAFT_EXE.toString()))) {
+//      this.settings.set(Property.STARCRAFT_EXE.toString(), val);
+//    }
+//    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.BWAPI_DLL.toString()), Property.BWAPI_DLL.toString()))) {
+//      this.settings.set(Property., val);setBwapiDll(val);
+//    }
+//    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.BOT_NAME.toString()), Property.BOT_NAME.toString()))) {
+//      setBotName(val);
+//    } else {
+//      /* Name wasn't set. */
+//      setBotName(DEFAULT_BOT_NAME);
+//    }
+//    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.BOT_FILE.toString()), Property.BOT_FILE.toString()))) {
+//      setBotFile(val);
+//    }
+//    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.BOT_RACE.toString()), Property.BOT_RACE.toString()))) {
+//      if (val.equalsIgnoreCase(Race.TERRAN.toString())) {
+//        setBotRace(Race.TERRAN);
+//      } else if (val.equalsIgnoreCase(Race.ZERG.toString())) {
+//        setBotRace(Race.ZERG);
+//      } else if (val.equalsIgnoreCase(Race.PROTOSS.toString())) {
+//        setBotRace(Race.PROTOSS);
+//      } else if (val.equalsIgnoreCase((Race.RANDOM.toString()))) {
+//        setBotRace(Race.RANDOM);
+//      } else {
+//        /* Unrecognized Race. */
+//        setBotRace(DEFAULT_BOT_RACE);
+//      }
+//    } else {
+//      /* Race wasn't set. */
+//      setBotRace(DEFAULT_BOT_RACE);
+//    }
+//    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.NETWORK_PROVIDER.toString()), Property.NETWORK_PROVIDER.toString()))) {
+//      if (val.equalsIgnoreCase(NetworkProvider.LAN.toString())) {
+//        setNetworkProvider(NetworkProvider.LAN);
+//      } else {
+//        /* Unrecognized NetworkProvider. */
+//        setNetworkProvider(DEFAULT_NETWORK_PROVIDER);
+//      }
+//    } else {
+//      /* NetworkProvider wasn't set. */
+//      setNetworkProvider(DEFAULT_NETWORK_PROVIDER);
+//    }
+//    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.CONNECT_MODE.toString()), Property.CONNECT_MODE.toString()))) {
+//      if (val.equalsIgnoreCase(ConnectMode.JOIN.toString())) {
+//        setConnectMode(ConnectMode.JOIN);
+//      } else {
+//        /* Unrecognized JoinMode. */
+//        setConnectMode(DEFAULT_CONNECT_MODE);
+//      }
+//    } else {
+//      /* JoinMode wasn't set. */
+//      setConnectMode(DEFAULT_CONNECT_MODE);
+//    }
+//  }
 
 }

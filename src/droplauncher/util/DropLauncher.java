@@ -29,9 +29,11 @@ omit for (final) release
 
 package droplauncher.util;
 
+import adakite.prefs.Prefs;
 import adakite.util.AdakiteUtils;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.prefs.Preferences;
 
 /**
  * Constants class for global constants.
@@ -60,8 +62,11 @@ public class DropLauncher {
 //  public static final String TEMP_DIRECTORY = Paths.get(System.getProperty("user.home"), "DropLauncher").toString();
   public static final String TEMP_DIRECTORY = "tmp";
 
-  public static final Path DEFAULT_INI_PATH = Paths.get("droplauncher.ini");
-  public static final String DEFAULT_INI_SECTION_NAME = "droplauncher";
+//  public static final Path DEFAULT_INI_PATH = Paths.get("droplauncher.ini");
+//  public static final String DEFAULT_INI_SECTION_NAME = "droplauncher";
+
+//  public static final Preferences PREF_ROOT = Preferences.userRoot().node("droplauncher");
+  public static final Prefs PREF_ROOT = new Prefs(Preferences.userRoot().node("droplauncher"));
 
   public static final Path JRE_DIR = Paths.get("jre");
   public static final Path JRE_EXE = JRE_DIR.resolve("bin").resolve("java.exe");
