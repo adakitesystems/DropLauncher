@@ -44,6 +44,21 @@ public class Model {
     return this.bwheadless;
   }
 
+  public void ensureDefaultSettings() {
+    if (!Model.hasPrefValue(Starcraft.Property.CLEAN_SC_DIR.toString())) {
+      Model.setPrefEnabled(Starcraft.Property.CLEAN_SC_DIR.toString(), true);
+    }
+    if (!Model.hasPrefValue(BWAPI.Property.COPY_WRITE_READ.toString())) {
+      Model.setPrefEnabled(BWAPI.Property.COPY_WRITE_READ.toString(), true);
+    }
+    if (!Model.hasPrefValue(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString())) {
+      Model.setPrefEnabled(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString(), true);
+    }
+    if (!Model.hasPrefValue(View.Property.SHOW_LOG_WINDOW.toString())) {
+      Model.setPrefEnabled(View.Property.SHOW_LOG_WINDOW.toString(), true);
+    }
+  }
+
   private static Prefs getPrefs(String uniqueKey) {
     uniqueKey = uniqueKey.toLowerCase(Locale.US);
     for (BWAPI.Property val : BWAPI.Property.values()) {

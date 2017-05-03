@@ -17,7 +17,6 @@
 
 package droplauncher.mvc;
 
-import adakite.debugging.Debugging;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.View;
@@ -42,11 +41,7 @@ public class MVC {
 
     this.view.setController(this.controller);
 
-//    try {
-//      this.model.setup();
-//    } catch (Exception ex) {
-//      LOGGER.log(Debugging.getLogLevel(), null, ex);
-//    }
+    this.model.ensureDefaultSettings();
   }
 
   public void start(Stage stage) {
