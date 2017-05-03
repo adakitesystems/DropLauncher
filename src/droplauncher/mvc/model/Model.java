@@ -76,6 +76,15 @@ public class Model {
     return getPrefs(key).get(key);
   }
 
+  public static boolean hasPrefValue(String key) {
+    try {
+      getPref(key);
+      return true;
+    } catch (Exception ex) {
+      return false;
+    }
+  }
+
   public static void setPref(String key, String val) {
     getPrefs(key).set(key, val);
   }

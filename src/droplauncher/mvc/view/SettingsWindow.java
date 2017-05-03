@@ -18,7 +18,6 @@
 package droplauncher.mvc.view;
 
 import adakite.debugging.Debugging;
-import adakite.ini.Ini;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
@@ -57,11 +56,7 @@ public class SettingsWindow {
   private Label lblChangeStarcraftExeText;
   private Button btnChangeStarcraftExe;
 
-  private Ini ini;
-
-  private SettingsWindow() {}
-
-  public SettingsWindow(Ini ini) {
+  public SettingsWindow() {
     this.chkShowLogWindow = new CheckBox();
     this.chkBwapiWriteRead = new CheckBox();
     this.chkCleanStarcraftDirectory = new CheckBox();
@@ -69,73 +64,38 @@ public class SettingsWindow {
     this.lblChangeStarcraftExe = new Label();
     this.lblChangeStarcraftExeText = new Label();
     this.btnChangeStarcraftExe = new Button();
-
-    this.ini = ini;
   }
 
   public SettingsWindow showAndWait() {
     this.chkShowLogWindow.setText("Show log window (requires program restart)");
-    if (this.ini.isEnabled(Model.getIniSection(View.Property.SHOW_LOG_WINDOW.toString()), View.Property.SHOW_LOG_WINDOW.toString())) {
-      this.chkShowLogWindow.setSelected(true);
-    } else {
-      this.chkShowLogWindow.setSelected(false);
-    }
+    this.chkShowLogWindow.setSelected(this.chkShowLogWindow.isSelected());
     this.chkShowLogWindow.setOnAction(e -> {
-      try {
-        this.ini.setEnabled(Model.getIniSection(View.Property.SHOW_LOG_WINDOW.toString()), View.Property.SHOW_LOG_WINDOW.toString(), this.chkShowLogWindow.isSelected());
-      } catch (Exception ex) {
-        LOGGER.log(Debugging.getLogLevel(), null, ex);
-      }
+      Model.setPrefEnabled(View.Property.SHOW_LOG_WINDOW.toString(), this.chkShowLogWindow.isSelected());
     });
 
     this.chkBwapiWriteRead.setText("Copy contents of \"bwapi-data/write/\" to \"bwapi-data/read/\" after eject");
-    if (this.ini.isEnabled(Model.getIniSection(BWAPI.Property.COPY_WRITE_READ.toString()), BWAPI.Property.COPY_WRITE_READ.toString())) {
-      this.chkBwapiWriteRead.setSelected(true);
-    } else {
-      this.chkBwapiWriteRead.setSelected(false);
-    }
+    this.chkBwapiWriteRead.setSelected(Model.isPrefEnabled(BWAPI.Property.COPY_WRITE_READ.toString()));
     this.chkBwapiWriteRead.setOnAction(e -> {
-      try {
-        this.ini.setEnabled(Model.getIniSection(BWAPI.Property.COPY_WRITE_READ.toString()), BWAPI.Property.COPY_WRITE_READ.toString(), this.chkBwapiWriteRead.isSelected());
-      } catch (Exception ex) {
-        LOGGER.log(Debugging.getLogLevel(), null, ex);
-      }
+      Model.setPrefEnabled(BWAPI.Property.COPY_WRITE_READ.toString(), this.chkBwapiWriteRead.isSelected());
     });
 
     this.chkCleanStarcraftDirectory.setText("Clean StarCraft directory when closing program");
-    if (this.ini.isEnabled(Model.getIniSection(Starcraft.Property.CLEAN_SC_DIR.toString()), Starcraft.Property.CLEAN_SC_DIR.toString())) {
-      this.chkCleanStarcraftDirectory.setSelected(true);
-    } else {
-      this.chkCleanStarcraftDirectory.setSelected(false);
-    }
+    this.chkCleanStarcraftDirectory.setSelected(this.chkCleanStarcraftDirectory.isSelected());
     this.chkCleanStarcraftDirectory.setOnAction(e -> {
-      try {
-        this.ini.setEnabled(Model.getIniSection(Starcraft.Property.CLEAN_SC_DIR.toString()), Starcraft.Property.CLEAN_SC_DIR.toString(), this.chkCleanStarcraftDirectory.isSelected());
-      } catch (Exception ex) {
-        LOGGER.log(Debugging.getLogLevel(), null, ex);
-      }
+      Model.setPrefEnabled(Starcraft.Property.CLEAN_SC_DIR.toString(), this.chkCleanStarcraftDirectory.isSelected());
     });
 
     this.chkWarnBwapiDll.setText("Warn about unknown BWAPI versions");
-    if (this.ini.isEnabled(Model.getIniSection(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString()), BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString())) {
-      this.chkWarnBwapiDll.setSelected(true);
-    } else {
-      this.chkWarnBwapiDll.setSelected(false);
-    }
+    this.chkWarnBwapiDll.setSelected(this.chkWarnBwapiDll.isSelected());
     this.chkWarnBwapiDll.setOnAction(e -> {
-      try {
-        this.ini.setEnabled(Model.getIniSection(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString()), BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString(), this.chkWarnBwapiDll.isSelected());
-      } catch (Exception ex) {
-        LOGGER.log(Debugging.getLogLevel(), null, ex);
-      }
+      Model.setPrefEnabled(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString(), this.chkWarnBwapiDll.isSelected());
     });
 
     this.lblChangeStarcraftExe.setText("StarCraft.exe:");
     this.btnChangeStarcraftExe.setText("...");
     this.lblChangeStarcraftExeText.setText("");
-    String starcraftExe = this.ini.getValue(Model.getIniSection(BWHeadless.Property.STARCRAFT_EXE.toString()), BWHeadless.Property.STARCRAFT_EXE.toString());
-    if (!AdakiteUtils.isNullOrEmpty(starcraftExe)
-        && AdakiteUtils.fileExists(Paths.get(starcraftExe))) {
+    if (Model.hasPrefValue(BWHeadless.Property.STARCRAFT_EXE.toString())) {
+      String starcraftExe = Model.getPref(BWHeadless.Property.STARCRAFT_EXE.toString());
       this.lblChangeStarcraftExeText.setText(starcraftExe);
     }
     this.lblChangeStarcraftExeText.setMinWidth(Region.USE_PREF_SIZE);
@@ -149,8 +109,8 @@ public class SettingsWindow {
       }
       File file = fc.showOpenDialog(this.stage);
       if (file != null) {
-        this.ini.set(Model.getIniSection(BWHeadless.Property.STARCRAFT_EXE.toString()), BWHeadless.Property.STARCRAFT_EXE.toString(), file.getAbsolutePath());
-        this.lblChangeStarcraftExeText.setText(this.ini.getValue(Model.getIniSection(BWHeadless.Property.STARCRAFT_EXE.toString()), BWHeadless.Property.STARCRAFT_EXE.toString()));
+        Model.setPref(BWHeadless.Property.STARCRAFT_EXE.toString(), file.getAbsolutePath());
+        this.lblChangeStarcraftExeText.setText(file.getAbsolutePath());
       }
     });
 

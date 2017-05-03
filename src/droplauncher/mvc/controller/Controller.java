@@ -153,7 +153,7 @@ public class Controller {
         return;
     }
 
-    if (this.model.getINI().isEnabled(Model.getIniSection(Starcraft.Property.CLEAN_SC_DIR.toString()), Starcraft.Property.CLEAN_SC_DIR.toString())) {
+    if (Model.isPrefEnabled(Starcraft.Property.CLEAN_SC_DIR.toString())) {
       /* Clean up StarCraft directory. */
       try {
         if (this.directoryMonitor != null) {
@@ -300,10 +300,6 @@ public class Controller {
    */
   public State getState() {
     return this.state;
-  }
-
-  public boolean isEnabledLogWindow() {
-    return this.model.getINI().isEnabled(Model.getIniSection(View.Property.SHOW_LOG_WINDOW.toString()), View.Property.SHOW_LOG_WINDOW.toString());
   }
 
   public String getBotFilename() {
