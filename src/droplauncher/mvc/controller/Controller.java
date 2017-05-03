@@ -368,7 +368,7 @@ public class Controller {
   }
 
   public void mnuEditSettingsClicked() {
-    new SettingsWindow(this.model.getINI()).showAndWait();
+    new SettingsWindow().showAndWait();
   }
 
   public void mnuHelpAboutClicked() {
@@ -379,7 +379,7 @@ public class Controller {
     /* Check if BWAPI.dll is known. */
     String bwapiDllVersion = getBwapiDllVersion();
     if (this.state == State.IDLE
-        && this.model.getINI().isEnabled(Model.getIniSection(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString()), BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString())
+        && Model.isPrefEnabled(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString())
         && !AdakiteUtils.isNullOrEmpty(bwapiDllVersion)
         && bwapiDllVersion.equalsIgnoreCase(BWAPI.DLL_UNKNOWN)) {
       Alert alert = new Alert(AlertType.CONFIRMATION);
