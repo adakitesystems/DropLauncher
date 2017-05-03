@@ -17,6 +17,7 @@
 
 package droplauncher.bwheadless;
 
+import droplauncher.util.KillableTask;
 import adakite.debugging.Debugging;
 import adakite.exception.InvalidStateException;
 import adakite.ini.Ini;
@@ -27,13 +28,13 @@ import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.mvc.view.ConsoleOutput;
-import droplauncher.mvc.view.MessagePrefix;
 import adakite.util.process.CommandBuilder;
 import droplauncher.util.process.CustomProcess;
 import adakite.util.windows.Task;
 import adakite.util.windows.TaskTracker;
 import adakite.util.windows.Tasklist;
 import droplauncher.bot.Bot;
+import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.util.DropLauncher;
 import java.io.FileNotFoundException;
@@ -45,7 +46,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Locale;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -352,7 +352,7 @@ public class BWHeadless {
     /* Start bwheadless. */
     this.bwheadlessProcess
         .setCWD(starcraftDirectory)
-        .setProcessName(MessagePrefix.BWHEADLESS.toString());
+        .setProcessName(View.MessagePrefix.BWHEADLESS.toString());
     this.bwheadlessProcess.start(bwhCommand.get(), co);
 
     /* Start bot client. */
@@ -377,7 +377,7 @@ public class BWHeadless {
       }
       this.botProcess
           .setCWD(starcraftDirectory)
-          .setProcessName(MessagePrefix.CLIENT.toString());
+          .setProcessName(View.MessagePrefix.CLIENT.toString());
       this.botProcess.start(clientCommand.get(), co);
     }
   }
@@ -529,69 +529,5 @@ public class BWHeadless {
     Path starcraftDirectory = getStarcraftDirectory();
     return (starcraftDirectory == null) ? null : starcraftDirectory.resolve(BWAPI.DATA_PATH);
   }
-
-  /* Disable this and implement a "loadSettings" method. */
-//  /**
-//   * Reads the specified INI and sets class member variables accordingly.
-//   *
-//   * @param ini specified INI object
-//   */
-//  public void parseSettings(Ini ini) {
-//    String val;
-//    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.STARCRAFT_EXE.toString()), Property.STARCRAFT_EXE.toString()))) {
-//      this.settings.set(Property.STARCRAFT_EXE.toString(), val);
-//    }
-//    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.BWAPI_DLL.toString()), Property.BWAPI_DLL.toString()))) {
-//      this.settings.set(Property., val);setBwapiDll(val);
-//    }
-//    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.BOT_NAME.toString()), Property.BOT_NAME.toString()))) {
-//      setBotName(val);
-//    } else {
-//      /* Name wasn't set. */
-//      setBotName(DEFAULT_BOT_NAME);
-//    }
-//    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.BOT_FILE.toString()), Property.BOT_FILE.toString()))) {
-//      setBotFile(val);
-//    }
-//    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.BOT_RACE.toString()), Property.BOT_RACE.toString()))) {
-//      if (val.equalsIgnoreCase(Race.TERRAN.toString())) {
-//        setBotRace(Race.TERRAN);
-//      } else if (val.equalsIgnoreCase(Race.ZERG.toString())) {
-//        setBotRace(Race.ZERG);
-//      } else if (val.equalsIgnoreCase(Race.PROTOSS.toString())) {
-//        setBotRace(Race.PROTOSS);
-//      } else if (val.equalsIgnoreCase((Race.RANDOM.toString()))) {
-//        setBotRace(Race.RANDOM);
-//      } else {
-//        /* Unrecognized Race. */
-//        setBotRace(DEFAULT_BOT_RACE);
-//      }
-//    } else {
-//      /* Race wasn't set. */
-//      setBotRace(DEFAULT_BOT_RACE);
-//    }
-//    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.NETWORK_PROVIDER.toString()), Property.NETWORK_PROVIDER.toString()))) {
-//      if (val.equalsIgnoreCase(NetworkProvider.LAN.toString())) {
-//        setNetworkProvider(NetworkProvider.LAN);
-//      } else {
-//        /* Unrecognized NetworkProvider. */
-//        setNetworkProvider(DEFAULT_NETWORK_PROVIDER);
-//      }
-//    } else {
-//      /* NetworkProvider wasn't set. */
-//      setNetworkProvider(DEFAULT_NETWORK_PROVIDER);
-//    }
-//    if (!AdakiteUtils.isNullOrEmpty(val = ini.getValue(Model.getIniSection(Property.CONNECT_MODE.toString()), Property.CONNECT_MODE.toString()))) {
-//      if (val.equalsIgnoreCase(ConnectMode.JOIN.toString())) {
-//        setConnectMode(ConnectMode.JOIN);
-//      } else {
-//        /* Unrecognized JoinMode. */
-//        setConnectMode(DEFAULT_CONNECT_MODE);
-//      }
-//    } else {
-//      /* JoinMode wasn't set. */
-//      setConnectMode(DEFAULT_CONNECT_MODE);
-//    }
-//  }
 
 }

@@ -15,45 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package droplauncher.mvc.view;
-
-import adakite.util.AdakiteUtils;
+package droplauncher.util;
 
 /**
- * Enum for prepending strings to messages.
+ * Enum for the names of new tasks that should be killed when the
+ * bot is stopped.
  */
-public enum MessagePrefix {
+public enum KillableTask {
 
-  COPY("copy"),
-  KILL("kill"),
-  DELETE("delete"),
-  BWHEADLESS("bwh"),
-  CLIENT("client"),
-  DROPLAUNCHER("DropLauncher")
+  BWHEADLESS_EXE("bwheadless.exe"),
+  CONHOST_EXE("conhost.exe"),
+  STARCRAFT_EXE("StarCraft.exe"),
+  TASKLIST_EXE("tasklist.exe"),
+  DLLHOST_EXE("dllhost.exe")
   ;
 
   private final String str;
 
-  private MessagePrefix(String str) {
+  private KillableTask(String str) {
     this.str = str;
-  }
-
-  /**
-   * Returns the string version of this enum with an appended
-   * colon character and space.
-   *
-   * @param str specified message to include
-   */
-  public String get(String str) {
-    String ret = this.str + ": ";
-    if (!AdakiteUtils.isNullOrEmpty(str)) {
-      ret += str;
-    }
-    return ret;
-  }
-
-  public String get() {
-    return get(null);
   }
 
   @Override

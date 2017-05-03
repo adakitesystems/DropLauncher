@@ -17,7 +17,6 @@
 
 package droplauncher.mvc.model;
 
-import adakite.ini.Ini;
 import adakite.prefs.Prefs;
 import droplauncher.bot.Bot;
 import droplauncher.bwapi.BWAPI;
@@ -29,12 +28,10 @@ import java.util.Locale;
 
 public class Model {
 
-  private Ini ini;
   private Bot bot;
   private BWHeadless bwheadless;
 
   public Model() {
-    this.ini = new Ini();
     this.bot = new Bot();
     this.bwheadless = new BWHeadless();
   }

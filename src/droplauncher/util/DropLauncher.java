@@ -41,7 +41,7 @@ import java.util.prefs.Preferences;
 public class DropLauncher {
 
   public static final String PROGRAM_NAME = "DropLauncher";
-  public static final String PROGRAM_VERSION = "0.3.1a";
+  public static final String PROGRAM_VERSION = "0.3.2a";
   public static final String PROGRAM_AUTHOR = "Adakite";
   public static final String PROGRAM_TITLE = PROGRAM_NAME + " v" + PROGRAM_VERSION;
   public static final String PROGRAM_GITHUB = "https://github.com/AdakiteSystems/DropLauncher";
@@ -62,10 +62,6 @@ public class DropLauncher {
 //  public static final String TEMP_DIRECTORY = Paths.get(System.getProperty("user.home"), "DropLauncher").toString();
   public static final String TEMP_DIRECTORY = "tmp";
 
-//  public static final Path DEFAULT_INI_PATH = Paths.get("droplauncher.ini");
-//  public static final String DEFAULT_INI_SECTION_NAME = "droplauncher";
-
-//  public static final Preferences PREF_ROOT = Preferences.userRoot().node("droplauncher");
   public static final Prefs PREF_ROOT = new Prefs(Preferences.userRoot().node("droplauncher"));
 
   public static final Path JRE_DIR = Paths.get("jre");

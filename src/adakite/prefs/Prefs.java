@@ -79,6 +79,11 @@ public class Prefs {
     set(key, Boolean.toString(enabled));
   }
 
+  /**
+   * Creates and/or returns the specified child node.
+   *
+   * @param nodeName specified child node
+   */
   public Prefs getChild(String nodeName) {
     Preferences child = this.prefs.node(nodeName);
     return new Prefs(child);

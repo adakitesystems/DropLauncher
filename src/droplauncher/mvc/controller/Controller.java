@@ -25,7 +25,6 @@ import adakite.md5sum.MD5Checksum;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.model.Model;
-import droplauncher.mvc.view.MessagePrefix;
 import droplauncher.mvc.view.SettingsWindow;
 import droplauncher.mvc.view.SimpleAlert;
 import droplauncher.mvc.view.View;
@@ -97,7 +96,7 @@ public class Controller {
                                         InvalidStateException {
     setState(State.RUNNING);
 
-    this.view.getConsoleOutput().println(MessagePrefix.DROPLAUNCHER.toString() + ": connecting bot to StarCraft");
+    this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.toString() + ": connecting bot to StarCraft");
 
     /* Init DirectoryMonitor if required. */
     Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
@@ -124,12 +123,12 @@ public class Controller {
       Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
       Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);
       Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.DATA_READ_PATH);
-      String copyMessage = MessagePrefix.COPY.get() + bwapiWritePath.toString() + " -> " + bwapiReadPath.toString();
-      this.view.getConsoleOutput().println(MessagePrefix.DROPLAUNCHER.get() + copyMessage);
+      String copyMessage = View.MessagePrefix.COPY.get() + bwapiWritePath.toString() + " -> " + bwapiReadPath.toString();
+      this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + copyMessage);
       FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
     }
 
-    this.view.getConsoleOutput().println(MessagePrefix.DROPLAUNCHER.get() + "ejected bot");
+    this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "ejected bot");
   }
 
   /**
@@ -440,7 +439,7 @@ public class Controller {
             startBWHeadless();
           } catch (Exception ex) {
             this.view.getConsoleOutput().println(
-                MessagePrefix.DROPLAUNCHER.get()
+                View.MessagePrefix.DROPLAUNCHER.get()
                 + "unable to connect bot due to the following error:" + AdakiteUtils.newline(2)
                 + ex.toString() + AdakiteUtils.newline()
             );

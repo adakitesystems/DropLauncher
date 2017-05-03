@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+//TODO: Determine if this exception class can be deleted.
+
 package droplauncher.exception;
 
 /**

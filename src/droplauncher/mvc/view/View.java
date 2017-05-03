@@ -112,6 +112,75 @@ public class View implements EventHandler<DragEvent>  {
 
   }
 
+  /**
+   * Enum for prepending strings to messages.
+   */
+  public enum MessagePrefix {
+
+    COPY("copy"),
+    KILL("kill"),
+    DELETE("delete"),
+    BWHEADLESS("bwh"),
+    CLIENT("client"),
+    DROPLAUNCHER("DropLauncher")
+    ;
+
+    private final String str;
+
+    private MessagePrefix(String str) {
+      this.str = str;
+    }
+
+    /**
+     * Returns the string version of this enum with an appended
+     * colon character and space.
+     *
+     * @param str specified message to include
+     */
+    public String get(String str) {
+      String ret = this.str + ": ";
+      if (!AdakiteUtils.isNullOrEmpty(str)) {
+        ret += str;
+      }
+      return ret;
+    }
+
+    public String get() {
+      return get(null);
+    }
+
+    @Override
+    public String toString() {
+      return this.str;
+    }
+
+  }
+
+  public enum MenuText {
+
+    FILE("File"),
+    SELECT_BOT_FILES("Select bot files..."),
+    EXIT("Exit"),
+
+    EDIT("Edit"),
+    SETTINGS("Settings..."),
+
+    HELP("Help"),
+    ABOUT("About")
+    ;
+
+    private final String str;
+
+    private MenuText(String str) {
+      this.str = str;
+    }
+
+    @Override
+    public String toString() {
+      return this.str;
+    }
+
+  }
 
   private static final String RESOURCE_PATH = "/droplauncher/mvc/view/theme/";
   public static final String DEFAULT_CSS = RESOURCE_PATH + "droplauncher.css";
