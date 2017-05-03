@@ -1,8 +1,9 @@
-package adakite.util.windows;
+package adakite.util.windows.task;
 
 import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
 import adakite.util.process.SimpleProcess;
+import adakite.util.windows.Windows;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -16,6 +17,37 @@ import java.util.logging.Logger;
 public class Tasklist {
 
   private static final Logger LOGGER = Logger.getLogger(Tasklist.class.getName());
+
+  /**
+   * Enum class containing column headers for output of "tasklist.exe" in
+   * combination of using
+   * {@link droplauncher.util.windows.Windows#DEFAULT_TASKLIST_ARGS}.
+   */
+  public enum ColumnHeader {
+
+    IMAGE_NAME("Image Name"),
+    PID("PID"),
+    SESSION_NAME("Session Name"),
+    SESSION_NUMBER("Session Number"),
+    MEM_USAGE("Mem Usage"),
+    STATUS("Status"),
+    USERNAME("User Name"),
+    CPU_TIME("CPU Time"),
+    WINDOW_TITLE("Window Title")
+    ;
+
+    private final String str;
+
+    private ColumnHeader(String str) {
+      this.str = str;
+    }
+
+    @Override
+    public String toString() {
+      return this.str;
+    }
+
+  }
 
   private ArrayList<Task> tasks;
 
@@ -109,7 +141,7 @@ public class Tasklist {
 
       /* Tokenize line using the column lengths. */
       ArrayList<String> tokens = tokenizeTaskEntry(line, colLengths);
-      if (tokens.size() < TasklistTitle.values().length) {
+      if (tokens.size() < ColumnHeader.values().length) {
         //TODO: Throw built-in or custom exception.
         LOGGER.log(Debugging.getLogLevel(), "error parsing task entry line");
         return;
