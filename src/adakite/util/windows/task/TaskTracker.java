@@ -1,7 +1,3 @@
-/*
-TODO: Change ArrayList to List.
-*/
-
 package adakite.util.windows.task;
 
 import java.io.IOException;
