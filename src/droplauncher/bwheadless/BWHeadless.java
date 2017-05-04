@@ -108,88 +108,94 @@ public class BWHeadless {
 
   }
 
-  /**
-   * Enum for how the bot should connect to a game lobby.
-   */
-  public enum ConnectMode {
-
-    JOIN("join"),
-    HOST("host")
-    ;
-
-    private final String str;
-
-    private ConnectMode(String str) {
-      this.str = str;
-    }
-
-    /**
-     * Returns the corresponding ConnectMode object.
-     *
-     * @param str specified string
-     * @return
-     *     the corresponding ConnectMode object,
-     *     otherwise null if no match was found
-     */
-    public static ConnectMode get(String str) {
-      str = str.toLowerCase(Locale.US);
-      for (ConnectMode val : ConnectMode.values()) {
-        if (str.equals(val.toString().toLowerCase(Locale.US))) {
-          return val;
-        }
-      }
-      throw new IllegalArgumentException("ConnectMode not found: " + str);
-    }
-
-    @Override
-    public String toString() {
-      return this.str;
-    }
-
-  }
+  //TODO: Delete if not needed anymore.
+//  /**
+//   * Enum for how the bot should connect to a game lobby.
+//   */
+//  public enum ConnectMode {
+//
+//    JOIN("join"),
+//    HOST("host")
+//    ;
+//
+//    private final String str;
+//
+//    private ConnectMode(String str) {
+//      this.str = str;
+//    }
+//
+//    /**
+//     * Returns the corresponding ConnectMode object.
+//     *
+//     * @param str specified string
+//     * @return
+//     *     the corresponding ConnectMode object,
+//     *     otherwise null if no match was found
+//     */
+//    public static ConnectMode get(String str) {
+//      str = str.toLowerCase(Locale.US);
+//      for (ConnectMode val : ConnectMode.values()) {
+//        if (str.equals(val.toString().toLowerCase(Locale.US))) {
+//          return val;
+//        }
+//      }
+//      throw new IllegalArgumentException("ConnectMode not found: " + str);
+//    }
+//
+//    @Override
+//    public String toString() {
+//      return this.str;
+//    }
+//
+//  }
 
   //TODO: Double-check if LocalPC requires admin privs.
-  /**
-   * Enum for the passable network argument to the bwheadless process.
-   * Currently, only LAN is supported since LocalPC requires admin privileges
-   * and a modified SNP file.
-   */
-  public enum NetworkProvider {
+  //TODO: Delete if not needed anymore.
+//  /**
+//   * Enum for the passable network argument to the bwheadless process.
+//   * Currently, only LAN is supported since LocalPC requires admin privileges
+//   * and a modified SNP file.
+//   */
+//  public enum NetworkProvider {
+//
+//    LAN("lan")
+//    ;
+//
+//    private final String str;
+//
+//    private NetworkProvider(String str) {
+//      this.str = str;
+//    }
+//
+//    /**
+//     * Returns the corresponding NetworkProvider object.
+//     *
+//     * @param str specified string
+//     * @return
+//     *     the corresponding NetworkProvider object,
+//     *     otherwise null if no match was found
+//     */
+//    public static NetworkProvider get(String str) {
+//      str = str.toLowerCase(Locale.US);
+//      for (NetworkProvider val : NetworkProvider.values()) {
+//        if (str.equals(val.toString().toLowerCase(Locale.US))) {
+//          return val;
+//        }
+//      }
+//      throw new IllegalArgumentException("NetworkProvider not found: " + str);
+//    }
+//
+//    @Override
+//    public String toString() {
+//      return this.str;
+//    }
+//
+//  }
 
-    LAN("lan")
-    ;
-
-    private final String str;
-
-    private NetworkProvider(String str) {
-      this.str = str;
-    }
-
-    /**
-     * Returns the corresponding NetworkProvider object.
-     *
-     * @param str specified string
-     * @return
-     *     the corresponding NetworkProvider object,
-     *     otherwise null if no match was found
-     */
-    public static NetworkProvider get(String str) {
-      str = str.toLowerCase(Locale.US);
-      for (NetworkProvider val : NetworkProvider.values()) {
-        if (str.equals(val.toString().toLowerCase(Locale.US))) {
-          return val;
-        }
-      }
-      throw new IllegalArgumentException("NetworkProvider not found: " + str);
-    }
-
-    @Override
-    public String toString() {
-      return this.str;
-    }
-
-  }
-
+  /*
+  TODO: Delete if not needed anymore. I think this is or is going to be
+  replaced by throwing exceptions when an operation fails.
+  */
 //  /**
 //   * Enum for reporting the launch status of bwheadless.
 //   */
@@ -227,8 +233,8 @@ public class BWHeadless {
 
   public static final String DEFAULT_BOT_NAME = "BOT";
   public static final Race DEFAULT_BOT_RACE = Race.RANDOM;
-  public static final NetworkProvider DEFAULT_NETWORK_PROVIDER = NetworkProvider.LAN;
-  public static final ConnectMode DEFAULT_CONNECT_MODE = ConnectMode.JOIN;
+//  public static final NetworkProvider DEFAULT_NETWORK_PROVIDER = NetworkProvider.LAN; //TODO: Delete?
+//  public static final ConnectMode DEFAULT_CONNECT_MODE = ConnectMode.JOIN; //TODO: Delete?
 
   private Settings settings;
 
@@ -425,10 +431,6 @@ public class BWHeadless {
                                                          InvalidBotTypeException,
                                                          IniParseException,
                                                          InvalidStateException {
-    if (starcraftPath == null) {
-      throw new InvalidStateException("sc dir param is null");
-    }
-
     /* Create common BWAPI paths. */
     Path bwapiAiPath = starcraftPath.resolve(BWAPI.DATA_AI_PATH);
     Path bwapiReadPath = starcraftPath.resolve(BWAPI.DATA_READ_PATH);
