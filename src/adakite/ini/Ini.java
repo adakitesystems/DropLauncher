@@ -231,6 +231,30 @@ public class Ini {
     this.memoryFile.dumpToFile(path);
   }
 
+  /**
+   * Stores all keys within the specified Settings object into an INI file
+   * using the specified section name.
+   *
+   * @param settings specified Settings object
+   * @param sectionName specified section name
+   * @param path path to a new or existing INI file
+   * @throws IOException if an I/O error occurs
+   * @throws IniParseException
+   */
+  public static void store(Settings settings, String sectionName, Path path) throws IOException,
+                                                                                    IniParseException {
+    Ini ini = new Ini();
+    if (AdakiteUtils.fileExists(path)) {
+      ini.parse(path);
+    }
+    Enumeration<String> keys = settings.getKeys();
+    while (keys.hasMoreElements()) {
+      String key = keys.nextElement();
+      ini.set(sectionName, key, settings.getValue(key));
+    }
+    ini.store(path);
+  }
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();

@@ -15,6 +15,15 @@ public class Settings {
     this.settings = new ConcurrentHashMap<>();
   }
 
+  public Settings(Settings settings) {
+    this.settings = new ConcurrentHashMap<>();
+    Enumeration<String> enums = settings.getKeys();
+    while (enums.hasMoreElements()) {
+      String key = enums.nextElement();
+      set(key, settings.getValue(key));
+    }
+  }
+
   public boolean containsKey(String key) {
     return this.settings.containsKey(key);
   }

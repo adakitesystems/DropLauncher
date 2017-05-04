@@ -70,6 +70,13 @@ public class Bot {
   }
 
   /**
+   * Returns a copy of the internal settings object.
+   */
+  public Settings getSettings() {
+    return new Settings(this.settings);
+  }
+
+  /**
    * Returns the name of this bot.
    *
    * @throws InvalidStateException if name is not set
