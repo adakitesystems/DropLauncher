@@ -29,6 +29,7 @@ public class Starcraft {
 
   public enum Property {
 
+    STARCRAFT_EXE("starcraft_exe"),
     CLEAN_SC_DIR("clean_sc_dir"),
     ;
 

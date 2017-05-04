@@ -99,7 +99,7 @@ public class Controller {
     this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.toString() + ": connecting bot to StarCraft");
 
     /* Init DirectoryMonitor if required. */
-    Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
+    Path starcraftDirectory = this.model.getBWHeadless().getStarcraftPath();
     if (this.directoryMonitor == null) {
       this.directoryMonitor = new DirectoryMonitor(starcraftDirectory);
       this.directoryMonitor.getIgnoreList().add("maps"); /* ignore any "*maps*" file/directory */
@@ -120,7 +120,7 @@ public class Controller {
 
     if (Model.isPrefEnabled(BWAPI.Property.COPY_WRITE_READ.toString())) {
       /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
-      Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
+      Path starcraftDirectory = this.model.getBWHeadless().getStarcraftPath();
       Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);
       Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.DATA_READ_PATH);
       String copyMessage = View.MessagePrefix.COPY.get() + bwapiWritePath.toString() + " -> " + bwapiReadPath.toString();
@@ -156,7 +156,7 @@ public class Controller {
       /* Clean up StarCraft directory. */
       try {
         if (this.directoryMonitor != null) {
-          Path starcraftDirectory = this.model.getBWHeadless().getStarcraftDirectory();
+          Path starcraftDirectory = this.model.getBWHeadless().getStarcraftPath();
           Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);
           Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.DATA_READ_PATH);
           this.directoryMonitor.update();

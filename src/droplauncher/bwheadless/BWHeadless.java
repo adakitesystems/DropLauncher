@@ -34,7 +34,9 @@ import adakite.util.windows.task.Task;
 import adakite.util.windows.task.TaskTracker;
 import adakite.util.windows.task.Tasklist;
 import droplauncher.bot.Bot;
+import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.View;
+import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.util.DropLauncher;
 import java.io.FileNotFoundException;
@@ -58,7 +60,6 @@ public class BWHeadless {
 
   public enum Property {
 
-    STARCRAFT_EXE("starcraft_exe"),
     NETWORK_PROVIDER("network"),
     CONNECT_MODE("connect_mode"),
     GAME_NAME("game_name"),
@@ -329,15 +330,15 @@ public class BWHeadless {
                                              InvalidStateException {
     this.taskTracker.reset();
 
-    Path starcraftDirectory = getStarcraftDirectory();
+    Path starcraftPath = getStarcraftPath();
 
-    configureBwapi(starcraftDirectory);
+    configureBwapi(starcraftPath);
 
     /* Compile bwheadless arguments. */
     CommandBuilder bwhCommand = new CommandBuilder();
     bwhCommand.setPath(DEFAULT_EXE_PATH.toAbsolutePath());
     bwhCommand.addArg(Argument.STARCRAFT_EXE.toString());
-    bwhCommand.addArg(this.settings.getValue(Property.STARCRAFT_EXE.toString()));
+    bwhCommand.addArg(Model.getPref(Starcraft.Property.STARCRAFT_EXE.toString()));
     bwhCommand.addArg(Argument.JOIN_GAME.toString());
     bwhCommand.addArg(Argument.BOT_NAME.toString());
     bwhCommand.addArg(this.bot.getName());
@@ -347,11 +348,11 @@ public class BWHeadless {
     bwhCommand.addArg(this.bot.getBwapiDll());
     bwhCommand.addArg(Argument.ENABLE_LAN.toString());
     bwhCommand.addArg(Argument.STARCRAFT_INSTALL_PATH.toString());
-    bwhCommand.addArg(starcraftDirectory.toString());
+    bwhCommand.addArg(starcraftPath.toString());
 
     /* Start bwheadless. */
     this.bwheadlessProcess
-        .setCWD(starcraftDirectory)
+        .setCWD(starcraftPath)
         .setProcessName(View.MessagePrefix.BWHEADLESS.toString());
     this.bwheadlessProcess.start(bwhCommand.get(), co);
 
@@ -376,7 +377,7 @@ public class BWHeadless {
           throw new InvalidBotTypeException("bot file type is not EXE or JAR");
       }
       this.botProcess
-          .setCWD(starcraftDirectory)
+          .setCWD(starcraftPath)
           .setProcessName(View.MessagePrefix.CLIENT.toString());
       this.botProcess.start(clientCommand.get(), co);
     }
@@ -416,20 +417,24 @@ public class BWHeadless {
   /**
    * Configures BWAPI in the specified StarCraft directory.
    *
-   * @param starcraftDirectory path to the specified StarCraft directory
+   * @param starcraftPath path to the specified StarCraft directory
    * @throws IOException if an I/O error occurs
    * @throws InvalidBotTypeException if the bot type is not recognized
    */
-  private void configureBwapi(Path starcraftDirectory) throws IOException,
-                                                              InvalidBotTypeException,
-                                                              IniParseException,
-                                                              InvalidStateException {
+  private void configureBwapi(Path starcraftPath) throws IOException,
+                                                         InvalidBotTypeException,
+                                                         IniParseException,
+                                                         InvalidStateException {
+    if (starcraftPath == null) {
+      throw new InvalidStateException("sc dir param is null");
+    }
+
     /* Create common BWAPI paths. */
-    Path bwapiAiPath = starcraftDirectory.resolve(BWAPI.DATA_AI_PATH);
-    Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.DATA_READ_PATH);
-    Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);
-    Path bwapiDataDataPath = starcraftDirectory.resolve(BWAPI.DATA_DATA_PATH);
-    Path bwapiIniPath = starcraftDirectory.resolve(BWAPI.DATA_INI_PATH);
+    Path bwapiAiPath = starcraftPath.resolve(BWAPI.DATA_AI_PATH);
+    Path bwapiReadPath = starcraftPath.resolve(BWAPI.DATA_READ_PATH);
+    Path bwapiWritePath = starcraftPath.resolve(BWAPI.DATA_WRITE_PATH);
+    Path bwapiDataDataPath = starcraftPath.resolve(BWAPI.DATA_DATA_PATH);
+    Path bwapiIniPath = starcraftPath.resolve(BWAPI.DATA_INI_PATH);
     Path bwapiBroodwarMap = bwapiDataDataPath.resolve(BWAPI.ExtractableFile.BROODWAR_MAP.toString());
     AdakiteUtils.createDirectory(bwapiAiPath);
     AdakiteUtils.createDirectory(bwapiReadPath);
@@ -437,8 +442,8 @@ public class BWHeadless {
     AdakiteUtils.createDirectory(bwapiDataDataPath);
 
     /* Create BWTA/BWTA2 paths. */
-    Path bwtaPath = starcraftDirectory.resolve(BWAPI.DATA_PATH).resolve("BWTA");
-    Path bwta2Path = starcraftDirectory.resolve(BWAPI.DATA_PATH).resolve("BWTA2");
+    Path bwtaPath = starcraftPath.resolve(BWAPI.DATA_PATH).resolve("BWTA");
+    Path bwta2Path = starcraftPath.resolve(BWAPI.DATA_PATH).resolve("BWTA2");
     AdakiteUtils.createDirectory(bwtaPath);
     AdakiteUtils.createDirectory(bwta2Path);
 
@@ -462,7 +467,7 @@ public class BWHeadless {
     /* Check for DLL dependencies. */
     for (BWAPI.ExtractableDll val : BWAPI.ExtractableDll.values()) {
       /* If dependency is not found, extract it. */
-      Path dll = starcraftDirectory.resolve(val.toString());
+      Path dll = starcraftPath.resolve(val.toString());
       if (!AdakiteUtils.fileExists(dll)) {
         URL url = getClass().getResource("/droplauncher/bwapi/dll/" + val.toString());
         FileUtils.copyURLToFile(url, dll.toFile());
@@ -475,7 +480,7 @@ public class BWHeadless {
       case DLL:
         /* Copy DLL to "bwapi-data/AI/" directory. */
         src = Paths.get(this.bot.getPath());
-        dest = Paths.get(starcraftDirectory.toString(), BWAPI.DATA_AI_PATH.toString(), FilenameUtils.getBaseName(this.bot.getPath()));
+        dest = Paths.get(starcraftPath.toString(), BWAPI.DATA_AI_PATH.toString(), FilenameUtils.getBaseName(this.bot.getPath()));
         AdakiteUtils.createDirectory(dest.getParent());
         Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
 //        this.botFile.setPath(dest);
@@ -484,7 +489,7 @@ public class BWHeadless {
       case CLIENT:
         /* Copy client to StarCraft root directory. */
         src = Paths.get(this.bot.getPath());
-        dest = Paths.get(starcraftDirectory.toString(), FilenameUtils.getBaseName(this.bot.getPath()));
+        dest = Paths.get(starcraftPath.toString(), FilenameUtils.getBaseName(this.bot.getPath()));
         Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
 //        this.botFile.setPath(dest);
         bwapiIni.commentVariable("ai", "ai");
@@ -509,24 +514,27 @@ public class BWHeadless {
   /**
    * Returns the path to the StarCraft directory determined by
    * {@link #setStarcraftExe(java.lang.String)}.
+   *
+   * @throws InvalidStateException if the StarCraft path is not set
    */
-  public Path getStarcraftDirectory() {
-    if (this.settings.hasValue(Property.STARCRAFT_EXE.toString())) {
-      return AdakiteUtils.getParentDirectory(Paths.get(this.settings.getValue(Property.STARCRAFT_EXE.toString())));
+  public Path getStarcraftPath() throws InvalidStateException {
+    if (Model.hasPrefValue(Starcraft.Property.STARCRAFT_EXE.toString())) {
+      return AdakiteUtils.getParentDirectory(Paths.get(Model.getPref(Starcraft.Property.STARCRAFT_EXE.toString())));
     } else {
-      return null;
+      throw new InvalidStateException("StarCraft directory not set");
     }
   }
 
   /**
    * Returns the path to the "StarCraft/bwapi-data/" directory.
-   * The StarCraft directory is determined by {@link #getStarcraftDirectory()}
+   * The StarCraft directory is determined by {@link #getStarcraftPath()}
    * which is set by {@link #setStarcraftExe(java.lang.String)}.
    *
-   * @see #getStarcraftDirectory()
+   * @see #getStarcraftPath()
+   * @throws adakite.exception.InvalidStateException
    */
-  public Path getBwapiDirectory() {
-    Path starcraftDirectory = getStarcraftDirectory();
+  public Path getBwapiDataPath() throws InvalidStateException {
+    Path starcraftDirectory = getStarcraftPath();
     return (starcraftDirectory == null) ? null : starcraftDirectory.resolve(BWAPI.DATA_PATH);
   }
 

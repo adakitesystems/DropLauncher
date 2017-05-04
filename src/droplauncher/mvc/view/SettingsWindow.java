@@ -94,8 +94,8 @@ public class SettingsWindow {
     this.lblChangeStarcraftExe.setText("StarCraft.exe:");
     this.btnChangeStarcraftExe.setText("...");
     this.lblChangeStarcraftExeText.setText("");
-    if (Model.hasPrefValue(BWHeadless.Property.STARCRAFT_EXE.toString())) {
-      String starcraftExe = Model.getPref(BWHeadless.Property.STARCRAFT_EXE.toString());
+    if (Model.hasPrefValue(Starcraft.Property.STARCRAFT_EXE.toString())) {
+      String starcraftExe = Model.getPref(Starcraft.Property.STARCRAFT_EXE.toString());
       this.lblChangeStarcraftExeText.setText(starcraftExe);
     }
     this.lblChangeStarcraftExeText.setMinWidth(Region.USE_PREF_SIZE);
@@ -109,7 +109,7 @@ public class SettingsWindow {
       }
       File file = fc.showOpenDialog(this.stage);
       if (file != null) {
-        Model.setPref(BWHeadless.Property.STARCRAFT_EXE.toString(), file.getAbsolutePath());
+        Model.setPref(Starcraft.Property.STARCRAFT_EXE.toString(), file.getAbsolutePath());
         this.lblChangeStarcraftExeText.setText(file.getAbsolutePath());
       }
     });
