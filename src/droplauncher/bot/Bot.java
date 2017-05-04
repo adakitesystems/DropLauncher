@@ -119,8 +119,7 @@ public class Bot {
    * Sets the race of this bot to the specified race.
    *
    * @param race specified race
-   * @throws InvalidArgumentException if the specified race is not in
-   *     {@link droplauncher.starcraft.Starcraft.Race}.
+   * @throws InvalidArgumentException if the specified race is invalid
    */
   public void setRace(String race) throws InvalidArgumentException {
     if (!Starcraft.Race.isValid(race)) {
@@ -184,10 +183,8 @@ public class Bot {
   public void setBwapiDll(String path) throws InvalidArgumentException {
     if (AdakiteUtils.isNullOrEmpty(path, true)) {
       throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("path"));
-    } else if (!FilenameUtils.getBaseName(path).toLowerCase(Locale.US).equals("bwapi")) {
-      throw new InvalidArgumentException("filename does not equal \"BWAPI\": " + path);
-    } else if (!FilenameUtils.getExtension(path).toLowerCase(Locale.US).equals("dll")) {
-      throw new InvalidArgumentException("file extension is not DLL: " + path);
+    } else if (!FilenameUtils.getName(path).toLowerCase(Locale.US).equals("bwapi.dll")) {
+      throw new InvalidArgumentException("filename does not equal \"BWAPI.dll\": " + path);
     }
     this.settings.set(Property.BWAPI_DLL.toString(), path);
   }
