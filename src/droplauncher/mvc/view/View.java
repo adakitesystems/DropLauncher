@@ -17,6 +17,7 @@
 
 package droplauncher.mvc.view;
 
+import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.mvc.model.Model;
@@ -25,6 +26,8 @@ import droplauncher.util.DropLauncher;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -47,6 +50,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class View implements EventHandler<DragEvent>  {
+
+  private static final Logger LOGGER = Logger.getLogger(View.class.getName());
 
   public enum Property {
 
@@ -159,14 +164,14 @@ public class View implements EventHandler<DragEvent>  {
   public enum MenuText {
 
     FILE("File"),
-    SELECT_BOT_FILES("Select bot files..."),
-    EXIT("Exit"),
+      SELECT_BOT_FILES("Select bot files..."),
+      EXIT("Exit"),
 
     EDIT("Edit"),
-    SETTINGS("Settings..."),
+      SETTINGS("Settings..."),
 
     HELP("Help"),
-    ABOUT("About")
+      ABOUT("About")
     ;
 
     private final String str;
@@ -354,11 +359,7 @@ public class View implements EventHandler<DragEvent>  {
     this.scene = new Scene(borderPane);
     this.scene.setOnDragOver(this);
     this.scene.setOnDragDropped(this);
-    try {
-      this.scene.getStylesheets().add(View.class.getResource(DEFAULT_CSS).toString());
-    } catch (Exception ex) {
-      /* Do nothing. */
-    }
+    View.addDefaultStylesheet(this.scene.getStylesheets());
 
     this.stage.setOnCloseRequest(e -> {
       this.controller.closeProgramRequest(this.stage);
@@ -481,6 +482,14 @@ public class View implements EventHandler<DragEvent>  {
       event.setDropCompleted(isTransferDone);
       event.consume();
       this.controller.filesDropped(files);
+    }
+  }
+
+  public static void addDefaultStylesheet(ObservableList<String> sheets) {
+    try {
+      sheets.add(DEFAULT_CSS);
+    } catch (Exception ex) {
+      LOGGER.log(Debugging.getLogLevel(), null, ex);
     }
   }
 

@@ -34,6 +34,7 @@ import adakite.util.DirectoryMonitor;
 import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.Starcraft.Race;
+import droplauncher.util.process.exception.ClosePipeException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -100,7 +101,7 @@ public class Controller {
     this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.toString() + ": connecting bot to StarCraft");
 
     /* Init DirectoryMonitor if required. */
-    Path starcraftDirectory = this.model.getBWHeadless().getStarcraftPath();
+    Path starcraftDirectory = Starcraft.getPath();
     if (this.directoryMonitor == null) {
       this.directoryMonitor = new DirectoryMonitor(starcraftDirectory);
       this.directoryMonitor.getIgnoreList().add("maps"); /* ignore any "*maps*" file/directory */
@@ -114,14 +115,15 @@ public class Controller {
   }
 
   private void stopBWHeadless() throws IOException,
-                                       InvalidStateException {
+                                       InvalidStateException,
+                                       ClosePipeException {
     setState(State.IDLE);
 
     this.model.getBWHeadless().stop();
 
     if (Model.isPrefEnabled(BWAPI.Property.COPY_WRITE_READ.toString())) {
       /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
-      Path starcraftDirectory = this.model.getBWHeadless().getStarcraftPath();
+      Path starcraftDirectory = Starcraft.getPath();
       Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);
       Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.DATA_READ_PATH);
       String copyMessage = View.MessagePrefix.COPY.get() + bwapiWritePath.toString() + " -> " + bwapiReadPath.toString();
@@ -157,7 +159,7 @@ public class Controller {
       /* Clean up StarCraft directory. */
       try {
         if (this.directoryMonitor != null) {
-          Path starcraftDirectory = this.model.getBWHeadless().getStarcraftPath();
+          Path starcraftDirectory = Starcraft.getPath();
           Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);
           Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.DATA_READ_PATH);
           this.directoryMonitor.update();
@@ -386,7 +388,7 @@ public class Controller {
       alert.setTitle("Warning");
       alert.setContentText("The BWAPI.dll you provided does not match the list of known official BWAPI versions.\n\nDo you want to continue anyway?");
       alert.setHeaderText(null);
-      alert.getDialogPane().getStylesheets().add(View.DEFAULT_CSS);
+      View.addDefaultStylesheet(alert.getDialogPane().getStylesheets());
       ButtonType btnNo = new ButtonType("No");
       ButtonType btnYes = new ButtonType("Yes");
       alert.getButtonTypes().setAll(btnYes, btnNo);

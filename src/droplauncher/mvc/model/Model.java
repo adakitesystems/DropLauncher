@@ -61,26 +61,31 @@ public class Model {
 
   private static Prefs getPrefs(String uniqueKey) {
     uniqueKey = uniqueKey.toLowerCase(Locale.US);
+
     for (BWAPI.Property val : BWAPI.Property.values()) {
       if (uniqueKey.equals(val.toString())) {
         return BWAPI.PREF_ROOT;
       }
     }
+
     for (BWHeadless.Property val : BWHeadless.Property.values()) {
       if (uniqueKey.equals(val.toString())) {
         return BWHeadless.PREF_ROOT;
       }
     }
+
     for (View.Property val : View.Property.values()) {
       if (uniqueKey.equals(val.toString())) {
         return DropLauncher.PREF_ROOT;
       }
     }
+
     for (Starcraft.Property val : Starcraft.Property.values()) {
       if (uniqueKey.equals(val.toString())) {
         return Starcraft.PREF_ROOT;
       }
     }
+    
     throw new IllegalArgumentException("not found: uniqueKey=" + uniqueKey);
   }
 

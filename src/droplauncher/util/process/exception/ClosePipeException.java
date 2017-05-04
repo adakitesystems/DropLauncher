@@ -15,31 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package droplauncher.mvc.view;
+package droplauncher.util.process.exception;
 
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+public class ClosePipeException extends Exception {
 
-/**
- * Simple wrapper class for the JavaFX Alert object.
- */
-public class SimpleAlert {
-
-  public SimpleAlert() {
-    /* Do nothing. */
+  public ClosePipeException() {
+    super();
   }
 
-  public void showAndWait(AlertType alertType, String title, String msg) {
-    Alert alert = new Alert(alertType);
-    alert.setTitle(title);
-    alert.setHeaderText(null);
-    alert.setContentText(msg);
-    View.addDefaultStylesheet(alert.getDialogPane().getStylesheets());
-    alert.showAndWait();
-  }
-
-  public void showAndWait(AlertType alertType, String msg) {
-    showAndWait(alertType, null, msg);
+  public ClosePipeException(String message) {
+    super(message);
   }
 
 }

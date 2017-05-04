@@ -39,6 +39,7 @@ import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.util.DropLauncher;
+import droplauncher.util.process.exception.ClosePipeException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
@@ -336,9 +337,9 @@ public class BWHeadless {
                                              InvalidStateException {
     this.taskTracker.reset();
 
-    Path starcraftPath = getStarcraftPath();
+    Path starcraftPath = Starcraft.getPath();
 
-    configureBwapi(starcraftPath);
+    configureBwapi();
 
     /* Compile bwheadless arguments. */
     CommandBuilder bwhCommand = new CommandBuilder();
@@ -393,9 +394,12 @@ public class BWHeadless {
    * Stops the bwheadless and bot processes.
    *
    * @throws IOException if an I/O error occurs
+   * @throws InvalidStateException
+   * @throws ClosePipeException
    */
   public void stop() throws IOException,
-                            InvalidStateException {
+                            InvalidStateException,
+                            ClosePipeException {
     /* Kill new tasks that were started with bwheadless. */
     String botName = FilenameUtils.getBaseName(this.bot.getPath());
     this.taskTracker.update();
@@ -427,11 +431,12 @@ public class BWHeadless {
    * @throws IOException if an I/O error occurs
    * @throws InvalidBotTypeException if the bot type is not recognized
    */
-  private void configureBwapi(Path starcraftPath) throws IOException,
+  private void configureBwapi() throws IOException,
                                                          InvalidBotTypeException,
                                                          IniParseException,
                                                          InvalidStateException {
     /* Create common BWAPI paths. */
+    Path starcraftPath = Starcraft.getPath();
     Path bwapiAiPath = starcraftPath.resolve(BWAPI.DATA_AI_PATH);
     Path bwapiReadPath = starcraftPath.resolve(BWAPI.DATA_READ_PATH);
     Path bwapiWritePath = starcraftPath.resolve(BWAPI.DATA_WRITE_PATH);
@@ -505,39 +510,10 @@ public class BWHeadless {
     /* Update bwapi.ini file. */
     bwapiIni.store(bwapiIniPath);
 
-    /* Copy misc files to common bot I/O directories. */
+    /* Copy extra files to common bot I/O directories. */
     for (String path : this.bot.getExtraFiles()) {
-//      Files.copy(path, Paths.get(bwapiReadPath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
-//      Files.copy(path, Paths.get(bwapiWritePath.toString(), path.getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
       Files.copy(Paths.get(path), Paths.get(bwapiAiPath.toString(), FilenameUtils.getBaseName(path)), StandardCopyOption.REPLACE_EXISTING);
     }
-  }
-
-  /**
-   * Returns the path to the StarCraft directory determined by
-   * {@link #setStarcraftExe(java.lang.String)}.
-   *
-   * @throws InvalidStateException if the StarCraft path is not set
-   */
-  public Path getStarcraftPath() throws InvalidStateException {
-    if (Model.hasPrefValue(Starcraft.Property.STARCRAFT_EXE.toString())) {
-      return AdakiteUtils.getParentDirectory(Paths.get(Model.getPref(Starcraft.Property.STARCRAFT_EXE.toString())));
-    } else {
-      throw new InvalidStateException("StarCraft directory not set");
-    }
-  }
-
-  /**
-   * Returns the path to the "StarCraft/bwapi-data/" directory.
-   * The StarCraft directory is determined by {@link #getStarcraftPath()}
-   * which is set by {@link #setStarcraftExe(java.lang.String)}.
-   *
-   * @see #getStarcraftPath()
-   * @throws adakite.exception.InvalidStateException
-   */
-  public Path getBwapiDataPath() throws InvalidStateException {
-    Path starcraftDirectory = getStarcraftPath();
-    return (starcraftDirectory == null) ? null : starcraftDirectory.resolve(BWAPI.DATA_PATH);
   }
 
 }

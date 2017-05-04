@@ -20,11 +20,9 @@ package droplauncher.mvc.view;
 import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
-import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft;
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -136,12 +134,8 @@ public class SettingsWindow {
     ));
 
     this.scene = new Scene(mainGridPane.get());
-    try {
-      this.scene.getStylesheets().add(View.DEFAULT_CSS);
-    } catch (Exception ex) {
-      LOGGER.log(Debugging.getLogLevel(), null, ex);
-    }
-
+    View.addDefaultStylesheet(this.scene.getStylesheets());
+    
     this.stage = new Stage();
     this.stage.setTitle("Settings");
     this.stage.initModality(Modality.APPLICATION_MODAL);

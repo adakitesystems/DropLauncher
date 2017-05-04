@@ -17,7 +17,9 @@
 
 package droplauncher.bwapi;
 
+import adakite.exception.InvalidStateException;
 import adakite.prefs.Prefs;
+import droplauncher.starcraft.Starcraft;
 import droplauncher.util.DropLauncher;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -196,6 +198,18 @@ public class BWAPI {
       }
     }
     return DLL_UNKNOWN;
+  }
+
+  /**
+   * Returns the path to the "StarCraft/bwapi-data/" directory.
+   * The StarCraft directory is determined by {@link Starcraft#getPath()}.
+   *
+   * @see Starcraft#getPath()
+   * @throws adakite.exception.InvalidStateException
+   */
+  public static Path getPath() throws InvalidStateException {
+    Path starcraftDirectory = Starcraft.getPath();
+    return (starcraftDirectory == null) ? null : starcraftDirectory.resolve(BWAPI.DATA_PATH);
   }
 
 }

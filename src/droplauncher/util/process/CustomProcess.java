@@ -21,6 +21,7 @@ import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.view.ConsoleOutput;
 import droplauncher.util.StreamGobbler;
+import droplauncher.util.process.exception.ClosePipeException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.logging.Logger;
@@ -95,13 +96,16 @@ public class CustomProcess {
 
   /**
    * Attempts to close the pipe.
+   *
+   * @throws ClosePipeException if {@link Process#isAlive()} returns true
+   *     after attempting to destroy
    */
-  public void stop() {
+  public void stop() throws ClosePipeException {
     this.gobblerStdout.interrupt();
     this.gobblerStdout.interrupt();
     this.process.destroy();
     if (this.process.isAlive()) {
-      LOGGER.log(Debugging.getLogLevel(), "process is still alive after destroy attempt");
+      throw new ClosePipeException("process is still alive after destroy attempt");
     }
   }
 
