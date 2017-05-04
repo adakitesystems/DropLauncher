@@ -227,6 +227,16 @@ public class Ini {
 //    throw new IniParseException("reached end of file before uncommenting variable: section=" + name + ", key=" + key);
   }
 
+  /**
+   * Returns a copy of the internal settings of the specified section.
+   *
+   * @param sectionName name of the specified section
+   */
+  public Settings getSectionSettings(String sectionName) {
+    Section section = this.sections.get(sectionName);
+    return new Settings(section.getSettings());
+  }
+
   public void store(Path path) throws IOException {
     this.memoryFile.dumpToFile(path);
   }
