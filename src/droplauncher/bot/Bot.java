@@ -60,7 +60,7 @@ public class Bot {
     UNKNOWN
   }
 
-  public static final String DEFAULT_NAME = "BOT";
+  public static final String DEFAULT_NAME = "BWAPI_BOT";
 
   private Settings settings;
 
@@ -84,7 +84,7 @@ public class Bot {
   public String getName() throws InvalidStateException {
     String val = this.settings.getValue(Property.NAME.toString());
     if (AdakiteUtils.isNullOrEmpty(val, true)) {
-      throw new InvalidStateException("name is not set");
+      throw new InvalidStateException("bot name not set");
     }
     return val;
   }
@@ -117,7 +117,7 @@ public class Bot {
   public String getRace() throws InvalidStateException {
     String val = this.settings.getValue(Property.RACE.toString());
     if (AdakiteUtils.isNullOrEmpty(val, true)) {
-      throw new InvalidStateException("race is not set");
+      throw new InvalidStateException("bot race not set");
     }
     return val;
   }
@@ -148,7 +148,7 @@ public class Bot {
   public String getPath() throws InvalidStateException {
     String val = this.settings.getValue(Property.PATH.toString());
     if (AdakiteUtils.isNullOrEmpty(val, true)) {
-      throw new InvalidStateException("path not set");
+      throw new InvalidStateException("bot file not set (e.g.: *.dll, *.exe, *.jar)");
     }
     return val;
   }
@@ -174,7 +174,7 @@ public class Bot {
   public String getBwapiDll() throws InvalidStateException {
     String val = this.settings.getValue(Property.BWAPI_DLL.toString());
     if (AdakiteUtils.isNullOrEmpty(val, true)) {
-      throw new InvalidStateException("BWAPI.dll path is not set");
+      throw new InvalidStateException("BWAPI.dll file not set");
     }
     return val;
   }

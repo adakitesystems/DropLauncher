@@ -128,7 +128,8 @@ public class Starcraft {
       if ((ch >= 'A' && ch <= 'Z')
           || (ch >= 'a' && ch <= 'z')
           || (ch >= '0' && ch <= '9')
-          || ch == ' ') {
+          || ch == ' '
+          || ch == '_') {
         sb.append(ch);
       }
     }

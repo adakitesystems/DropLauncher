@@ -18,7 +18,6 @@
 package droplauncher.bwheadless;
 
 import droplauncher.util.KillableTask;
-import adakite.debugging.Debugging;
 import adakite.exception.InvalidStateException;
 import adakite.ini.Ini;
 import adakite.ini.IniParseException;
@@ -48,7 +47,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Locale;
-import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -56,8 +54,6 @@ import org.apache.commons.io.FilenameUtils;
  * Class for handling execution and communication with bwheadless.
  */
 public class BWHeadless {
-
-  private static final Logger LOGGER = Logger.getLogger(BWHeadless.class.getName());
 
   public enum Property {
 
@@ -109,125 +105,6 @@ public class BWHeadless {
 
   }
 
-  //TODO: Delete if not needed anymore.
-//  /**
-//   * Enum for how the bot should connect to a game lobby.
-//   */
-//  public enum ConnectMode {
-//
-//    JOIN("join"),
-//    HOST("host")
-//    ;
-//
-//    private final String str;
-//
-//    private ConnectMode(String str) {
-//      this.str = str;
-//    }
-//
-//    /**
-//     * Returns the corresponding ConnectMode object.
-//     *
-//     * @param str specified string
-//     * @return
-//     *     the corresponding ConnectMode object,
-//     *     otherwise null if no match was found
-//     */
-//    public static ConnectMode get(String str) {
-//      str = str.toLowerCase(Locale.US);
-//      for (ConnectMode val : ConnectMode.values()) {
-//        if (str.equals(val.toString().toLowerCase(Locale.US))) {
-//          return val;
-//        }
-//      }
-//      throw new IllegalArgumentException("ConnectMode not found: " + str);
-//    }
-//
-//    @Override
-//    public String toString() {
-//      return this.str;
-//    }
-//
-//  }
-
-  //TODO: Double-check if LocalPC requires admin privs.
-  //TODO: Delete if not needed anymore.
-//  /**
-//   * Enum for the passable network argument to the bwheadless process.
-//   * Currently, only LAN is supported since LocalPC requires admin privileges
-//   * and a modified SNP file.
-//   */
-//  public enum NetworkProvider {
-//
-//    LAN("lan")
-//    ;
-//
-//    private final String str;
-//
-//    private NetworkProvider(String str) {
-//      this.str = str;
-//    }
-//
-//    /**
-//     * Returns the corresponding NetworkProvider object.
-//     *
-//     * @param str specified string
-//     * @return
-//     *     the corresponding NetworkProvider object,
-//     *     otherwise null if no match was found
-//     */
-//    public static NetworkProvider get(String str) {
-//      str = str.toLowerCase(Locale.US);
-//      for (NetworkProvider val : NetworkProvider.values()) {
-//        if (str.equals(val.toString().toLowerCase(Locale.US))) {
-//          return val;
-//        }
-//      }
-//      throw new IllegalArgumentException("NetworkProvider not found: " + str);
-//    }
-//
-//    @Override
-//    public String toString() {
-//      return this.str;
-//    }
-//
-//  }
-
-  /*
-  TODO: Delete if not needed anymore. I think this is or is going to be
-  replaced by throwing exceptions when an operation fails.
-  */
-//  /**
-//   * Enum for reporting the launch status of bwheadless.
-//   */
-//  public enum ReadyError {
-//
-//    NONE("OK"),
-//    BWHEADLESS_EXE("unable to read/locate bwheadless.exe"),
-//    STARTCRAFT_EXE("unable to read/locate StarCraft.exe"),
-//    BWAPI_DLL("unable to read/locate BWAPI.dll"),
-//    BOT_NAME("invalid bot name"),
-//    BOT_FILE("unable to read/locate a bot file (*.dll, *.exe, *.jar)"),
-//    BOT_RACE("invalid bot race"),
-//    NETWORK_PROVIDER("invalid network provider"),
-//    CONNECT_MODE("invalid connect mode"),
-//    BWAPI_INSTALL("corrupt or missing BWAPI installation"),
-//    JRE_INSTALL("corrupt or missing JRE installation")
-//    ;
-//
-//    private final String name;
-//
-//    private ReadyError(String name) {
-//      this.name = name;
-//    }
-//
-//    @Override
-//    public String toString() {
-//      return this.name;
-//    }
-//
-//  }
-
   public static final Path DEFAULT_EXE_PATH = Paths.get("bwheadless.exe");
 
   public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("bwheadless");
@@ -252,7 +129,7 @@ public class BWHeadless {
     this.bwheadlessProcess = new CustomProcess();
     this.botProcess = new CustomProcess();
 
-    this.bot = new Bot();
+    this.bot = null;
 
     this.taskTracker = new TaskTracker();
   }
@@ -265,62 +142,9 @@ public class BWHeadless {
     this.settings = settings;
   }
 
-  public Bot getBot() {
-    return this.bot;
-  }
-
   public void setBot(Bot bot) {
     this.bot = bot;
   }
-
-//  /**
-//   * Tests if the program has sufficient information to run bwheadless.
-//   *
-//   * @see #checkReady()
-//   */
-//  public boolean isReady(){
-//    try {
-//      checkReady();
-//      return true;
-//    } catch (Exception ex) {
-//      return false;
-//    }
-//  }
-
-//  /**
-//   * Checks required fields.
-//   *
-//   * @throws InvalidStateException if any required field is missing or incorrect
-//   */
-//  public void checkReady() throws InvalidStateException {
-//    if (!AdakiteUtils.fileExists(DEFAULT_EXE_PATH)) {
-//      throw new InvalidStateException(Debugging.fileDoesNotExist(Paths.get("bwheadless.exe")));
-//    } else if (!this.settings.hasValue(Property.STARCRAFT_EXE.toString())
-//        || !AdakiteUtils.fileExists(Paths.get(this.settings.getValue(Property.STARCRAFT_EXE.toString())))) {
-//      throw new InvalidStateException(Debugging.fileDoesNotExist(Paths.get("StarCraft.exe")));
-//    } else if (!AdakiteUtils.fileExists(Paths.get(this.bot.getBwapiDll()))) {
-//      throw new InvalidStateException(Debugging.fileDoesNotExist(Paths.get("BWAPI.dll")));
-//    } else if (AdakiteUtils.isNullOrEmpty(this.bot.getName())) {
-//      throw new InvalidStateException(Debugging.emptyString("bot name"));
-//    } else if (this.bot.getType() == Bot.Type.UNKNOWN) {
-//      throw new InvalidStateException("bot type is not supported");
-//    } else if (!AdakiteUtils.fileExists(Paths.get(this.bot.getPath()))) {
-//      throw new InvalidStateException(Debugging.fileDoesNotExist(Paths.get(this.bot.getPath())));
-//    } else if (!Starcraft.Race.isValid(this.bot.getRace())) {
-//      throw new InvalidStateException("bot race is invalid");
-//    } else if (!this.settings.hasValue(Property.NETWORK_PROVIDER.toString())) {
-//      throw new InvalidStateException("NetworkProvider is not set");
-//    } else if (!this.settings.hasValue(Property.CONNECT_MODE.toString())) {
-//      throw new InvalidStateException("ConnectMode is not set");
-////    } else if (!AdakiteUtils.directoryExists(getBwapiDirectory())
-////        || !AdakiteUtils.fileExists(getBwapiDirectory().resolve(BWAPI.DATA_INI_PATH.getFileName()))) {
-////      /* If the bwapi.ini file is not found at "StarCraft/bwapi-data/bwapi.ini". */
-////      return ReadyError.BWAPI_INSTALL;
-////    } else if (AdakiteUtils.getFileExtension(this.botFile.getPath()).equalsIgnoreCase("jar")
-////        && !AdakiteUtils.fileExists(DropLauncher.JRE_EXE)) {
-////      return ReadyError.JRE_INSTALL;
-//    }
-//  }
 
   /**
    * Starts bwheadless after configuring and checking settings.
@@ -335,6 +159,10 @@ public class BWHeadless {
                                              InvalidBotTypeException,
                                              IniParseException,
                                              InvalidStateException {
+    if (this.bot == null) {
+      throw new InvalidStateException("bot object not set");
+    }
+
     this.taskTracker.reset();
 
     Path starcraftPath = Starcraft.getPath();

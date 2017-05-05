@@ -41,7 +41,7 @@ import java.util.prefs.Preferences;
 public class DropLauncher {
 
   public static final String PROGRAM_NAME = "DropLauncher";
-  public static final String PROGRAM_VERSION = "0.3.3a";
+  public static final String PROGRAM_VERSION = "0.3.4a";
   public static final String PROGRAM_AUTHOR = "Adakite";
   public static final String PROGRAM_TITLE = PROGRAM_NAME + " v" + PROGRAM_VERSION;
   public static final String PROGRAM_GITHUB = "https://github.com/AdakiteSystems/DropLauncher";

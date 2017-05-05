@@ -54,6 +54,8 @@ public class ExceptionAlert {
     }
 
     if (ex != null) {
+      ex.printStackTrace();
+
       alert.setTitle("Exception Dialog");
       alert.setHeaderText("An error has occurred");
       StringWriter sw = new StringWriter();

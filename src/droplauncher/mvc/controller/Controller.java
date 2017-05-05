@@ -30,6 +30,7 @@ import droplauncher.mvc.view.SimpleAlert;
 import droplauncher.mvc.view.View;
 import droplauncher.util.DropLauncher;
 import adakite.util.DirectoryMonitor;
+import droplauncher.bot.Bot;
 import droplauncher.exception.EncryptedArchiveException;
 import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.mvc.view.ExceptionAlert;
@@ -90,13 +91,11 @@ public class Controller {
     }
   }
 
-  private void startBWHeadless() throws IOException,
+  private void startBWHeadless() throws InvalidStateException,
+                                        IOException,
                                         InvalidBotTypeException,
-                                        IniParseException,
-                                        InvalidStateException {
+                                        IniParseException {
     setState(State.RUNNING);
-
-    this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.toString() + ": connecting bot to StarCraft");
 
     /* Init DirectoryMonitor if required. */
     Path starcraftDirectory = Starcraft.getPath();
@@ -109,6 +108,7 @@ public class Controller {
       this.directoryMonitor.reset();
     }
 
+    this.model.getBWHeadless().setBot(this.model.getBot());
     this.model.getBWHeadless().start(this.view.getConsoleOutput());
   }
 
@@ -128,8 +128,6 @@ public class Controller {
       this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + copyMessage);
       FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
     }
-
-    this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "ejected bot");
   }
 
   /**
@@ -148,8 +146,8 @@ public class Controller {
       case LOCKED:
         /* Fall through. */
       default:
-        String errorMessage = "The program's state is: " + this.state.toString()
-            + " and should be " + State.IDLE.toString()
+        String errorMessage = "current_state=" + this.state.toString()
+            + ", expected_state= " + State.IDLE.toString()
             + AdakiteUtils.newline(2) + "Try ejecting the bot first or wait for the current operation to finish.";
         throw new InvalidStateException(errorMessage);
     }
@@ -262,6 +260,13 @@ public class Controller {
 
   public void filesDropped(List<File> files) throws IOException,
                                                     InvalidArgumentException {
+    if (this.state != State.IDLE) {
+      Platform.runLater(() -> {
+        new ExceptionAlert().showAndWait("operation prohibited while current_state=" + this.state.toString(), null);
+      });
+      return;
+    }
+
     /* Parse all objects dropped into a complete list of files dropped since
        dropping a directory does NOT include all subdirectories and
        files by default. */
@@ -382,7 +387,7 @@ public class Controller {
         && bwapiDllVersion.equalsIgnoreCase(BWAPI.DLL_UNKNOWN)) {
       Alert alert = new Alert(AlertType.CONFIRMATION);
       alert.setTitle("Warning");
-      alert.setContentText("The BWAPI.dll you provided does not match the list of known official BWAPI versions.\n\nDo you want to continue anyway?");
+      alert.setContentText("The BWAPI.dll you provided is not on the list of known official BWAPI versions.\n\nDo you want to continue anyway?");
       alert.setHeaderText(null);
       View.addDefaultStylesheet(alert.getDialogPane().getStylesheets());
       ButtonType btnNo = new ButtonType("No");
@@ -402,53 +407,36 @@ public class Controller {
     State prevState = this.state;
 
     if (prevState == State.LOCKED) {
-      return;
+      throw new InvalidStateException("unable to start/stop, current_state=" + State.LOCKED.toString());
     }
-
-//    boolean isReady = false;
-//    try {
-//      isReady = this.model.getBWHeadless().isReady();
-//    } catch (Exception ex) {
-//      /* Do nothing. */
-//    }
-//
-//    if (!isReady) {
-//      try {
-//        /* Display error message. */
-//        new SimpleAlert().showAndWait(
-//            AlertType.ERROR,
-//            "Not Ready",
-//            "The program is not ready due to the following error: " + AdakiteUtils.newline(2) +
-//            this.model.getBWHeadless().checkReady().toString()
-//        );
-//        setState(State.IDLE);
-//      } catch (Exception ex) {
-//        LOGGER.log(Debugging.getLogLevel(), null, ex);
-//      }
-//    }
 
     setState(State.LOCKED);
 
-    //TODO: Remove LOGGER statements from this switch block.
     switch (prevState) {
       case IDLE:
         /* Start bwheadless. */
         this.view.btnStartEnabled(false);
         new Thread(() -> {
           try {
+            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.toString() + ": connecting bot to StarCraft...");
             startBWHeadless();
+            Platform.runLater(() -> {
+              this.view.btnStartSetText(View.StartButtonText.STOP.toString());
+              this.view.btnStartEnabled(true);
+            });
+            setState(State.RUNNING);
           } catch (Exception ex) {
-            this.view.getConsoleOutput().println(
-                View.MessagePrefix.DROPLAUNCHER.get()
-                + "unable to connect bot due to the following error:" + AdakiteUtils.newline(2)
-                + ex.toString() + AdakiteUtils.newline()
-            );
-            new ExceptionAlert().showAndWait(null, ex);
+            /* Start failed. */
+            Platform.runLater(() -> {
+              new ExceptionAlert().showAndWait(null, ex);
+            });
+            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.toString() + ": failed to connect bot to StarCraft");
+            setState(prevState);
+            Platform.runLater(() -> {
+              this.view.btnStartSetText(View.StartButtonText.START.toString());
+              this.view.btnStartEnabled(true);
+            });
           }
-          Platform.runLater(() -> {
-            this.view.btnStartSetText(View.StartButtonText.STOP.toString());
-            this.view.btnStartEnabled(true);
-          });
         }).start();
         return;
       case RUNNING:
@@ -456,14 +444,26 @@ public class Controller {
         this.view.btnStartEnabled(false);
         new Thread(() -> {
           try {
+            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "ejecting bot...");
             stopBWHeadless();
+            Platform.runLater(() -> {
+              this.view.btnStartSetText(View.StartButtonText.START.toString());
+              this.view.btnStartEnabled(true);
+            });
+            setState(State.IDLE);
+            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "bot has been ejected");
           } catch (Exception ex) {
-            new ExceptionAlert().showAndWait(null, ex);
+            /* Stop failed. */
+            Platform.runLater(() -> {
+              new ExceptionAlert().showAndWait(null, ex);
+            });
+            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "failed to eject bot");
+            setState(prevState);
+            Platform.runLater(() -> {
+              this.view.btnStartSetText(View.StartButtonText.STOP.toString());
+              this.view.btnStartEnabled(true);
+            });
           }
-          Platform.runLater(() -> {
-            this.view.btnStartSetText(View.StartButtonText.START.toString());
-            this.view.btnStartEnabled(true);
-          });
         }).start();
         return;
       default:
@@ -471,7 +471,7 @@ public class Controller {
     }
 
     if (this.state == State.LOCKED) {
-      throw new InvalidStateException("program state is still " + State.LOCKED.toString());
+      throw new InvalidStateException("current_state=" + State.LOCKED.toString());
     }
   }
 
@@ -487,8 +487,12 @@ public class Controller {
   //TODO: Provide some feedback when a user types an invalid bot name.
   public void botNameChanged(String str) {
     try {
-      String cleaned = Starcraft.cleanProfileName(str);
-      this.model.getBot().setName(cleaned);
+      if (AdakiteUtils.isNullOrEmpty(str, true)) {
+        this.model.getBot().setName(Bot.DEFAULT_NAME);
+      } else {
+        String cleaned = Starcraft.cleanProfileName(str);
+        this.model.getBot().setName(cleaned);
+      }
     } catch (Exception ex) {
       new ExceptionAlert().showAndWait(null, ex);
     }
