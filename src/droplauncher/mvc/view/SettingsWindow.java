@@ -23,8 +23,6 @@ import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft;
 import java.io.File;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -163,7 +161,11 @@ public class SettingsWindow {
     mainGridPane.add(this.chkBwapiWriteRead, true);
     mainGridPane.add(this.chkWarnBwapiDll, true);
     mainGridPane.add(this.chkShowLogWindow, true);
-    mainGridPane.add(resetHBox, true);
+
+    /* Disabled for now. There may be some unexpected behavior with respect to
+       how the preferences nodes react after being deleted and the user
+       tries to enable/disable settings without restarting the program first. */
+//    mainGridPane.add(resetHBox, true);
 
     mainGridPane.setGaps(View.DefaultSetting.GAP.intValue(), View.DefaultSetting.GAP.intValue());
     mainGridPane.get().setPadding(new Insets(
