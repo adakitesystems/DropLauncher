@@ -30,6 +30,10 @@ public class SimpleAlert {
   }
 
   public void showAndWait(AlertType alertType, String title, String msg) {
+    if (alertType == AlertType.ERROR) {
+      throw new UnsupportedOperationException("Use ExceptionAlert instead of SimpleAlert");
+    }
+
     Alert alert = new Alert(alertType);
     alert.setTitle(title);
     alert.setHeaderText(null);

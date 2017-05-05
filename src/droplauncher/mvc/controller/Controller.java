@@ -20,7 +20,6 @@ package droplauncher.mvc.controller;
 import adakite.debugging.Debugging;
 import adakite.exception.InvalidArgumentException;
 import adakite.exception.InvalidStateException;
-import adakite.ini.Ini;
 import adakite.ini.IniParseException;
 import adakite.md5sum.MD5Checksum;
 import adakite.util.AdakiteUtils;
@@ -31,7 +30,9 @@ import droplauncher.mvc.view.SimpleAlert;
 import droplauncher.mvc.view.View;
 import droplauncher.util.DropLauncher;
 import adakite.util.DirectoryMonitor;
+import droplauncher.exception.EncryptedArchiveException;
 import droplauncher.exception.InvalidBotTypeException;
+import droplauncher.mvc.view.ExceptionAlert;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.util.process.exception.ClosePipeException;
@@ -52,6 +53,7 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -150,8 +152,12 @@ public class Controller {
       case LOCKED:
         /* Fall through. */
       default:
-        LOGGER.log(Debugging.getLogLevel(), "state should be " + State.IDLE.toString() + ", but state is " + this.state.toString());
-        new SimpleAlert().showAndWait(AlertType.ERROR, "Program state error: " + this.state.toString(), "The program's state is: " + this.state.toString() + AdakiteUtils.newline(2) + "Try ejecting the bot first or wait for the current operation to finish.");
+        String errorMessage = "The program's state is: " + this.state.toString() + " and should be " + State.IDLE.toString();
+        LOGGER.log(Debugging.getLogLevel(), errorMessage);
+        new ExceptionAlert().showAndWait(
+            errorMessage
+            + AdakiteUtils.newline(2) + "Try ejecting the bot first or wait for the current operation to finish.", null
+        );
         return;
     }
 
@@ -177,6 +183,7 @@ public class Controller {
         }
       } catch (Exception ex) {
         LOGGER.log(Debugging.getLogLevel(), "clean up StarCraft directory", ex);
+        new ExceptionAlert().showAndWait("clean up StarCraft directory", ex);
       }
     }
 
@@ -230,18 +237,18 @@ public class Controller {
    *
    * @param path specified path to the ZIP file
    * @see #processFile(java.nio.file.Path)
-   * @throws IllegalArgumentException if the path does not appear to be a ZIP file
    */
   private void processZipFile(Path path) {
-    if (!AdakiteUtils.fileExists(path)
-        || !AdakiteUtils.getFileExtension(path).equalsIgnoreCase("zip")) {
-      throw new IllegalArgumentException("path does not appear to be a ZIP file");
-    }
     try {
+      if (path == null) {
+        throw new IllegalArgumentException(Debugging.cannotBeNull("path"));
+      } else if (!AdakiteUtils.getFileExtension(path).equalsIgnoreCase("zip")) {
+        throw new IllegalArgumentException("path does not appear to be a ZIP file: " + path.toString());
+      }
+
       ZipFile zipFile = new ZipFile(path.toAbsolutePath().toString());
       if (zipFile.isEncrypted()) {
-        LOGGER.log(Debugging.getLogLevel(), "unsupported encrypted archive: " + zipFile.getFile().getAbsolutePath());
-        return;
+        throw new EncryptedArchiveException("encrypted archive not supported: " + zipFile.getFile().getAbsolutePath());
       }
       /* Create temporary directory. */
       Path tmpDir = Paths.get(DropLauncher.TEMP_DIRECTORY).toAbsolutePath();
@@ -257,7 +264,8 @@ public class Controller {
         }
       }
     } catch (Exception ex) {
-      LOGGER.log(Debugging.getLogLevel(), "unable to process ZIP file: " + path.toAbsolutePath().toString(), ex);
+      LOGGER.log(Debugging.getLogLevel(), ex.getMessage(), ex);
+      new ExceptionAlert().showAndWait(null, ex);
     }
   }
 

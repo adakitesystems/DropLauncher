@@ -373,7 +373,6 @@ public class BWHeadless {
           break;
         case "jar":
           if (!AdakiteUtils.fileExists(DropLauncher.JRE_EXE)) {
-            LOGGER.log(Debugging.getLogLevel(), "JRE not found");
             throw new FileNotFoundException(DropLauncher.JRE_EXE.toString());
           }
           clientCommand.setPath(DropLauncher.JRE_EXE.toAbsolutePath());

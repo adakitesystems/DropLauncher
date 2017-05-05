@@ -43,8 +43,14 @@ public class ExceptionAlert {
     alert.setTitle("An error has occurred");
     alert.setHeaderText(null);
 
+    if (AdakiteUtils.isNullOrEmpty(message, true)
+        && !AdakiteUtils.isNullOrEmpty(ex.getMessage())) {
+      message = ex.getMessage();
+    }
     if (!AdakiteUtils.isNullOrEmpty(message, true)) {
       alert.setContentText("Error: " + message);
+    } else {
+      alert.setContentText(null);
     }
 
     if (ex != null) {
