@@ -25,6 +25,7 @@ import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.util.DropLauncher;
 import java.util.Locale;
+import java.util.prefs.BackingStoreException;
 
 public class Model {
 
@@ -45,6 +46,11 @@ public class Model {
   }
 
   public void ensureDefaultSettings() {
+    if (!Model.hasPrefValue(DropLauncher.Property.VERSION.toString())
+        || (Model.hasPrefValue(DropLauncher.Property.VERSION.toString())
+          && !Model.getPref(DropLauncher.Property.VERSION.toString()).equals(DropLauncher.PROGRAM_VERSION))) {
+      Model.setPref(DropLauncher.Property.VERSION.toString(), DropLauncher.PROGRAM_VERSION);
+    }
     if (!Model.hasPrefValue(Starcraft.Property.CLEAN_SC_DIR.toString())) {
       Model.setPrefEnabled(Starcraft.Property.CLEAN_SC_DIR.toString(), true);
     }
@@ -62,6 +68,12 @@ public class Model {
   private static Prefs getPrefs(String uniqueKey) {
     uniqueKey = uniqueKey.toLowerCase(Locale.US);
 
+    for (DropLauncher.Property val : DropLauncher.Property.values()) {
+      if (uniqueKey.equals(val.toString())) {
+        return DropLauncher.PREF_ROOT;
+      }
+    }
+
     for (BWAPI.Property val : BWAPI.Property.values()) {
       if (uniqueKey.equals(val.toString())) {
         return BWAPI.PREF_ROOT;
@@ -76,7 +88,7 @@ public class Model {
 
     for (View.Property val : View.Property.values()) {
       if (uniqueKey.equals(val.toString())) {
-        return DropLauncher.PREF_ROOT;
+        return View.PREF_ROOT;
       }
     }
 
@@ -85,8 +97,21 @@ public class Model {
         return Starcraft.PREF_ROOT;
       }
     }
-    
+
     throw new IllegalArgumentException("not found: uniqueKey=" + uniqueKey);
+  }
+
+  /**
+   * Removes this preference node and all of its descendants, invalidating
+   * any preferences contained in the removed nodes.
+   *
+   * @see java.util.prefs.Preferences#removeNode()
+   * @throws BackingStoreException if this operation cannot be completed
+   *     due to a failure in the backing store, or inability to
+   *     communicate with it.
+   */
+  public static void clearPrefs() throws BackingStoreException {
+    DropLauncher.PREF_ROOT.clear();
   }
 
   public static String getPref(String key) {

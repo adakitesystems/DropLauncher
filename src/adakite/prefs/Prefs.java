@@ -1,6 +1,10 @@
 package adakite.prefs;
 
 import adakite.util.AdakiteUtils;
+import droplauncher.util.DropLauncher;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 /**
@@ -38,6 +42,25 @@ public class Prefs {
       throw new IllegalStateException("value not set for: " + key);
     }
     return val;
+  }
+
+  /**
+   * Removes this preference node and all of its descendants, invalidating
+   * any preferences contained in the removed nodes.
+   *
+   * @see java.util.prefs.Preferences#removeNode()
+   * @throws BackingStoreException if this operation cannot be completed
+   *     due to a failure in the backing store, or inability to
+   *     communicate with it.
+   */
+  public void clear() throws BackingStoreException {
+    try {
+      this.prefs.removeNode();
+    } catch (BackingStoreException ex) {
+      throw ex;
+    } catch (Exception ex) {
+      /* Do nothing. */
+    }
   }
 
   /**

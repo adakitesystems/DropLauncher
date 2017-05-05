@@ -32,7 +32,7 @@ public class BWAPI {
 
   public enum Property {
 
-    COPY_WRITE_READ("bwapi_write_read"),
+    COPY_WRITE_READ("copy_write_read"),
     WARN_UNKNOWN_BWAPI_DLL("warn_bwapi_dll")
     ;
 

@@ -40,6 +40,23 @@ import java.util.prefs.Preferences;
  */
 public class DropLauncher {
 
+  public enum Property {
+
+    VERSION("version");
+
+    private final String str;
+
+    private Property(String str) {
+      this.str = str;
+    }
+
+    @Override
+    public String toString() {
+      return this.str;
+    }
+
+  }
+
   public static final String PROGRAM_NAME = "DropLauncher";
   public static final String PROGRAM_VERSION = "0.3.4a";
   public static final String PROGRAM_AUTHOR = "Adakite";

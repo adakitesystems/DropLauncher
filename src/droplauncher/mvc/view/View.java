@@ -19,6 +19,7 @@ package droplauncher.mvc.view;
 
 import adakite.debugging.Debugging;
 import adakite.exception.InvalidStateException;
+import adakite.prefs.Prefs;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.mvc.model.Model;
@@ -188,6 +189,8 @@ public class View implements EventHandler<DragEvent>  {
     }
 
   }
+
+  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("ui");
 
   private static final String RESOURCE_PATH = "/droplauncher/mvc/view/theme/";
   private static final String DEFAULT_CSS = RESOURCE_PATH + "droplauncher.css";
