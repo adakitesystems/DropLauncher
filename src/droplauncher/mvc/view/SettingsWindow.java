@@ -112,7 +112,7 @@ public class SettingsWindow {
     fileSelectPane.add(this.lblChangeStarcraftExe);
     fileSelectPane.add(this.lblChangeStarcraftExeText);
     fileSelectPane.add(this.btnChangeStarcraftExe, true);
-    fileSelectPane.setGaps(View.DefaultSetting.GAP.getValue(), View.DefaultSetting.GAP.getValue());
+    fileSelectPane.setGaps(View.DefaultSetting.GAP.intValue(), View.DefaultSetting.GAP.intValue());
 
     CustomGridPane mainGridPane = new CustomGridPane();
     mainGridPane.add(fileSelectPane.get(), true);
@@ -121,12 +121,12 @@ public class SettingsWindow {
     mainGridPane.add(this.chkBwapiWriteRead, true);
     mainGridPane.add(this.chkWarnBwapiDll, true);
     mainGridPane.add(this.chkShowLogWindow, true);
-    mainGridPane.setGaps(View.DefaultSetting.GAP.getValue(), View.DefaultSetting.GAP.getValue());
+    mainGridPane.setGaps(View.DefaultSetting.GAP.intValue(), View.DefaultSetting.GAP.intValue());
     mainGridPane.get().setPadding(new Insets(
-        View.DefaultSetting.TOP_PADDING.getValue(),
-        View.DefaultSetting.RIGHT_PADDING.getValue(),
-        View.DefaultSetting.BOTTOM_PADDING.getValue(),
-        View.DefaultSetting.LEFT_PADDING.getValue()
+        View.DefaultSetting.TOP_PADDING.intValue(),
+        View.DefaultSetting.RIGHT_PADDING.intValue(),
+        View.DefaultSetting.BOTTOM_PADDING.intValue(),
+        View.DefaultSetting.LEFT_PADDING.intValue()
     ));
 
     this.scene = new Scene(mainGridPane.get());

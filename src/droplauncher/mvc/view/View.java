@@ -27,7 +27,6 @@ import droplauncher.util.DropLauncher;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -77,10 +76,10 @@ public class View implements EventHandler<DragEvent>  {
   public enum DefaultSetting {
 
     PADDING(20),
-    TOP_PADDING(PADDING.getValue()),
-    BOTTOM_PADDING(PADDING.getValue()),
-    LEFT_PADDING(PADDING.getValue()),
-    RIGHT_PADDING(PADDING.getValue()),
+    TOP_PADDING(PADDING.intValue()),
+    BOTTOM_PADDING(PADDING.intValue()),
+    LEFT_PADDING(PADDING.intValue()),
+    RIGHT_PADDING(PADDING.intValue()),
     GAP(10),
     LABEL_TEXT_SPACING(4)
     ;
@@ -91,7 +90,7 @@ public class View implements EventHandler<DragEvent>  {
       this.val = val;
     }
 
-    public int getValue() {
+    public int intValue() {
       return this.val;
     }
 
@@ -190,7 +189,7 @@ public class View implements EventHandler<DragEvent>  {
   }
 
   private static final String RESOURCE_PATH = "/droplauncher/mvc/view/theme/";
-  public static final String DEFAULT_CSS = RESOURCE_PATH + "droplauncher.css";
+  private static final String DEFAULT_CSS = RESOURCE_PATH + "droplauncher.css";
 
   private static final String EMPTY_LABEL_TEXT = "-";
 
@@ -246,6 +245,7 @@ public class View implements EventHandler<DragEvent>  {
     this.helpMenu = new Menu(MenuText.HELP.toString());
     this.helpMenu.getItems().add(mnuHelpAbout);
 
+    /* Compile menus. */
     this.menuBar = new MenuBar();
     this.menuBar.getMenus().add(this.fileMenu);
     this.menuBar.getMenus().add(this.editMenu);
@@ -273,8 +273,6 @@ public class View implements EventHandler<DragEvent>  {
     this.btnStart = new Button(StartButtonText.START.toString());
     this.btnStart.setMinWidth(250);
     this.btnStart.setMinHeight(30);
-//    this.btnStart.setMinWidth(120);
-//    this.btnStart.setMinHeight(80);
     this.btnStart.getStyleClass().add("launch-btn");
     this.consoleOutput = new ConsoleOutput();
     this.consoleOutput.getBlacklist().add("fps: "); /* bwheadless.exe spam */
@@ -304,26 +302,26 @@ public class View implements EventHandler<DragEvent>  {
     fileLabelGridPane.add(this.lblBotFileText);
     fileLabelGridPane.add(this.cbRace, true);
     fileLabelGridPane.get().setAlignment(Pos.CENTER_LEFT);
-    fileLabelGridPane.setGaps(DefaultSetting.LABEL_TEXT_SPACING.getValue(), 0);
+    fileLabelGridPane.setGaps(DefaultSetting.LABEL_TEXT_SPACING.intValue(), 0);
     fileLabelGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
     CustomGridPane bwapiLabelGridPane = new CustomGridPane();
     bwapiLabelGridPane.add(this.lblBwapiVersion);
     bwapiLabelGridPane.add(this.lblBwapiVersionText);
     bwapiLabelGridPane.get().setAlignment(Pos.CENTER_LEFT);
-    bwapiLabelGridPane.setGaps(DefaultSetting.LABEL_TEXT_SPACING.getValue(), 0);
+    bwapiLabelGridPane.setGaps(DefaultSetting.LABEL_TEXT_SPACING.intValue(), 0);
     bwapiLabelGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
     CustomGridPane botNameGridPane = new CustomGridPane();
     botNameGridPane.add(this.lblBotName, true);
     botNameGridPane.add(this.txtBotName, true);
     botNameGridPane.get().setAlignment(Pos.CENTER_LEFT);
-    botNameGridPane.setGaps(0, DefaultSetting.LABEL_TEXT_SPACING.getValue());
+    botNameGridPane.setGaps(0, DefaultSetting.LABEL_TEXT_SPACING.intValue());
     botNameGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
 
     CustomGridPane infoGridPane = new CustomGridPane();
     infoGridPane.add(fileLabelGridPane.get(), true);
     infoGridPane.add(bwapiLabelGridPane.get(), true);
     infoGridPane.add(botNameGridPane.get(), true);
-    infoGridPane.setGaps(DefaultSetting.GAP.getValue(), DefaultSetting.GAP.getValue());
+    infoGridPane.setGaps(DefaultSetting.GAP.intValue(), DefaultSetting.GAP.intValue());
     infoGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
     infoGridPane.get().setAlignment(Pos.CENTER_LEFT);
 
@@ -332,14 +330,14 @@ public class View implements EventHandler<DragEvent>  {
     if (Model.isPrefEnabled(View.Property.SHOW_LOG_WINDOW.toString())) {
       vbox.getChildren().add(this.consoleOutput.get());
     }
-    vbox.setSpacing(DefaultSetting.GAP.getValue());
+    vbox.setSpacing(DefaultSetting.GAP.intValue());
     vbox.setAlignment(Pos.CENTER);
     vbox.setMinWidth(Region.USE_PREF_SIZE);
 
     HBox hbox = new HBox();
 //    hbox.getChildren().add(this.btnStart);
     hbox.getChildren().add(infoGridPane.get());
-    hbox.setSpacing(DefaultSetting.GAP.getValue());
+    hbox.setSpacing(DefaultSetting.GAP.intValue());
     hbox.setAlignment(Pos.CENTER);
     hbox.setMinWidth(Region.USE_PREF_SIZE);
 
@@ -348,12 +346,12 @@ public class View implements EventHandler<DragEvent>  {
     mainGridPane.add(hbox, true);
     mainGridPane.add(vbox, true);
     mainGridPane.get().setPadding(new Insets(
-        DefaultSetting.TOP_PADDING.getValue(),
-        DefaultSetting.RIGHT_PADDING.getValue(),
-        DefaultSetting.BOTTOM_PADDING.getValue(),
-        DefaultSetting.LEFT_PADDING.getValue()
+        DefaultSetting.TOP_PADDING.intValue(),
+        DefaultSetting.RIGHT_PADDING.intValue(),
+        DefaultSetting.BOTTOM_PADDING.intValue(),
+        DefaultSetting.LEFT_PADDING.intValue()
     ));
-    mainGridPane.setGaps(DefaultSetting.GAP.getValue(), DefaultSetting.GAP.getValue());
+    mainGridPane.setGaps(DefaultSetting.GAP.intValue(), DefaultSetting.GAP.intValue());
     mainGridPane.get().setAlignment(Pos.CENTER);
     mainGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
 
@@ -415,19 +413,20 @@ public class View implements EventHandler<DragEvent>  {
       this.cbRace.setVisible(false);
     }
 
-    /* Handling for when the user enters an invalid character for the bot name. */
-    String displayBotName = this.txtBotName.getText();
-    String internalBotName = this.controller.getBotName();
-    int caret = txtBotName.getCaretPosition();
-    if (!AdakiteUtils.isNonNullAndEqual(displayBotName, internalBotName)) {
-      if (caret >= internalBotName.length()) {
-        caret = internalBotName.length();
-      } else if (caret > 1) {
-        caret--;
-      }
-      setText(this.txtBotName, internalBotName);
-      txtBotName.positionCaret(caret);
-    }
+//    /* Handling for when the user enters an invalid character for the bot name. */
+//    String displayBotName = this.txtBotName.getText();
+//    String internalBotName = this.controller.getBotName();
+//    int caret = this.txtBotName.getCaretPosition();
+//    if (!AdakiteUtils.isNonNullAndEqual(displayBotName, internalBotName)) {
+//      if (caret >= internalBotName.length()) {
+//        caret = internalBotName.length();
+//      } else if (caret > 1) {
+//        caret--;
+//      }
+//      setText(this.txtBotName, internalBotName);
+//      this.txtBotName.positionCaret(caret);
+//    }
+    setText(this.txtBotName, this.controller.getBotName());
 
     sizeToScene();
   }

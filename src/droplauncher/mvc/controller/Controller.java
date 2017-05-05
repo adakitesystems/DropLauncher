@@ -45,7 +45,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -57,8 +56,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 public class Controller {
-
-  private static final Logger LOGGER = Logger.getLogger(Controller.class.getName());
 
   private Model model;
   private View view;
@@ -481,16 +478,17 @@ public class Controller {
   public void botRaceChanged(String str) {
     try {
       this.model.getBot().setRace(str);
-      this.view.updateRaceChoiceBox(); //TODO: Why do we have to do this? Remove?
+//      this.view.updateRaceChoiceBox(); //TODO: Why do we have to do this? Remove?
     } catch (Exception ex) {
       new ExceptionAlert().showAndWait(null, ex);
     }
   }
 
+  //TODO: Provide some feedback when a user types an invalid bot name.
   public void botNameChanged(String str) {
     try {
-      this.model.getBot().setName(str);
-      this.view.update();
+      String cleaned = Starcraft.cleanProfileName(str);
+      this.model.getBot().setName(cleaned);
     } catch (Exception ex) {
       new ExceptionAlert().showAndWait(null, ex);
     }
