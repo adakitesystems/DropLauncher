@@ -310,7 +310,6 @@ public class Controller {
     }
   }
 
-  //TODO: Better error handling.
   public String getBwapiDllVersion() {
     try {
       String dll = this.model.getBot().getBwapiDll();
@@ -318,7 +317,7 @@ public class Controller {
       String version = BWAPI.getBwapiVersion(md5sum);
       return version;
     } catch (Exception ex) {
-      return "";
+      return null;
     }
   }
 

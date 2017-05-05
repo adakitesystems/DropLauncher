@@ -69,6 +69,7 @@ public class BWHeadless {
       this.str = str;
     }
 
+    @Override
     public String toString() {
       return this.str;
     }

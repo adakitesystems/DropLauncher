@@ -85,7 +85,7 @@ public class BWAPI {
       String ret = "";
       String name = this.name();
 
-      int index = name.indexOf("_");
+      int index = name.indexOf('_');
       if (index >= 0) {
         name = name.substring(index + 1, name.length());
       }

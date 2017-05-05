@@ -43,6 +43,7 @@ public class Starcraft {
       this.str = str;
     }
 
+    @Override
     public String toString() {
       return this.str;
     }

@@ -64,6 +64,7 @@ public class View implements EventHandler<DragEvent>  {
       this.str = str;
     }
 
+    @Override
     public String toString() {
       return this.str;
     }
