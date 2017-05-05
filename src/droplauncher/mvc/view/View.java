@@ -18,6 +18,7 @@
 package droplauncher.mvc.view;
 
 import adakite.debugging.Debugging;
+import adakite.exception.InvalidStateException;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.mvc.model.Model;
@@ -26,6 +27,7 @@ import droplauncher.util.DropLauncher;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -289,7 +291,13 @@ public class View implements EventHandler<DragEvent>  {
         this.controller.botRaceChanged(current);
       }
     });
-    this.btnStart.setOnAction(e -> this.controller.btnStartClicked());
+    this.btnStart.setOnAction(e -> {
+      try {
+        this.controller.btnStartClicked();
+      } catch (InvalidStateException ex) {
+        new ExceptionAlert().showAndWait(null, ex);
+      }
+    });
 
     CustomGridPane fileLabelGridPane = new CustomGridPane();
     fileLabelGridPane.add(this.lblBotFile);
@@ -362,8 +370,12 @@ public class View implements EventHandler<DragEvent>  {
     View.addDefaultStylesheet(this.scene.getStylesheets());
 
     this.stage.setOnCloseRequest(e -> {
-      this.controller.closeProgramRequest(this.stage);
-      e.consume();
+      try {
+        this.controller.closeProgramRequest(this.stage);
+        e.consume();
+      } catch (Exception ex) {
+        new ExceptionAlert().showAndWait(null, ex);
+      }
     });
     this.stage.setResizable(false);
     this.stage.setTitle(DropLauncher.PROGRAM_TITLE);
@@ -481,7 +493,11 @@ public class View implements EventHandler<DragEvent>  {
       }
       event.setDropCompleted(isTransferDone);
       event.consume();
-      this.controller.filesDropped(files);
+      try {
+        this.controller.filesDropped(files);
+      } catch (Exception ex) {
+        new ExceptionAlert().showAndWait(null, ex);
+      }
     }
   }
 

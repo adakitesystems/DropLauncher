@@ -20,12 +20,9 @@ package droplauncher.mvc;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.View;
-import java.util.logging.Logger;
 import javafx.stage.Stage;
 
 public class MVC {
-
-  private static final Logger LOGGER = Logger.getLogger(MVC.class.getName());
 
   private Controller controller;
   private Model model;

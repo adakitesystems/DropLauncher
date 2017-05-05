@@ -24,14 +24,11 @@ import droplauncher.util.StreamGobbler;
 import droplauncher.util.process.exception.ClosePipeException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.logging.Logger;
 
 /**
  * Container class for starting and stopping a new process.
  */
 public class CustomProcess {
-
-  private static final Logger LOGGER = Logger.getLogger(CustomProcess.class.getName());
 
   private Process process;
   private Path cwd;

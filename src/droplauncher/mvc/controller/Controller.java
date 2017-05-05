@@ -53,7 +53,6 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.lingala.zip4j.core.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -141,7 +140,7 @@ public class Controller {
    *
    * @param stage specified stage to close
    */
-  public void closeProgramRequest(Stage stage) {
+  public void closeProgramRequest(Stage stage) throws InvalidStateException {
     /* Check the program's current state. */
     switch (this.state) {
       case IDLE:
@@ -152,13 +151,10 @@ public class Controller {
       case LOCKED:
         /* Fall through. */
       default:
-        String errorMessage = "The program's state is: " + this.state.toString() + " and should be " + State.IDLE.toString();
-        LOGGER.log(Debugging.getLogLevel(), errorMessage);
-        new ExceptionAlert().showAndWait(
-            errorMessage
-            + AdakiteUtils.newline(2) + "Try ejecting the bot first or wait for the current operation to finish.", null
-        );
-        return;
+        String errorMessage = "The program's state is: " + this.state.toString()
+            + " and should be " + State.IDLE.toString()
+            + AdakiteUtils.newline(2) + "Try ejecting the bot first or wait for the current operation to finish.";
+        throw new InvalidStateException(errorMessage);
     }
 
     if (Model.isPrefEnabled(Starcraft.Property.CLEAN_SC_DIR.toString())) {
@@ -182,7 +178,6 @@ public class Controller {
           }
         }
       } catch (Exception ex) {
-        LOGGER.log(Debugging.getLogLevel(), "clean up StarCraft directory", ex);
         new ExceptionAlert().showAndWait("clean up StarCraft directory", ex);
       }
     }
@@ -264,38 +259,30 @@ public class Controller {
         }
       }
     } catch (Exception ex) {
-      LOGGER.log(Debugging.getLogLevel(), ex.getMessage(), ex);
       new ExceptionAlert().showAndWait(null, ex);
     }
   }
 
-  public void filesDropped(List<File> files) {
+  public void filesDropped(List<File> files) throws IOException,
+                                                    InvalidArgumentException {
     /* Parse all objects dropped into a complete list of files dropped since
        dropping a directory does NOT include all subdirectories and
        files by default. */
     ArrayList<Path> fileList = new ArrayList<>();
     for (File file : files) {
       if (file.isDirectory()) {
-        try {
-          Path[] tmpList = AdakiteUtils.getDirectoryContents(file.toPath(), true);
-          fileList.addAll(Arrays.asList(tmpList));
-        } catch (IOException ex) {
-          LOGGER.log(Debugging.getLogLevel(), "unable to get directory contents for: " + file.getAbsolutePath(), ex);
-        }
+        Path[] tmpList = AdakiteUtils.getDirectoryContents(file.toPath(), true);
+        fileList.addAll(Arrays.asList(tmpList));
       } else if (file.isFile()) {
         fileList.add(file.toPath());
       } else {
-        LOGGER.log(Debugging.getLogLevel(), "unknown file dropped: " + file.getAbsolutePath());
+        throw new InvalidArgumentException("unknown file dropped: " + file.getAbsolutePath());
       }
     }
 
     /* Process all files. */
     for (Path path : fileList) {
-      try {
-        processFile(path);
-      } catch (Exception ex) {
-        LOGGER.log(Debugging.getLogLevel(), null, ex);
-      }
+      processFile(path);
     }
 
     this.view.update();
@@ -321,6 +308,7 @@ public class Controller {
     }
   }
 
+  //TODO: Better error handling.
   public String getBwapiDllVersion() {
     try {
       String dll = this.model.getBot().getBwapiDll();
@@ -328,7 +316,6 @@ public class Controller {
       String version = BWAPI.getBwapiVersion(md5sum);
       return version;
     } catch (Exception ex) {
-      LOGGER.log(Debugging.getLogLevel(), null, ex);
       return "";
     }
   }
@@ -374,7 +361,11 @@ public class Controller {
   }
 
   public void mnuFileExitClicked(Stage stage) {
-    closeProgramRequest(stage);
+    try {
+      closeProgramRequest(stage);
+    } catch (Exception ex) {
+      new ExceptionAlert().showAndWait(null, ex);
+    }
   }
 
   public void mnuEditSettingsClicked() {
@@ -385,7 +376,7 @@ public class Controller {
     new SimpleAlert().showAndWait(AlertType.INFORMATION, DropLauncher.PROGRAM_TITLE, DropLauncher.PROGRAM_ABOUT);
   }
 
-  public void btnStartClicked() {
+  public void btnStartClicked() throws InvalidStateException {
     /* Check if BWAPI.dll is known. */
     String bwapiDllVersion = getBwapiDllVersion();
     if (this.state == State.IDLE
@@ -441,6 +432,7 @@ public class Controller {
 
     setState(State.LOCKED);
 
+    //TODO: Remove LOGGER statements from this switch block.
     switch (prevState) {
       case IDLE:
         /* Start bwheadless. */
@@ -454,7 +446,7 @@ public class Controller {
                 + "unable to connect bot due to the following error:" + AdakiteUtils.newline(2)
                 + ex.toString() + AdakiteUtils.newline()
             );
-            LOGGER.log(Debugging.getLogLevel(), null, ex);
+            new ExceptionAlert().showAndWait(null, ex);
           }
           Platform.runLater(() -> {
             this.view.btnStartSetText(View.StartButtonText.STOP.toString());
@@ -469,7 +461,7 @@ public class Controller {
           try {
             stopBWHeadless();
           } catch (Exception ex) {
-            LOGGER.log(Debugging.getLogLevel(), null, ex);
+            new ExceptionAlert().showAndWait(null, ex);
           }
           Platform.runLater(() -> {
             this.view.btnStartSetText(View.StartButtonText.START.toString());
@@ -482,7 +474,7 @@ public class Controller {
     }
 
     if (this.state == State.LOCKED) {
-      LOGGER.log(Debugging.getLogLevel(), "still locked");
+      throw new InvalidStateException("program state is still " + State.LOCKED.toString());
     }
   }
 
@@ -491,7 +483,7 @@ public class Controller {
       this.model.getBot().setRace(str);
       this.view.updateRaceChoiceBox(); //TODO: Why do we have to do this? Remove?
     } catch (Exception ex) {
-      LOGGER.log(Debugging.getLogLevel(), null, ex);
+      new ExceptionAlert().showAndWait(null, ex);
     }
   }
 
@@ -500,7 +492,7 @@ public class Controller {
       this.model.getBot().setName(str);
       this.view.update();
     } catch (Exception ex) {
-      LOGGER.log(Debugging.getLogLevel(), null, ex);
+      new ExceptionAlert().showAndWait(null, ex);
     }
   }
 

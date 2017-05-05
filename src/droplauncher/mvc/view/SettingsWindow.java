@@ -17,13 +17,11 @@
 
 package droplauncher.mvc.view;
 
-import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft;
 import java.io.File;
-import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -40,8 +38,6 @@ import javafx.stage.Stage;
  * Class for the specific main settings popup window.
  */
 public class SettingsWindow {
-
-  private static final Logger LOGGER = Logger.getLogger(SettingsWindow.class.getName());
 
   private Stage stage;
   private Scene scene;
@@ -135,7 +131,7 @@ public class SettingsWindow {
 
     this.scene = new Scene(mainGridPane.get());
     View.addDefaultStylesheet(this.scene.getStylesheets());
-    
+
     this.stage = new Stage();
     this.stage.setTitle("Settings");
     this.stage.initModality(Modality.APPLICATION_MODAL);
