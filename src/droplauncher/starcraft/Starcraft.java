@@ -21,6 +21,7 @@ import adakite.exception.InvalidStateException;
 import adakite.prefs.Prefs;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.model.Model;
+import droplauncher.starcraft.exception.MissingStarcraftExeException;
 import droplauncher.util.DropLauncher;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -145,13 +146,13 @@ public class Starcraft {
   /**
    * Returns the path to the StarCraft directory.
    *
-   * @throws InvalidStateException if the StarCraft path is not set
+   * @throws MissingStarcraftExeException if the StarCraft path is not set
    */
-  public static Path getPath() throws InvalidStateException {
+  public static Path getPath() throws MissingStarcraftExeException {
     if (Model.hasPrefValue(Starcraft.Property.STARCRAFT_EXE.toString())) {
       return AdakiteUtils.getParentDirectory(Paths.get(Model.getPref(Starcraft.Property.STARCRAFT_EXE.toString())));
     } else {
-      throw new InvalidStateException("StarCraft directory not set");
+      throw new MissingStarcraftExeException();
     }
   }
 

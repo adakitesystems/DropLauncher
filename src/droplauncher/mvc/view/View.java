@@ -35,6 +35,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -104,7 +105,7 @@ public class View implements EventHandler<DragEvent>  {
   public enum StartButtonText {
 
     START("Start"),
-    STOP("Stop")
+    STOP("Eject")
     ;
 
     private final String str;
@@ -372,9 +373,9 @@ public class View implements EventHandler<DragEvent>  {
     View.addDefaultStylesheet(this.scene.getStylesheets());
 
     this.stage.setOnCloseRequest(e -> {
+      e.consume();
       try {
         this.controller.closeProgramRequest(this.stage);
-        e.consume();
       } catch (Exception ex) {
         new ExceptionAlert().showAndWait(null, ex);
       }
@@ -510,6 +511,10 @@ public class View implements EventHandler<DragEvent>  {
     } catch (Exception ex) {
       LOGGER.log(Debugging.getLogLevel(), null, ex);
     }
+  }
+
+  public static void displayMissingFieldDialog(String field) {
+    new SimpleAlert().showAndWait(Alert.AlertType.WARNING, "Missing Field", AdakiteUtils.formatAsSentence(field + " is not set"));
   }
 
 }
