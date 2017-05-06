@@ -7,11 +7,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
 public class Ini {
-
-  private static final Logger LOGGER = Logger.getLogger(Ini.class.getName());
 
   private static class Section {
 

@@ -1,9 +1,6 @@
 package adakite.prefs;
 
 import adakite.util.AdakiteUtils;
-import droplauncher.util.DropLauncher;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
