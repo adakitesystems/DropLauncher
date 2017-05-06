@@ -26,6 +26,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import org.apache.commons.io.FilenameUtils;
 
 public class ExceptionAlert {
 
@@ -41,7 +42,7 @@ public class ExceptionAlert {
   public void showAndWait(String message, Exception ex) {
     Alert alert = new Alert(AlertType.ERROR);
     alert.setTitle("An error has occurred");
-    alert.setHeaderText(null);
+    alert.setHeaderText("An error has occurred");
 
     if (AdakiteUtils.isNullOrEmpty(message, true)
         && !AdakiteUtils.isNullOrEmpty(ex.getMessage())) {
@@ -54,10 +55,12 @@ public class ExceptionAlert {
     }
 
     if (ex != null) {
+      String headerText = FilenameUtils.getExtension(ex.getClass().getName());
+
       ex.printStackTrace();
 
       alert.setTitle("Exception Dialog");
-      alert.setHeaderText("An error has occurred");
+      alert.setHeaderText(headerText);
       StringWriter sw = new StringWriter();
       PrintWriter pw = new PrintWriter(sw);
       ex.printStackTrace(pw);
