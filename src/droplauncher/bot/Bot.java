@@ -19,10 +19,15 @@ package droplauncher.bot;
 
 import adakite.debugging.Debugging;
 import adakite.exception.InvalidArgumentException;
-import adakite.exception.InvalidStateException;
 import adakite.settings.Settings;
 import adakite.util.AdakiteUtils;
+import droplauncher.bot.exception.InvalidBwapiDllException;
+import droplauncher.bot.exception.MissingBotFileException;
+import droplauncher.bot.exception.MissingBotNameException;
+import droplauncher.bot.exception.MissingBotRaceException;
+import droplauncher.bot.exception.MissingBwapiDllException;
 import droplauncher.starcraft.Starcraft;
+import droplauncher.starcraft.exception.StarcraftProfileNameException;
 import java.util.ArrayList;
 import java.util.Locale;
 import org.apache.commons.io.FilenameUtils;
@@ -79,12 +84,12 @@ public class Bot {
   /**
    * Returns the name of this bot.
    *
-   * @throws InvalidStateException if name is not set
+   * @throws MissingBotNameException if name is not set
    */
-  public String getName() throws InvalidStateException {
+  public String getName() throws MissingBotNameException {
     String val = this.settings.getValue(Property.NAME.toString());
     if (AdakiteUtils.isNullOrEmpty(val, true)) {
-      throw new InvalidStateException("bot name not set");
+      throw new MissingBotNameException();
     }
     return val;
   }
@@ -93,18 +98,20 @@ public class Bot {
    * Sets the name of this bot to the specified string.
    *
    * @param name specified string
-   * @throws InvalidArgumentException if the specified name is empty or
-   *     does not adhere to the standard StarCraft profile name rules
-   *     set by {@link droplauncher.starcraft.Starcraft#cleanProfileName(java.lang.String)}.
+   * @throws InvalidArgumentException if the specified name is null or empty
+   * @throws StarcraftProfileNameException if the specified name does not
+   *     adhere to the standard StarCraft profile name rules set by
+   *     {@link droplauncher.starcraft.Starcraft#cleanProfileName(java.lang.String)}.
    */
-  public void setName(String name) throws InvalidArgumentException {
+  public void setName(String name) throws InvalidArgumentException,
+                                          StarcraftProfileNameException {
     if (AdakiteUtils.isNullOrEmpty(name, true)) {
       throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("name"));
     }
     String nameTrimmed = name.trim();
     String cleaned = Starcraft.cleanProfileName(nameTrimmed);
     if (!cleaned.equals(nameTrimmed)) {
-      throw new InvalidArgumentException("standard StarCraft profile name violation: " + name);
+      throw new StarcraftProfileNameException(name);
     }
     this.settings.set(Property.NAME.toString(), name);
   }
@@ -112,12 +119,12 @@ public class Bot {
   /**
    * Returns the race of this bot.
    *
-   * @throws InvalidStateException if race is not set
+   * @throws MissingBotRaceException if race is not set
    */
-  public String getRace() throws InvalidStateException {
+  public String getRace() throws MissingBotRaceException {
     String val = this.settings.getValue(Property.RACE.toString());
     if (AdakiteUtils.isNullOrEmpty(val, true)) {
-      throw new InvalidStateException("bot race not set");
+      throw new MissingBotRaceException();
     }
     return val;
   }
@@ -143,12 +150,12 @@ public class Bot {
   /**
    * Returns the path to the bot file.
    *
-   * @throws InvalidStateException if path is not set yet
+   * @throws MissingBotFileException if path is not set
    */
-  public String getPath() throws InvalidStateException {
+  public String getPath() throws MissingBotFileException {
     String val = this.settings.getValue(Property.PATH.toString());
     if (AdakiteUtils.isNullOrEmpty(val, true)) {
-      throw new InvalidStateException("bot file not set (e.g.: *.dll, *.exe, *.jar)");
+      throw new MissingBotFileException();
     }
     return val;
   }
@@ -169,12 +176,12 @@ public class Bot {
   /**
    * Returns the path to the BWAPI.dll associated with this bot.
    *
-   * @throws InvalidStateException if BWAPI.dll is not set
+   * @throws MissingBwapiDllException if BWAPI.dll is not set
    */
-  public String getBwapiDll() throws InvalidStateException {
+  public String getBwapiDll() throws MissingBwapiDllException {
     String val = this.settings.getValue(Property.BWAPI_DLL.toString());
     if (AdakiteUtils.isNullOrEmpty(val, true)) {
-      throw new InvalidStateException("BWAPI.dll file not set");
+      throw new MissingBwapiDllException();
     }
     return val;
   }
@@ -183,15 +190,16 @@ public class Bot {
    * Sets the path of the BWAPI.dll to the specified input path.
    *
    * @param path specified input path
-   * @throws InvalidArgumentException if the path is null, empty, does not
-   *     contain BWAPI in the filename, or does not end with the ".dll"
-   *     file extension.
+   * @throws InvalidArgumentException if the path is null or empty
+   * @throws InvalidBwapiDllException if the path does not
+   *     equal BWAPI.dll as the filename
    */
-  public void setBwapiDll(String path) throws InvalidArgumentException {
+  public void setBwapiDll(String path) throws InvalidArgumentException,
+                                              InvalidBwapiDllException {
     if (AdakiteUtils.isNullOrEmpty(path, true)) {
       throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("path"));
     } else if (!FilenameUtils.getName(path).toLowerCase(Locale.US).equals("bwapi.dll")) {
-      throw new InvalidArgumentException("filename does not equal \"BWAPI.dll\": " + path);
+      throw new InvalidBwapiDllException("filename does not equal \"BWAPI.dll\": " + path);
     }
     this.settings.set(Property.BWAPI_DLL.toString(), path);
   }
@@ -199,7 +207,7 @@ public class Bot {
   /**
    * Returns a copy of the list of extra bot files. An extra bot file is
    * described as any file that the bot uses after the bot has been invoked.
-   * The list is an ArrayList of strings which are paths to each bot file.
+   * The list is an ArrayList of strings which are paths to each extra file.
    * To add an extra bot file, use {@link #addExtraFile(java.lang.String)}.
    *
    * @see #addExtraFile(java.lang.String)
@@ -231,9 +239,9 @@ public class Bot {
    * Returns the type of this bot.
    * Example: {@link Type#CLIENT}, {@link Type#DLL}, etc.
    *
-   * @throws InvalidStateException if an error occurs with {@link #getPath()}.
+   * @throws MissingBotFileException if an error occurs with {@link #getPath()}.
    */
-  public Type getType() throws InvalidStateException {
+  public Type getType() throws MissingBotFileException {
     String path = getPath();
     String ext = FilenameUtils.getExtension(path).toLowerCase(Locale.US);
     switch (ext) {
