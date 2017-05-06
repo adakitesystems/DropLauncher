@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Locale;
 import javax.swing.filechooser.FileSystemView;
 
 /**
@@ -308,6 +309,18 @@ public class AdakiteUtils {
       sb.append(" ");
     }
     return sb.toString();
+  }
+
+  public static String formatAsSentence(String str) {
+    String firstChar = ("" + str.charAt(0)).toUpperCase(Locale.US);
+    String ret = firstChar + str.substring(1, str.length());
+    
+    String lastChar = "" + str.charAt(str.length() - 1);
+    if (!lastChar.equals(".")) {
+      ret += ".";
+    }
+
+    return ret;
   }
 
 }
