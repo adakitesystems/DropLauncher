@@ -31,11 +31,19 @@ import droplauncher.mvc.view.View;
 import droplauncher.util.DropLauncher;
 import adakite.util.DirectoryMonitor;
 import droplauncher.bot.Bot;
+import droplauncher.bot.exception.InvalidBwapiDllException;
+import droplauncher.bot.exception.MissingBotFileException;
+import droplauncher.bot.exception.MissingBotNameException;
+import droplauncher.bot.exception.MissingBotRaceException;
+import droplauncher.bot.exception.MissingBwapiDllException;
+import droplauncher.bwheadless.exception.MissingBotException;
 import droplauncher.exception.EncryptedArchiveException;
 import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.mvc.view.ExceptionAlert;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.Starcraft.Race;
+import droplauncher.starcraft.exception.MissingStarcraftExeException;
+import droplauncher.starcraft.exception.StarcraftProfileNameException;
 import droplauncher.util.process.exception.ClosePipeException;
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +54,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -94,7 +104,14 @@ public class Controller {
   private void startBWHeadless() throws InvalidStateException,
                                         IOException,
                                         InvalidBotTypeException,
-                                        IniParseException {
+                                        IniParseException,
+                                        MissingBotNameException,
+                                        MissingBotRaceException,
+                                        MissingBotFileException,
+                                        MissingBwapiDllException,
+                                        MissingStarcraftExeException,
+                                        MissingBotException,
+                                        InvalidArgumentException {
     setState(State.RUNNING);
 
     /* Init DirectoryMonitor if required. */
@@ -114,7 +131,9 @@ public class Controller {
 
   private void stopBWHeadless() throws IOException,
                                        InvalidStateException,
-                                       ClosePipeException {
+                                       ClosePipeException,
+                                       MissingBotFileException,
+                                       MissingStarcraftExeException {
     setState(State.IDLE);
 
     this.model.getBWHeadless().stop();
@@ -134,6 +153,7 @@ public class Controller {
    * Attempts to close the specified stage. May fail if conditions are not met.
    *
    * @param stage specified stage to close
+   * @throws InvalidStateException
    */
   public void closeProgramRequest(Stage stage) throws InvalidStateException {
     /* Check the program's current state. */
@@ -146,9 +166,12 @@ public class Controller {
       case LOCKED:
         /* Fall through. */
       default:
-        String errorMessage = "current_state=" + this.state.toString()
-            + ", expected_state= " + State.IDLE.toString()
-            + AdakiteUtils.newline(2) + "Try ejecting the bot first or wait for the current operation to finish.";
+        String errorMessage = "bot is still in state " + this.state.toString()
+            + AdakiteUtils.newline(2)
+            + "Try ejecting the bot first or wait for the current operation to finish."
+//            + "current_state=" + this.state.toString()
+//            + ", expected_state=" + State.IDLE.toString()
+            ;
         throw new InvalidStateException(errorMessage);
     }
 
@@ -186,7 +209,9 @@ public class Controller {
    *
    * @param path specified file to process
    */
-  private void processFile(Path path) throws InvalidArgumentException {
+  private void processFile(Path path) throws InvalidArgumentException,
+                                             StarcraftProfileNameException,
+                                             InvalidBwapiDllException {
     if (this.state != State.IDLE) {
       return;
     }
@@ -208,10 +233,14 @@ public class Controller {
           /* BWAPI.dll */
           this.model.getBot().setBwapiDll(path.toAbsolutePath().toString());
         } else {
-          /* Bot file */
+          /* Set bot file. */
           this.model.getBot().setPath(path.toAbsolutePath().toString());
-          this.model.getBot().setName(FilenameUtils.getBaseName(path.toString()));
+          /* Set bot race. */
           this.model.getBot().setRace(Race.RANDOM.toString());
+          /* Set clean bot name. */
+          String name = FilenameUtils.getBaseName(path.toString());
+          name = Starcraft.cleanProfileName(name);
+          this.model.getBot().setName(name);
         }
         break;
       default:
@@ -259,7 +288,9 @@ public class Controller {
   }
 
   public void filesDropped(List<File> files) throws IOException,
-                                                    InvalidArgumentException {
+                                                    InvalidArgumentException,
+                                                    StarcraftProfileNameException,
+                                                    InvalidBwapiDllException {
     if (this.state != State.IDLE) {
       Platform.runLater(() -> {
         new ExceptionAlert().showAndWait("operation prohibited while current_state=" + this.state.toString(), null);
@@ -416,6 +447,7 @@ public class Controller {
         /* Start bwheadless. */
         this.view.btnStartEnabled(false);
         new Thread(() -> {
+          boolean success = false;
           try {
             this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.toString() + ": connecting bot to StarCraft...");
             startBWHeadless();
@@ -424,11 +456,42 @@ public class Controller {
               this.view.btnStartEnabled(true);
             });
             setState(State.RUNNING);
-          } catch (Exception ex) {
-            /* Start failed. */
+            success = true;
+          } catch (InvalidStateException | IniParseException | IOException | InvalidArgumentException ex) {
             Platform.runLater(() -> {
               new ExceptionAlert().showAndWait(null, ex);
             });
+          } catch (MissingBotFileException ex) {
+            Platform.runLater(() -> {
+              View.displayMissingFieldDialog("bot file (e.g.: *.dll, *.exe, *.jar)");
+            });
+          } catch (MissingBotNameException ex) {
+            Platform.runLater(() -> {
+              new ExceptionAlert().showAndWait("something went wrong with setting the bot's name", ex);
+            });
+          } catch (MissingBotRaceException ex) {
+            Platform.runLater(() -> {
+              new ExceptionAlert().showAndWait("something went wrong with setting the bot's race", ex);
+            });
+          } catch (MissingBwapiDllException ex) {
+            Platform.runLater(() -> {
+              View.displayMissingFieldDialog("BWAPI.dll is not set");
+            });
+          } catch (MissingBotException ex) {
+            Platform.runLater(() -> {
+              new ExceptionAlert().showAndWait("something went wrong with preparing the bot's data", ex);
+            });
+          } catch (InvalidBotTypeException ex) {
+            Platform.runLater(() -> {
+              new ExceptionAlert().showAndWait("bot type is not supported", ex);
+            });
+          } catch (MissingStarcraftExeException ex) {
+            //TODO: Clear StarCraft.exe path. This exception could be because the provided path was not found.
+            Platform.runLater(() -> {
+              View.displayMissingFieldDialog("path to StarCraft.exe");
+            });
+          }
+          if (!success) {
             this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.toString() + ": failed to connect bot to StarCraft");
             setState(prevState);
             Platform.runLater(() -> {

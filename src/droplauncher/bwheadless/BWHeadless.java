@@ -17,8 +17,8 @@
 
 package droplauncher.bwheadless;
 
+import adakite.exception.InvalidArgumentException;
 import droplauncher.util.KillableTask;
-import adakite.exception.InvalidStateException;
 import adakite.ini.Ini;
 import adakite.ini.IniParseException;
 import adakite.prefs.Prefs;
@@ -33,10 +33,16 @@ import adakite.util.windows.task.Task;
 import adakite.util.windows.task.TaskTracker;
 import adakite.util.windows.task.Tasklist;
 import droplauncher.bot.Bot;
+import droplauncher.bot.exception.MissingBotFileException;
+import droplauncher.bot.exception.MissingBotNameException;
+import droplauncher.bot.exception.MissingBotRaceException;
+import droplauncher.bot.exception.MissingBwapiDllException;
+import droplauncher.bwheadless.exception.MissingBotException;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.Starcraft.Race;
+import droplauncher.starcraft.exception.MissingStarcraftExeException;
 import droplauncher.util.DropLauncher;
 import droplauncher.util.process.exception.ClosePipeException;
 import java.io.FileNotFoundException;
@@ -112,8 +118,6 @@ public class BWHeadless {
 
   public static final String DEFAULT_BOT_NAME = "BOT";
   public static final Race DEFAULT_BOT_RACE = Race.RANDOM;
-//  public static final NetworkProvider DEFAULT_NETWORK_PROVIDER = NetworkProvider.LAN; //TODO: Delete?
-//  public static final ConnectMode DEFAULT_CONNECT_MODE = ConnectMode.JOIN; //TODO: Delete?
 
   private Settings settings;
 
@@ -152,23 +156,35 @@ public class BWHeadless {
    *
    * @param co specified ConsoleOutput to display process output stream
    * @throws IOException if an I/O error occurs
+   * @throws MissingBotException if the bot object is not set
    * @throws InvalidBotTypeException if the bot type is not recognized
-   * @throws adakite.ini.IniParseException
-   * @throws adakite.exception.InvalidStateException if a call to a Bot getter method fails
+   * @throws IniParseException
+   * @throws MissingBotNameException
+   * @throws MissingBotRaceException
+   * @throws MissingBotFileException
+   * @throws MissingBwapiDllException
+   * @throws MissingStarcraftExeException
+   * @throws InvalidArgumentException
    */
   public void start(ConsoleOutput co) throws IOException,
+                                             MissingBotException,
                                              InvalidBotTypeException,
                                              IniParseException,
-                                             InvalidStateException {
+                                             MissingBotNameException,
+                                             MissingBotRaceException,
+                                             MissingBotFileException,
+                                             MissingBwapiDllException,
+                                             MissingStarcraftExeException,
+                                             InvalidArgumentException {
     if (this.bot == null) {
-      throw new InvalidStateException("bot object not set");
+      throw new MissingBotException();
     }
 
     this.taskTracker.reset();
 
-    Path starcraftPath = Starcraft.getPath();
-
     configureBwapi();
+
+    Path starcraftPath = Starcraft.getPath();
 
     /* Compile bwheadless arguments. */
     CommandBuilder bwhCommand = new CommandBuilder();
@@ -222,12 +238,12 @@ public class BWHeadless {
    * Stops the bwheadless and bot processes.
    *
    * @throws IOException if an I/O error occurs
-   * @throws InvalidStateException
    * @throws ClosePipeException
+   * @throws MissingBotFileException
    */
   public void stop() throws IOException,
-                            InvalidStateException,
-                            ClosePipeException {
+                            ClosePipeException,
+                            MissingBotFileException {
     /* Kill new tasks that were started with bwheadless. */
     String botName = FilenameUtils.getBaseName(this.bot.getPath());
     this.taskTracker.update();
@@ -256,15 +272,20 @@ public class BWHeadless {
    * Configures BWAPI in the specified StarCraft directory.
    *
    * @param starcraftPath path to the specified StarCraft directory
-   * @throws IOException if an I/O error occurs
-   * @throws InvalidBotTypeException if the bot type is not recognized
    */
   private void configureBwapi() throws IOException,
-                                                         InvalidBotTypeException,
-                                                         IniParseException,
-                                                         InvalidStateException {
-    /* Create common BWAPI paths. */
+                                       MissingStarcraftExeException,
+                                       IniParseException,
+                                       MissingBotFileException,
+                                       InvalidBotTypeException,
+                                       InvalidArgumentException {
+    /* Check if StarCraft path is valid. */
     Path starcraftPath = Starcraft.getPath();
+    if (!AdakiteUtils.directoryExists(starcraftPath)) {
+      throw new MissingStarcraftExeException();
+    }
+
+    /* Create common BWAPI paths. */
     Path bwapiAiPath = starcraftPath.resolve(BWAPI.DATA_AI_PATH);
     Path bwapiReadPath = starcraftPath.resolve(BWAPI.DATA_READ_PATH);
     Path bwapiWritePath = starcraftPath.resolve(BWAPI.DATA_WRITE_PATH);
@@ -315,18 +336,18 @@ public class BWHeadless {
       case DLL:
         /* Copy DLL to "bwapi-data/AI/" directory. */
         src = Paths.get(this.bot.getPath());
-        dest = Paths.get(starcraftPath.toString(), BWAPI.DATA_AI_PATH.toString(), FilenameUtils.getBaseName(this.bot.getPath()));
+        dest = Paths.get(starcraftPath.toString(), BWAPI.DATA_AI_PATH.toString(), FilenameUtils.getName(this.bot.getPath()));
         AdakiteUtils.createDirectory(dest.getParent());
         Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
-//        this.botFile.setPath(dest);
-        bwapiIni.set("ai", "ai", BWAPI.DATA_AI_PATH.toString() + AdakiteUtils.FILE_SEPARATOR + FilenameUtils.getBaseName(this.bot.getPath()));
+        this.bot.setPath(dest.toString());
+        bwapiIni.set("ai", "ai", BWAPI.DATA_AI_PATH.toString() + AdakiteUtils.FILE_SEPARATOR + FilenameUtils.getName(this.bot.getPath()));
         break;
       case CLIENT:
         /* Copy client to StarCraft root directory. */
         src = Paths.get(this.bot.getPath());
-        dest = Paths.get(starcraftPath.toString(), FilenameUtils.getBaseName(this.bot.getPath()));
+        dest = Paths.get(starcraftPath.toString(), FilenameUtils.getName(this.bot.getPath()));
         Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
-//        this.botFile.setPath(dest);
+        this.bot.setPath(dest.toString());
         bwapiIni.commentVariable("ai", "ai");
         break;
       default:
