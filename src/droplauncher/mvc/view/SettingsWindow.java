@@ -22,19 +22,12 @@ import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft;
 import java.io.File;
-import java.util.Optional;
-import java.util.prefs.BackingStoreException;
-import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -56,7 +49,7 @@ public class SettingsWindow {
   private Label lblChangeStarcraftExe;
   private Label lblChangeStarcraftExeText;
   private Button btnChangeStarcraftExe;
-  private Button btnResetSettings;
+//  private Button btnResetSettings;
 
   public SettingsWindow() {
     this.chkShowLogWindow = new CheckBox();
@@ -66,7 +59,7 @@ public class SettingsWindow {
     this.lblChangeStarcraftExe = new Label();
     this.lblChangeStarcraftExeText = new Label();
     this.btnChangeStarcraftExe = new Button();
-    this.btnResetSettings = new Button();
+//    this.btnResetSettings = new Button();
   }
 
   public SettingsWindow showAndWait() {
@@ -117,36 +110,36 @@ public class SettingsWindow {
       }
     });
 
-    this.btnResetSettings.setText("Reset Settings");
-    this.btnResetSettings.setOnAction(e -> {
-      Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-      alert.setTitle("Warning");
-      alert.setContentText("Are you sure you want to reset the program settings?");
-      alert.setHeaderText(null);
-      View.addDefaultStylesheet(alert.getDialogPane().getStylesheets());
-      ButtonType btnNo = new ButtonType("No");
-      ButtonType btnYes = new ButtonType("Yes");
-      alert.getButtonTypes().setAll(btnYes, btnNo);
-      Optional<ButtonType> result = alert.showAndWait();
-      if (result.get() == btnYes) {
-        try {
-          Model.clearPrefs();
-        } catch (BackingStoreException ex) {
-          //TODO: Test if this needs to be wrapped by "runLater".
-          Platform.runLater(() -> {
-            new ExceptionAlert().showAndWait(null, ex);
-          });
-        }
-        new SimpleAlert().showAndWait(
-            Alert.AlertType.INFORMATION,
-            "Restart required",
-            "Program settings have been reset! You will need to restart the program for changes to take effect."
-        );
-      }
-    });
-    HBox resetHBox = new HBox();
-    resetHBox.getChildren().add(this.btnResetSettings);
-    resetHBox.setAlignment(Pos.CENTER_RIGHT);
+//    this.btnResetSettings.setText("Reset Settings");
+//    this.btnResetSettings.setOnAction(e -> {
+//      Alert alert = new Alert(AlertType.CONFIRMATION);
+//      alert.setTitle("Warning");
+//      alert.setContentText("Are you sure you want to reset the program settings?");
+//      alert.setHeaderText(null);
+//      View.addDefaultStylesheet(alert.getDialogPane().getStylesheets());
+//      ButtonType btnNo = new ButtonType("No");
+//      ButtonType btnYes = new ButtonType("Yes");
+//      alert.getButtonTypes().setAll(btnYes, btnNo);
+//      Optional<ButtonType> result = alert.showAndWait();
+//      if (result.get() == btnYes) {
+//        try {
+//          Model.clearPrefs();
+//        } catch (BackingStoreException ex) {
+//          //TODO: Test if this needs to be wrapped by "runLater".
+//          Platform.runLater(() -> {
+//            new ExceptionAlert().showAndWait(null, ex);
+//          });
+//        }
+//        new SimpleAlert().showAndWait(
+//            AlertType.INFORMATION,
+//            DialogTitle.PROGRAM_TITLE,
+//            "Program settings have been reset! You will need to restart the program for changes to take effect."
+//        );
+//      }
+//    });
+//    HBox resetHBox = new HBox();
+//    resetHBox.getChildren().add(this.btnResetSettings);
+//    resetHBox.setAlignment(Pos.CENTER_RIGHT);
 
     CustomGridPane fileSelectPane = new CustomGridPane();
     fileSelectPane.add(this.lblChangeStarcraftExe);

@@ -17,6 +17,8 @@
 
 package droplauncher.mvc.view;
 
+import adakite.debugging.Debugging;
+import droplauncher.mvc.view.View.DialogTitle;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
@@ -30,13 +32,16 @@ public class SimpleAlert {
   }
 
   //TODO: Change "title" parameter type to "DialogTitle".
-  public void showAndWait(AlertType alertType, String title, String msg) {
+  public void showAndWait(AlertType alertType, DialogTitle title, String msg) {
     if (alertType == AlertType.ERROR) {
-      throw new UnsupportedOperationException("Use ExceptionAlert instead of SimpleAlert");
+      throw new UnsupportedOperationException("Use ExceptionAlert instead of SimpleAlert.");
     }
-
     Alert alert = new Alert(alertType);
-    alert.setTitle(title);
+    if (title == null) {
+      throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("title"));
+    } else {
+      alert.setTitle(title.toString());
+    }
     alert.setHeaderText(null);
     alert.setContentText(msg);
     View.addDefaultStylesheet(alert.getDialogPane().getStylesheets());

@@ -40,6 +40,7 @@ import droplauncher.bwheadless.exception.MissingBotException;
 import droplauncher.exception.EncryptedArchiveException;
 import droplauncher.exception.InvalidBotTypeException;
 import droplauncher.mvc.view.ExceptionAlert;
+import droplauncher.mvc.view.View.DialogTitle;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
@@ -386,11 +387,17 @@ public class Controller {
   }
 
   public void mnuEditSettingsClicked() {
+    if (this.state != State.IDLE) {
+      Platform.runLater(() -> {
+        View.displayOperationProhibitedDialog("Program settings are locked while bot is running.");
+      });
+      return;
+    }
     new SettingsWindow().showAndWait();
   }
 
   public void mnuHelpAboutClicked() {
-    new SimpleAlert().showAndWait(AlertType.INFORMATION, DropLauncher.PROGRAM_TITLE, DropLauncher.PROGRAM_ABOUT);
+    new SimpleAlert().showAndWait(AlertType.INFORMATION, DialogTitle.PROGRAM_NAME, DropLauncher.PROGRAM_ABOUT);
   }
 
   public void btnStartClicked() throws InvalidStateException {
@@ -412,7 +419,7 @@ public class Controller {
       if (result.get() != btnYes) {
         new SimpleAlert().showAndWait(
             AlertType.WARNING,
-            "Warning",
+            DialogTitle.WARNING,
             "Launch aborted!"
         );
         return;
@@ -523,6 +530,13 @@ public class Controller {
   }
 
   public void botRaceChanged(String str) {
+    if (this.state != State.IDLE) {
+      Platform.runLater(() -> {
+        View.displayWarningDialog(DialogTitle.WARNING, "Changing the bot's race while it is running has no effect.");
+      });
+      this.view.update();
+      return;
+    }
     try {
       this.model.getBot().setRace(str);
 //      this.view.updateRaceChoiceBox(); //TODO: Why do we have to do this? Remove?
@@ -533,6 +547,13 @@ public class Controller {
 
   //TODO: Provide some feedback when a user types an invalid bot name.
   public void botNameChanged(String str) {
+    if (this.state != State.IDLE) {
+      Platform.runLater(() -> {
+        View.displayWarningDialog(DialogTitle.WARNING, "Changing the bot's name while it is running has no effect.");
+      });
+      this.view.update();
+      return;
+    }
     try {
       if (AdakiteUtils.isNullOrEmpty(str, true)) {
         this.model.getBot().setName(Bot.DEFAULT_NAME);

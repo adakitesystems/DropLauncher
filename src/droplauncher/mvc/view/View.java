@@ -101,8 +101,11 @@ public class View implements EventHandler<DragEvent>  {
 
   public enum DialogTitle {
 
+    PROGRAM_NAME(DropLauncher.PROGRAM_NAME),
     OPERATION_PROHIBITED("Operation prohibited"),
-    MISSING_FIELD("Missing field")
+    MISSING_FIELD("Missing field"),
+    WARNING("Warning"),
+    ERROR_HAS_OCCURRED("An error has occurred")
     ;
 
     private final String str;
@@ -533,15 +536,15 @@ public class View implements EventHandler<DragEvent>  {
   }
 
   public static void displayMissingFieldDialog(String field) {
-    new SimpleAlert().showAndWait(AlertType.WARNING, DialogTitle.MISSING_FIELD.toString(), AdakiteUtils.formatAsSentence(field + " is not set"));
+    new SimpleAlert().showAndWait(AlertType.WARNING, DialogTitle.MISSING_FIELD, AdakiteUtils.formatAsSentence(field + " is not set"));
   }
 
-  public static void displayWarningDialog(String title, String message) {
+  public static void displayWarningDialog(DialogTitle title, String message) {
     new SimpleAlert().showAndWait(AlertType.WARNING, title, message);
   }
 
   public static void displayOperationProhibitedDialog(String message) {
-    displayWarningDialog(DialogTitle.OPERATION_PROHIBITED.toString(), AdakiteUtils.formatAsSentence(message));
+    displayWarningDialog(DialogTitle.OPERATION_PROHIBITED, AdakiteUtils.formatAsSentence(message));
   }
 
 }

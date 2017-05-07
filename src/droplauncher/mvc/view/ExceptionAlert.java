@@ -18,6 +18,7 @@
 package droplauncher.mvc.view;
 
 import adakite.util.AdakiteUtils;
+import droplauncher.mvc.view.View.DialogTitle;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import javafx.scene.control.Alert;
@@ -41,7 +42,7 @@ public class ExceptionAlert {
   */
   public void showAndWait(String message, Exception ex) {
     Alert alert = new Alert(AlertType.ERROR);
-    alert.setTitle("An error has occurred");
+    alert.setTitle(DialogTitle.PROGRAM_NAME.toString());
     alert.setHeaderText("An error has occurred");
 
     if (AdakiteUtils.isNullOrEmpty(message, true)
