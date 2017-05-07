@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package droplauncher.bwapi;
+package droplauncher.bwapi.bot;
 
 import adakite.debugging.Debugging;
 import adakite.exception.InvalidArgumentException;

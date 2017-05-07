@@ -18,8 +18,8 @@
 package droplauncher.mvc.model;
 
 import adakite.prefs.Prefs;
-import droplauncher.bwapi.Bot;
 import droplauncher.bwapi.BWAPI;
+import droplauncher.bwapi.bot.Bot;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Starcraft;
