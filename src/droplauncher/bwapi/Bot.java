@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package droplauncher.bot;
+package droplauncher.bwapi;
 
 import adakite.debugging.Debugging;
 import adakite.exception.InvalidArgumentException;
@@ -74,12 +74,13 @@ public class Bot {
     this.settings.set(Property.NAME.toString(), DEFAULT_NAME);
   }
 
-  /**
-   * Returns a copy of the internal settings object.
-   */
-  public Settings getSettings() {
-    return new Settings(this.settings);
-  }
+  //TODO: Right now this is not needed. Delete?
+//  /**
+//   * Returns a copy of the internal settings object.
+//   */
+//  public Settings getSettings() {
+//    return new Settings(this.settings);
+//  }
 
   /**
    * Returns the name of this bot.

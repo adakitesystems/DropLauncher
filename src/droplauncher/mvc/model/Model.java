@@ -18,7 +18,7 @@
 package droplauncher.mvc.model;
 
 import adakite.prefs.Prefs;
-import droplauncher.bot.Bot;
+import droplauncher.bwapi.Bot;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.view.View;

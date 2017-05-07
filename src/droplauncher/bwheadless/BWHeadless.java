@@ -32,7 +32,7 @@ import droplauncher.util.process.CustomProcess;
 import adakite.util.windows.task.Task;
 import adakite.util.windows.task.TaskTracker;
 import adakite.util.windows.task.Tasklist;
-import droplauncher.bot.Bot;
+import droplauncher.bwapi.Bot;
 import droplauncher.bot.exception.MissingBotFileException;
 import droplauncher.bot.exception.MissingBotNameException;
 import droplauncher.bot.exception.MissingBotRaceException;
