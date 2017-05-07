@@ -299,9 +299,35 @@ public class Controller {
       }
     }
 
+    /* Keep track of previous number of extra bot files. */
+    int prevNum = this.model.getBot().getExtraFiles().size();
+
     /* Process all files. */
     for (Path path : fileList) {
       processFile(path);
+    }
+
+    /* Find current number of extra bot files. */
+    int currNum = this.model.getBot().getExtraFiles().size();
+
+    if (currNum > prevNum) {
+      /* If more extra bot files have been processed, display a dialog message. */
+      StringBuilder sb = new StringBuilder(currNum);
+      for (String extra : this.model.getBot().getExtraFiles()) {
+        sb.append(FilenameUtils.getName(extra)).append(AdakiteUtils.newline());
+      }
+      Platform.runLater(() -> {
+        String message = "" + currNum + " bot configuration file";
+        if (currNum != 1) {
+          message += "s";
+        }
+        message += " detected! These files will be copied to the \"" + BWAPI.DATA_PATH.toString() + "\" directory when the bot is launched: " + AdakiteUtils.newline(2) + sb.toString();
+        new SimpleAlert().showAndWait(
+            AlertType.INFORMATION,
+            DialogTitle.PROGRAM_NAME,
+            message
+        );
+      });
     }
 
     this.view.update();

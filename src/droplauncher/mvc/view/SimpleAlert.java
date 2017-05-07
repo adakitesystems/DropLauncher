@@ -48,8 +48,4 @@ public class SimpleAlert {
     alert.showAndWait();
   }
 
-  public void showAndWait(AlertType alertType, String msg) {
-    showAndWait(alertType, null, msg);
-  }
-
 }

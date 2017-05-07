@@ -232,7 +232,20 @@ public class Bot {
     if (AdakiteUtils.isNullOrEmpty(path, true)) {
       throw new InvalidArgumentException(Debugging.emptyString());
     }
-    this.settings.set(Property.EXTRA_FILE.toString() + Integer.toString(getNextExtraFileIndex()), path);
+
+    /* Check for existing extra bot files. */
+    int index = 0;
+    String val;
+    while ((val = this.settings.getValue(Property.EXTRA_FILE.toString() + Integer.toString(index))) != null) {
+      if (FilenameUtils.getName(path).equalsIgnoreCase(FilenameUtils.getName(val))) {
+        /* Save index of existing extra bot file. */
+        break;
+      }
+      index++;
+    }
+
+    /* Add/overwrite extra bot file. */
+    this.settings.set(Property.EXTRA_FILE.toString() + Integer.toString(index), path);
   }
 
   /**
