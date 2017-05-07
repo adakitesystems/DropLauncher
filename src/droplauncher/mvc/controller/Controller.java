@@ -23,13 +23,13 @@ import adakite.exception.InvalidStateException;
 import adakite.ini.IniParseException;
 import adakite.md5sum.MD5Checksum;
 import adakite.util.AdakiteUtils;
+import adakite.util.DirectoryMonitor;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.SettingsWindow;
 import droplauncher.mvc.view.SimpleAlert;
 import droplauncher.mvc.view.View;
 import droplauncher.util.DropLauncher;
-import adakite.util.DirectoryMonitor;
 import droplauncher.bot.Bot;
 import droplauncher.bot.exception.InvalidBwapiDllException;
 import droplauncher.bot.exception.MissingBotFileException;
@@ -54,8 +54,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -112,8 +110,6 @@ public class Controller {
                                         MissingStarcraftExeException,
                                         MissingBotException,
                                         InvalidArgumentException {
-    setState(State.RUNNING);
-
     /* Init DirectoryMonitor if required. */
     Path starcraftDirectory = Starcraft.getPath();
     if (this.directoryMonitor == null) {
@@ -134,8 +130,6 @@ public class Controller {
                                        ClosePipeException,
                                        MissingBotFileException,
                                        MissingStarcraftExeException {
-    setState(State.IDLE);
-
     this.model.getBWHeadless().stop();
 
     if (Model.isPrefEnabled(BWAPI.Property.COPY_WRITE_READ.toString())) {
@@ -166,11 +160,9 @@ public class Controller {
       case LOCKED:
         /* Fall through. */
       default:
-        String errorMessage = "bot is still in state " + this.state.toString()
+        String errorMessage = "program is still in state " + this.state.toString()
             + AdakiteUtils.newline(2)
             + "Try ejecting the bot first or wait for the current operation to finish."
-//            + "current_state=" + this.state.toString()
-//            + ", expected_state=" + State.IDLE.toString()
             ;
         throw new InvalidStateException(errorMessage);
     }
@@ -179,24 +171,17 @@ public class Controller {
       /* Clean up StarCraft directory. */
       try {
         if (this.directoryMonitor != null) {
-          Path starcraftDirectory = Starcraft.getPath();
-          Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);
-          Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.DATA_READ_PATH);
           this.directoryMonitor.update();
           for (Path path : this.directoryMonitor.getNewFiles()) {
-            if (!path.toAbsolutePath().startsWith(bwapiWritePath)
-                && !path.toAbsolutePath().startsWith(bwapiReadPath)) {
-              /* Delete file/directory if not in the read/write directory. */
-              if (AdakiteUtils.fileExists(path)) {
-                AdakiteUtils.deleteFile(path);
-              } else if (AdakiteUtils.directoryExists(path)) {
-                FileUtils.deleteDirectory(path.toFile());
-              }
+            if (AdakiteUtils.fileExists(path)) {
+              AdakiteUtils.deleteFile(path);
+            } else if (AdakiteUtils.directoryExists(path)) {
+              FileUtils.deleteDirectory(path.toFile());
             }
           }
         }
       } catch (Exception ex) {
-        new ExceptionAlert().showAndWait("clean up StarCraft directory", ex);
+        new ExceptionAlert().showAndWait("failed to clean up StarCraft directory", ex);
       }
     }
 
@@ -293,7 +278,7 @@ public class Controller {
                                                     InvalidBwapiDllException {
     if (this.state != State.IDLE) {
       Platform.runLater(() -> {
-        new ExceptionAlert().showAndWait("operation prohibited while current_state=" + this.state.toString(), null);
+        View.displayOperationProhibitedDialog("Loading bot files is not allowed while a bot is running.");
       });
       return;
     }

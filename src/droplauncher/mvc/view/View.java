@@ -35,7 +35,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -95,6 +95,25 @@ public class View implements EventHandler<DragEvent>  {
 
     public int intValue() {
       return this.val;
+    }
+
+  }
+
+  public enum DialogTitle {
+
+    OPERATION_PROHIBITED("Operation prohibited"),
+    MISSING_FIELD("Missing field")
+    ;
+
+    private final String str;
+
+    private DialogTitle(String str) {
+      this.str = str;
+    }
+
+    @Override
+    public String toString() {
+      return this.str;
     }
 
   }
@@ -514,7 +533,15 @@ public class View implements EventHandler<DragEvent>  {
   }
 
   public static void displayMissingFieldDialog(String field) {
-    new SimpleAlert().showAndWait(Alert.AlertType.WARNING, "Missing Field", AdakiteUtils.formatAsSentence(field + " is not set"));
+    new SimpleAlert().showAndWait(AlertType.WARNING, DialogTitle.MISSING_FIELD.toString(), AdakiteUtils.formatAsSentence(field + " is not set"));
+  }
+
+  public static void displayWarningDialog(String title, String message) {
+    new SimpleAlert().showAndWait(AlertType.WARNING, title, message);
+  }
+
+  public static void displayOperationProhibitedDialog(String message) {
+    displayWarningDialog(DialogTitle.OPERATION_PROHIBITED.toString(), AdakiteUtils.formatAsSentence(message));
   }
 
 }

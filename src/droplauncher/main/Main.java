@@ -26,7 +26,6 @@ public class Main extends Application {
 
   public static void main(String[] args) {
     System.out.println(DropLauncher.PROGRAM_ABOUT);
-
     launch(args);
   }
 

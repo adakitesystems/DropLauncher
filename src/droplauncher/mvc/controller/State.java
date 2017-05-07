@@ -22,6 +22,5 @@ public enum State {
   LOCKED,
   IDLE,
   RUNNING
-  ;
 
 }
