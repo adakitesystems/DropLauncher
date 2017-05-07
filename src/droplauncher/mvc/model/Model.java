@@ -19,7 +19,6 @@ package droplauncher.mvc.model;
 
 import adakite.prefs.Prefs;
 import droplauncher.bwapi.BWAPI;
-import droplauncher.bwapi.bot.Bot;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Starcraft;
@@ -29,16 +28,10 @@ import java.util.prefs.BackingStoreException;
 
 public class Model {
 
-  private Bot bot;
   private BWHeadless bwheadless;
 
   public Model() {
-    this.bot = new Bot();
     this.bwheadless = new BWHeadless();
-  }
-
-  public Bot getBot() {
-    return this.bot;
   }
 
   public BWHeadless getBWHeadless() {

@@ -122,7 +122,6 @@ public class Controller {
       this.directoryMonitor.reset();
     }
 
-    this.model.getBWHeadless().setBot(this.model.getBot());
     this.model.getBWHeadless().start(this.view.getConsoleOutput());
   }
 
@@ -217,21 +216,21 @@ public class Controller {
       case "jar":
         if (path.getFileName().toString().equalsIgnoreCase("BWAPI.dll")) {
           /* BWAPI.dll */
-          this.model.getBot().setBwapiDll(path.toAbsolutePath().toString());
+          this.model.getBWHeadless().getBot().setBwapiDll(path.toAbsolutePath().toString());
         } else {
           /* Set bot file. */
-          this.model.getBot().setPath(path.toAbsolutePath().toString());
+          this.model.getBWHeadless().getBot().setPath(path.toAbsolutePath().toString());
           /* Set bot race. */
-          this.model.getBot().setRace(Race.RANDOM.toString());
+          this.model.getBWHeadless().getBot().setRace(Race.RANDOM.toString());
           /* Set clean bot name. */
           String name = FilenameUtils.getBaseName(path.toString());
           name = Starcraft.cleanProfileName(name);
-          this.model.getBot().setName(name);
+          this.model.getBWHeadless().getBot().setName(name);
         }
         break;
       default:
         /* Treat as a config file. */
-        this.model.getBot().addExtraFile(path.toAbsolutePath().toString());
+        this.model.getBWHeadless().getBot().addExtraFile(path.toAbsolutePath().toString());
         break;
     }
   }
@@ -300,7 +299,7 @@ public class Controller {
     }
 
     /* Keep track of previous number of extra bot files. */
-    int prevNum = this.model.getBot().getExtraFiles().size();
+    int prevNum = this.model.getBWHeadless().getBot().getExtraFiles().size();
 
     /* Process all files. */
     for (Path path : fileList) {
@@ -308,12 +307,12 @@ public class Controller {
     }
 
     /* Find current number of extra bot files. */
-    int currNum = this.model.getBot().getExtraFiles().size();
+    int currNum = this.model.getBWHeadless().getBot().getExtraFiles().size();
 
     if (currNum > prevNum) {
       /* If more extra bot files have been processed, display a dialog message. */
       StringBuilder sb = new StringBuilder(currNum);
-      for (String extra : this.model.getBot().getExtraFiles()) {
+      for (String extra : this.model.getBWHeadless().getBot().getExtraFiles()) {
         sb.append(FilenameUtils.getName(extra)).append(AdakiteUtils.newline());
       }
       Platform.runLater(() -> {
@@ -346,7 +345,7 @@ public class Controller {
 
   public String getBotFilename() {
     try {
-      String name = FilenameUtils.getName(this.model.getBot().getPath());
+      String name = FilenameUtils.getName(this.model.getBWHeadless().getBot().getPath());
       return name;
     } catch (Exception ex) {
       return null;
@@ -355,7 +354,7 @@ public class Controller {
 
   public String getBwapiDllVersion() {
     try {
-      String dll = this.model.getBot().getBwapiDll();
+      String dll = this.model.getBWHeadless().getBot().getBwapiDll();
       String md5sum = MD5Checksum.get(Paths.get(dll));
       String version = BWAPI.getBwapiVersion(md5sum);
       return version;
@@ -366,7 +365,7 @@ public class Controller {
 
   public String getBotName() {
     try {
-      String name = this.model.getBot().getName();
+      String name = this.model.getBWHeadless().getBot().getName();
       return name;
     } catch (Exception ex) {
       return null;
@@ -375,7 +374,7 @@ public class Controller {
 
   public Race getBotRace() {
     try {
-      Race race = Race.get(this.model.getBot().getRace());
+      Race race = Race.get(this.model.getBWHeadless().getBot().getRace());
       return race;
     } catch (Exception ex) {
       return null;
@@ -564,7 +563,7 @@ public class Controller {
       return;
     }
     try {
-      this.model.getBot().setRace(str);
+      this.model.getBWHeadless().getBot().setRace(str);
 //      this.view.updateRaceChoiceBox(); //TODO: Why do we have to do this? Remove?
     } catch (Exception ex) {
       new ExceptionAlert().showAndWait(null, ex);
@@ -582,10 +581,10 @@ public class Controller {
     }
     try {
       if (AdakiteUtils.isNullOrEmpty(str, true)) {
-        this.model.getBot().setName(Bot.DEFAULT_NAME);
+        this.model.getBWHeadless().getBot().setName(Bot.DEFAULT_NAME);
       } else {
         String cleaned = Starcraft.cleanProfileName(str);
-        this.model.getBot().setName(cleaned);
+        this.model.getBWHeadless().getBot().setName(cleaned);
       }
     } catch (Exception ex) {
       new ExceptionAlert().showAndWait(null, ex);

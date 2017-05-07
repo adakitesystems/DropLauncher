@@ -134,7 +134,7 @@ public class BWHeadless {
     this.bwheadlessProcess = new CustomProcess();
     this.botProcess = new CustomProcess();
 
-    this.bot = null;
+    this.bot = new Bot();
 
     this.taskTracker = new TaskTracker();
   }
@@ -145,6 +145,10 @@ public class BWHeadless {
 
   public void setSettings(Settings settings) {
     this.settings = settings;
+  }
+
+  public Bot getBot() {
+    return this.bot;
   }
 
   public void setBot(Bot bot) {
@@ -244,7 +248,7 @@ public class BWHeadless {
   public void stop() throws IOException,
                             ClosePipeException,
                             MissingBotFileException {
-    /* Kill new tasks that were started with bwheadless. */
+    /* Kill new tasks that were started after bwheadless. */
     String botName = FilenameUtils.getBaseName(this.bot.getPath());
     this.taskTracker.update();
     for (Task task : this.taskTracker.getNewTasks()) {
