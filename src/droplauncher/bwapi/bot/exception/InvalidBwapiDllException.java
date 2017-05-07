@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package droplauncher.bot.exception;
+package droplauncher.bwapi.bot.exception;
 
 public class InvalidBwapiDllException extends Exception {
 

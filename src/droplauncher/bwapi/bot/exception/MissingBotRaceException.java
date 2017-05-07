@@ -15,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package droplauncher.bot.exception;
+package droplauncher.bwapi.bot.exception;
 
-public class MissingBwapiDllException extends Exception {
+public class MissingBotRaceException extends Exception {
 
-  public MissingBwapiDllException() {
+  public MissingBotRaceException() {
     super();
   }
 
-  public MissingBwapiDllException(String message) {
+  public MissingBotRaceException(String message) {
     super(message);
   }
 
