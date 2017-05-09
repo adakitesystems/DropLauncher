@@ -29,6 +29,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -239,6 +240,7 @@ public class View implements EventHandler<DragEvent>  {
   private ChoiceBox<String> cbRace;
   private Button btnStart;
   private ConsoleOutput consoleOutput;
+  private Button btnClearConsoleOutput;
 
   public View() {
     /* Do nothing. */
@@ -307,6 +309,15 @@ public class View implements EventHandler<DragEvent>  {
     this.consoleOutput.get().setMinWidth(500);
     this.consoleOutput.get().setMinHeight(300);
     this.consoleOutput.get().setEditable(false);
+    this.btnClearConsoleOutput = new Button("Clear");
+    this.btnClearConsoleOutput.setOnAction(e -> {
+      Platform.runLater(() -> {
+        if (new YesNoDialog().userConfirms("Confirmation", "Are you sure you want to clear the console output? You will not be able to retrieve it.")) {
+          this.consoleOutput.clear();
+        }
+      });
+    });
+    this.btnClearConsoleOutput.getStyleClass().add("launch-btn");
 
     this.txtBotName.setOnKeyReleased(e -> this.controller.botNameChanged(this.txtBotName.getText()));
     this.cbRace.setOnAction(e -> {
@@ -352,10 +363,14 @@ public class View implements EventHandler<DragEvent>  {
     infoGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
     infoGridPane.get().setAlignment(Pos.CENTER_LEFT);
 
+    HBox boxClearConsole = new HBox();
+    boxClearConsole.getChildren().add(this.btnClearConsoleOutput);
+    boxClearConsole.setAlignment(Pos.CENTER_RIGHT);
     VBox vbox = new VBox();
     vbox.getChildren().add(this.btnStart);
     if (Model.isPrefEnabled(View.Property.SHOW_LOG_WINDOW.toString())) {
       vbox.getChildren().add(this.consoleOutput.get());
+      vbox.getChildren().add(boxClearConsole);
     }
     vbox.setSpacing(DefaultSetting.GAP.intValue());
     vbox.setAlignment(Pos.CENTER);

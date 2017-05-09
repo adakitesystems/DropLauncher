@@ -46,6 +46,13 @@ public class ConsoleOutput {
   }
 
   /**
+   * Clears the text.
+   */
+  public void clear() {
+    this.outputObject.clear();
+  }
+
+  /**
    * Returns the list of strings which indicate that a line containing
    * these strings should be ignored.
    */
