@@ -25,7 +25,7 @@ import adakite.prefs.Prefs;
 import adakite.settings.Settings;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
-import droplauncher.exception.InvalidBotTypeException;
+import droplauncher.bwapi.bot.exception.InvalidBotTypeException;
 import droplauncher.mvc.view.ConsoleOutput;
 import adakite.process.CommandBuilder;
 import droplauncher.util.process.CustomProcess;

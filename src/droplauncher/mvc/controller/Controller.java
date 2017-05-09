@@ -38,7 +38,7 @@ import droplauncher.bwapi.bot.exception.MissingBotRaceException;
 import droplauncher.bwapi.bot.exception.MissingBwapiDllException;
 import droplauncher.bwheadless.exception.MissingBotException;
 import droplauncher.exception.EncryptedArchiveException;
-import droplauncher.exception.InvalidBotTypeException;
+import droplauncher.bwapi.bot.exception.InvalidBotTypeException;
 import droplauncher.mvc.view.ExceptionAlert;
 import droplauncher.mvc.view.View.DialogTitle;
 import droplauncher.starcraft.Starcraft;
