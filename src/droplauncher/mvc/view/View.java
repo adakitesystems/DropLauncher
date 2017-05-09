@@ -24,7 +24,7 @@ import adakite.util.AdakiteUtils;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft.Race;
-import droplauncher.util.DropLauncher;
+import droplauncher.DropLauncher;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;

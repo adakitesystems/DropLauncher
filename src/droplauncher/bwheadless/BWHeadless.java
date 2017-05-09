@@ -43,7 +43,7 @@ import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
-import droplauncher.util.DropLauncher;
+import droplauncher.DropLauncher;
 import droplauncher.util.process.exception.ClosePipeException;
 import java.io.FileNotFoundException;
 import java.io.IOException;

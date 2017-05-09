@@ -18,7 +18,7 @@
 package droplauncher.main;
 
 import droplauncher.mvc.MVC;
-import droplauncher.util.DropLauncher;
+import droplauncher.DropLauncher;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

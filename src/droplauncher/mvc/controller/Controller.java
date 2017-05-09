@@ -30,7 +30,7 @@ import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.SettingsWindow;
 import droplauncher.mvc.view.SimpleAlert;
 import droplauncher.mvc.view.View;
-import droplauncher.util.DropLauncher;
+import droplauncher.DropLauncher;
 import droplauncher.bwapi.bot.exception.InvalidBwapiDllException;
 import droplauncher.bwapi.bot.exception.MissingBotFileException;
 import droplauncher.bwapi.bot.exception.MissingBotNameException;

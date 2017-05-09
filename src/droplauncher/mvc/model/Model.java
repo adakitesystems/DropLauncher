@@ -22,7 +22,7 @@ import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Starcraft;
-import droplauncher.util.DropLauncher;
+import droplauncher.DropLauncher;
 import java.util.Locale;
 import java.util.prefs.BackingStoreException;
 

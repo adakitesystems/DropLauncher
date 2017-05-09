@@ -20,7 +20,7 @@ package droplauncher.bwapi;
 import adakite.prefs.Prefs;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
-import droplauncher.util.DropLauncher;
+import droplauncher.DropLauncher;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
