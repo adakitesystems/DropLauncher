@@ -25,8 +25,10 @@ import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.DropLauncher;
+import droplauncher.mvc.view.SimpleAlert;
 import java.util.Locale;
 import java.util.prefs.BackingStoreException;
+import javafx.scene.control.Alert.AlertType;
 
 public class Model {
 
@@ -41,10 +43,42 @@ public class Model {
   }
 
   public void ensureDefaultSettings() {
-    if (!Model.hasPrefValue(DropLauncher.Property.VERSION.toString())
-        || (Model.hasPrefValue(DropLauncher.Property.VERSION.toString())
-          && !Model.getPref(DropLauncher.Property.VERSION.toString()).equals(DropLauncher.PROGRAM_VERSION))) {
+    if (!Model.hasPrefValue(DropLauncher.Property.VERSION.toString())) {
+      /* Version is not set. */
       Model.setPref(DropLauncher.Property.VERSION.toString(), DropLauncher.PROGRAM_VERSION);
+    } else {
+      /* Check if current version was loaded last time. */
+      String previousVersion = Model.getPref(DropLauncher.Property.VERSION.toString());
+      if (!previousVersion.equalsIgnoreCase(DropLauncher.PROGRAM_VERSION)) {
+        /* Newer/older version detected. */
+        try {
+          /* Compile newer/older message. */
+          boolean isNewer = (DropLauncher.PROGRAM_VERSION.compareTo(previousVersion) > 0);
+          String message = "";
+          message += "Different version detected!" + AdakiteUtils.newline(2);
+          message += "Previously installed version: " + previousVersion + AdakiteUtils.newline();
+          message += "Currently installed version: " + DropLauncher.PROGRAM_VERSION + AdakiteUtils.newline(2);
+          message += "You are loading a";
+          if (isNewer) {
+            message += " newer";
+          } else {
+            message += "n older";
+          }
+          message += " version of " + DropLauncher.PROGRAM_NAME + ". All previous program settings have been automatically cleared to ensure stability. Please restart the application.";
+          /* Display compiled message. */
+          new SimpleAlert().showAndWait(
+              AlertType.INFORMATION,
+              View.DialogTitle.PROGRAM_NAME,
+              message
+          );
+          /* Clear all settings. */
+          DropLauncher.PREF_ROOT.clear();
+        } catch (Exception ex) {
+          /* Do nothing. */
+        }
+        /* Close program. */
+        System.exit(0);
+      }
     }
     if (!Model.hasPrefValue(Starcraft.Property.CLEAN_SC_DIR.toString())) {
       Model.setPrefEnabled(Starcraft.Property.CLEAN_SC_DIR.toString(), true);
