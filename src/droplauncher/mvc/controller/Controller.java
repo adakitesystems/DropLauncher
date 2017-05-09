@@ -466,7 +466,7 @@ public class Controller {
         new Thread(() -> {
           boolean success = false;
           try {
-            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.toString() + ": connecting bot to StarCraft...");
+            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "Connecting bot to StarCraft...");
             startBWHeadless();
             Platform.runLater(() -> {
               this.view.btnStartSetText(View.StartButtonText.STOP.toString());
@@ -509,7 +509,7 @@ public class Controller {
             });
           }
           if (!success) {
-            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.toString() + ": failed to connect bot to StarCraft");
+            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "Failed to connect bot to StarCraft.");
             setState(prevState);
             Platform.runLater(() -> {
               this.view.btnStartSetText(View.StartButtonText.START.toString());
@@ -523,14 +523,14 @@ public class Controller {
         this.view.btnStartEnabled(false);
         new Thread(() -> {
           try {
-            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "ejecting bot...");
+            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "Ejecting bot...");
             stopBWHeadless();
             Platform.runLater(() -> {
               this.view.btnStartSetText(View.StartButtonText.START.toString());
               this.view.btnStartEnabled(true);
             });
             setState(State.IDLE);
-            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "bot has been ejected");
+            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "Bot has been ejected.");
           } catch (Exception ex) {
             /* Stop failed. */
             Platform.runLater(() -> {

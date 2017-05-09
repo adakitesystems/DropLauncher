@@ -149,11 +149,11 @@ public class View implements EventHandler<DragEvent>  {
    */
   public enum MessagePrefix {
 
-    COPY("copy"),
-    KILL("kill"),
-    DELETE("delete"),
-    BWHEADLESS("bwh"),
-    CLIENT("client"),
+    COPY("Copy"),
+    KILL("Kill"),
+    DELETE("Delete"),
+    BWHEADLESS("bwheadless.exe"),
+    CLIENT("BotClient"),
     DROPLAUNCHER("DropLauncher")
     ;
 

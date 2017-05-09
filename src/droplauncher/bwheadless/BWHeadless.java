@@ -126,6 +126,8 @@ public class BWHeadless {
 
   private Bot bot;
 
+  private ConsoleOutput consoleOutput;
+
   private TaskTracker taskTracker;
 
   public BWHeadless() {
@@ -135,6 +137,8 @@ public class BWHeadless {
     this.botProcess = new CustomProcess();
 
     this.bot = new Bot();
+
+    this.consoleOutput = null;
 
     this.taskTracker = new TaskTracker();
   }
@@ -158,7 +162,7 @@ public class BWHeadless {
   /**
    * Starts bwheadless after configuring and checking settings.
    *
-   * @param co specified ConsoleOutput to display process output stream
+   * @param consoleOutput specified ConsoleOutput to display process output stream
    * @throws IOException if an I/O error occurs
    * @throws MissingBotException if the bot object is not set
    * @throws InvalidBotTypeException if the bot type is not recognized
@@ -170,19 +174,21 @@ public class BWHeadless {
    * @throws MissingStarcraftExeException
    * @throws InvalidArgumentException
    */
-  public void start(ConsoleOutput co) throws IOException,
-                                             MissingBotException,
-                                             InvalidBotTypeException,
-                                             IniParseException,
-                                             MissingBotNameException,
-                                             MissingBotRaceException,
-                                             MissingBotFileException,
-                                             MissingBwapiDllException,
-                                             MissingStarcraftExeException,
-                                             InvalidArgumentException {
+  public void start(ConsoleOutput consoleOutput) throws IOException,
+                                                        MissingBotException,
+                                                        InvalidBotTypeException,
+                                                        IniParseException,
+                                                        MissingBotNameException,
+                                                        MissingBotRaceException,
+                                                        MissingBotFileException,
+                                                        MissingBwapiDllException,
+                                                        MissingStarcraftExeException,
+                                                        InvalidArgumentException {
     if (this.bot == null) {
       throw new MissingBotException();
     }
+
+    this.consoleOutput = consoleOutput;
 
     this.taskTracker.reset();
 
@@ -210,7 +216,7 @@ public class BWHeadless {
     this.bwheadlessProcess
         .setCWD(starcraftPath)
         .setProcessName(View.MessagePrefix.BWHEADLESS.toString());
-    this.bwheadlessProcess.start(bwhCommand.get(), co);
+    this.bwheadlessProcess.start(bwhCommand.get(), this.consoleOutput);
 
     /* Start bot client. */
     if (this.bot.getType() == Bot.Type.CLIENT) {
@@ -234,7 +240,7 @@ public class BWHeadless {
       this.botProcess
           .setCWD(starcraftPath)
           .setProcessName(View.MessagePrefix.CLIENT.toString());
-      this.botProcess.start(clientCommand.get(), co);
+      this.botProcess.start(clientCommand.get(), this.consoleOutput);
     }
   }
 
@@ -254,12 +260,18 @@ public class BWHeadless {
     for (Task task : this.taskTracker.getNewTasks()) {
       /* Kill bot client. */
       if (this.bot.getType() == Bot.Type.CLIENT && botName.contains(task.getImageName())) {
+        if (this.consoleOutput != null) {
+          this.consoleOutput.println(View.MessagePrefix.DROPLAUNCHER.get() + View.MessagePrefix.KILL.get() + task.getPID() + " " + task.getImageName());
+        }
         Tasklist.kill(task.getPID());
         continue;
       }
       /* Only kill tasks whose names match known associated tasks. */
       for (KillableTask kt : KillableTask.values()) {
         if (kt.toString().equalsIgnoreCase(task.getImageName())) {
+          if (this.consoleOutput != null) {
+            this.consoleOutput.println(View.MessagePrefix.DROPLAUNCHER.get() + View.MessagePrefix.KILL.get() + task.getPID() + " " + task.getImageName());
+          }
           Tasklist.kill(task.getPID());
           break;
         }
