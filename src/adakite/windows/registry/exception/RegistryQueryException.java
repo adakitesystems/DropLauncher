@@ -1,4 +1,4 @@
-package adakite.util.windows.registry.exception;
+package adakite.windows.registry.exception;
 
 public class RegistryQueryException extends Exception {
 

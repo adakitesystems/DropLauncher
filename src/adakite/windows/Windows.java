@@ -1,4 +1,4 @@
-package adakite.util.windows;
+package adakite.windows;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

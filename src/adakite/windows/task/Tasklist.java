@@ -1,9 +1,9 @@
-package adakite.util.windows.task;
+package adakite.windows.task;
 
 import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
-import adakite.util.process.SimpleProcess;
-import adakite.util.windows.Windows;
+import adakite.process.SimpleProcess;
+import adakite.windows.Windows;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;

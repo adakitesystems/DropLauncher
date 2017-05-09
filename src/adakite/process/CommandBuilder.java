@@ -1,4 +1,4 @@
-package adakite.util.process;
+package adakite.process;
 
 import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;

@@ -1,4 +1,4 @@
-package adakite.util.windows.task;
+package adakite.windows.task;
 
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package adakite.ini;
+package adakite.ini.exception;
 
 public class IniParseException extends Exception {
 

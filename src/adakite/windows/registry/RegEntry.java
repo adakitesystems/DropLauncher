@@ -1,4 +1,4 @@
-package adakite.util.windows.registry;
+package adakite.windows.registry;
 
 public class RegEntry {
 

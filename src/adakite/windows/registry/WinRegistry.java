@@ -1,11 +1,11 @@
-package adakite.util.windows.registry;
+package adakite.windows.registry;
 
 import adakite.util.AdakiteUtils;
-import adakite.util.process.CommandBuilder;
-import adakite.util.process.SimpleProcess;
-import adakite.util.windows.Windows;
-import adakite.util.windows.registry.exception.RegistryQueryException;
-import adakite.util.windows.registry.exception.RegistryEntryNotFoundException;
+import adakite.process.CommandBuilder;
+import adakite.process.SimpleProcess;
+import adakite.windows.Windows;
+import adakite.windows.registry.exception.RegistryQueryException;
+import adakite.windows.registry.exception.RegistryEntryNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 

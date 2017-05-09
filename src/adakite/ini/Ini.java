@@ -1,5 +1,6 @@
 package adakite.ini;
 
+import adakite.ini.exception.IniParseException;
 import adakite.settings.Settings;
 import adakite.util.AdakiteUtils;
 import adakite.util.MemoryFile;
