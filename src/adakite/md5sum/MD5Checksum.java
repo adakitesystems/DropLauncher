@@ -53,7 +53,7 @@ public class MD5Checksum {
       String checksum = DatatypeConverter.printHexBinary(digest).toLowerCase(Locale.US);
       return checksum;
     } else {
-      LOGGER.log(Debugging.getLogLevel(), "filesize too large: " + path.toAbsolutePath().toString());
+      LOGGER.log(Debugging.getLogLevel(), "filesize too large: {}", path.toAbsolutePath().toString());
     }
     return MD5Checksum.EMPTY_MD5_CHECKSUM;
   }

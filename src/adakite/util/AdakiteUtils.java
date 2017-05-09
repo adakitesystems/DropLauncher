@@ -122,12 +122,13 @@ public class AdakiteUtils {
     }
 
     String[] tokens = str.split(" ");
-    String ret = tokens[0];
+    StringBuilder ret = new StringBuilder(tokens.length);
+    ret.append(tokens[0]);
     for (int i = 1; i < tokens.length; i++) {
-      ret += " " + tokens[i];
+      ret.append(" " + tokens[i]);
     }
 
-    return ret;
+    return ret.toString();
   }
 
   /**

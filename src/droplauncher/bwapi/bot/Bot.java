@@ -282,12 +282,13 @@ public class Bot {
     return this.settings.getValue(Property.EXTRA_FILE.toString() + Integer.toString(index));
   }
 
-  private int getNextExtraFileIndex() {
-    int index = 0;
-    while (this.settings.getValue(Property.EXTRA_FILE.toString() + Integer.toString(index)) != null) {
-      index++;
-    }
-    return index;
-  }
+  //TODO: Determine if this can be deleted.
+//  private int getNextExtraFileIndex() {
+//    int index = 0;
+//    while (this.settings.getValue(Property.EXTRA_FILE.toString() + Integer.toString(index)) != null) {
+//      index++;
+//    }
+//    return index;
+//  }
 
 }
