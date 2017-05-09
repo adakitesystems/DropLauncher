@@ -18,6 +18,8 @@
 package droplauncher.mvc.model;
 
 import adakite.prefs.Prefs;
+import adakite.util.AdakiteUtils;
+import adakite.windows.registry.WinRegistry;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.view.View;
@@ -55,6 +57,17 @@ public class Model {
     }
     if (!Model.hasPrefValue(View.Property.SHOW_LOG_WINDOW.toString())) {
       Model.setPrefEnabled(View.Property.SHOW_LOG_WINDOW.toString(), true);
+    }
+    if (!Model.hasPrefValue(Starcraft.Property.STARCRAFT_EXE.toString())) {
+      /* Attempt to determine StarCraft directory from registry. */
+      try {
+        String dir = WinRegistry.strValue(Starcraft.REG_ENTRY_EXE_32BIT, "Program");
+        if (!AdakiteUtils.isNullOrEmpty(dir)) {
+          Model.setPref(Starcraft.Property.STARCRAFT_EXE.toString(), dir);
+        }
+      } catch (Exception ex) {
+        /* Do nothing. */
+      }
     }
   }
 
