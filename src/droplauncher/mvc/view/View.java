@@ -154,6 +154,7 @@ public class View implements EventHandler<DragEvent>  {
     DELETE("Delete"),
     BWHEADLESS("bwheadless.exe"),
     CLIENT("BotClient"),
+    MODULE("BotModule"),
     DROPLAUNCHER("DropLauncher")
     ;
 

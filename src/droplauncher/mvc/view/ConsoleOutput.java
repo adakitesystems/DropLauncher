@@ -79,8 +79,17 @@ public class ConsoleOutput {
         return;
       }
     }
+
+    /* Replace bwheadless.exe child process output prefix with bot module prefix. */
+    if (str.startsWith(View.MessagePrefix.BWHEADLESS.get() + ":: ")) {
+      int index = str.indexOf(":: ");
+      str = str.substring(index + ":: ".length(), str.length());
+      str = View.MessagePrefix.MODULE.get() + str;
+    }
+    String message = str;
+
     Platform.runLater(() -> {
-      this.outputObject.appendText(str);
+      this.outputObject.appendText(message);
     });
     if (printToStdout) {
       System.out.print(str);
