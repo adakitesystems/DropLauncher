@@ -15,7 +15,8 @@ public class Windows {
 
     CMD("C:\\Windows\\System32\\cmd.exe"),
     TASKLIST("C:\\Windows\\System32\\tasklist.exe"),
-    TASKKILL("C:\\Windows\\System32\\taskkill.exe")
+    TASKKILL("C:\\Windows\\System32\\taskkill.exe"),
+    REG("C:\\Windows\\System32\\reg.exe")
     ;
 
     private final String str;
@@ -33,7 +34,7 @@ public class Windows {
         case CMD: return new String[]{"/c", "start"};
         case TASKLIST: return new String[]{"/v"};
         case TASKKILL: return new String[]{"/f", "/pid"};
-        default: return new String[]{};
+        default: throw new UnsupportedOperationException("predefined args not found");
       }
     }
 

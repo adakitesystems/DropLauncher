@@ -17,7 +17,6 @@
 
 package droplauncher.starcraft;
 
-import adakite.exception.InvalidStateException;
 import adakite.prefs.Prefs;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.model.Model;
@@ -108,6 +107,9 @@ public class Starcraft {
   }
 
   public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("starcraft");
+
+  public static final String REG_ENTRY_EXE_32BIT = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Blizzard Entertainment\\Starcraft";
+//  public static final String REG_ENTRY_EXE_64BIT = ""; //TODO
 
   /* Maximum profile name length in Brood War 1.16.1 */
   public static final int MAX_PROFILE_NAME_LENGTH = 24;

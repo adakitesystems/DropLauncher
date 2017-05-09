@@ -92,6 +92,45 @@ public class AdakiteUtils {
   }
 
   /**
+   * Returns a string whose value is this string, with any leading
+   * whitespace removed.
+   *
+   * @param str specified string
+   */
+  public static String trimLeft(String str) {
+    int index;
+    for (index = 0; index < str.length(); index++) {
+      char ch = str.charAt(index);
+      if (ch != ' ') {
+        break;
+      }
+    }
+    return str.substring(index, str.length());
+  }
+
+  /**
+   * Returns a string whose value is this string, with any leading, trailing
+   * and excess infix whitespace removed. "Excess infix" whitespace is described
+   * as more than one whitespace between words. In order words, each word will
+   * have exactly one whitespace between them.
+   *
+   * @param str specified string
+   */
+  public static String trimAll(String str) {
+    if (str.isEmpty()) {
+      return "";
+    }
+
+    String[] tokens = str.split(" ");
+    String ret = tokens[0];
+    for (int i = 1; i < tokens.length; i++) {
+      ret += " " + tokens[i];
+    }
+
+    return ret;
+  }
+
+  /**
    * Returns the user's home directory. On Windows, it will probably be
    * the Desktop directory.
    *
@@ -314,7 +353,7 @@ public class AdakiteUtils {
   public static String formatAsSentence(String str) {
     String firstChar = ("" + str.charAt(0)).toUpperCase(Locale.US);
     String ret = firstChar + str.substring(1, str.length());
-    
+
     String lastChar = "" + str.charAt(str.length() - 1);
     if (!lastChar.equals(".")) {
       ret += ".";
