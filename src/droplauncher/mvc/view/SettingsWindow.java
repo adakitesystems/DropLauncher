@@ -52,7 +52,6 @@ public class SettingsWindow {
   private Button btnChangeStarcraftExe;
 //  private Button btnResetSettings;
   private CheckBox chkAutoEject;
-  private CheckBox chkAutoRejoin;
 
   public SettingsWindow() {
     this.chkShowLogWindow = new CheckBox();
@@ -64,7 +63,6 @@ public class SettingsWindow {
     this.btnChangeStarcraftExe = new Button();
 //    this.btnResetSettings = new Button();
     this.chkAutoEject = new CheckBox();
-    this.chkAutoRejoin = new CheckBox();
   }
 
   public SettingsWindow showAndWait() {
@@ -96,12 +94,6 @@ public class SettingsWindow {
     this.chkAutoEject.setSelected(Model.isPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString()));
     this.chkAutoEject.setOnAction(e -> {
       Model.setPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString(), this.chkAutoEject.isSelected());
-    });
-
-    this.chkAutoRejoin.setText("Auto-rejoin game lobby after bot has been ejected");
-    this.chkAutoRejoin.setSelected(Model.isPrefEnabled(DropLauncher.Property.AUTO_BOT_REJOIN.toString()));
-    this.chkAutoRejoin.setOnAction(e -> {
-      Model.setPrefEnabled(DropLauncher.Property.AUTO_BOT_REJOIN.toString(), this.chkAutoRejoin.isSelected());
     });
 
     this.lblChangeStarcraftExe.setText("StarCraft.exe:");
@@ -168,7 +160,6 @@ public class SettingsWindow {
     mainGridPane.add(fileSelectPane.get(), true);
     mainGridPane.add(new Separator(), true);
     mainGridPane.add(this.chkAutoEject, true);
-    mainGridPane.add(this.chkAutoRejoin, true);
     mainGridPane.add(this.chkCleanStarcraftDirectory, true);
     mainGridPane.add(this.chkBwapiWriteRead, true);
     mainGridPane.add(this.chkShowLogWindow, true);

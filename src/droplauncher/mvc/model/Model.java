@@ -33,7 +33,7 @@ import javafx.scene.control.Alert.AlertType;
 public class Model {
 
   public static final int AUTO_EJECT_DELAY = 3500; /* milliseconds */
-  public static final int AUTO_REJOIN_DELAY = 2000; /* milliseconds */
+  public static final int AUTO_REJOIN_DELAY = 3500; /* milliseconds */
 
   private BWHeadless bwheadless;
 

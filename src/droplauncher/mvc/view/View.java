@@ -39,6 +39,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -261,6 +262,7 @@ public class View implements EventHandler<DragEvent>  {
   private Button btnStart;
   private ConsoleOutput consoleOutput;
   private Button btnClearConsoleOutput;
+  private CheckBox chkAutoRejoin;
 
   public View() {
     /* Do nothing. */
@@ -323,6 +325,12 @@ public class View implements EventHandler<DragEvent>  {
     this.btnStart.setMinWidth(250);
     this.btnStart.setMinHeight(45); //30
     this.btnStart.getStyleClass().add("launch-btn");
+    this.chkAutoRejoin = new CheckBox();
+    this.chkAutoRejoin.setText("Auto-rejoin game lobby after bot has been ejected");
+    this.chkAutoRejoin.setSelected(Model.isPrefEnabled(DropLauncher.Property.AUTO_BOT_REJOIN.toString()));
+    this.chkAutoRejoin.setOnAction(e -> {
+      Model.setPrefEnabled(DropLauncher.Property.AUTO_BOT_REJOIN.toString(), this.chkAutoRejoin.isSelected());
+    });
     this.consoleOutput = new ConsoleOutput();
     this.consoleOutput.getBlacklist().add("fps: "); /* bwheadless.exe spam */
     this.consoleOutput.get().getStyleClass().add("console-output");
@@ -372,6 +380,7 @@ public class View implements EventHandler<DragEvent>  {
     CustomGridPane botNameGridPane = new CustomGridPane();
     botNameGridPane.add(this.lblBotName, true);
     botNameGridPane.add(this.txtBotName, true);
+    botNameGridPane.add(this.chkAutoRejoin, true);
     botNameGridPane.get().setAlignment(Pos.CENTER_LEFT);
     botNameGridPane.setGaps(0, DefaultSetting.LABEL_TEXT_SPACING.intValue());
     botNameGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
