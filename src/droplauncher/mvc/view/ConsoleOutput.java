@@ -88,12 +88,17 @@ public class ConsoleOutput {
     }
     String message = str;
 
+    if (AdakiteUtils.isNullOrEmpty(str)) {
+      return;
+    }
+
     Platform.runLater(() -> {
       this.outputObject.appendText(message);
     });
-    if (printToStdout) {
+    
+//    if (printToStdout) {
 //      System.out.print(str);
-    }
+//    }
   }
 
   /**
