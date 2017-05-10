@@ -302,7 +302,7 @@ public class View implements EventHandler<DragEvent>  {
     this.cbRace.getItems().add(Race.RANDOM.toString());
     this.btnStart = new Button(StartButtonText.START.toString());
     this.btnStart.setMinWidth(250);
-    this.btnStart.setMinHeight(30);
+    this.btnStart.setMinHeight(45); //30
     this.btnStart.getStyleClass().add("launch-btn");
     this.consoleOutput = new ConsoleOutput();
     this.consoleOutput.getBlacklist().add("fps: "); /* bwheadless.exe spam */
