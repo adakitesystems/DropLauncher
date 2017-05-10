@@ -92,7 +92,7 @@ public class ConsoleOutput {
       this.outputObject.appendText(message);
     });
     if (printToStdout) {
-      System.out.print(str);
+//      System.out.print(str);
     }
   }
 
