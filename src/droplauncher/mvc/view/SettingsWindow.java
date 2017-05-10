@@ -75,7 +75,7 @@ public class SettingsWindow {
       Model.setPrefEnabled(BWAPI.Property.COPY_WRITE_READ.toString(), this.chkBwapiWriteRead.isSelected());
     });
 
-    this.chkCleanStarcraftDirectory.setText("Clean StarCraft directory when closing program");
+    this.chkCleanStarcraftDirectory.setText("Clean StarCraft directory before closing program");
     this.chkCleanStarcraftDirectory.setSelected(Model.isPrefEnabled(Starcraft.Property.CLEAN_SC_DIR.toString()));
     this.chkCleanStarcraftDirectory.setOnAction(e -> {
       Model.setPrefEnabled(Starcraft.Property.CLEAN_SC_DIR.toString(), this.chkCleanStarcraftDirectory.isSelected());

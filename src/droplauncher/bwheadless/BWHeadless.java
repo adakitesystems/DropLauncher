@@ -239,7 +239,7 @@ public class BWHeadless {
       }
       this.botProcess
           .setCWD(starcraftPath)
-          .setProcessName(View.MessagePrefix.CLIENT.toString());
+          .setProcessName(View.MessagePrefix.BOT.toString());
       this.botProcess.start(clientCommand.get(), this.consoleOutput);
     }
   }
@@ -321,7 +321,7 @@ public class BWHeadless {
 
     /* Check for bwapi.ini existence. */
     if (!AdakiteUtils.fileExists(bwapiIniPath)) {
-      /* If bwapi.ini is not found, exract the modified BWAPI 4.2.0 bwapi.ini. */
+      /* If bwapi.ini is not found in the target BWAPI directory, extract it from this archive. */
       URL url = getClass().getResource("/droplauncher/bwapi/files/" + BWAPI.ExtractableFile.BWAPI_INI.toString());
       FileUtils.copyURLToFile(url, bwapiIniPath.toFile());
     }
@@ -331,14 +331,14 @@ public class BWHeadless {
 
     /* Check for the Broodwar.map file. */
     if (!AdakiteUtils.fileExists(bwapiBroodwarMap)) {
-      /* If Broodwar.map is not found, extract it. */
+      /* If Broodwar.map is not found in the target BWAPI directory, extract it from this archive. */
       URL url = getClass().getResource("/droplauncher/bwapi/files/" + BWAPI.ExtractableFile.BROODWAR_MAP.toString());
       FileUtils.copyURLToFile(url, bwapiBroodwarMap.toFile());
     }
 
     /* Check for DLL dependencies. */
     for (BWAPI.ExtractableDll val : BWAPI.ExtractableDll.values()) {
-      /* If dependency is not found, extract it. */
+      /* If dependency is not found in the target StarCraft directory, extract it from this archive. */
       Path dll = starcraftPath.resolve(val.toString());
       if (!AdakiteUtils.fileExists(dll)) {
         URL url = getClass().getResource("/droplauncher/bwapi/dll/" + val.toString());
@@ -377,7 +377,7 @@ public class BWHeadless {
 
     /* Copy extra files to common bot I/O directories. */
     for (String path : this.bot.getExtraFiles()) {
-      Files.copy(Paths.get(path), Paths.get(bwapiAiPath.toString(), FilenameUtils.getBaseName(path)), StandardCopyOption.REPLACE_EXISTING);
+      Files.copy(Paths.get(path), Paths.get(bwapiAiPath.toString(), FilenameUtils.getName(path)), StandardCopyOption.REPLACE_EXISTING);
     }
   }
 

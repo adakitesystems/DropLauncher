@@ -58,7 +58,7 @@ public class ExceptionAlert {
     if (ex != null) {
       String headerText = FilenameUtils.getExtension(ex.getClass().getName());
 
-      ex.printStackTrace();
+//      ex.printStackTrace();
 
       alert.setTitle("Exception Dialog");
       alert.setHeaderText(headerText);

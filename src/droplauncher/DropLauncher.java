@@ -77,7 +77,7 @@ public class DropLauncher {
       ;
 
 //  public static final String TEMP_DIRECTORY = Paths.get(System.getProperty("user.home"), "DropLauncher").toString();
-  public static final String TEMP_DIRECTORY = "tmp";
+  public static final Path TEMP_DIRECTORY = Paths.get("tmp");
 
   public static final Prefs PREF_ROOT = new Prefs(Preferences.userRoot().node("droplauncher"));
 

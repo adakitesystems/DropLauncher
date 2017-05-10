@@ -23,8 +23,4 @@ public class MissingBotFileException extends Exception {
     super();
   }
 
-  public MissingBotFileException(String message) {
-    super(message);
-  }
-
 }

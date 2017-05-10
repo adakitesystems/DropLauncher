@@ -23,8 +23,4 @@ public class MissingBwapiDllException extends Exception {
     super();
   }
 
-  public MissingBwapiDllException(String message) {
-    super(message);
-  }
-
 }

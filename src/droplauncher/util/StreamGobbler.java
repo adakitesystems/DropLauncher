@@ -17,21 +17,19 @@
 
 package droplauncher.util;
 
-import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.view.ConsoleOutput;
+import droplauncher.mvc.view.ExceptionAlert;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Logger;
+import javafx.application.Platform;
 
 /**
  * Class for consuming output from an input stream.
  */
 public class StreamGobbler extends Thread {
-
-  private static final Logger LOGGER = Logger.getLogger(StreamGobbler.class.getName());
 
   private InputStream inputStream;
   private String line;
@@ -60,7 +58,10 @@ public class StreamGobbler extends Thread {
     return this;
   }
 
-  //TODO: Check if thread failed and provide some indication other than throwing an error to the log.
+  /*
+  TODO: Check if thread failed and provide some indication other than throwing an error to the log.
+        Update: Now displaying an exception dialog.
+  */
   @Override
   public void run() {
     try {
@@ -74,7 +75,9 @@ public class StreamGobbler extends Thread {
         }
       }
     } catch (Exception ex) {
-      LOGGER.log(Debugging.getLogLevel(), null, ex);
+      Platform.runLater(() -> {
+        new ExceptionAlert().showAndWait(null, ex);
+      });
     }
   }
 

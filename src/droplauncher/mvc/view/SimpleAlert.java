@@ -31,7 +31,6 @@ public class SimpleAlert {
     /* Do nothing. */
   }
 
-  //TODO: Change "title" parameter type to "DialogTitle".
   public void showAndWait(AlertType alertType, DialogTitle title, String msg) {
     if (alertType == AlertType.ERROR) {
       throw new UnsupportedOperationException("Use ExceptionAlert instead of SimpleAlert.");

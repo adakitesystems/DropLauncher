@@ -23,8 +23,4 @@ public class MissingBotRaceException extends Exception {
     super();
   }
 
-  public MissingBotRaceException(String message) {
-    super(message);
-  }
-
 }

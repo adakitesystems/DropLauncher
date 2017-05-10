@@ -23,8 +23,4 @@ public class MissingBotNameException extends Exception {
     super();
   }
 
-  public MissingBotNameException(String message) {
-    super(message);
-  }
-
 }

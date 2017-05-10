@@ -84,7 +84,7 @@ public class ConsoleOutput {
     if (str.startsWith(View.MessagePrefix.BWHEADLESS.get() + ":: ")) {
       int index = str.indexOf(":: ");
       str = str.substring(index + ":: ".length(), str.length());
-      str = View.MessagePrefix.MODULE.get() + str;
+      str = View.MessagePrefix.BOT.get() + str;
     }
     String message = str;
 
@@ -95,7 +95,7 @@ public class ConsoleOutput {
     Platform.runLater(() -> {
       this.outputObject.appendText(message);
     });
-    
+
 //    if (printToStdout) {
 //      System.out.print(str);
 //    }

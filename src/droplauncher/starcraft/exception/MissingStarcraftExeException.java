@@ -23,8 +23,4 @@ public class MissingStarcraftExeException extends Exception {
     super();
   }
 
-  public MissingStarcraftExeException(String message) {
-    super(message);
-  }
-
 }

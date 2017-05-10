@@ -214,7 +214,7 @@ public class Controller {
       case "exe":
         /* Fall through. */
       case "jar":
-        if (path.getFileName().toString().equalsIgnoreCase("BWAPI.dll")) {
+        if (path.getFileName().toString().equalsIgnoreCase(BWAPI.DEFAULT_DLL_FILENAME_RELEASE)) {
           /* BWAPI.dll */
           this.model.getBWHeadless().getBot().setBwapiDll(path.toAbsolutePath().toString());
         } else {
@@ -255,7 +255,7 @@ public class Controller {
         throw new EncryptedArchiveException("encrypted archive not supported: " + zipFile.getFile().getAbsolutePath());
       }
       /* Create temporary directory. */
-      Path tmpDir = Paths.get(DropLauncher.TEMP_DIRECTORY).toAbsolutePath();
+      Path tmpDir = DropLauncher.TEMP_DIRECTORY;
       FileUtils.deleteDirectory(tmpDir.toFile());
       AdakiteUtils.createDirectory(tmpDir);
       /* Extract files to temporary directory. */

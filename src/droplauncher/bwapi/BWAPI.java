@@ -80,6 +80,10 @@ public class BWAPI {
       }
     }
 
+    /**
+     * Returns the version number in a common format.
+     * E.g. "4.1.2" instead of "VER_412".
+     */
     @Override
     public String toString() {
       String ret = "";
@@ -174,10 +178,13 @@ public class BWAPI {
   public static final Path DATA_INI_PATH = DATA_PATH.resolve(Paths.get("bwapi.ini"));
   public static final Path DATA_READ_PATH = DATA_PATH.resolve(Paths.get("read"));
   public static final Path DATA_WRITE_PATH = DATA_PATH.resolve(Paths.get("write"));
-  public static final Path DATA_DATA_PATH = DATA_PATH.resolve(Paths.get("data")); /* mostly for Broodwar.map */
+  public static final Path DATA_DATA_PATH = DATA_PATH.resolve(Paths.get("data")); /* for Broodwar.map */
   public static final String DLL_UNKNOWN = "Unknown";
 
   public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("bwapi");
+
+  public static final String DEFAULT_DLL_FILENAME_RELEASE = "BWAPI.dll";
+  public static final String DEFAULT_DLL_FILENAME_DEBUG = "BWAPId.dll";
 
   private BWAPI() {}
 

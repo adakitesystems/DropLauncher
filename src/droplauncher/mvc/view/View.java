@@ -153,8 +153,7 @@ public class View implements EventHandler<DragEvent>  {
     KILL("Kill"),
     DELETE("Delete"),
     BWHEADLESS("bwheadless.exe"),
-    CLIENT("BotClient"),
-    MODULE("BotModule"),
+    BOT("bot"),
     DROPLAUNCHER("DropLauncher")
     ;
 
@@ -307,8 +306,8 @@ public class View implements EventHandler<DragEvent>  {
     this.consoleOutput = new ConsoleOutput();
     this.consoleOutput.getBlacklist().add("fps: "); /* bwheadless.exe spam */
     this.consoleOutput.get().getStyleClass().add("console-output");
-    this.consoleOutput.get().setMinWidth(500);
-    this.consoleOutput.get().setMinHeight(300);
+    this.consoleOutput.get().setMinWidth(475); //500
+    this.consoleOutput.get().setMinHeight(200); //300
     this.consoleOutput.get().setEditable(false);
     this.btnClearConsoleOutput = new Button("Clear");
     this.btnClearConsoleOutput.setOnAction(e -> {
@@ -367,27 +366,25 @@ public class View implements EventHandler<DragEvent>  {
     HBox boxClearConsole = new HBox();
     boxClearConsole.getChildren().add(this.btnClearConsoleOutput);
     boxClearConsole.setAlignment(Pos.CENTER_RIGHT);
-    VBox vbox = new VBox();
-    vbox.getChildren().add(this.btnStart);
+    VBox boxStartConsole = new VBox();
+    boxStartConsole.getChildren().add(this.btnStart);
     if (Model.isPrefEnabled(View.Property.SHOW_LOG_WINDOW.toString())) {
-      vbox.getChildren().add(this.consoleOutput.get());
-      vbox.getChildren().add(boxClearConsole);
+      boxStartConsole.getChildren().add(this.consoleOutput.get());
+      boxStartConsole.getChildren().add(boxClearConsole);
     }
-    vbox.setSpacing(DefaultSetting.GAP.intValue());
-    vbox.setAlignment(Pos.CENTER);
-    vbox.setMinWidth(Region.USE_PREF_SIZE);
+    boxStartConsole.setSpacing(DefaultSetting.GAP.intValue());
+    boxStartConsole.setAlignment(Pos.CENTER);
+    boxStartConsole.setMinWidth(Region.USE_PREF_SIZE);
 
-    HBox hbox = new HBox();
-//    hbox.getChildren().add(this.btnStart);
-    hbox.getChildren().add(infoGridPane.get());
-    hbox.setSpacing(DefaultSetting.GAP.intValue());
-    hbox.setAlignment(Pos.CENTER);
-    hbox.setMinWidth(Region.USE_PREF_SIZE);
+    HBox boxInfo = new HBox();
+    boxInfo.getChildren().add(infoGridPane.get());
+    boxInfo.setSpacing(DefaultSetting.GAP.intValue());
+    boxInfo.setAlignment(Pos.CENTER);
+    boxInfo.setMinWidth(Region.USE_PREF_SIZE);
 
     CustomGridPane mainGridPane = new CustomGridPane();
-//    mainGridPane.add(infoGridPane.get(), true);
-    mainGridPane.add(hbox, true);
-    mainGridPane.add(vbox, true);
+    mainGridPane.add(boxInfo, true);
+    mainGridPane.add(boxStartConsole, true);
     mainGridPane.get().setPadding(new Insets(
         DefaultSetting.TOP_PADDING.intValue(),
         DefaultSetting.RIGHT_PADDING.intValue(),
@@ -456,19 +453,6 @@ public class View implements EventHandler<DragEvent>  {
       this.cbRace.setVisible(false);
     }
 
-//    /* Handling for when the user enters an invalid character for the bot name. */
-//    String displayBotName = this.txtBotName.getText();
-//    String internalBotName = this.controller.getBotName();
-//    int caret = this.txtBotName.getCaretPosition();
-//    if (!AdakiteUtils.isNonNullAndEqual(displayBotName, internalBotName)) {
-//      if (caret >= internalBotName.length()) {
-//        caret = internalBotName.length();
-//      } else if (caret > 1) {
-//        caret--;
-//      }
-//      setText(this.txtBotName, internalBotName);
-//      this.txtBotName.positionCaret(caret);
-//    }
     setText(this.txtBotName, this.controller.getBotName());
 
     sizeToScene();
