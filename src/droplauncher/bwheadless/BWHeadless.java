@@ -66,7 +66,7 @@ public class BWHeadless {
     NETWORK_PROVIDER("network"),
     CONNECT_MODE("connect_mode"),
     GAME_NAME("game_name"),
-    MAP("map"),
+    MAP("map")
     ;
 
     private final String str;

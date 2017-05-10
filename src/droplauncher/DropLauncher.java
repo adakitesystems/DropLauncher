@@ -42,7 +42,9 @@ public class DropLauncher {
 
   public enum Property {
 
-    VERSION("version");
+    VERSION("version"),
+    AUTO_EJECT_BOT("auto_eject_bot")
+    ;
 
     private final String str;
 

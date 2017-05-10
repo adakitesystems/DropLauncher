@@ -32,6 +32,8 @@ import javafx.scene.control.Alert.AlertType;
 
 public class Model {
 
+  public static final int AUTO_EJECT_DELAY = 3500; /* milliseconds */
+
   private BWHeadless bwheadless;
 
   public Model() {
@@ -102,6 +104,9 @@ public class Model {
       } catch (Exception ex) {
         /* Do nothing. */
       }
+    }
+    if (!Model.hasPrefValue(DropLauncher.Property.AUTO_EJECT_BOT.toString())) {
+      Model.setPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString(), true);
     }
   }
 

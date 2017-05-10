@@ -18,6 +18,7 @@
 package droplauncher.mvc.view;
 
 import adakite.util.AdakiteUtils;
+import droplauncher.DropLauncher;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft;
@@ -50,6 +51,7 @@ public class SettingsWindow {
   private Label lblChangeStarcraftExeText;
   private Button btnChangeStarcraftExe;
 //  private Button btnResetSettings;
+  private CheckBox chkAutoEject;
 
   public SettingsWindow() {
     this.chkShowLogWindow = new CheckBox();
@@ -60,6 +62,7 @@ public class SettingsWindow {
     this.lblChangeStarcraftExeText = new Label();
     this.btnChangeStarcraftExe = new Button();
 //    this.btnResetSettings = new Button();
+    this.chkAutoEject = new CheckBox();
   }
 
   public SettingsWindow showAndWait() {
@@ -85,6 +88,12 @@ public class SettingsWindow {
     this.chkWarnBwapiDll.setSelected(Model.isPrefEnabled(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString()));
     this.chkWarnBwapiDll.setOnAction(e -> {
       Model.setPrefEnabled(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString(), this.chkWarnBwapiDll.isSelected());
+    });
+
+    this.chkAutoEject.setText("Auto-eject bot after game has ended");
+    this.chkAutoEject.setSelected(Model.isPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString()));
+    this.chkAutoEject.setOnAction(e -> {
+      Model.setPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString(), this.chkAutoEject.isSelected());
     });
 
     this.lblChangeStarcraftExe.setText("StarCraft.exe:");
@@ -150,10 +159,11 @@ public class SettingsWindow {
     CustomGridPane mainGridPane = new CustomGridPane();
     mainGridPane.add(fileSelectPane.get(), true);
     mainGridPane.add(new Separator(), true);
+    mainGridPane.add(this.chkAutoEject, true);
     mainGridPane.add(this.chkCleanStarcraftDirectory, true);
     mainGridPane.add(this.chkBwapiWriteRead, true);
-    mainGridPane.add(this.chkWarnBwapiDll, true);
     mainGridPane.add(this.chkShowLogWindow, true);
+    mainGridPane.add(this.chkWarnBwapiDll, true);
 
     /* Disabled for now. There may be some unexpected behavior with respect to
        how the preferences nodes react after being deleted and the user

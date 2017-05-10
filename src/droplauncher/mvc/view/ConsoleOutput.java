@@ -18,6 +18,9 @@
 package droplauncher.mvc.view;
 
 import adakite.util.AdakiteUtils;
+import droplauncher.DropLauncher;
+import droplauncher.mvc.controller.ControllerLiaison;
+import droplauncher.mvc.model.Model;
 import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
@@ -31,11 +34,17 @@ public class ConsoleOutput {
   private TextArea outputObject;
   private boolean printToStdout;
   private ArrayList<String> blacklist; /* lines to be ignored which contain this text */
+  private ControllerLiaison controllerLiaison;
 
   public ConsoleOutput() {
     this.outputObject = new TextArea("");
     this.printToStdout = true;
     this.blacklist = new ArrayList<>();
+    this.controllerLiaison = null;
+  }
+
+  public void setController(ControllerLiaison liaison) {
+    this.controllerLiaison = liaison;
   }
 
   /**
@@ -88,7 +97,7 @@ public class ConsoleOutput {
     }
     String message = str;
 
-    if (AdakiteUtils.isNullOrEmpty(str)) {
+    if (AdakiteUtils.isNullOrEmpty(message)) {
       return;
     }
 
@@ -97,8 +106,19 @@ public class ConsoleOutput {
     });
 
 //    if (printToStdout) {
-//      System.out.print(str);
+//      System.out.print(message);
 //    }
+
+    if (message.startsWith(View.MessagePrefix.BWHEADLESS.get() + "game has ended")
+        && Model.hasPrefValue(DropLauncher.Property.AUTO_EJECT_BOT.toString())
+        && Model.isPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString())) {
+      try {
+        Thread.sleep(Model.AUTO_EJECT_DELAY);
+        this.controllerLiaison.btnStartClicked();
+      } catch (Exception ex) {
+        new ExceptionAlert().showAndWait("something went wrong with auto-ejecting the bot", ex);
+      }
+    }
   }
 
   /**
