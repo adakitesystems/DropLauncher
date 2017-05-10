@@ -530,7 +530,7 @@ public class Controller {
               this.view.btnStartEnabled(true);
             });
             setState(State.IDLE);
-            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "Bot has been ejected.");
+            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + View.Message.BOT_EJECTED.toString());
           } catch (Exception ex) {
             /* Stop failed. */
             Platform.runLater(() -> {

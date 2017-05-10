@@ -189,6 +189,25 @@ public class View implements EventHandler<DragEvent>  {
 
   }
 
+  public enum Message {
+
+    GAME_HAS_ENDED("game has ended"),
+    BOT_EJECTED("Bot has been ejected.")
+    ;
+
+    private final String str;
+
+    private Message(String str) {
+      this.str = str;
+    }
+
+    @Override
+    public String toString() {
+      return this.str;
+    }
+
+  }
+
   public enum MenuText {
 
     FILE("File"),

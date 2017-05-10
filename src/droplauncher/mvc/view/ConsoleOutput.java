@@ -109,7 +109,7 @@ public class ConsoleOutput {
 //      System.out.print(message);
 //    }
 
-    if (message.startsWith(View.MessagePrefix.BWHEADLESS.get() + "game has ended")
+    if (message.startsWith(View.MessagePrefix.BWHEADLESS.get() + View.Message.GAME_HAS_ENDED.toString())
         && Model.hasPrefValue(DropLauncher.Property.AUTO_EJECT_BOT.toString())
         && Model.isPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString())) {
       try {
@@ -117,6 +117,15 @@ public class ConsoleOutput {
         this.controllerLiaison.btnStartClicked();
       } catch (Exception ex) {
         new ExceptionAlert().showAndWait("something went wrong with auto-ejecting the bot", ex);
+      }
+    } else if (message.startsWith(View.MessagePrefix.DROPLAUNCHER.get() + View.Message.BOT_EJECTED.toString())
+        && Model.hasPrefValue(DropLauncher.Property.AUTO_BOT_REJOIN.toString())
+        && Model.isPrefEnabled(DropLauncher.Property.AUTO_BOT_REJOIN.toString())) {
+      try {
+        Thread.sleep(Model.AUTO_REJOIN_DELAY);
+        this.controllerLiaison.btnStartClicked();
+      } catch (Exception ex) {
+        new ExceptionAlert().showAndWait("something went wrong with auto-rejoin", ex);
       }
     }
   }

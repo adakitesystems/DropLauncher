@@ -33,6 +33,7 @@ import javafx.scene.control.Alert.AlertType;
 public class Model {
 
   public static final int AUTO_EJECT_DELAY = 3500; /* milliseconds */
+  public static final int AUTO_REJOIN_DELAY = 2000; /* milliseconds */
 
   private BWHeadless bwheadless;
 
@@ -107,6 +108,9 @@ public class Model {
     }
     if (!Model.hasPrefValue(DropLauncher.Property.AUTO_EJECT_BOT.toString())) {
       Model.setPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString(), true);
+    }
+    if (!Model.hasPrefValue(DropLauncher.Property.AUTO_BOT_REJOIN.toString())) {
+      Model.setPrefEnabled(DropLauncher.Property.AUTO_BOT_REJOIN.toString(), false);
     }
   }
 
