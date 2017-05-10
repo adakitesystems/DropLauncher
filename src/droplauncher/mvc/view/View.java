@@ -262,6 +262,7 @@ public class View implements EventHandler<DragEvent>  {
   private Button btnStart;
   private ConsoleOutput consoleOutput;
   private Button btnClearConsoleOutput;
+  private CheckBox chkAutoEject;
   private CheckBox chkAutoRejoin;
 
   public View() {
@@ -325,6 +326,12 @@ public class View implements EventHandler<DragEvent>  {
     this.btnStart.setMinWidth(250);
     this.btnStart.setMinHeight(45); //30
     this.btnStart.getStyleClass().add("launch-btn");
+    this.chkAutoEject = new CheckBox();
+    this.chkAutoEject.setText("Auto-eject bot after game has ended");
+    this.chkAutoEject.setSelected(Model.isPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString()));
+    this.chkAutoEject.setOnAction(e -> {
+      Model.setPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString(), this.chkAutoEject.isSelected());
+    });
     this.chkAutoRejoin = new CheckBox();
     this.chkAutoRejoin.setText("Auto-rejoin game lobby after bot has been ejected");
     this.chkAutoRejoin.setSelected(Model.isPrefEnabled(DropLauncher.Property.AUTO_BOT_REJOIN.toString()));
@@ -380,6 +387,7 @@ public class View implements EventHandler<DragEvent>  {
     CustomGridPane botNameGridPane = new CustomGridPane();
     botNameGridPane.add(this.lblBotName, true);
     botNameGridPane.add(this.txtBotName, true);
+    botNameGridPane.add(this.chkAutoEject, true);
     botNameGridPane.add(this.chkAutoRejoin, true);
     botNameGridPane.get().setAlignment(Pos.CENTER_LEFT);
     botNameGridPane.setGaps(0, DefaultSetting.LABEL_TEXT_SPACING.intValue());
