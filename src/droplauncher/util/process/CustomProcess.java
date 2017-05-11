@@ -19,7 +19,7 @@ package droplauncher.util.process;
 
 import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
-import droplauncher.mvc.view.ConsoleOutput;
+import droplauncher.mvc.view.ConsoleOutputDAO;
 import droplauncher.util.StreamGobbler;
 import droplauncher.util.process.exception.ClosePipeException;
 import java.io.IOException;
@@ -35,6 +35,7 @@ public class CustomProcess {
   private StreamGobbler gobblerStdout;
   private StreamGobbler gobblerStderr;
   private String processName;
+  private ConsoleOutputDAO consoleOutput;
 
   public CustomProcess() {
     this.process = null;
@@ -42,6 +43,7 @@ public class CustomProcess {
     this.gobblerStdout = null;
     this.gobblerStderr = null;
     this.processName = null;
+    this.consoleOutput = null;
   }
 
   /**
@@ -54,8 +56,24 @@ public class CustomProcess {
     return this;
   }
 
+  /**
+   * Sets the process name which will be prepended to any output from
+   * the process.
+   *
+   * @param name specified process name
+   */
   public CustomProcess setProcessName(String name) {
     this.processName = name;
+    return this;
+  }
+
+  /**
+   * Sets the UI control text object on which to display process output.
+   *
+   * @param consoleOutput specified UI control text object
+   */
+  public CustomProcess setConsoleOutput(ConsoleOutputDAO consoleOutput) {
+    this.consoleOutput = consoleOutput;
     return this;
   }
 
@@ -63,10 +81,9 @@ public class CustomProcess {
    * Creates and opens the pipe to the specified executable.
    *
    * @param args specified command and arguments to run
-   * @param co specified ConsoleOutput to display process output stream
    * @throws IOException if an I/O error occurs
    */
-  public void start(String[] args, ConsoleOutput co) throws IOException {
+  public void start(String[] args) throws IOException {
     if (args == null) {
       throw new IllegalArgumentException(Debugging.cannotBeNull("args"));
     }
@@ -81,11 +98,11 @@ public class CustomProcess {
 
     this.gobblerStdout = new StreamGobbler()
         .setInputStream(this.process.getInputStream())
-        .setConsoleOutput(co)
+        .setConsoleOutput(this.consoleOutput)
         .setStreamName(this.processName);
     this.gobblerStderr = new StreamGobbler()
         .setInputStream(this.process.getErrorStream())
-        .setConsoleOutput(co)
+        .setConsoleOutput(this.consoleOutput)
         .setStreamName(this.processName);
     this.gobblerStdout.start();
     this.gobblerStderr.start();

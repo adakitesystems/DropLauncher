@@ -19,20 +19,17 @@ package droplauncher.mvc.controller;
 
 import adakite.exception.InvalidStateException;
 
-public class ControllerLiaison {
+public class ControllerDAO {
 
   private Controller controller;
 
-  public ControllerLiaison() {
-    this.controller = null;
-  }
+  private ControllerDAO() {}
 
-  public ControllerLiaison setController(Controller controller) {
+  public ControllerDAO(Controller controller) {
     this.controller = controller;
-    return this;
   }
 
-  public ControllerLiaison btnStartClicked() throws InvalidStateException {
+  public ControllerDAO btnStartClicked() throws InvalidStateException {
     this.controller.btnStartClicked();
     return this;
   }

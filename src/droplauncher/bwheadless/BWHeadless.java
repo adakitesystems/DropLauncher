@@ -17,16 +17,15 @@
 
 package droplauncher.bwheadless;
 
+import adakite.debugging.Debugging;
 import adakite.exception.InvalidArgumentException;
+import adakite.exception.InvalidStateException;
 import droplauncher.util.KillableTask;
 import adakite.ini.Ini;
 import adakite.ini.exception.IniParseException;
-import adakite.prefs.Prefs;
-import adakite.settings.Settings;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwapi.bot.exception.InvalidBotTypeException;
-import droplauncher.mvc.view.ConsoleOutput;
 import adakite.process.CommandBuilder;
 import droplauncher.util.process.CustomProcess;
 import adakite.windows.task.Task;
@@ -38,12 +37,12 @@ import droplauncher.bwapi.bot.exception.MissingBotNameException;
 import droplauncher.bwapi.bot.exception.MissingBotRaceException;
 import droplauncher.bwapi.bot.exception.MissingBwapiDllException;
 import droplauncher.bwheadless.exception.MissingBotException;
-import droplauncher.mvc.model.Model;
-import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
 import droplauncher.DropLauncher;
+import droplauncher.mvc.view.ConsoleOutputDAO;
+import droplauncher.mvc.view.View;
 import droplauncher.util.process.exception.ClosePipeException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -61,26 +60,27 @@ import org.apache.commons.io.FilenameUtils;
  */
 public class BWHeadless {
 
-  public enum Property {
-
-    NETWORK_PROVIDER("network"),
-    CONNECT_MODE("connect_mode"),
-    GAME_NAME("game_name"),
-    MAP("map")
-    ;
-
-    private final String str;
-
-    private Property(String str) {
-      this.str = str;
-    }
-
-    @Override
-    public String toString() {
-      return this.str;
-    }
-
-  }
+//  public enum Property {
+//
+//    STARCRAFT_EXE("starcraft_exe"),
+//    NETWORK_PROVIDER("network"),
+//    CONNECT_MODE("connect_mode"),
+//    GAME_NAME("game_name"),
+//    MAP("map")
+//    ;
+//
+//    private final String str;
+//
+//    private Property(String str) {
+//      this.str = str;
+//    }
+//
+//    @Override
+//    public String toString() {
+//      return this.str;
+//    }
+//
+//  }
 
   /**
    * Enum for passable arguments to bwheadless.exe.
@@ -112,29 +112,28 @@ public class BWHeadless {
 
   }
 
+  public static final String DEFAULT_NAME = "bwheadless.exe";
   public static final Path DEFAULT_EXE_PATH = Paths.get("bwheadless.exe");
-
-  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("bwheadless");
 
   public static final String DEFAULT_BOT_NAME = "BOT";
   public static final Race DEFAULT_BOT_RACE = Race.RANDOM;
 
-  private Settings settings;
-
   private CustomProcess bwheadlessProcess;
   private CustomProcess botProcess;
 
+  private Path starcraftExe;
+
   private Bot bot;
 
-  private ConsoleOutput consoleOutput;
+  private ConsoleOutputDAO consoleOutput;
 
   private TaskTracker taskTracker;
 
   public BWHeadless() {
-    this.settings = new Settings();
-
     this.bwheadlessProcess = new CustomProcess();
     this.botProcess = new CustomProcess();
+
+    this.starcraftExe = null;
 
     this.bot = new Bot();
 
@@ -143,26 +142,42 @@ public class BWHeadless {
     this.taskTracker = new TaskTracker();
   }
 
-  public Settings getSettings() {
-    return this.settings;
+  public Path getStarcraftExe() {
+    return this.starcraftExe;
   }
 
-  public void setSettings(Settings settings) {
-    this.settings = settings;
+  public BWHeadless setStarcraftExe(Path starcraftExe) {
+    this.starcraftExe = starcraftExe;
+    return this;
   }
 
   public Bot getBot() {
     return this.bot;
   }
 
-  public void setBot(Bot bot) {
-    this.bot = bot;
+  /**
+   * Sets the internal bot object to the specified bot object.
+   *
+   * @throws IllegalArgumentException if the specified bot object is null
+   */
+  public BWHeadless setBot(Bot bot) {
+    if (bot == null) {
+      throw new IllegalArgumentException(Debugging.cannotBeNull("bot"));
+    } else {
+      this.bot = bot;
+      return this;
+    }
   }
 
+  public BWHeadless setConsoleOutput(ConsoleOutputDAO consoleOutput) {
+    this.consoleOutput = consoleOutput;
+    return this;
+  }
+
+  //TODO: Test: After the files have been loaded, delete them and try to start.
   /**
    * Starts bwheadless after configuring and checking settings.
    *
-   * @param consoleOutput specified ConsoleOutput to display process output stream
    * @throws IOException if an I/O error occurs
    * @throws MissingBotException if the bot object is not set
    * @throws InvalidBotTypeException if the bot type is not recognized
@@ -173,34 +188,39 @@ public class BWHeadless {
    * @throws MissingBwapiDllException
    * @throws MissingStarcraftExeException
    * @throws InvalidArgumentException
+   * @throws InvalidStateException
    */
-  public void start(ConsoleOutput consoleOutput) throws IOException,
-                                                        MissingBotException,
-                                                        InvalidBotTypeException,
-                                                        IniParseException,
-                                                        MissingBotNameException,
-                                                        MissingBotRaceException,
-                                                        MissingBotFileException,
-                                                        MissingBwapiDllException,
-                                                        MissingStarcraftExeException,
-                                                        InvalidArgumentException {
-    if (this.bot == null) {
-      throw new MissingBotException();
-    }
-
-    this.consoleOutput = consoleOutput;
-
+  public void start() throws IOException,
+                             MissingBotException,
+                             InvalidBotTypeException,
+                             IniParseException,
+                             MissingBotNameException,
+                             MissingBotRaceException,
+                             MissingBotFileException,
+                             MissingBwapiDllException,
+                             MissingStarcraftExeException,
+                             InvalidArgumentException,
+                             InvalidStateException {
     this.taskTracker.reset();
 
     configureBwapi();
 
-    Path starcraftPath = Starcraft.getPath();
+    /* Check for StarCraft.exe */
+    if (!AdakiteUtils.fileReadable(this.starcraftExe)) {
+      throw new IOException("failed to access " + Starcraft.DEFAULT_EXE_FILENAME + ": " + this.starcraftExe.toString());
+    }
+
+    /* Determine StarCraft.exe parent directory. */
+    Path starcraftPath = AdakiteUtils.getParentDirectory(this.starcraftExe);
+    if (starcraftPath == null) {
+      throw new FileNotFoundException("failed to determine " + Starcraft.DEFAULT_EXE_FILENAME + " parent directory");
+    }
 
     /* Compile bwheadless arguments. */
     CommandBuilder bwhCommand = new CommandBuilder();
     bwhCommand.setPath(DEFAULT_EXE_PATH.toAbsolutePath());
     bwhCommand.addArg(Argument.STARCRAFT_EXE.toString());
-    bwhCommand.addArg(Model.getPref(Starcraft.Property.STARCRAFT_EXE.toString()));
+    bwhCommand.addArg(this.starcraftExe.toString());
     bwhCommand.addArg(Argument.JOIN_GAME.toString());
     bwhCommand.addArg(Argument.BOT_NAME.toString());
     bwhCommand.addArg(this.bot.getName());
@@ -215,8 +235,9 @@ public class BWHeadless {
     /* Start bwheadless. */
     this.bwheadlessProcess
         .setCWD(starcraftPath)
-        .setProcessName(View.MessagePrefix.BWHEADLESS.toString());
-    this.bwheadlessProcess.start(bwhCommand.get(), this.consoleOutput);
+        .setProcessName(DEFAULT_NAME)
+        .setConsoleOutput(this.consoleOutput);
+    this.bwheadlessProcess.start(bwhCommand.get());
 
     /* Start bot client. */
     if (this.bot.getType() == Bot.Type.CLIENT) {
@@ -228,19 +249,20 @@ public class BWHeadless {
           break;
         case "jar":
           if (!AdakiteUtils.fileExists(DropLauncher.JRE_EXE)) {
-            throw new FileNotFoundException(DropLauncher.JRE_EXE.toString());
+            throw new FileNotFoundException(DropLauncher.JRE_EXE.toAbsolutePath().toString());
           }
           clientCommand.setPath(DropLauncher.JRE_EXE.toAbsolutePath());
           clientCommand.addArg("-jar");
           clientCommand.addArg(this.bot.getPath());
           break;
         default:
-          throw new InvalidBotTypeException("bot file type is not EXE or JAR");
+          throw new InvalidBotTypeException(this.bot.getPath());
       }
       this.botProcess
           .setCWD(starcraftPath)
-          .setProcessName(View.MessagePrefix.BOT.toString());
-      this.botProcess.start(clientCommand.get(), this.consoleOutput);
+          .setProcessName(View.MessagePrefix.BOT.toString())
+          .setConsoleOutput(this.consoleOutput);
+      this.botProcess.start(clientCommand.get());
     }
   }
 
@@ -260,18 +282,14 @@ public class BWHeadless {
     for (Task task : this.taskTracker.getNewTasks()) {
       /* Kill bot client. */
       if (this.bot.getType() == Bot.Type.CLIENT && botName.contains(task.getImageName())) {
-        if (this.consoleOutput != null) {
-          this.consoleOutput.println(View.MessagePrefix.DROPLAUNCHER.get() + View.MessagePrefix.KILL.get() + task.getPID() + " " + task.getImageName());
-        }
+        println(View.MessagePrefix.DROPLAUNCHER.get() + View.MessagePrefix.KILL.get() + task.getPID() + " " + task.getImageName());
         Tasklist.kill(task.getPID());
         continue;
       }
       /* Only kill tasks whose names match known associated tasks. */
       for (KillableTask kt : KillableTask.values()) {
         if (kt.toString().equalsIgnoreCase(task.getImageName())) {
-          if (this.consoleOutput != null) {
-            this.consoleOutput.println(View.MessagePrefix.DROPLAUNCHER.get() + View.MessagePrefix.KILL.get() + task.getPID() + " " + task.getImageName());
-          }
+          println(View.MessagePrefix.DROPLAUNCHER.get() + View.MessagePrefix.KILL.get() + task.getPID() + " " + task.getImageName());
           Tasklist.kill(task.getPID());
           break;
         }
@@ -378,6 +396,18 @@ public class BWHeadless {
     /* Copy extra files to common bot I/O directories. */
     for (String path : this.bot.getExtraFiles()) {
       Files.copy(Paths.get(path), Paths.get(bwapiAiPath.toString(), FilenameUtils.getName(path)), StandardCopyOption.REPLACE_EXISTING);
+    }
+  }
+
+  private void print(String str) {
+    if (this.consoleOutput != null) {
+      this.consoleOutput.print(str);
+    }
+  }
+
+  private void println(String line) {
+    if (this.consoleOutput != null) {
+      this.consoleOutput.println(line);
     }
   }
 

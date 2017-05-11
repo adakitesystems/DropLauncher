@@ -106,6 +106,8 @@ public class Starcraft {
 
   }
 
+  public static final String DEFAULT_EXE_FILENAME = "StarCraft.exe";
+
   public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("starcraft");
 
   public static final String REG_ENTRY_EXE_32BIT = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Blizzard Entertainment\\Starcraft";
@@ -156,6 +158,10 @@ public class Starcraft {
     } else {
       throw new MissingStarcraftExeException();
     }
+  }
+
+  public static Path getExePath() throws MissingStarcraftExeException {
+    return getPath().resolve(Paths.get(DEFAULT_EXE_FILENAME));
   }
 
 }

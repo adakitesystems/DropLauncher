@@ -18,7 +18,6 @@
 package droplauncher.mvc.view;
 
 import adakite.util.AdakiteUtils;
-import droplauncher.DropLauncher;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft;
@@ -50,7 +49,6 @@ public class SettingsWindow {
   private Label lblChangeStarcraftExe;
   private Label lblChangeStarcraftExeText;
   private Button btnChangeStarcraftExe;
-//  private Button btnResetSettings;
 
   public SettingsWindow() {
     this.chkShowLogWindow = new CheckBox();
@@ -60,7 +58,6 @@ public class SettingsWindow {
     this.lblChangeStarcraftExe = new Label();
     this.lblChangeStarcraftExeText = new Label();
     this.btnChangeStarcraftExe = new Button();
-//    this.btnResetSettings = new Button();
   }
 
   public SettingsWindow showAndWait() {
@@ -88,7 +85,7 @@ public class SettingsWindow {
       Model.setPrefEnabled(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString(), this.chkWarnBwapiDll.isSelected());
     });
 
-    this.lblChangeStarcraftExe.setText("StarCraft.exe:");
+    this.lblChangeStarcraftExe.setText(Starcraft.DEFAULT_EXE_FILENAME + ":");
     this.btnChangeStarcraftExe.setText("...");
     this.lblChangeStarcraftExeText.setText("");
     if (Model.hasPrefValue(Starcraft.Property.STARCRAFT_EXE.toString())) {
@@ -98,8 +95,8 @@ public class SettingsWindow {
     this.lblChangeStarcraftExeText.setMinWidth(Region.USE_PREF_SIZE);
     this.btnChangeStarcraftExe.setOnAction(e -> {
       FileChooser fc = new FileChooser();
-      fc.getExtensionFilters().add(new ExtensionFilter("StarCraft.exe", "StarCraft.exe"));
-      fc.setTitle("Select StarCraft.exe ...");
+      fc.getExtensionFilters().add(new ExtensionFilter(Starcraft.DEFAULT_EXE_FILENAME, Starcraft.DEFAULT_EXE_FILENAME));
+      fc.setTitle("Select " + Starcraft.DEFAULT_EXE_FILENAME + " ...");
       String userDirectory = AdakiteUtils.getUserHomeDirectory().toAbsolutePath().toString();
       if (userDirectory != null) {
         fc.setInitialDirectory(new File(userDirectory));
@@ -110,37 +107,6 @@ public class SettingsWindow {
         this.lblChangeStarcraftExeText.setText(file.getAbsolutePath());
       }
     });
-
-//    this.btnResetSettings.setText("Reset Settings");
-//    this.btnResetSettings.setOnAction(e -> {
-//      Alert alert = new Alert(AlertType.CONFIRMATION);
-//      alert.setTitle("Warning");
-//      alert.setContentText("Are you sure you want to reset the program settings?");
-//      alert.setHeaderText(null);
-//      View.addDefaultStylesheet(alert.getDialogPane().getStylesheets());
-//      ButtonType btnNo = new ButtonType("No");
-//      ButtonType btnYes = new ButtonType("Yes");
-//      alert.getButtonTypes().setAll(btnYes, btnNo);
-//      Optional<ButtonType> result = alert.showAndWait();
-//      if (result.get() == btnYes) {
-//        try {
-//          Model.clearPrefs();
-//        } catch (BackingStoreException ex) {
-//          //TODO: Test if this needs to be wrapped by "runLater".
-//          Platform.runLater(() -> {
-//            new ExceptionAlert().showAndWait(null, ex);
-//          });
-//        }
-//        new SimpleAlert().showAndWait(
-//            AlertType.INFORMATION,
-//            DialogTitle.PROGRAM_TITLE,
-//            "Program settings have been reset! You will need to restart the program for changes to take effect."
-//        );
-//      }
-//    });
-//    HBox resetHBox = new HBox();
-//    resetHBox.getChildren().add(this.btnResetSettings);
-//    resetHBox.setAlignment(Pos.CENTER_RIGHT);
 
     CustomGridPane fileSelectPane = new CustomGridPane();
     fileSelectPane.add(this.lblChangeStarcraftExe);
@@ -155,11 +121,6 @@ public class SettingsWindow {
     mainGridPane.add(this.chkBwapiWriteRead, true);
     mainGridPane.add(this.chkShowLogWindow, true);
     mainGridPane.add(this.chkWarnBwapiDll, true);
-
-    /* Disabled for now. There may be some unexpected behavior with respect to
-       how the preferences nodes react after being deleted and the user
-       tries to enable/disable settings without restarting the program first. */
-//    mainGridPane.add(resetHBox, true);
 
     mainGridPane.setGaps(View.DefaultSetting.GAP.intValue(), View.DefaultSetting.GAP.intValue());
     mainGridPane.get().setPadding(new Insets(

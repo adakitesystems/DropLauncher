@@ -18,7 +18,7 @@
 package droplauncher.util;
 
 import adakite.util.AdakiteUtils;
-import droplauncher.mvc.view.ConsoleOutput;
+import droplauncher.mvc.view.ConsoleOutputDAO;
 import droplauncher.mvc.view.ExceptionAlert;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -32,13 +32,11 @@ import javafx.application.Platform;
 public class StreamGobbler extends Thread {
 
   private InputStream inputStream;
-  private String line;
-  private ConsoleOutput consoleOutput;
+  private ConsoleOutputDAO consoleOutput;
   private String streamName;
 
   public StreamGobbler() {
     this.inputStream = null;
-    this.line = "";
     this.consoleOutput = null;
     this.streamName = null;
   }
@@ -48,8 +46,8 @@ public class StreamGobbler extends Thread {
     return this;
   }
 
-  public StreamGobbler setConsoleOutput(ConsoleOutput co) {
-    this.consoleOutput = co;
+  public StreamGobbler setConsoleOutput(ConsoleOutputDAO consoleOutput) {
+    this.consoleOutput = consoleOutput;
     return this;
   }
 
@@ -66,12 +64,14 @@ public class StreamGobbler extends Thread {
   public void run() {
     try {
       BufferedReader br = new BufferedReader(new InputStreamReader(this.inputStream, StandardCharsets.UTF_8));
-      while ((this.line = br.readLine()) != null) {
+      String line;
+      while ((line = br.readLine()) != null) {
         if (this.consoleOutput != null) {
           if (!AdakiteUtils.isNullOrEmpty(this.streamName)) {
-            this.line = this.streamName + ": " + this.line;
+            line = this.streamName + ": " + line;
           }
-          this.consoleOutput.println(this.line);
+          /* Redirect output. */
+          this.consoleOutput.println(line);
         }
       }
     } catch (Exception ex) {

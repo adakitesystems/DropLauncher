@@ -15,32 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package droplauncher.util;
+package droplauncher.mvc.view;
 
-import droplauncher.starcraft.Starcraft;
+public class ConsoleOutputDAO {
 
-/**
- * Enum for the names of new tasks that should be killed when the
- * bot is stopped.
- */
-public enum KillableTask {
+  private ConsoleOutput consoleOutput;
 
-  BWHEADLESS_EXE("bwheadless.exe"),
-  CONHOST_EXE("conhost.exe"),
-  STARCRAFT_EXE(Starcraft.DEFAULT_EXE_FILENAME),
-  TASKLIST_EXE("tasklist.exe"),
-  DLLHOST_EXE("dllhost.exe")
-  ;
+  private ConsoleOutputDAO() {}
 
-  private final String str;
-
-  private KillableTask(String str) {
-    this.str = str;
+  public ConsoleOutputDAO(ConsoleOutput consoleOutput) {
+    this.consoleOutput = consoleOutput;
   }
 
-  @Override
-  public String toString() {
-    return this.str;
+  public void print(String str) {
+    this.consoleOutput.print(str);
+  }
+
+  public void println(String line) {
+    this.consoleOutput.println(line);
   }
 
 }

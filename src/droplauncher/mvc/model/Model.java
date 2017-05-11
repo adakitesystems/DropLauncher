@@ -95,17 +95,18 @@ public class Model {
     if (!Model.hasPrefValue(View.Property.SHOW_LOG_WINDOW.toString())) {
       Model.setPrefEnabled(View.Property.SHOW_LOG_WINDOW.toString(), true);
     }
-    if (!Model.hasPrefValue(Starcraft.Property.STARCRAFT_EXE.toString())) {
-      /* Attempt to determine StarCraft directory from registry. */
-      try {
-        String dir = WinRegistry.strValue(Starcraft.REG_ENTRY_EXE_32BIT, "Program");
-        if (!AdakiteUtils.isNullOrEmpty(dir)) {
-          Model.setPref(Starcraft.Property.STARCRAFT_EXE.toString(), dir);
-        }
-      } catch (Exception ex) {
-        /* Do nothing. */
-      }
-    }
+    /* Disabled for now. Force user to be aware and select which StarCraft directory will be used. */
+//    if (!Model.hasPrefValue(Starcraft.Property.STARCRAFT_EXE.toString())) {
+//      /* Attempt to determine StarCraft directory from registry. */
+//      try {
+//        String dir = WinRegistry.strValue(Starcraft.REG_ENTRY_EXE_32BIT, "Program");
+//        if (!AdakiteUtils.isNullOrEmpty(dir)) {
+//          Model.setPref(Starcraft.Property.STARCRAFT_EXE.toString(), dir);
+//        }
+//      } catch (Exception ex) {
+//        /* Do nothing. */
+//      }
+//    }
     if (!Model.hasPrefValue(DropLauncher.Property.AUTO_EJECT_BOT.toString())) {
       Model.setPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString(), true);
     }
@@ -126,12 +127,6 @@ public class Model {
     for (BWAPI.Property val : BWAPI.Property.values()) {
       if (uniqueKey.equals(val.toString())) {
         return BWAPI.PREF_ROOT;
-      }
-    }
-
-    for (BWHeadless.Property val : BWHeadless.Property.values()) {
-      if (uniqueKey.equals(val.toString())) {
-        return BWHeadless.PREF_ROOT;
       }
     }
 

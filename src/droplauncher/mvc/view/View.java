@@ -25,7 +25,7 @@ import droplauncher.mvc.controller.Controller;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.DropLauncher;
-import droplauncher.mvc.controller.ControllerLiaison;
+import droplauncher.mvc.controller.ControllerDAO;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -344,7 +344,7 @@ public class View implements EventHandler<DragEvent>  {
     this.consoleOutput.get().setMinWidth(475); //500
     this.consoleOutput.get().setMinHeight(200); //300
     this.consoleOutput.get().setEditable(false);
-    this.consoleOutput.setController(new ControllerLiaison().setController(this.controller));
+    this.consoleOutput.setController(new ControllerDAO(this.controller));
     this.btnClearConsoleOutput = new Button("Clear");
     this.btnClearConsoleOutput.setOnAction(e -> {
       Platform.runLater(() -> {

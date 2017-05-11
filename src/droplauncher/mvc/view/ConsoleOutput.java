@@ -19,7 +19,7 @@ package droplauncher.mvc.view;
 
 import adakite.util.AdakiteUtils;
 import droplauncher.DropLauncher;
-import droplauncher.mvc.controller.ControllerLiaison;
+import droplauncher.mvc.controller.ControllerDAO;
 import droplauncher.mvc.model.Model;
 import java.util.ArrayList;
 import javafx.application.Platform;
@@ -32,23 +32,21 @@ import javafx.scene.control.TextArea;
 public class ConsoleOutput {
 
   private TextArea outputObject;
-  private boolean printToStdout;
   private ArrayList<String> blacklist; /* lines to be ignored which contain this text */
-  private ControllerLiaison controllerLiaison;
+  private ControllerDAO controller;
 
   public ConsoleOutput() {
     this.outputObject = new TextArea("");
-    this.printToStdout = true;
     this.blacklist = new ArrayList<>();
-    this.controllerLiaison = null;
+    this.controller = null;
   }
 
-  public void setController(ControllerLiaison liaison) {
-    this.controllerLiaison = liaison;
+  public void setController(ControllerDAO controller) {
+    this.controller = controller;
   }
 
   /**
-   * Returns the object to which data is printed.
+   * Returns the internal UI object to which data is printed.
    */
   public TextArea get() {
     return this.outputObject;
@@ -70,19 +68,11 @@ public class ConsoleOutput {
   }
 
   /**
-   * Sets whether printed data should also be printed to STDOUT.
-   */
-  public void printToStdoutEnabled(boolean enabled) {
-    this.printToStdout = enabled;
-  }
-
-  /**
    * Prints the specified string to the output object.
    *
    * @param str specified string
-   * @param printToStdout whether to also print to STDOUT
    */
-  public void print(String str, boolean printToStdout) {
+  public void print(String str) {
     for (String item : this.blacklist) {
       if (str.contains(item)) {
         return;
@@ -105,37 +95,29 @@ public class ConsoleOutput {
       this.outputObject.appendText(message);
     });
 
-//    if (printToStdout) {
-//      System.out.print(message);
-//    }
-
     if (message.startsWith(View.MessagePrefix.BWHEADLESS.get() + View.Message.GAME_HAS_ENDED.toString())
         && Model.hasPrefValue(DropLauncher.Property.AUTO_EJECT_BOT.toString())
         && Model.isPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString())) {
       try {
         Thread.sleep(Model.AUTO_EJECT_DELAY);
-        this.controllerLiaison.btnStartClicked();
+        this.controller.btnStartClicked();
       } catch (Exception ex) {
-        new ExceptionAlert().showAndWait("something went wrong with auto-ejecting the bot", ex);
+        Platform.runLater(() -> {
+          new ExceptionAlert().showAndWait("something went wrong with auto-ejecting the bot", ex);
+        });
       }
     } else if (message.startsWith(View.MessagePrefix.DROPLAUNCHER.get() + View.Message.BOT_EJECTED.toString())
         && Model.hasPrefValue(DropLauncher.Property.AUTO_BOT_REJOIN.toString())
         && Model.isPrefEnabled(DropLauncher.Property.AUTO_BOT_REJOIN.toString())) {
       try {
         Thread.sleep(Model.AUTO_REJOIN_DELAY);
-        this.controllerLiaison.btnStartClicked();
+        this.controller.btnStartClicked();
       } catch (Exception ex) {
-        new ExceptionAlert().showAndWait("something went wrong with auto-rejoin", ex);
+        Platform.runLater(() -> {
+          new ExceptionAlert().showAndWait("something went wrong with auto-rejoin", ex);
+        });
       }
     }
-  }
-
-  /**
-   * @see #print(java.lang.String, boolean)
-   * @see #printToStdoutEnabled(boolean)
-   */
-  public void print(String str) {
-    print(str, this.printToStdout);
   }
 
   /**

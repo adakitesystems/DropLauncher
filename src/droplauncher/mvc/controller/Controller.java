@@ -39,6 +39,7 @@ import droplauncher.bwapi.bot.exception.MissingBwapiDllException;
 import droplauncher.bwheadless.exception.MissingBotException;
 import droplauncher.exception.EncryptedArchiveException;
 import droplauncher.bwapi.bot.exception.InvalidBotTypeException;
+import droplauncher.mvc.view.ConsoleOutputDAO;
 import droplauncher.mvc.view.ExceptionAlert;
 import droplauncher.mvc.view.View.DialogTitle;
 import droplauncher.starcraft.Starcraft;
@@ -112,17 +113,20 @@ public class Controller {
                                         MissingBotException,
                                         InvalidArgumentException {
     /* Init DirectoryMonitor if required. */
-    Path starcraftDirectory = Starcraft.getPath();
+    Path starcraftPath = Starcraft.getPath();
     if (this.directoryMonitor == null) {
-      this.directoryMonitor = new DirectoryMonitor(starcraftDirectory);
-      this.directoryMonitor.getIgnoreList().add("maps"); /* ignore any "*maps*" file/directory */
-      this.directoryMonitor.getIgnoreList().add("bwta"); /* ignore any "*bwta*" file/directory */
-      this.directoryMonitor.getIgnoreList().add("bwta2"); /* ignore any "*bwta2*" file/directory */
-      this.directoryMonitor.getIgnoreList().add("bwapi-data"); /* ignore any "*bwapi-data*" file/directory */
+      this.directoryMonitor = new DirectoryMonitor(starcraftPath);
+      this.directoryMonitor.getIgnoreList().add("maps"); /* ignore any file/directory containing "*maps*" */
+      this.directoryMonitor.getIgnoreList().add("bwta"); /* ignore any file/directory containing "*bwta*" */
+      this.directoryMonitor.getIgnoreList().add("bwta2"); /* ignore any file/directory containing"*bwta2*" */
+      this.directoryMonitor.getIgnoreList().add("bwapi-data"); /* ignore any file/directory containing"*bwapi-data*" */
       this.directoryMonitor.reset();
     }
 
-    this.model.getBWHeadless().start(this.view.getConsoleOutput());
+    this.model.getBWHeadless()
+        .setStarcraftExe(Starcraft.getExePath())
+        .setConsoleOutput(new ConsoleOutputDAO(this.view.getConsoleOutput()));
+    this.model.getBWHeadless().start();
   }
 
   private void stopBWHeadless() throws IOException,
@@ -505,7 +509,7 @@ public class Controller {
           } catch (MissingStarcraftExeException ex) {
             //TODO: Clear StarCraft.exe path. This exception could be because the provided path was not found.
             Platform.runLater(() -> {
-              View.displayMissingFieldDialog("path to StarCraft.exe");
+              View.displayMissingFieldDialog("path to " + Starcraft.DEFAULT_EXE_FILENAME);
             });
           }
           if (!success) {

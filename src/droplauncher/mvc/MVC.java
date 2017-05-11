@@ -18,7 +18,7 @@
 package droplauncher.mvc;
 
 import droplauncher.mvc.controller.Controller;
-import droplauncher.mvc.controller.ControllerLiaison;
+import droplauncher.mvc.controller.ControllerDAO;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.View;
 import javafx.stage.Stage;
