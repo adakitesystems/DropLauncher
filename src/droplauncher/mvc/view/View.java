@@ -333,7 +333,7 @@ public class View implements EventHandler<DragEvent>  {
       Model.setPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString(), this.chkAutoEject.isSelected());
     });
     this.chkAutoRejoin = new CheckBox();
-    this.chkAutoRejoin.setText("Auto-rejoin game lobby after bot has been ejected");
+    this.chkAutoRejoin.setText("Auto-connect bot to game lobby after eject");
     this.chkAutoRejoin.setSelected(Model.isPrefEnabled(DropLauncher.Property.AUTO_BOT_REJOIN.toString()));
     this.chkAutoRejoin.setOnAction(e -> {
       Model.setPrefEnabled(DropLauncher.Property.AUTO_BOT_REJOIN.toString(), this.chkAutoRejoin.isSelected());
