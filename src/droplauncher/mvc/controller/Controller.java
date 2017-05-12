@@ -42,6 +42,7 @@ import droplauncher.bwapi.bot.exception.InvalidBotTypeException;
 import droplauncher.mvc.view.ConsoleOutputDAO;
 import droplauncher.mvc.view.ExceptionAlert;
 import droplauncher.mvc.view.View.DialogTitle;
+import droplauncher.mvc.view.YesNoDialog;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
@@ -55,11 +56,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.lingala.zip4j.core.ZipFile;
@@ -67,6 +65,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 public class Controller {
+
+  public enum State {
+    LOCKED,
+    IDLE,
+    RUNNING
+  }
 
   private Model model;
   private View view;
@@ -436,16 +440,12 @@ public class Controller {
         && Model.isPrefEnabled(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString())
         && !AdakiteUtils.isNullOrEmpty(bwapiDllVersion)
         && bwapiDllVersion.equalsIgnoreCase(BWAPI.DLL_UNKNOWN)) {
-      Alert alert = new Alert(AlertType.CONFIRMATION);
-      alert.setTitle("Warning");
-      alert.setContentText("The BWAPI.dll you provided is not on the list of known official BWAPI versions.\n\nDo you want to continue anyway?");
-      alert.setHeaderText(null);
-      View.addDefaultStylesheet(alert.getDialogPane().getStylesheets());
-      ButtonType btnNo = new ButtonType("No");
-      ButtonType btnYes = new ButtonType("Yes");
-      alert.getButtonTypes().setAll(btnYes, btnNo);
-      Optional<ButtonType> result = alert.showAndWait();
-      if (result.get() != btnYes) {
+      boolean response = new YesNoDialog().userConfirms(
+          "Warning",
+          "The BWAPI.dll you provided is not on the list of known official BWAPI versions.\n\nDo you want to continue anyway?"
+      );
+      if (response == false) {
+        /* User does not wish to continue. Abort. */
         new SimpleAlert().showAndWait(
             AlertType.WARNING,
             DialogTitle.WARNING,

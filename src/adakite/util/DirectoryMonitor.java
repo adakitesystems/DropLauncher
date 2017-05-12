@@ -84,7 +84,7 @@ public class DirectoryMonitor {
       String pathLower = path.toAbsolutePath().toString().toLowerCase(Locale.US);
       found = false;
       for (String str : this.ignoreList) {
-        if (pathLower.contains(str)) {
+        if (pathLower.contains(str.toLowerCase(Locale.US))) {
           found = true;
           break;
         }
@@ -114,7 +114,7 @@ public class DirectoryMonitor {
       String pathLower = path.toAbsolutePath().toString().toLowerCase(Locale.US);
       found = false;
       for (String str : this.ignoreList) {
-        if (pathLower.contains(str)) {
+        if (pathLower.contains(str.toLowerCase(Locale.US))) {
           found = true;
           break;
         }

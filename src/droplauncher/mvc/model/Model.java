@@ -19,7 +19,6 @@ package droplauncher.mvc.model;
 
 import adakite.prefs.Prefs;
 import adakite.util.AdakiteUtils;
-import adakite.windows.registry.WinRegistry;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.view.View;
@@ -158,10 +157,21 @@ public class Model {
     DropLauncher.PREF_ROOT.clear();
   }
 
+  /**
+   * Returns the associated value with the specified key.
+   *
+   * @param key specified key
+   * @throws IllegalStateException if the specified key does not exist
+   */
   public static String getPref(String key) {
     return getPrefs(key).get(key);
   }
 
+  /**
+   * Tests whether the specified key has an associated value.
+   *
+   * @param key specified key
+   */
   public static boolean hasPrefValue(String key) {
     try {
       getPref(key);
@@ -171,14 +181,34 @@ public class Model {
     }
   }
 
+  /**
+   * Sets the specified key to the specified value regardless if
+   * the specified key existed previously.
+   *
+   * @param key specified key
+   * @param val specified value
+   */
   public static void setPref(String key, String val) {
     getPrefs(key).set(key, val);
   }
 
+  /**
+   * Tests whether the specified key has a TRUE or FALSE value. Returns
+   * FALSE even if the specified key does not exist.
+   *
+   * @param key specified key
+   */
   public static boolean isPrefEnabled(String key) {
     return getPrefs(key).isEnabled(key);
   }
 
+  /**
+   * Sets the specified key to the specified boolean value regardless if
+   * the specified key existed previously.
+   *
+   * @param key specified key
+   * @param enabled specified boolean value
+   */
   public static void setPrefEnabled(String key, boolean enabled) {
     getPrefs(key).set(key, Boolean.toString(enabled));
   }

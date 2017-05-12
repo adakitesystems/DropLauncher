@@ -29,6 +29,7 @@ import droplauncher.mvc.controller.ControllerDAO;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -574,7 +575,7 @@ public class View implements EventHandler<DragEvent>  {
   }
 
   public static void displayMissingFieldDialog(String field) {
-    new SimpleAlert().showAndWait(AlertType.WARNING, DialogTitle.MISSING_FIELD, AdakiteUtils.formatAsSentence(field + " is not set"));
+    new SimpleAlert().showAndWait(AlertType.WARNING, DialogTitle.MISSING_FIELD, AdakiteUtils.formatAsSentence(field + " is not set", Locale.US));
   }
 
   public static void displayWarningDialog(DialogTitle title, String message) {
@@ -582,7 +583,7 @@ public class View implements EventHandler<DragEvent>  {
   }
 
   public static void displayOperationProhibitedDialog(String message) {
-    displayWarningDialog(DialogTitle.OPERATION_PROHIBITED, AdakiteUtils.formatAsSentence(message));
+    displayWarningDialog(DialogTitle.OPERATION_PROHIBITED, AdakiteUtils.formatAsSentence(message, Locale.US));
   }
 
 }

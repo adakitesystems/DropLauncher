@@ -22,7 +22,8 @@ import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 
 /**
- * Container class for easier GridPane manipulation.
+ * Container class which makes it easier to manipulate and organize GridPane
+ * objects.
  */
 public class CustomGridPane {
 

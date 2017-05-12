@@ -1,8 +1,8 @@
 package adakite.util;
 
-import adakite.debugging.Debugging;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -73,7 +73,7 @@ public class AdakiteUtils {
    */
   public static String newline(int n) {
     if (n < 1) {
-      return "";
+      throw new IllegalArgumentException("invalid number of newlines: " + n);
     }
     StringBuilder sb = new StringBuilder(n);
     for (int i = 0; i < n; i++) {
@@ -101,11 +101,28 @@ public class AdakiteUtils {
     int index;
     for (index = 0; index < str.length(); index++) {
       char ch = str.charAt(index);
-      if (ch != ' ') {
+      if (ch != ' ' && ch != '\t') {
         break;
       }
     }
     return str.substring(index, str.length());
+  }
+
+  /**
+   * Returns a string whose value is this string, with any trailing
+   * whitespace removed.
+   *
+   * @param str specified string
+   */
+  public static String trimRight(String str) {
+    int index;
+    for (index = str.length() - 1; index >= 0; index--) {
+      char ch = str.charAt(index);
+      if (ch != ' ' && ch != '\t') {
+        break;
+      }
+    }
+    return str.substring(0, index + 1);
   }
 
   /**
@@ -121,11 +138,11 @@ public class AdakiteUtils {
       return "";
     }
 
-    String[] tokens = str.split(" ");
+    String[] tokens = str.replace("\t", " ").trim().split(" ");
     StringBuilder ret = new StringBuilder(tokens.length);
     ret.append(tokens[0]);
     for (int i = 1; i < tokens.length; i++) {
-      ret.append(" " + tokens[i]);
+      ret.append(" ").append(tokens[i]);
     }
 
     return ret.toString();
@@ -204,12 +221,13 @@ public class AdakiteUtils {
    * @return
    *     a list of all files and subdirectories,
    *     otherwise an empty list if directory does not exist or is empty
+   * @throws FileNotFoundException
    * @throws IOException
    */
-  public static Path[] getDirectoryContents(Path path, boolean omitDirectoryNames)
-      throws IOException {
+  public static Path[] getDirectoryContents(Path path, boolean omitDirectoryNames) throws FileNotFoundException,
+                                                                                          IOException {
     if (!directoryExists(path)) {
-      return new Path[]{};
+      throw new FileNotFoundException();
     }
 
     ArrayList<Path> list = new ArrayList<>();
@@ -237,9 +255,11 @@ public class AdakiteUtils {
    *     a list of all files and subdirectories,
    *     otherwise an empty list if directory does not exist or is empty
    * @see #getDirectoryContents(Path, boolean)
+   * @throws FileNotFoundException
    * @throws IOException
    */
-  public static Path[] getDirectoryContents(Path path) throws IOException {
+  public static Path[] getDirectoryContents(Path path) throws FileNotFoundException,
+                                                              IOException {
     return getDirectoryContents(path, false);
   }
 
@@ -348,8 +368,15 @@ public class AdakiteUtils {
     return sb.toString();
   }
 
-  public static String formatAsSentence(String str) {
-    String firstChar = ("" + str.charAt(0)).toUpperCase(Locale.US);
+  /**
+   * Formats the specified string as a sentence by ensuring the first
+   * character is uppercase and the last character is a period.
+   *
+   * @param str specified string
+   * @param locale specified locale to use when converting to uppercase.
+   */
+  public static String formatAsSentence(String str, Locale locale) {
+    String firstChar = ("" + str.charAt(0)).toUpperCase(locale);
     String ret = firstChar + str.substring(1, str.length());
 
     String lastChar = "" + str.charAt(str.length() - 1);

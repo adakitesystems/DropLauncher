@@ -30,13 +30,13 @@ public class ControllerDAO {
   }
 
   public void startBWHRequest() throws InvalidStateException {
-    if (this.controller.getState() == State.IDLE) {
+    if (this.controller.getState() == Controller.State.IDLE) {
       this.controller.btnStartClicked();
     }
   }
 
   public void stopBWHRequest() throws InvalidStateException {
-    if (this.controller.getState() == State.RUNNING) {
+    if (this.controller.getState() == Controller.State.RUNNING) {
       this.controller.btnStartClicked();
     }
   }
