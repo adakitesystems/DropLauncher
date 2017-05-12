@@ -147,9 +147,7 @@ public class Tasklist {
       /* Tokenize line using the column lengths. */
       ArrayList<String> tokens = tokenizeTaskEntry(line, colLengths);
       if (tokens.size() < ColumnHeader.values().length) {
-        //TODO: Throw built-in or custom exception.
-        LOGGER.log(Debugging.getLogLevel(), "error parsing task entry line");
-        return;
+        throw new TasklistParseException("error parsing task entry line");
       }
 
       /* Set task information. */

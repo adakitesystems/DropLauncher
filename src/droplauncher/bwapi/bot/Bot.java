@@ -75,14 +75,6 @@ public class Bot {
     this.settings.set(Property.NAME.toString(), DEFAULT_NAME);
   }
 
-  //TODO: Right now this is not needed. Delete?
-//  /**
-//   * Returns a copy of the internal settings object.
-//   */
-//  public Settings getSettings() {
-//    return new Settings(this.settings);
-//  }
-
   /**
    * Returns the name of this bot.
    *
@@ -283,13 +275,16 @@ public class Bot {
     return this.settings.getValue(Property.EXTRA_FILE.toString() + Integer.toString(index));
   }
 
-  //TODO: Determine if this can be deleted.
-//  private int getNextExtraFileIndex() {
-//    int index = 0;
-//    while (this.settings.getValue(Property.EXTRA_FILE.toString() + Integer.toString(index)) != null) {
-//      index++;
-//    }
-//    return index;
-//  }
+  /**
+   * This method is currently not used. It is kept so it is not forgotten how the
+   * extra bot file system works.
+   */
+  private int getNextExtraFileIndex() {
+    int index = 0;
+    while (this.settings.getValue(Property.EXTRA_FILE.toString() + Integer.toString(index)) != null) {
+      index++;
+    }
+    return index;
+  }
 
 }

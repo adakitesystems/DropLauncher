@@ -56,10 +56,6 @@ public class StreamGobbler extends Thread {
     return this;
   }
 
-  /*
-  TODO: Check if thread failed and provide some indication other than throwing an error to the log.
-        Update: Now displaying an exception dialog.
-  */
   @Override
   public void run() {
     try {
