@@ -327,9 +327,6 @@ public class AdakiteUtils {
    * @throws IllegalArgumentException if the specified path is not a file
    */
   public static String getFileExtension(Path path) {
-    if (!AdakiteUtils.fileExists(path)) {
-      throw new IllegalArgumentException(Debugging.fileDoesNotExist(path));
-    }
     String pathStr = path.getFileName().toString();
     int index = pathStr.lastIndexOf('.');
     return (index < 0) ? null : pathStr.substring(index + 1, pathStr.length());

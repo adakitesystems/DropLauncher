@@ -21,6 +21,7 @@ import adakite.util.AdakiteUtils;
 import droplauncher.mvc.view.View.DialogTitle;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.file.Paths;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
@@ -56,9 +57,7 @@ public class ExceptionAlert {
     }
 
     if (ex != null) {
-      String headerText = FilenameUtils.getExtension(ex.getClass().getName());
-
-//      ex.printStackTrace();
+      String headerText = AdakiteUtils.getFileExtension(Paths.get(ex.getClass().getName()));
 
       alert.setTitle("Exception Dialog");
       alert.setHeaderText(headerText);

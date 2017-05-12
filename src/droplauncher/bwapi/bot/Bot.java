@@ -28,6 +28,7 @@ import droplauncher.bwapi.bot.exception.MissingBotRaceException;
 import droplauncher.bwapi.bot.exception.MissingBwapiDllException;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.exception.StarcraftProfileNameException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Locale;
 import org.apache.commons.io.FilenameUtils;
@@ -257,7 +258,7 @@ public class Bot {
    */
   public Type getType() throws MissingBotFileException {
     String path = getPath();
-    String ext = FilenameUtils.getExtension(path).toLowerCase(Locale.US);
+    String ext = AdakiteUtils.getFileExtension(Paths.get(path)).toLowerCase(Locale.US);
     switch (ext) {
       case "dll":
         return Type.DLL;

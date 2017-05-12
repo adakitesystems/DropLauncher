@@ -243,7 +243,7 @@ public class BWHeadless {
     if (this.bot.getType() == Bot.Type.CLIENT) {
       /* Compile bot client arguments. */
       CommandBuilder clientCommand = new CommandBuilder();
-      switch (FilenameUtils.getExtension(this.bot.getPath()).toLowerCase(Locale.US)) {
+      switch (AdakiteUtils.getFileExtension(Paths.get(this.bot.getPath())).toLowerCase(Locale.US)) {
         case "exe":
           clientCommand.setPath(Paths.get(this.bot.getPath()));
           break;
