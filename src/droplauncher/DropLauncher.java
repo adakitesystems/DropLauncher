@@ -61,7 +61,7 @@ public class DropLauncher {
   }
 
   public static final String PROGRAM_NAME = "DropLauncher";
-  public static final String PROGRAM_VERSION = "0.3.11a";
+  public static final String PROGRAM_VERSION = "0.3.12a";
   public static final String PROGRAM_AUTHOR = "Adakite";
   public static final String PROGRAM_TITLE = PROGRAM_NAME + " v" + PROGRAM_VERSION;
   public static final String PROGRAM_GITHUB = "https://github.com/AdakiteSystems/DropLauncher";

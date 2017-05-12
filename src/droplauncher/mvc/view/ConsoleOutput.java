@@ -95,23 +95,41 @@ public class ConsoleOutput {
       this.outputObject.appendText(message);
     });
 
+    /* Test for auto-eject option. */
     if (message.startsWith(View.MessagePrefix.BWHEADLESS.get() + View.Message.GAME_HAS_ENDED.toString())
         && Model.hasPrefValue(DropLauncher.Property.AUTO_EJECT_BOT.toString())
         && Model.isPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString())) {
       try {
         Thread.sleep(Model.AUTO_EJECT_DELAY);
-        this.controller.btnStartClicked();
+      } catch (InterruptedException ex) {
+        /* Do nothing. */
+      } catch (Exception ex) {
+        Platform.runLater(() -> {
+          new ExceptionAlert().showAndWait("something went wrong with the auto-eject timer", ex);
+        });
+      }
+      try {
+        this.controller.stopBWHRequest();
       } catch (Exception ex) {
         Platform.runLater(() -> {
           new ExceptionAlert().showAndWait("something went wrong with auto-ejecting the bot", ex);
         });
       }
+    /* Test for auto-rejoin option. */
     } else if (message.startsWith(View.MessagePrefix.DROPLAUNCHER.get() + View.Message.BOT_EJECTED.toString())
         && Model.hasPrefValue(DropLauncher.Property.AUTO_BOT_REJOIN.toString())
         && Model.isPrefEnabled(DropLauncher.Property.AUTO_BOT_REJOIN.toString())) {
       try {
         Thread.sleep(Model.AUTO_REJOIN_DELAY);
-        this.controller.btnStartClicked();
+      } catch (InterruptedException ex) {
+        /* Do nothing. */
+      } catch (Exception ex) {
+        Platform.runLater(() -> {
+          new ExceptionAlert().showAndWait("something went wrong with the auto-rejoin timer", ex);
+        });
+      }
+      try {
+        this.controller.startBWHRequest();
       } catch (Exception ex) {
         Platform.runLater(() -> {
           new ExceptionAlert().showAndWait("something went wrong with auto-rejoin", ex);

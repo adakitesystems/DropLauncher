@@ -29,9 +29,16 @@ public class ControllerDAO {
     this.controller = controller;
   }
 
-  public ControllerDAO btnStartClicked() throws InvalidStateException {
-    this.controller.btnStartClicked();
-    return this;
+  public void startBWHRequest() throws InvalidStateException {
+    if (this.controller.getState() == State.IDLE) {
+      this.controller.btnStartClicked();
+    }
+  }
+
+  public void stopBWHRequest() throws InvalidStateException {
+    if (this.controller.getState() == State.RUNNING) {
+      this.controller.btnStartClicked();
+    }
   }
 
 }
