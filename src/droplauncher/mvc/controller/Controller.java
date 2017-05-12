@@ -24,6 +24,7 @@ import adakite.ini.exception.IniParseException;
 import adakite.md5sum.MD5Checksum;
 import adakite.util.AdakiteUtils;
 import adakite.util.DirectoryMonitor;
+import adakite.windows.task.exception.TasklistParseException;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwapi.bot.Bot;
 import droplauncher.mvc.model.Model;
@@ -115,7 +116,8 @@ public class Controller {
                                         MissingBwapiDllException,
                                         MissingStarcraftExeException,
                                         MissingBotException,
-                                        InvalidArgumentException {
+                                        InvalidArgumentException,
+                                        TasklistParseException {
     /* Init DirectoryMonitor if required. */
     Path starcraftPath = Starcraft.getPath();
     if (this.directoryMonitor == null) {
@@ -137,7 +139,8 @@ public class Controller {
                                        InvalidStateException,
                                        ClosePipeException,
                                        MissingBotFileException,
-                                       MissingStarcraftExeException {
+                                       MissingStarcraftExeException,
+                                       TasklistParseException {
     this.model.getBWHeadless().stop();
 
     if (Model.isPrefEnabled(BWAPI.Property.COPY_WRITE_READ.toString())) {
@@ -478,7 +481,11 @@ public class Controller {
             });
             setState(State.RUNNING);
             success = true;
-          } catch (InvalidStateException | IniParseException | IOException | InvalidArgumentException ex) {
+          } catch (InvalidStateException
+              | IniParseException
+              | IOException
+              | InvalidArgumentException
+              | TasklistParseException ex) {
             Platform.runLater(() -> {
               new ExceptionAlert().showAndWait(null, ex);
             });

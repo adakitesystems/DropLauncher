@@ -32,11 +32,12 @@ public class CommandBuilder {
    *
    * @param path path to the specified executable
    */
-  public void setPath(Path path) {
+  public CommandBuilder setPath(Path path) {
     if (path == null) {
       throw new IllegalArgumentException(Debugging.nullObject("path"));
     }
     this.path = path;
+    return this;
   }
 
   /**
@@ -59,11 +60,12 @@ public class CommandBuilder {
    *
    * @param arg specified argument
    */
-  public void addArg(String arg) {
+  public CommandBuilder addArg(String arg) {
     if (AdakiteUtils.isNullOrEmpty(arg)) {
       throw new IllegalArgumentException(Debugging.emptyString("arg"));
     }
     this.args.add(arg);
+    return this;
   }
 
   /**
@@ -85,16 +87,18 @@ public class CommandBuilder {
    *
    * @param args specified argument list.
    */
-  public void setArgs(String[] args) {
+  public CommandBuilder setArgs(String[] args) {
     clearArgs();
     this.args.addAll(Arrays.asList(args));
+    return this;
   }
 
   /**
    * Clears the current argument list.
    */
-  public void clearArgs() {
+  public CommandBuilder clearArgs() {
     this.args.clear();
+    return this;
   }
 
   /**

@@ -1,9 +1,11 @@
 package adakite.windows.task;
 
 import adakite.debugging.Debugging;
+import adakite.process.CommandBuilder;
 import adakite.util.AdakiteUtils;
 import adakite.process.SimpleProcess;
 import adakite.windows.Windows;
+import adakite.windows.task.exception.TasklistParseException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -55,7 +57,6 @@ public class Tasklist {
     this.tasks = new ArrayList<>();
   }
 
-  //TODO: Use a CommandBuilder object.
   /**
    * Kill the task indicated by the specified process ID.
    *
@@ -63,11 +64,15 @@ public class Tasklist {
    * @throws IOException if an I/O error occurs
    */
   public static void kill(String pid) throws IOException {
-    String[] args = new String[Windows.Program.TASKKILL.getPredefinedArgs().length + 1];
-    System.arraycopy(Windows.Program.TASKKILL.getPredefinedArgs(), 0, args, 0, Windows.Program.TASKKILL.getPredefinedArgs().length);
-    args[args.length - 1] = pid;
+//    String[] args = new String[Windows.Program.TASKKILL.getPredefinedArgs().length + 1];
+//    System.arraycopy(Windows.Program.TASKKILL.getPredefinedArgs(), 0, args, 0, Windows.Program.TASKKILL.getPredefinedArgs().length);
+//    args[args.length - 1] = pid;
+    CommandBuilder command = new CommandBuilder()
+        .setPath(Windows.Program.TASKKILL.getPath().toAbsolutePath())
+        .setArgs(Windows.Program.TASKKILL.getPredefinedArgs())
+        .addArg(pid);
     SimpleProcess process = new SimpleProcess();
-    process.run(Windows.Program.TASKKILL.getPath().toAbsolutePath(), args);
+    process.run(command.getPath(), command.getArgs());
   }
 
   /**
@@ -76,8 +81,9 @@ public class Tasklist {
    * @param update whether to update the list before returning
    *
    * @throws IOException if an I/O error occurs
+   * @throws TasklistParseException
    */
-  public ArrayList<Task> getTasks(boolean update) throws IOException {
+  public ArrayList<Task> getTasks(boolean update) throws IOException, TasklistParseException {
     if (update) {
       update();
     }
@@ -91,7 +97,7 @@ public class Tasklist {
    * @see #getTasks(boolean)
    * @throws IOException if an I/O error occurs
    */
-  public ArrayList<Task> getTasks() throws IOException {
+  public ArrayList<Task> getTasks() throws IOException, TasklistParseException {
     return getTasks(false);
   }
 
@@ -99,8 +105,9 @@ public class Tasklist {
    * Runs the Windows Tasklist program and updates the internal tasklist.
    *
    * @throws IOException if an I/O error occurs
+   * @throws TasklistParseException
    */
-  public void update() throws IOException {
+  public void update() throws IOException, TasklistParseException {
     this.tasks.clear();
 
     SimpleProcess process = new SimpleProcess();
@@ -115,9 +122,7 @@ public class Tasklist {
       }
     }
     if (index >= process.getLog().size()) {
-      //TODO: Throw built-in or custom exception.
-      LOGGER.log(Debugging.getLogLevel(), "error parsing Tasklist output");
-      return;
+      throw new TasklistParseException("error parsing Tasklist output");
     }
 
     /* Determine length of each column. */
@@ -199,7 +204,7 @@ public class Tasklist {
             return false;
           }
         }
-      } catch (IOException ex) {
+      } catch (Exception ex) {
         LOGGER.log(Debugging.getLogLevel(), null, ex);
         return false;
       }

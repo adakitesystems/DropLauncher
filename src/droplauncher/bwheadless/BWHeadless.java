@@ -31,6 +31,7 @@ import droplauncher.util.process.CustomProcess;
 import adakite.windows.task.Task;
 import adakite.windows.task.TaskTracker;
 import adakite.windows.task.Tasklist;
+import adakite.windows.task.exception.TasklistParseException;
 import droplauncher.bwapi.bot.Bot;
 import droplauncher.bwapi.bot.exception.MissingBotFileException;
 import droplauncher.bwapi.bot.exception.MissingBotNameException;
@@ -189,6 +190,7 @@ public class BWHeadless {
    * @throws MissingStarcraftExeException
    * @throws InvalidArgumentException
    * @throws InvalidStateException
+   * @throws TasklistParseException
    */
   public void start() throws IOException,
                              MissingBotException,
@@ -200,7 +202,8 @@ public class BWHeadless {
                              MissingBwapiDllException,
                              MissingStarcraftExeException,
                              InvalidArgumentException,
-                             InvalidStateException {
+                             InvalidStateException,
+                             TasklistParseException {
     this.taskTracker.reset();
 
     configureBwapi();
@@ -272,10 +275,12 @@ public class BWHeadless {
    * @throws IOException if an I/O error occurs
    * @throws ClosePipeException
    * @throws MissingBotFileException
+   * @throws TasklistParseException
    */
   public void stop() throws IOException,
                             ClosePipeException,
-                            MissingBotFileException {
+                            MissingBotFileException,
+                            TasklistParseException {
     /* Kill new tasks that were started after bwheadless. */
     String botName = FilenameUtils.getBaseName(this.bot.getPath());
     this.taskTracker.update();
