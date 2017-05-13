@@ -143,7 +143,7 @@ public class Controller {
                                        TasklistParseException {
     this.model.getBWHeadless().stop();
 
-    if (Model.isPrefEnabled(BWAPI.Property.COPY_WRITE_READ.toString())) {
+    if (Model.isPrefEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString())) {
       /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
       Path starcraftDirectory = Starcraft.getPath();
       Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);
@@ -178,7 +178,7 @@ public class Controller {
         throw new InvalidStateException(errorMessage);
     }
 
-    if (Model.isPrefEnabled(Starcraft.Property.CLEAN_SC_DIR.toString())) {
+    if (Model.isPrefEnabled(Starcraft.PropertyKey.CLEAN_SC_DIR.toString())) {
       /* Clean up StarCraft directory. */
       try {
         if (this.directoryMonitor != null) {
@@ -440,7 +440,7 @@ public class Controller {
     /* Check if BWAPI.dll is known. */
     String bwapiDllVersion = getBwapiDllVersion();
     if (this.state == State.IDLE
-        && Model.isPrefEnabled(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString())
+        && Model.isPrefEnabled(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString())
         && !AdakiteUtils.isNullOrEmpty(bwapiDllVersion)
         && bwapiDllVersion.equalsIgnoreCase(BWAPI.DLL_UNKNOWN)) {
       boolean response = new YesNoDialog().userConfirms(

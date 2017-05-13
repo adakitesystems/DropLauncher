@@ -30,7 +30,7 @@ import java.util.Locale;
  */
 public class BWAPI {
 
-  public enum Property {
+  public enum PropertyKey {
 
     COPY_WRITE_READ("copy_write_read"),
     WARN_UNKNOWN_BWAPI_DLL("warn_bwapi_dll")
@@ -38,7 +38,7 @@ public class BWAPI {
 
     private final String str;
 
-    private Property(String str) {
+    private PropertyKey(String str) {
       this.str = str;
     }
 

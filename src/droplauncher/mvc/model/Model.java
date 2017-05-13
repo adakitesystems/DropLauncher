@@ -45,12 +45,12 @@ public class Model {
   }
 
   public void ensureDefaultSettings() {
-    if (!Model.hasPrefValue(DropLauncher.Property.VERSION.toString())) {
+    if (!Model.hasPrefValue(DropLauncher.PropertyKey.VERSION.toString())) {
       /* Version is not set. */
-      Model.setPref(DropLauncher.Property.VERSION.toString(), DropLauncher.PROGRAM_VERSION);
+      Model.setPref(DropLauncher.PropertyKey.VERSION.toString(), DropLauncher.PROGRAM_VERSION);
     } else {
       /* Check if current version was loaded last time. */
-      String previousVersion = Model.getPref(DropLauncher.Property.VERSION.toString());
+      String previousVersion = Model.getPref(DropLauncher.PropertyKey.VERSION.toString());
       if (!previousVersion.equalsIgnoreCase(DropLauncher.PROGRAM_VERSION)) {
         /* Newer/older version detected. */
         try {
@@ -82,17 +82,17 @@ public class Model {
         System.exit(0);
       }
     }
-    if (!Model.hasPrefValue(Starcraft.Property.CLEAN_SC_DIR.toString())) {
-      Model.setPrefEnabled(Starcraft.Property.CLEAN_SC_DIR.toString(), true);
+    if (!Model.hasPrefValue(Starcraft.PropertyKey.CLEAN_SC_DIR.toString())) {
+      Model.setPrefEnabled(Starcraft.PropertyKey.CLEAN_SC_DIR.toString(), true);
     }
-    if (!Model.hasPrefValue(BWAPI.Property.COPY_WRITE_READ.toString())) {
-      Model.setPrefEnabled(BWAPI.Property.COPY_WRITE_READ.toString(), true);
+    if (!Model.hasPrefValue(BWAPI.PropertyKey.COPY_WRITE_READ.toString())) {
+      Model.setPrefEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString(), true);
     }
-    if (!Model.hasPrefValue(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString())) {
-      Model.setPrefEnabled(BWAPI.Property.WARN_UNKNOWN_BWAPI_DLL.toString(), true);
+    if (!Model.hasPrefValue(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString())) {
+      Model.setPrefEnabled(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString(), true);
     }
-    if (!Model.hasPrefValue(View.Property.SHOW_LOG_WINDOW.toString())) {
-      Model.setPrefEnabled(View.Property.SHOW_LOG_WINDOW.toString(), true);
+    if (!Model.hasPrefValue(View.PropertyKey.SHOW_LOG_WINDOW.toString())) {
+      Model.setPrefEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString(), true);
     }
     /* Disabled for now. Force user to be aware and select which StarCraft directory will be used. */
 //    if (!Model.hasPrefValue(Starcraft.Property.STARCRAFT_EXE.toString())) {
@@ -106,36 +106,36 @@ public class Model {
 //        /* Do nothing. */
 //      }
 //    }
-    if (!Model.hasPrefValue(DropLauncher.Property.AUTO_EJECT_BOT.toString())) {
-      Model.setPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString(), true);
+    if (!Model.hasPrefValue(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString())) {
+      Model.setPrefEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString(), true);
     }
-    if (!Model.hasPrefValue(DropLauncher.Property.AUTO_BOT_REJOIN.toString())) {
-      Model.setPrefEnabled(DropLauncher.Property.AUTO_BOT_REJOIN.toString(), false);
+    if (!Model.hasPrefValue(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString())) {
+      Model.setPrefEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString(), false);
     }
   }
 
   private static Prefs getPrefs(String uniqueKey) {
     uniqueKey = uniqueKey.toLowerCase(Locale.US);
 
-    for (DropLauncher.Property val : DropLauncher.Property.values()) {
+    for (DropLauncher.PropertyKey val : DropLauncher.PropertyKey.values()) {
       if (uniqueKey.equals(val.toString())) {
         return DropLauncher.PREF_ROOT;
       }
     }
 
-    for (BWAPI.Property val : BWAPI.Property.values()) {
+    for (BWAPI.PropertyKey val : BWAPI.PropertyKey.values()) {
       if (uniqueKey.equals(val.toString())) {
         return BWAPI.PREF_ROOT;
       }
     }
 
-    for (View.Property val : View.Property.values()) {
+    for (View.PropertyKey val : View.PropertyKey.values()) {
       if (uniqueKey.equals(val.toString())) {
         return View.PREF_ROOT;
       }
     }
 
-    for (Starcraft.Property val : Starcraft.Property.values()) {
+    for (Starcraft.PropertyKey val : Starcraft.PropertyKey.values()) {
       if (uniqueKey.equals(val.toString())) {
         return Starcraft.PREF_ROOT;
       }

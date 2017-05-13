@@ -32,7 +32,7 @@ import java.util.Locale;
  */
 public class Starcraft {
 
-  public enum Property {
+  public enum PropertyKey {
 
     STARCRAFT_EXE("starcraft_exe"),
     CLEAN_SC_DIR("clean_sc_dir"),
@@ -40,7 +40,7 @@ public class Starcraft {
 
     private final String str;
 
-    private Property(String str) {
+    private PropertyKey(String str) {
       this.str = str;
     }
 
@@ -154,8 +154,8 @@ public class Starcraft {
    * @throws MissingStarcraftExeException if the StarCraft path is not set
    */
   public static Path getPath() throws MissingStarcraftExeException {
-    if (Model.hasPrefValue(Starcraft.Property.STARCRAFT_EXE.toString())) {
-      return AdakiteUtils.getParentDirectory(Paths.get(Model.getPref(Starcraft.Property.STARCRAFT_EXE.toString())));
+    if (Model.hasPrefValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString())) {
+      return AdakiteUtils.getParentDirectory(Paths.get(Model.getPref(Starcraft.PropertyKey.STARCRAFT_EXE.toString())));
     } else {
       throw new MissingStarcraftExeException();
     }

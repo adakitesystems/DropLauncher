@@ -40,7 +40,7 @@ import java.util.prefs.Preferences;
  */
 public class DropLauncher {
 
-  public enum Property {
+  public enum PropertyKey {
 
     VERSION("version"),
     AUTO_EJECT_BOT("auto_eject_bot"),
@@ -49,7 +49,7 @@ public class DropLauncher {
 
     private final String str;
 
-    private Property(String str) {
+    private PropertyKey(String str) {
       this.str = str;
     }
 

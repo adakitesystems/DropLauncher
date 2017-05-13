@@ -60,13 +60,13 @@ public class View implements EventHandler<DragEvent>  {
 
   private static final Logger LOGGER = Logger.getLogger(View.class.getName());
 
-  public enum Property {
+  public enum PropertyKey {
 
     SHOW_LOG_WINDOW("show_log_window");
 
     private final String str;
 
-    private Property(String str) {
+    private PropertyKey(String str) {
       this.str = str;
     }
 
@@ -329,15 +329,15 @@ public class View implements EventHandler<DragEvent>  {
     this.btnStart.getStyleClass().add("launch-btn");
     this.chkAutoEject = new CheckBox();
     this.chkAutoEject.setText("Auto-eject bot after game has ended");
-    this.chkAutoEject.setSelected(Model.isPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString()));
+    this.chkAutoEject.setSelected(Model.isPrefEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString()));
     this.chkAutoEject.setOnAction(e -> {
-      Model.setPrefEnabled(DropLauncher.Property.AUTO_EJECT_BOT.toString(), this.chkAutoEject.isSelected());
+      Model.setPrefEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString(), this.chkAutoEject.isSelected());
     });
     this.chkAutoRejoin = new CheckBox();
     this.chkAutoRejoin.setText("Auto-connect bot to game lobby after eject");
-    this.chkAutoRejoin.setSelected(Model.isPrefEnabled(DropLauncher.Property.AUTO_BOT_REJOIN.toString()));
+    this.chkAutoRejoin.setSelected(Model.isPrefEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString()));
     this.chkAutoRejoin.setOnAction(e -> {
-      Model.setPrefEnabled(DropLauncher.Property.AUTO_BOT_REJOIN.toString(), this.chkAutoRejoin.isSelected());
+      Model.setPrefEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString(), this.chkAutoRejoin.isSelected());
     });
     this.consoleOutput = new ConsoleOutput();
     this.consoleOutput.getBlacklist().add("fps: "); /* bwheadless.exe spam */
@@ -407,7 +407,7 @@ public class View implements EventHandler<DragEvent>  {
     boxClearConsole.setAlignment(Pos.CENTER_RIGHT);
     VBox boxStartConsole = new VBox();
     boxStartConsole.getChildren().add(this.btnStart);
-    if (Model.isPrefEnabled(View.Property.SHOW_LOG_WINDOW.toString())) {
+    if (Model.isPrefEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString())) {
       boxStartConsole.getChildren().add(this.consoleOutput.get());
       boxStartConsole.getChildren().add(boxClearConsole);
     }

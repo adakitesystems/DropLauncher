@@ -38,7 +38,7 @@ import org.apache.commons.io.FilenameUtils;
  */
 public class Bot {
 
-  private enum Property {
+  private enum PropertyKey {
 
     NAME("name"),
     RACE("race"),
@@ -49,7 +49,7 @@ public class Bot {
 
     private final String str;
 
-    private Property(String str) {
+    private PropertyKey(String str) {
       this.str = str;
     }
 
@@ -80,7 +80,7 @@ public class Bot {
    * @throws MissingBotNameException if name is not set
    */
   public String getName() throws MissingBotNameException {
-    String val = this.settings.getValue(Property.NAME.toString());
+    String val = this.settings.getValue(PropertyKey.NAME.toString());
     if (AdakiteUtils.isNullOrEmpty(val, true)) {
       throw new MissingBotNameException();
     }
@@ -106,7 +106,7 @@ public class Bot {
     if (!cleaned.equals(nameTrimmed)) {
       throw new StarcraftProfileNameException(name);
     }
-    this.settings.set(Property.NAME.toString(), name);
+    this.settings.set(PropertyKey.NAME.toString(), name);
   }
 
   /**
@@ -115,7 +115,7 @@ public class Bot {
    * @throws MissingBotRaceException if race is not set
    */
   public String getRace() throws MissingBotRaceException {
-    String val = this.settings.getValue(Property.RACE.toString());
+    String val = this.settings.getValue(PropertyKey.RACE.toString());
     if (AdakiteUtils.isNullOrEmpty(val, true)) {
       throw new MissingBotRaceException();
     }
@@ -136,7 +136,7 @@ public class Bot {
       }
       throw new InvalidArgumentException(errorMessage);
     }
-    this.settings.set(Property.RACE.toString(), race);
+    this.settings.set(PropertyKey.RACE.toString(), race);
   }
 
   /**
@@ -145,7 +145,7 @@ public class Bot {
    * @throws MissingBotFileException if path is not set
    */
   public String getPath() throws MissingBotFileException {
-    String val = this.settings.getValue(Property.PATH.toString());
+    String val = this.settings.getValue(PropertyKey.PATH.toString());
     if (AdakiteUtils.isNullOrEmpty(val, true)) {
       throw new MissingBotFileException();
     }
@@ -162,7 +162,7 @@ public class Bot {
     if (AdakiteUtils.isNullOrEmpty(path, true)) {
       throw new InvalidArgumentException(Debugging.emptyString());
     }
-    this.settings.set(Property.PATH.toString(), path);
+    this.settings.set(PropertyKey.PATH.toString(), path);
   }
 
   /**
@@ -171,7 +171,7 @@ public class Bot {
    * @throws MissingBwapiDllException if BWAPI.dll is not set
    */
   public String getBwapiDll() throws MissingBwapiDllException {
-    String val = this.settings.getValue(Property.BWAPI_DLL.toString());
+    String val = this.settings.getValue(PropertyKey.BWAPI_DLL.toString());
     if (AdakiteUtils.isNullOrEmpty(val, true)) {
       throw new MissingBwapiDllException();
     }
@@ -193,7 +193,7 @@ public class Bot {
     } else if (!FilenameUtils.getName(path).toLowerCase(Locale.US).equals("bwapi.dll")) {
       throw new InvalidBwapiDllException("filename does not equal \"BWAPI.dll\": " + path);
     }
-    this.settings.set(Property.BWAPI_DLL.toString(), path);
+    this.settings.set(PropertyKey.BWAPI_DLL.toString(), path);
   }
 
   /**
@@ -230,7 +230,7 @@ public class Bot {
     /* Check for existing extra bot files. */
     int index = 0;
     String val;
-    while ((val = this.settings.getValue(Property.EXTRA_FILE.toString() + Integer.toString(index))) != null) {
+    while ((val = this.settings.getValue(PropertyKey.EXTRA_FILE.toString() + Integer.toString(index))) != null) {
       if (FilenameUtils.getName(path).equalsIgnoreCase(FilenameUtils.getName(val))) {
         /* Save index of existing extra bot file. */
         break;
@@ -239,7 +239,7 @@ public class Bot {
     }
 
     /* Add/overwrite extra bot file. */
-    this.settings.set(Property.EXTRA_FILE.toString() + Integer.toString(index), path);
+    this.settings.set(PropertyKey.EXTRA_FILE.toString() + Integer.toString(index), path);
   }
 
   /**
@@ -272,7 +272,7 @@ public class Bot {
    *     otherwise null
    */
   private String getExtraFile(int index) {
-    return this.settings.getValue(Property.EXTRA_FILE.toString() + Integer.toString(index));
+    return this.settings.getValue(PropertyKey.EXTRA_FILE.toString() + Integer.toString(index));
   }
 
   /**
@@ -281,7 +281,7 @@ public class Bot {
    */
   private int getNextExtraFileIndex() {
     int index = 0;
-    while (this.settings.getValue(Property.EXTRA_FILE.toString() + Integer.toString(index)) != null) {
+    while (this.settings.getValue(PropertyKey.EXTRA_FILE.toString() + Integer.toString(index)) != null) {
       index++;
     }
     return index;
