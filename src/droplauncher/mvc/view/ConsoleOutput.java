@@ -46,7 +46,7 @@ public class ConsoleOutput {
   }
 
   /**
-   * Returns the internal UI object to which data is printed.
+   * Returns the internal UI object to which the text is printed.
    */
   public TextArea get() {
     return this.outputObject;
