@@ -38,7 +38,7 @@ import org.apache.commons.io.FilenameUtils;
  */
 public class Bot {
 
-  public enum Property {
+  private enum Property {
 
     NAME("name"),
     RACE("race"),
@@ -72,7 +72,6 @@ public class Bot {
 
   public Bot() {
     this.settings = new Settings();
-    this.settings.set(Property.NAME.toString(), DEFAULT_NAME);
   }
 
   /**
@@ -100,7 +99,7 @@ public class Bot {
   public void setName(String name) throws InvalidArgumentException,
                                           StarcraftProfileNameException {
     if (AdakiteUtils.isNullOrEmpty(name, true)) {
-      throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("name"));
+      throw new InvalidArgumentException(Debugging.emptyString());
     }
     String nameTrimmed = name.trim();
     String cleaned = Starcraft.cleanProfileName(nameTrimmed);
@@ -136,9 +135,8 @@ public class Bot {
         errorMessage += ": " + race;
       }
       throw new InvalidArgumentException(errorMessage);
-    } else {
-      this.settings.set(Property.RACE.toString(), race);
     }
+    this.settings.set(Property.RACE.toString(), race);
   }
 
   /**
@@ -162,7 +160,7 @@ public class Bot {
    */
   public void setPath(String path) throws InvalidArgumentException {
     if (AdakiteUtils.isNullOrEmpty(path, true)) {
-      throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("path"));
+      throw new InvalidArgumentException(Debugging.emptyString());
     }
     this.settings.set(Property.PATH.toString(), path);
   }
@@ -191,7 +189,7 @@ public class Bot {
   public void setBwapiDll(String path) throws InvalidArgumentException,
                                               InvalidBwapiDllException {
     if (AdakiteUtils.isNullOrEmpty(path, true)) {
-      throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("path"));
+      throw new InvalidArgumentException(Debugging.emptyString());
     } else if (!FilenameUtils.getName(path).toLowerCase(Locale.US).equals("bwapi.dll")) {
       throw new InvalidBwapiDllException("filename does not equal \"BWAPI.dll\": " + path);
     }
@@ -217,7 +215,9 @@ public class Bot {
   }
 
   /**
-   * Adds the specified path as a path to an extra bot file.
+   * Adds the specified path as a path to an extra bot file. If the specified
+   * path's filename matches a filename of an existing extra bot file path, the
+   * old path will be overwritten.
    *
    * @param path specified path to file
    * @throws InvalidArgumentException if path is null or empty

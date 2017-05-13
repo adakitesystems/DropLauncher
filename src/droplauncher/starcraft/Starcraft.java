@@ -17,6 +17,7 @@
 
 package droplauncher.starcraft;
 
+import adakite.debugging.Debugging;
 import adakite.prefs.Prefs;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.model.Model;
@@ -125,7 +126,7 @@ public class Starcraft {
    */
   public static String cleanProfileName(String str) {
     if (AdakiteUtils.isNullOrEmpty(str, true)) {
-      return "";
+      throw new IllegalArgumentException(Debugging.emptyString());
     }
 
     StringBuilder sb = new StringBuilder();
