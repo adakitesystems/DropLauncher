@@ -114,33 +114,34 @@ public class BWHeadless {
   }
 
   public static final String DEFAULT_NAME = "bwheadless.exe";
-  public static final Path DEFAULT_EXE_PATH = Paths.get("bwheadless.exe");
-
+  private static final Path DEFAULT_EXE_PATH = Paths.get("bwheadless.exe");
   public static final String DEFAULT_BOT_NAME = "BOT";
   public static final Race DEFAULT_BOT_RACE = Race.RANDOM;
 
+  private Path path;
   private CustomProcess bwheadlessProcess;
   private CustomProcess botProcess;
-
   private Path starcraftExe;
-
   private Bot bot;
-
   private ConsoleOutputDAO consoleOutput;
-
   private TaskTracker taskTracker;
 
   public BWHeadless() {
+    this.path = DEFAULT_EXE_PATH;
     this.bwheadlessProcess = new CustomProcess();
     this.botProcess = new CustomProcess();
-
     this.starcraftExe = null;
-
     this.bot = new Bot();
-
     this.consoleOutput = null;
-
     this.taskTracker = new TaskTracker();
+  }
+
+  public Path getPath() {
+    return this.path;
+  }
+
+  public void setPath(Path path) {
+    this.path = path;
   }
 
   public Path getStarcraftExe() {
@@ -221,7 +222,7 @@ public class BWHeadless {
 
     /* Compile bwheadless arguments. */
     CommandBuilder bwhCommand = new CommandBuilder();
-    bwhCommand.setPath(DEFAULT_EXE_PATH.toAbsolutePath());
+    bwhCommand.setPath(this.path.toAbsolutePath());
     bwhCommand.addArg(Argument.STARCRAFT_EXE.toString());
     bwhCommand.addArg(this.starcraftExe.toString());
     bwhCommand.addArg(Argument.JOIN_GAME.toString());
