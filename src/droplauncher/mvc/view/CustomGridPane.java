@@ -18,6 +18,7 @@
 package droplauncher.mvc.view;
 
 import java.util.ArrayList;
+import java.util.List;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 
@@ -30,7 +31,7 @@ public class CustomGridPane {
   private GridPane gridPane;
   private int column; /* current column cursor */
   private int row; /* current row cursor */
-  private ArrayList<Node> nodes;
+  private List<Node> nodes;
 
   public CustomGridPane() {
     this.gridPane = new GridPane();

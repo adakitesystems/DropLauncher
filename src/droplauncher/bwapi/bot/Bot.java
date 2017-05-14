@@ -30,6 +30,7 @@ import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.exception.StarcraftProfileNameException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import org.apache.commons.io.FilenameUtils;
 
@@ -204,8 +205,8 @@ public class Bot {
    *
    * @see #addExtraFile(java.lang.String)
    */
-  public ArrayList<String> getExtraFiles() {
-    ArrayList<String> files = new ArrayList<>();
+  public List<String> getExtraFiles() {
+    List<String> files = new ArrayList<>();
     String file;
     int index = 0;
     while (!AdakiteUtils.isNullOrEmpty(file = getExtraFile(index++))) {

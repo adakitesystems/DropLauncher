@@ -297,7 +297,7 @@ public class Controller {
     /* Parse all objects dropped into a complete list of files dropped since
        dropping a directory does NOT include all subdirectories and
        files by default. */
-    ArrayList<Path> fileList = new ArrayList<>();
+    List<Path> fileList = new ArrayList<>();
     for (File file : files) {
       if (file.isDirectory()) {
         Path[] tmpList = AdakiteUtils.getDirectoryContents(file.toPath(), true);

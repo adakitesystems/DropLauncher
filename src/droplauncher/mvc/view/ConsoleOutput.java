@@ -22,6 +22,7 @@ import droplauncher.DropLauncher;
 import droplauncher.mvc.controller.ControllerDAO;
 import droplauncher.mvc.model.Model;
 import java.util.ArrayList;
+import java.util.List;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 
@@ -32,7 +33,7 @@ import javafx.scene.control.TextArea;
 public class ConsoleOutput {
 
   private TextArea outputObject;
-  private ArrayList<String> blacklist; /* lines to be ignored which contain this text */
+  private List<String> blacklist; /* lines to be ignored which contain this text */
   private ControllerDAO controller;
 
   public ConsoleOutput() {
@@ -63,7 +64,7 @@ public class ConsoleOutput {
    * Returns the list of strings which indicate that a line containing
    * these strings should be ignored.
    */
-  public ArrayList<String> getBlacklist() {
+  public List<String> getBlacklist() {
     return this.blacklist;
   }
 
