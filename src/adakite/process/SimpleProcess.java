@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class for running a program and logging its output. This class does not
@@ -16,13 +17,13 @@ import java.util.ArrayList;
  */
 public class SimpleProcess {
 
-  private ArrayList<String> log;
+  private List<String> log;
 
   public SimpleProcess() {
     this.log = new ArrayList<>();
   }
 
-  public ArrayList<String> getLog() {
+  public List<String> getLog() {
     return this.log;
   }
 

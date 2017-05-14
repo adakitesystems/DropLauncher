@@ -8,6 +8,7 @@ import adakite.windows.registry.exception.RegistryQueryException;
 import adakite.windows.registry.exception.RegistryEntryNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class for handling Windows Registry operations.
@@ -43,7 +44,7 @@ public class WinRegistry {
                                                                       RegistryEntryNotFoundException,
                                                                       RegistryQueryException {
     /* Get list of possible entries. */
-    ArrayList<String> queryResult = query(path);
+    List<String> queryResult = query(path);
 
     /* Find the result containing the specified "entryName". */
     String ret = null;
@@ -81,8 +82,8 @@ public class WinRegistry {
     throw new RegistryEntryNotFoundException();
   }
 
-  private static ArrayList<String> query(String path) throws IOException,
-                                                             RegistryQueryException {
+  private static List<String> query(String path) throws IOException,
+                                                        RegistryQueryException {
     CommandBuilder command = new CommandBuilder();
     command.setPath(Windows.Program.REG.getPath());
     command.addArg("query");
@@ -91,7 +92,7 @@ public class WinRegistry {
     SimpleProcess process = new SimpleProcess();
     process.run(command.getPath(), command.getArgs());
 
-    ArrayList<String> log = process.getLog();
+    List<String> log = process.getLog();
     if (log == null
         || log.isEmpty()
         || log.get(0).startsWith(QUERY_ERROR_MESSAGE)) {

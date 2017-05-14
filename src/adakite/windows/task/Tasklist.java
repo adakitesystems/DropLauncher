@@ -8,6 +8,7 @@ import adakite.windows.Windows;
 import adakite.windows.task.exception.TasklistParseException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
@@ -51,7 +52,7 @@ public class Tasklist {
 
   }
 
-  private ArrayList<Task> tasks;
+  private List<Task> tasks;
 
   public Tasklist() {
     this.tasks = new ArrayList<>();
@@ -83,7 +84,7 @@ public class Tasklist {
    * @throws IOException if an I/O error occurs
    * @throws TasklistParseException
    */
-  public ArrayList<Task> getTasks(boolean update) throws IOException, TasklistParseException {
+  public List<Task> getTasks(boolean update) throws IOException, TasklistParseException {
     if (update) {
       update();
     }
@@ -97,7 +98,7 @@ public class Tasklist {
    * @see #getTasks(boolean)
    * @throws IOException if an I/O error occurs
    */
-  public ArrayList<Task> getTasks() throws IOException, TasklistParseException {
+  public List<Task> getTasks() throws IOException, TasklistParseException {
     return getTasks(false);
   }
 
@@ -126,7 +127,7 @@ public class Tasklist {
     }
 
     /* Determine length of each column. */
-    ArrayList<Integer> colLengths = new ArrayList<>();
+    List<Integer> colLengths = new ArrayList<>();
     String colLine = process.getLog().get(index);
     StringTokenizer st = new StringTokenizer(colLine);
     while (st.hasMoreTokens()) {
@@ -145,7 +146,7 @@ public class Tasklist {
       }
 
       /* Tokenize line using the column lengths. */
-      ArrayList<String> tokens = tokenizeTaskEntry(line, colLengths);
+      List<String> tokens = tokenizeTaskEntry(line, colLengths);
       if (tokens.size() < ColumnHeader.values().length) {
         throw new TasklistParseException("error parsing task entry line");
       }
@@ -168,8 +169,8 @@ public class Tasklist {
     }
   }
 
-  private ArrayList<String> tokenizeTaskEntry(String str, ArrayList<Integer> colLengths) {
-    ArrayList<String> ret = new ArrayList<>();
+  private List<String> tokenizeTaskEntry(String str, List<Integer> colLengths) {
+    List<String> ret = new ArrayList<>();
 
     int colIndex = 0;
     for (int i = 0; i < colLengths.size(); i++) {

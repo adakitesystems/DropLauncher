@@ -5,6 +5,7 @@ import adakite.util.AdakiteUtils;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Class for building objects to pass to process objects
@@ -13,7 +14,7 @@ import java.util.Arrays;
 public class CommandBuilder {
 
   private Path path;
-  private ArrayList<String> args;
+  private List<String> args;
 
   public CommandBuilder() {
     this.path = null;

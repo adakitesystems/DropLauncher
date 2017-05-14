@@ -3,6 +3,7 @@ package adakite.windows.task;
 import adakite.windows.task.exception.TasklistParseException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class for tracking newly created tasks in the Windows Tasklist.
@@ -11,7 +12,7 @@ public class TaskTracker {
 
   private Tasklist previousTasklist;
   private Tasklist currentTasklist;
-  private ArrayList<Task> newTasks;
+  private List<Task> newTasks;
 
   public TaskTracker() {
     this.previousTasklist = new Tasklist();
@@ -27,7 +28,7 @@ public class TaskTracker {
     return this.previousTasklist;
   }
 
-  public ArrayList<Task> getNewTasks() {
+  public List<Task> getNewTasks() {
     return this.newTasks;
   }
 
