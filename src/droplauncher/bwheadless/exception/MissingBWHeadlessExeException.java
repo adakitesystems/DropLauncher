@@ -15,24 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package droplauncher.mvc.view;
+package droplauncher.bwheadless.exception;
 
-public class ConsoleOutputDAO {
+public class MissingBWHeadlessExeException extends Exception {
 
-  private ConsoleOutput consoleOutput;
-
-  private ConsoleOutputDAO() {}
-
-  public ConsoleOutputDAO(ConsoleOutput consoleOutput) {
-    this.consoleOutput = consoleOutput;
-  }
-
-  public void print(String str) {
-    this.consoleOutput.print(str);
-  }
-
-  public void println(String line) {
-    this.consoleOutput.println(line);
+  public MissingBWHeadlessExeException() {
+    super();
   }
 
 }

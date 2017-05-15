@@ -15,33 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package droplauncher.util;
+package droplauncher.mvc.controller;
 
-import droplauncher.bwheadless.BWHeadless;
-import droplauncher.starcraft.Starcraft;
+import adakite.exception.InvalidStateException;
 
-/**
- * Enum for the names of new tasks that should be killed when the
- * bot is stopped.
- */
-public enum KillableTask {
+public class ControllerWrapper {
 
-  BWHEADLESS_EXE(BWHeadless.DEFAULT_EXE_FILENAME),
-  CONHOST_EXE("conhost.exe"),
-  STARCRAFT_EXE(Starcraft.DEFAULT_EXE_FILENAME),
-  TASKLIST_EXE("tasklist.exe"),
-  DLLHOST_EXE("dllhost.exe")
-  ;
+  private Controller controller;
 
-  private final String str;
+  private ControllerWrapper() {}
 
-  private KillableTask(String str) {
-    this.str = str;
+  public ControllerWrapper(Controller controller) {
+    this.controller = controller;
   }
 
-  @Override
-  public String toString() {
-    return this.str;
+  public void startBWHRequest() throws InvalidStateException {
+    if (this.controller.getState() == Controller.State.IDLE) {
+      this.controller.btnStartClicked();
+    }
+  }
+
+  public void stopBWHRequest() throws InvalidStateException {
+    if (this.controller.getState() == Controller.State.RUNNING) {
+      this.controller.btnStartClicked();
+    }
   }
 
 }

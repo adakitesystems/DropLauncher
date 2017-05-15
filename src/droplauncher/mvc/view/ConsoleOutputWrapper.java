@@ -15,30 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package droplauncher.mvc.controller;
+package droplauncher.mvc.view;
 
-import adakite.exception.InvalidStateException;
+public class ConsoleOutputWrapper {
 
-public class ControllerDAO {
+  private ConsoleOutput consoleOutput;
 
-  private Controller controller;
+  private ConsoleOutputWrapper() {}
 
-  private ControllerDAO() {}
-
-  public ControllerDAO(Controller controller) {
-    this.controller = controller;
+  public ConsoleOutputWrapper(ConsoleOutput consoleOutput) {
+    this.consoleOutput = consoleOutput;
   }
 
-  public void startBWHRequest() throws InvalidStateException {
-    if (this.controller.getState() == Controller.State.IDLE) {
-      this.controller.btnStartClicked();
-    }
+  public void print(String str) {
+    this.consoleOutput.print(str);
   }
 
-  public void stopBWHRequest() throws InvalidStateException {
-    if (this.controller.getState() == Controller.State.RUNNING) {
-      this.controller.btnStartClicked();
-    }
+  public void println(String line) {
+    this.consoleOutput.println(line);
   }
 
 }

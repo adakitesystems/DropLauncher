@@ -19,7 +19,7 @@ package droplauncher.mvc.view;
 
 import adakite.util.AdakiteUtils;
 import droplauncher.DropLauncher;
-import droplauncher.mvc.controller.ControllerDAO;
+import droplauncher.mvc.controller.ControllerWrapper;
 import droplauncher.mvc.model.Model;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class ConsoleOutput {
 
   private TextArea outputObject;
   private List<String> blacklist; /* lines to be ignored which contain this text */
-  private ControllerDAO controller;
+  private ControllerWrapper controller;
 
   public ConsoleOutput() {
     this.outputObject = new TextArea("");
@@ -42,7 +42,7 @@ public class ConsoleOutput {
     this.controller = null;
   }
 
-  public void setController(ControllerDAO controller) {
+  public void setController(ControllerWrapper controller) {
     this.controller = controller;
   }
 

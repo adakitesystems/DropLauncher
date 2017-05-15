@@ -23,7 +23,8 @@ public class Debugging {
     OPERATION_FAIL("operation failed"),
     APPEND_FAIL("append failed"),
     CANNOT_BE_NULL("cannot be null"),
-    CANNOT_BE_NULL_OR_EMPTY("cannot be null or empty")
+    CANNOT_BE_NULL_OR_EMPTY("cannot be null or empty"),
+    VALUE_NOT_SET_FOR_KEY("value not set for key")
     ;
 
     private final String str;
@@ -126,6 +127,14 @@ public class Debugging {
 
   public static String cannotBeNullOrEmpty(String objName) {
     return (objName + " " + Debugging.Message.CANNOT_BE_NULL_OR_EMPTY.toString());
+  }
+
+  public static String valueNotSetForKey() {
+    return Debugging.Message.VALUE_NOT_SET_FOR_KEY.toString();
+  }
+
+  public static String valueNotSetForKey(String key) {
+    return (Debugging.Message.VALUE_NOT_SET_FOR_KEY.toString() + ": " + key);
   }
 
 }

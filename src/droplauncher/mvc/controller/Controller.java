@@ -40,7 +40,8 @@ import droplauncher.bwapi.bot.exception.MissingBwapiDllException;
 import droplauncher.bwheadless.exception.MissingBotException;
 import droplauncher.exception.EncryptedArchiveException;
 import droplauncher.bwapi.bot.exception.InvalidBotTypeException;
-import droplauncher.mvc.view.ConsoleOutputDAO;
+import droplauncher.bwheadless.exception.MissingBWHeadlessExeException;
+import droplauncher.mvc.view.ConsoleOutputWrapper;
 import droplauncher.mvc.view.ExceptionAlert;
 import droplauncher.mvc.view.View.DialogTitle;
 import droplauncher.mvc.view.YesNoDialog;
@@ -117,7 +118,8 @@ public class Controller {
                                         MissingStarcraftExeException,
                                         MissingBotException,
                                         InvalidArgumentException,
-                                        TasklistParseException {
+                                        TasklistParseException,
+                                        MissingBWHeadlessExeException {
     /* Init DirectoryMonitor if required. */
     Path starcraftPath = Starcraft.getPath();
     if (this.directoryMonitor == null) {
@@ -131,7 +133,7 @@ public class Controller {
 
     this.model.getBWHeadless()
         .setStarcraftExe(Starcraft.getExePath())
-        .setConsoleOutput(new ConsoleOutputDAO(this.view.getConsoleOutput()));
+        .enableConsoleOutput(new ConsoleOutputWrapper(this.view.getConsoleOutput()));
     this.model.getBWHeadless().start();
   }
 
@@ -227,10 +229,10 @@ public class Controller {
       case "jar":
         if (path.getFileName().toString().equalsIgnoreCase(BWAPI.DEFAULT_DLL_FILENAME_RELEASE)) {
           /* BWAPI.dll */
-          this.model.getBWHeadless().getBot().setBwapiDll(path.toAbsolutePath().toString());
+          this.model.getBWHeadless().getBot().setBwapiDll(path.toAbsolutePath());
         } else {
           /* Set bot file. */
-          this.model.getBWHeadless().getBot().setPath(path.toAbsolutePath().toString());
+          this.model.getBWHeadless().getBot().setPath(path.toAbsolutePath());
           /* Set bot race. */
           this.model.getBWHeadless().getBot().setRace(Race.RANDOM.toString());
           /* Set clean bot name. */
@@ -356,7 +358,7 @@ public class Controller {
 
   public String getBotFilename() {
     try {
-      String name = FilenameUtils.getName(this.model.getBWHeadless().getBot().getPath());
+      String name = FilenameUtils.getName(this.model.getBWHeadless().getBot().getPath().toString());
       return name;
     } catch (Exception ex) {
       return null;
@@ -365,7 +367,7 @@ public class Controller {
 
   public String getBwapiDllVersion() {
     try {
-      String dll = this.model.getBWHeadless().getBot().getBwapiDll();
+      String dll = this.model.getBWHeadless().getBot().getBwapiDll().toString();
       String md5sum = MD5Checksum.get(Paths.get(dll));
       String version = BWAPI.getBwapiVersion(md5sum);
       return version;
@@ -445,7 +447,7 @@ public class Controller {
         && bwapiDllVersion.equalsIgnoreCase(BWAPI.DLL_UNKNOWN)) {
       boolean response = new YesNoDialog().userConfirms(
           "Warning",
-          "The BWAPI.dll you provided is not on the list of known official BWAPI versions.\n\nDo you want to continue anyway?"
+          "The " + BWAPI.DEFAULT_DLL_FILENAME_RELEASE + " you provided is not on the list of known official BWAPI versions.\n\nDo you want to continue anyway?"
       );
       if (response == false) {
         /* User does not wish to continue. Abort. */
@@ -503,7 +505,7 @@ public class Controller {
             });
           } catch (MissingBwapiDllException ex) {
             Platform.runLater(() -> {
-              View.displayMissingFieldDialog("BWAPI.dll is not set");
+              View.displayMissingFieldDialog(BWAPI.DEFAULT_DLL_FILENAME_RELEASE + " is not set");
             });
           } catch (MissingBotException ex) {
             Platform.runLater(() -> {
@@ -517,6 +519,10 @@ public class Controller {
             //TODO: Clear StarCraft.exe path. This exception could be because the provided path was not found.
             Platform.runLater(() -> {
               View.displayMissingFieldDialog("path to " + Starcraft.DEFAULT_EXE_FILENAME);
+            });
+          } catch (MissingBWHeadlessExeException ex) {
+            Platform.runLater(() -> {
+              new ExceptionAlert().showAndWait("something went wrong with preparing bwheadless", ex);
             });
           }
           if (!success) {

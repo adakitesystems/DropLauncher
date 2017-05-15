@@ -19,7 +19,7 @@ package droplauncher.util.process;
 
 import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
-import droplauncher.mvc.view.ConsoleOutputDAO;
+import droplauncher.mvc.view.ConsoleOutputWrapper;
 import droplauncher.util.StreamGobbler;
 import droplauncher.util.process.exception.ClosePipeException;
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class CustomProcess {
   private StreamGobbler gobblerStdout;
   private StreamGobbler gobblerStderr;
   private String processName;
-  private ConsoleOutputDAO consoleOutput;
+  private ConsoleOutputWrapper consoleOutput;
 
   public CustomProcess() {
     this.process = null;
@@ -72,7 +72,7 @@ public class CustomProcess {
    *
    * @param consoleOutput specified UI control text object
    */
-  public CustomProcess setConsoleOutput(ConsoleOutputDAO consoleOutput) {
+  public CustomProcess setConsoleOutput(ConsoleOutputWrapper consoleOutput) {
     this.consoleOutput = consoleOutput;
     return this;
   }

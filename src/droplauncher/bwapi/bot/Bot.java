@@ -21,6 +21,7 @@ import adakite.debugging.Debugging;
 import adakite.exception.InvalidArgumentException;
 import adakite.settings.Settings;
 import adakite.util.AdakiteUtils;
+import droplauncher.bwapi.BWAPI;
 import droplauncher.bwapi.bot.exception.InvalidBwapiDllException;
 import droplauncher.bwapi.bot.exception.MissingBotFileException;
 import droplauncher.bwapi.bot.exception.MissingBotNameException;
@@ -28,6 +29,7 @@ import droplauncher.bwapi.bot.exception.MissingBotRaceException;
 import droplauncher.bwapi.bot.exception.MissingBwapiDllException;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.exception.StarcraftProfileNameException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,10 +83,10 @@ public class Bot {
    * @throws MissingBotNameException if name is not set
    */
   public String getName() throws MissingBotNameException {
-    String val = this.settings.getValue(PropertyKey.NAME.toString());
-    if (AdakiteUtils.isNullOrEmpty(val, true)) {
+    if (!this.settings.hasValue(PropertyKey.NAME.toString())) {
       throw new MissingBotNameException();
     }
+    String val = this.settings.getValue(PropertyKey.NAME.toString());
     return val;
   }
 
@@ -100,7 +102,7 @@ public class Bot {
   public void setName(String name) throws InvalidArgumentException,
                                           StarcraftProfileNameException {
     if (AdakiteUtils.isNullOrEmpty(name, true)) {
-      throw new InvalidArgumentException(Debugging.emptyString());
+      throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("name"));
     }
     String nameTrimmed = name.trim();
     String cleaned = Starcraft.cleanProfileName(nameTrimmed);
@@ -116,10 +118,10 @@ public class Bot {
    * @throws MissingBotRaceException if race is not set
    */
   public String getRace() throws MissingBotRaceException {
-    String val = this.settings.getValue(PropertyKey.RACE.toString());
-    if (AdakiteUtils.isNullOrEmpty(val, true)) {
+    if (!this.settings.hasValue(PropertyKey.RACE.toString())) {
       throw new MissingBotRaceException();
     }
+    String val = this.settings.getValue(PropertyKey.RACE.toString());
     return val;
   }
 
@@ -145,12 +147,12 @@ public class Bot {
    *
    * @throws MissingBotFileException if path is not set
    */
-  public String getPath() throws MissingBotFileException {
-    String val = this.settings.getValue(PropertyKey.PATH.toString());
-    if (AdakiteUtils.isNullOrEmpty(val, true)) {
+  public Path getPath() throws MissingBotFileException {
+    if (!this.settings.hasValue(PropertyKey.PATH.toString())) {
       throw new MissingBotFileException();
     }
-    return val;
+    String val = this.settings.getValue(PropertyKey.PATH.toString());
+    return Paths.get(val);
   }
 
   /**
@@ -159,11 +161,11 @@ public class Bot {
    * @param path specified input path
    * @throws InvalidArgumentException if the path is null or empty
    */
-  public void setPath(String path) throws InvalidArgumentException {
-    if (AdakiteUtils.isNullOrEmpty(path, true)) {
-      throw new InvalidArgumentException(Debugging.emptyString());
+  public void setPath(Path path) throws InvalidArgumentException {
+    if (path == null) {
+      throw new InvalidArgumentException(Debugging.cannotBeNull("path"));
     }
-    this.settings.set(PropertyKey.PATH.toString(), path);
+    this.settings.set(PropertyKey.PATH.toString(), path.toString());
   }
 
   /**
@@ -171,12 +173,12 @@ public class Bot {
    *
    * @throws MissingBwapiDllException if BWAPI.dll is not set
    */
-  public String getBwapiDll() throws MissingBwapiDllException {
-    String val = this.settings.getValue(PropertyKey.BWAPI_DLL.toString());
-    if (AdakiteUtils.isNullOrEmpty(val, true)) {
+  public Path getBwapiDll() throws MissingBwapiDllException {
+    if (!this.settings.hasValue(PropertyKey.BWAPI_DLL.toString())) {
       throw new MissingBwapiDllException();
     }
-    return val;
+    String val = this.settings.getValue(PropertyKey.BWAPI_DLL.toString());
+    return Paths.get(val);
   }
 
   /**
@@ -187,14 +189,14 @@ public class Bot {
    * @throws InvalidBwapiDllException if the path does not
    *     equal BWAPI.dll as the filename
    */
-  public void setBwapiDll(String path) throws InvalidArgumentException,
-                                              InvalidBwapiDllException {
-    if (AdakiteUtils.isNullOrEmpty(path, true)) {
-      throw new InvalidArgumentException(Debugging.emptyString());
-    } else if (!FilenameUtils.getName(path).toLowerCase(Locale.US).equals("bwapi.dll")) {
-      throw new InvalidBwapiDllException("filename does not equal \"BWAPI.dll\": " + path);
+  public void setBwapiDll(Path path) throws InvalidBwapiDllException,
+                                            InvalidArgumentException {
+    if (path == null) {
+      throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("path"));
+    } else if (!FilenameUtils.getName(path.toString()).equalsIgnoreCase(BWAPI.DEFAULT_DLL_FILENAME_RELEASE)) {
+      throw new InvalidBwapiDllException("filename does not equal " + BWAPI.DEFAULT_DLL_FILENAME_RELEASE + ": " + path);
     }
-    this.settings.set(PropertyKey.BWAPI_DLL.toString(), path);
+    this.settings.set(PropertyKey.BWAPI_DLL.toString(), path.toString());
   }
 
   /**
@@ -225,7 +227,7 @@ public class Bot {
    */
   public void addExtraFile(String path) throws InvalidArgumentException {
     if (AdakiteUtils.isNullOrEmpty(path, true)) {
-      throw new InvalidArgumentException(Debugging.emptyString());
+      throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("path"));
     }
 
     /* Check for existing extra bot files. */
@@ -250,8 +252,7 @@ public class Bot {
    * @throws MissingBotFileException if an error occurs with {@link #getPath()}.
    */
   public Type getType() throws MissingBotFileException {
-    String path = getPath();
-    String ext = AdakiteUtils.getFileExtension(Paths.get(path)).toLowerCase(Locale.US);
+    String ext = AdakiteUtils.getFileExtension(getPath()).toLowerCase(Locale.US);
     switch (ext) {
       case "dll":
         return Type.DLL;
@@ -276,6 +277,7 @@ public class Bot {
     return this.settings.getValue(PropertyKey.EXTRA_FILE.toString() + Integer.toString(index));
   }
 
+  //TODO: Delete or keep this?
   /**
    * This method is currently not used. It is kept so it is not forgotten how the
    * extra bot file system works.

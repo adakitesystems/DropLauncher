@@ -18,7 +18,7 @@
 package droplauncher.util;
 
 import adakite.util.AdakiteUtils;
-import droplauncher.mvc.view.ConsoleOutputDAO;
+import droplauncher.mvc.view.ConsoleOutputWrapper;
 import droplauncher.mvc.view.ExceptionAlert;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -32,7 +32,7 @@ import javafx.application.Platform;
 public class StreamGobbler extends Thread {
 
   private InputStream inputStream;
-  private ConsoleOutputDAO consoleOutput;
+  private ConsoleOutputWrapper consoleOutput;
   private String streamName;
 
   public StreamGobbler() {
@@ -46,7 +46,7 @@ public class StreamGobbler extends Thread {
     return this;
   }
 
-  public StreamGobbler setConsoleOutput(ConsoleOutputDAO consoleOutput) {
+  public StreamGobbler setConsoleOutput(ConsoleOutputWrapper consoleOutput) {
     this.consoleOutput = consoleOutput;
     return this;
   }

@@ -7,7 +7,6 @@ import adakite.windows.Windows;
 import adakite.windows.registry.exception.RegistryQueryException;
 import adakite.windows.registry.exception.RegistryEntryNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

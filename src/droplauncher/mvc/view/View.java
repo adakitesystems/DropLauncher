@@ -25,7 +25,8 @@ import droplauncher.mvc.controller.Controller;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.DropLauncher;
-import droplauncher.mvc.controller.ControllerDAO;
+import droplauncher.bwapi.BWAPI;
+import droplauncher.mvc.controller.ControllerWrapper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -307,7 +308,7 @@ public class View implements EventHandler<DragEvent>  {
   }
 
   private void initComponents() {
-    this.lblBwapiVersion = new Label("BWAPI.dll Version:");
+    this.lblBwapiVersion = new Label(BWAPI.DEFAULT_DLL_FILENAME_RELEASE + " Version:");
     this.lblBwapiVersion.setMinWidth(Region.USE_PREF_SIZE);
     this.lblBwapiVersionText = new Label(EMPTY_LABEL_TEXT);
     this.lblBwapiVersionText.setMinWidth(Region.USE_PREF_SIZE);
@@ -345,7 +346,7 @@ public class View implements EventHandler<DragEvent>  {
     this.consoleOutput.get().setMinWidth(475); //500
     this.consoleOutput.get().setMinHeight(200); //300
     this.consoleOutput.get().setEditable(false);
-    this.consoleOutput.setController(new ControllerDAO(this.controller));
+    this.consoleOutput.setController(new ControllerWrapper(this.controller));
     this.btnClearConsoleOutput = new Button("Clear");
     this.btnClearConsoleOutput.setOnAction(e -> {
       Platform.runLater(() -> {
