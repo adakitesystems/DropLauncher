@@ -170,12 +170,28 @@ public class BWHeadless {
    *
    * @throws MissingStarcraftExeException if the path to StarCraft.exe is not set
    */
-  public Path getStarcraftExe() throws MissingStarcraftExeException {
+  private Path getStarcraftExe() throws MissingStarcraftExeException {
     if (!this.settings.hasValue(PropertyKey.STARCRAFT_EXE.toString())) {
       throw new MissingStarcraftExeException();
     }
     String val = this.settings.getValue(PropertyKey.STARCRAFT_EXE.toString());
     return Paths.get(val);
+  }
+
+  /**
+   * Returns the path to the StarCraft directory.
+   *
+   * @see #getStarcraftExe()
+   * @throws MissingStarcraftExeException
+   * @throws IOException
+   */
+  private Path getStarcraftPath() throws MissingStarcraftExeException,
+                                         IOException {
+    Path parent = AdakiteUtils.getParentDirectory(getStarcraftExe());
+    if (parent == null) {
+      throw new IOException();
+    }
+    return parent;
   }
 
   /**
@@ -268,18 +284,14 @@ public class BWHeadless {
                              MissingBWHeadlessExeException {
     this.taskTracker.reset();
 
-    configureBwapi();
-
     /* Check for StarCraft.exe */
-    if (!AdakiteUtils.fileReadable(getStarcraftExe())) {
-      throw new IOException("failed to access " + Starcraft.DEFAULT_EXE_FILENAME + ": " + getStarcraftExe().toString());
+    Path starcraftPath = getStarcraftPath();
+    if (!AdakiteUtils.fileReadable(starcraftPath)) {
+      throw new IOException("failed to access " + Starcraft.DEFAULT_EXE_FILENAME + ": " + starcraftPath.toString());
     }
 
-    /* Determine StarCraft.exe parent directory. */
-    Path starcraftPath = AdakiteUtils.getParentDirectory(getStarcraftExe());
-    if (starcraftPath == null) {
-      throw new FileNotFoundException("failed to determine " + Starcraft.DEFAULT_EXE_FILENAME + " parent directory");
-    }
+    configureBwapi(starcraftPath);
+
 
     /* Compile bwheadless arguments. */
     CommandBuilder bwhCommand = new CommandBuilder();
@@ -372,20 +384,20 @@ public class BWHeadless {
   /**
    * Configures BWAPI in the specified StarCraft directory.
    *
-   * @param starcraftPath path to the specified StarCraft directory
+   * @param starcraftPath specified path to the StarCraft directory
+   * @throws IOException
+   * @throws MissingStarcraftExeException
+   * @throws IniParseException
+   * @throws MissingBotFileException
+   * @throws InvalidBotTypeException
+   * @throws InvalidArgumentException
    */
-  private void configureBwapi() throws IOException,
-                                       MissingStarcraftExeException,
-                                       IniParseException,
-                                       MissingBotFileException,
-                                       InvalidBotTypeException,
-                                       InvalidArgumentException {
-    /* Check if StarCraft path is valid. */
-    Path starcraftPath = Starcraft.getPath();
-    if (!AdakiteUtils.directoryExists(starcraftPath)) {
-      throw new MissingStarcraftExeException();
-    }
-
+  private void configureBwapi(Path starcraftPath) throws IOException,
+                                                         MissingStarcraftExeException,
+                                                         IniParseException,
+                                                         MissingBotFileException,
+                                                         InvalidBotTypeException,
+                                                         InvalidArgumentException {
     /* Create common BWAPI paths. */
     Path bwapiAiPath = starcraftPath.resolve(BWAPI.DATA_AI_PATH);
     Path bwapiReadPath = starcraftPath.resolve(BWAPI.DATA_READ_PATH);
