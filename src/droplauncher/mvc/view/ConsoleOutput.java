@@ -97,7 +97,8 @@ public class ConsoleOutput {
     });
 
     /* Test for auto-eject option. */
-    if (message.startsWith(View.MessagePrefix.BWHEADLESS.get() + View.Message.GAME_HAS_ENDED.toString())
+    if ((message.startsWith(View.MessagePrefix.BWHEADLESS.get() + View.Message.GAME_HAS_ENDED.toString())
+          || message.startsWith(View.MessagePrefix.BWHEADLESS.get() + View.Message.GAME_OVER.toString()))
         && Model.hasPrefValue(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString())
         && Model.isPrefEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString())) {
       try {

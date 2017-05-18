@@ -195,6 +195,7 @@ public class View implements EventHandler<DragEvent>  {
   public enum Message {
 
     GAME_HAS_ENDED("game has ended"),
+    GAME_OVER("game over"),
     BOT_EJECTED("Bot has been ejected.")
     ;
 
