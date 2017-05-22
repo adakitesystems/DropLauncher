@@ -19,8 +19,10 @@ import javax.swing.filechooser.FileSystemView;
  */
 public class AdakiteUtils {
 
+  /**
+   * Wrapped Java's built-in platform-dependent newline character.
+   */
   private static final String NEWLINE = System.lineSeparator();
-  public static final String FILE_SEPARATOR = File.separator;
 
   private AdakiteUtils() {}
 

@@ -17,6 +17,7 @@
 
 package droplauncher.bwapi;
 
+import adakite.exception.LogicException;
 import adakite.prefs.Prefs;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
@@ -50,7 +51,7 @@ public class BWAPI {
   }
 
   /**
-   * Enum for BWAPI versions.
+   * Enum for BWAPI.dll versions.
    */
   public enum Version {
 
@@ -76,7 +77,7 @@ public class BWAPI {
         case VER_412:  return "1364390d0aa085fba6ac11b7177797b0";
         case VER_420:  return "2f6fb401c0dcf65925ee7ad34dc6414a";
         default:
-          throw new IllegalArgumentException();
+          throw new LogicException("checksum missing from list");
       }
     }
 
