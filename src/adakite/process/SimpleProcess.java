@@ -31,16 +31,12 @@ public class SimpleProcess {
                                                    IOException {
     this.log.clear();
 
-    String[] command;
-    if (args == null) {
-      command = new String[1];
-    } else {
-      command = new String[args.length + 1];
-      System.arraycopy(args, 0, command, 1, args.length);
+    CommandBuilder command = new CommandBuilder();
+    command.setPath(path);
+    if (args != null) {
+      command.setArgs(args);
     }
-
-    command[0] = path.toString();
-    Process process = new ProcessBuilder(command).start();
+    Process process = new ProcessBuilder(command.get()).start();
 
     InputStream is = process.getInputStream();
     try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
