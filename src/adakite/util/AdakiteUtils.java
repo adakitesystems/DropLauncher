@@ -1,7 +1,6 @@
 package adakite.util;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Locale;
-import javax.swing.filechooser.FileSystemView;
 
 /**
  * Utitilies class for useful or wrapped variables and methods.
@@ -148,21 +146,6 @@ public class AdakiteUtils {
     }
 
     return ret.toString();
-  }
-
-  /**
-   * Returns the user's home directory. On Windows, it will probably be
-   * the Desktop directory.
-   *
-   * @return
-   *     the user's home directory if found,
-   *     otherwise null
-   */
-  public static Path getUserHomeDirectory() {
-    FileSystemView fsv = FileSystemView.getFileSystemView();
-    fsv.getRoots();
-    File desktopPath = fsv.getHomeDirectory();
-    return (desktopPath != null) ? desktopPath.toPath() : null;
   }
 
   /**

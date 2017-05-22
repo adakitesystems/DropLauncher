@@ -17,7 +17,7 @@
 
 package droplauncher.mvc.view;
 
-import adakite.util.AdakiteUtils;
+import adakite.windows.Windows;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft;
@@ -97,7 +97,7 @@ public class SettingsWindow {
       FileChooser fc = new FileChooser();
       fc.getExtensionFilters().add(new ExtensionFilter(Starcraft.DEFAULT_EXE_FILENAME, Starcraft.DEFAULT_EXE_FILENAME));
       fc.setTitle("Select " + Starcraft.DEFAULT_EXE_FILENAME + " ...");
-      String userDirectory = AdakiteUtils.getUserHomeDirectory().toAbsolutePath().toString();
+      String userDirectory = Windows.getUserDesktopDirectory().toAbsolutePath().toString();
       if (userDirectory != null) {
         fc.setInitialDirectory(new File(userDirectory));
       }

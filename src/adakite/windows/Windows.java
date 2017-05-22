@@ -1,7 +1,9 @@
 package adakite.windows;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.swing.filechooser.FileSystemView;
 
 /**
  * Utilities class for Windows-related implementations.
@@ -46,5 +48,21 @@ public class Windows {
   }
 
   private Windows() {}
+
+  /**
+   * Attempts to return the user's desktop directory. On Linux, it will
+   * probably be the /home/USERNAME directory. Not fully tested. It appears
+   * to always work on Windows 7 and Windows 10.
+   *
+   * @return
+   *     the user's desktop directory if found,
+   *     otherwise null
+   */
+  public static Path getUserDesktopDirectory() {
+    FileSystemView fsv = FileSystemView.getFileSystemView();
+    fsv.getRoots();
+    File desktopPath = fsv.getHomeDirectory();
+    return (desktopPath != null) ? desktopPath.toPath() : null;
+  }
 
 }
