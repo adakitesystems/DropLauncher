@@ -24,6 +24,7 @@ import adakite.ini.exception.IniParseException;
 import adakite.md5sum.MD5Checksum;
 import adakite.util.AdakiteUtils;
 import adakite.util.DirectoryMonitor;
+import adakite.windows.Windows;
 import adakite.windows.task.exception.TasklistParseException;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwapi.bot.Bot;
@@ -401,9 +402,9 @@ public class Controller {
   public void mnuFileSelectBotFilesClicked(Stage stage) {
     FileChooser fc = new FileChooser();
     fc.setTitle("Select bot files ...");
-    Path userDirectory = AdakiteUtils.getUserHomeDirectory();
-    if (userDirectory != null) {
-      fc.setInitialDirectory(userDirectory.toFile());
+    Path initialDirectory = Windows.getUserDesktopDirectory();
+    if (initialDirectory != null) {
+      fc.setInitialDirectory(initialDirectory.toFile());
     }
     List<File> files = fc.showOpenMultipleDialog(stage);
     if (files != null && files.size() > 0) {
