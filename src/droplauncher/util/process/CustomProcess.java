@@ -24,6 +24,8 @@ import droplauncher.util.StreamGobbler;
 import droplauncher.util.process.exception.ClosePipeException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Container class for starting and stopping a new process.
@@ -117,12 +119,15 @@ public class CustomProcess {
   public void stop() throws ClosePipeException {
     this.gobblerStdout.interrupt();
     this.gobblerStderr.interrupt();
-    //TODO: This is disabled now to test if it is needed at all. The process
-    //*should* successfully terminate on its own when the output streams are interrupted.
-//    this.process.destroy();
-//    if (this.process.isAlive()) {
-//      throw new ClosePipeException("process is still alive after destroy attempt");
-//    }
+    this.process.destroy();
+    try {
+      Thread.sleep(250);
+    } catch (InterruptedException ex) {
+      /* Do nothing. */
+    }
+    if (this.process.isAlive()) {
+      throw new ClosePipeException("process is still alive after destroy attempt");
+    }
   }
 
 }

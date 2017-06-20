@@ -30,7 +30,9 @@ public enum KillableTask {
   CONHOST_EXE("conhost.exe"),
   STARCRAFT_EXE(Starcraft.DEFAULT_EXE_FILENAME),
   TASKLIST_EXE("tasklist.exe"),
-  DLLHOST_EXE("dllhost.exe")
+  DLLHOST_EXE("dllhost.exe"),
+  JAVA_EXE("java.exe"),
+  JAVAW_EXE("javaw.exe")
   ;
 
   private final String str;

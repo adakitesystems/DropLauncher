@@ -355,6 +355,11 @@ public class BWHeadless {
                             ClosePipeException,
                             MissingBotFileException,
                             TasklistParseException {
+    this.bwheadlessProcess.stop();
+    if (this.bot.getType() == Bot.Type.CLIENT) {
+      this.botProcess.stop();
+    }
+
     /* Kill new tasks that were started after bwheadless. */
     String botName = FilenameUtils.getBaseName(this.bot.getPath().toString());
     this.taskTracker.update();
@@ -373,11 +378,6 @@ public class BWHeadless {
           break;
         }
       }
-    }
-
-    this.bwheadlessProcess.stop();
-    if (this.bot.getType() == Bot.Type.CLIENT) {
-      this.botProcess.stop();
     }
   }
 
