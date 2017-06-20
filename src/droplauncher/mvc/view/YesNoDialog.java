@@ -29,16 +29,16 @@ public class YesNoDialog {
   }
 
   public boolean userConfirms(String title, String content) {
-      Alert alert = new Alert(AlertType.CONFIRMATION);
-      alert.setTitle(title);
-      alert.setContentText(content);
-      alert.setHeaderText(null);
-      View.addDefaultStylesheet(alert.getDialogPane().getStylesheets());
-      ButtonType btnNo = new ButtonType("No");
-      ButtonType btnYes = new ButtonType("Yes");
-      alert.getButtonTypes().setAll(btnYes, btnNo);
-      Optional<ButtonType> result = alert.showAndWait();
-      return (result.get() == btnYes);
+    Alert alert = new Alert(AlertType.CONFIRMATION);
+    alert.setTitle(title);
+    alert.setContentText(content);
+    alert.setHeaderText(null);
+    View.addDefaultStylesheet(alert.getDialogPane().getStylesheets());
+    ButtonType btnNo = new ButtonType("No");
+    ButtonType btnYes = new ButtonType("Yes");
+    alert.getButtonTypes().setAll(btnYes, btnNo);
+    Optional<ButtonType> result = alert.showAndWait();
+    return (result.get() == btnYes);
   }
 
 }

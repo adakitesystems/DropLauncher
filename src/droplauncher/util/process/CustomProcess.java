@@ -24,8 +24,6 @@ import droplauncher.util.StreamGobbler;
 import droplauncher.util.process.exception.ClosePipeException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Container class for starting and stopping a new process.

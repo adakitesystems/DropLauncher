@@ -123,11 +123,11 @@ public class BWAPI {
   }
 
   /**
-   * Enum for extractable files.
-   *
-   * sha256 checksums:
-   * 60e69e90943073696458cd2e5ace9baa39c542cb4ec1ab1d2adfe5dba18035ee *Broodwar.map
-   * d16c2909993b9de89b8a285c89cf17e8b16375c876d3ebfd443fde31c9d504a5 *bwapi.ini
+   * <p>Enum for extractable files.<br>
+   * <br>
+   * sha256 checksums:<br>
+   * 60e69e90943073696458cd2e5ace9baa39c542cb4ec1ab1d2adfe5dba18035ee *Broodwar.map<br>
+   * d16c2909993b9de89b8a285c89cf17e8b16375c876d3ebfd443fde31c9d504a5 *bwapi.ini</p>
    */
   public enum ExtractableFile {
 
