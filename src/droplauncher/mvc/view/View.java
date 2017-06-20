@@ -63,6 +63,9 @@ public class View implements EventHandler<DragEvent>  {
 
   public enum PropertyKey {
 
+    /**
+     * Whether to display the log window.
+     */
     SHOW_LOG_WINDOW("show_log_window");
 
     private final String str;

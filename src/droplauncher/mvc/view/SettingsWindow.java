@@ -49,6 +49,7 @@ public class SettingsWindow {
   private Label lblChangeStarcraftExe;
   private Label lblChangeStarcraftExeText;
   private Button btnChangeStarcraftExe;
+  private CheckBox chkExtractBotDependencies;
 
   public SettingsWindow() {
     this.chkShowLogWindow = new CheckBox();
@@ -58,6 +59,7 @@ public class SettingsWindow {
     this.lblChangeStarcraftExe = new Label();
     this.lblChangeStarcraftExeText = new Label();
     this.btnChangeStarcraftExe = new Button();
+    this.chkExtractBotDependencies = new CheckBox();
   }
 
   public SettingsWindow showAndWait() {
@@ -108,6 +110,12 @@ public class SettingsWindow {
       }
     });
 
+    this.chkExtractBotDependencies.setText("Auto-extract bot dependencies");
+    this.chkExtractBotDependencies.setSelected(Model.isPrefEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString()));
+    this.chkExtractBotDependencies.setOnAction(e -> {
+      Model.setPrefEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString(), this.chkExtractBotDependencies.isSelected());
+    });
+
     CustomGridPane fileSelectPane = new CustomGridPane();
     fileSelectPane.add(this.lblChangeStarcraftExe);
     fileSelectPane.add(this.lblChangeStarcraftExeText);
@@ -121,6 +129,7 @@ public class SettingsWindow {
     mainGridPane.add(this.chkBwapiWriteRead, true);
     mainGridPane.add(this.chkShowLogWindow, true);
     mainGridPane.add(this.chkWarnBwapiDll, true);
+    mainGridPane.add(this.chkExtractBotDependencies, true);
 
     mainGridPane.setGaps(View.DefaultSetting.GAP.intValue(), View.DefaultSetting.GAP.intValue());
     mainGridPane.get().setPadding(new Insets(

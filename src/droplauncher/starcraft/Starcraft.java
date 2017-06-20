@@ -34,8 +34,23 @@ public class Starcraft {
 
   public enum PropertyKey {
 
+    /**
+     * Path to StarCraft.exe
+     */
     STARCRAFT_EXE("starcraft_exe"),
+
+    /**
+     * Whether runtime files should be deleted from the StarCraft directory.
+     */
     CLEAN_SC_DIR("clean_sc_dir"),
+
+    /**
+     * Whether to extract bot dependencies to the StarCraft directory.
+     * E.g. BWTA DLLs, JNIBWAPI dlls, etc.
+     * This does not include BWAPI-related files such as "Broodwar.map".
+     */
+    EXTRACT_BOT_DEPENDENCIES("extract_bot_dependencies")
+
     ;
 
     private final String str;

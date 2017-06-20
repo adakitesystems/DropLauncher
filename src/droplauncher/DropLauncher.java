@@ -42,9 +42,21 @@ public class DropLauncher {
 
   public enum PropertyKey {
 
+    /**
+     * DropLauncher version.
+     */
     VERSION("version"),
+
+    /**
+     * Whether to eject the bot after DropLauncher detects the game has ended.
+     */
     AUTO_EJECT_BOT("auto_eject_bot"),
+
+    /**
+     * Whether to connect the bot again after it has been ejected.
+     */
     AUTO_BOT_REJOIN("auto_bot_rejoin")
+
     ;
 
     private final String str;
@@ -61,7 +73,7 @@ public class DropLauncher {
   }
 
   public static final String PROGRAM_NAME = "DropLauncher";
-  public static final String PROGRAM_VERSION = "0.3.25a";
+  public static final String PROGRAM_VERSION = "0.4.1a";
   public static final String PROGRAM_AUTHOR = "Adakite";
   public static final String PROGRAM_TITLE = PROGRAM_NAME + " v" + PROGRAM_VERSION;
   public static final String PROGRAM_GITHUB = "https://github.com/AdakiteSystems/DropLauncher";

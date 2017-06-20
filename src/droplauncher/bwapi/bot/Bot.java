@@ -64,9 +64,22 @@ public class Bot {
   }
 
   public enum Type {
+
+    /**
+     * Indicates the bot is a module (i.e. compiled into a DLL).
+     */
     DLL,
+
+    /**
+     * Indicates the bot is a client (i.e. compiled into an executable such as EXE or JAR).
+     */
     CLIENT,
+
+    /**
+     * Indicates the bot type is not recognized.
+     */
     UNKNOWN
+
   }
 
   public static final String DEFAULT_NAME = "BWAPI_BOT";

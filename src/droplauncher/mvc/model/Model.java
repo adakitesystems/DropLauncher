@@ -112,6 +112,9 @@ public class Model {
     if (!Model.hasPrefValue(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString())) {
       Model.setPrefEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString(), false);
     }
+    if (!Model.hasPrefValue(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString())) {
+      Model.setPrefEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString(), true);
+    }
   }
 
   private static Prefs getPrefs(String uniqueKey) {

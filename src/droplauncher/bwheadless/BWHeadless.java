@@ -43,6 +43,7 @@ import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
 import droplauncher.DropLauncher;
 import droplauncher.bwheadless.exception.MissingBWHeadlessExeException;
+import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.ConsoleOutputWrapper;
 import droplauncher.mvc.view.View;
 import droplauncher.util.process.exception.ClosePipeException;
@@ -64,15 +65,39 @@ public class BWHeadless {
 
   private enum PropertyKey {
 
+    /**********************************************************************/
     /* Specific to bwheadless.exe */
-    STARCRAFT_EXE("starcraft_exe"),
-    NETWORK_PROVIDER("network_provider"),
-    CONNECT_MODE("connect_mode"), /* join or host */
-    GAME_NAME("game_name"), /* game name when hosting */
-    MAP("map"), /* map when hosting */
+    /**********************************************************************/
 
+    /**
+     * Network provider. e.g. LAN, LocalPC
+     */
+    NETWORK_PROVIDER("network_provider"),
+
+    /**
+     * Connect mode. e.g. Join or host a game.
+     */
+    CONNECT_MODE("connect_mode"), /* join or host */
+
+    /**
+     * Game name when hosting.
+     */
+    GAME_NAME("game_name"),
+
+    /**
+     * Map name when hosting.
+     */
+    MAP("map"),
+
+    /**********************************************************************/
     /* Specific to this class */
+    /**********************************************************************/
+
+    /**
+     * Path to "bwheadless.exe".
+     */
     BWHEADLESS_EXE("bwheadless_exe")
+
     ;
 
     private final String str;
@@ -93,16 +118,56 @@ public class BWHeadless {
    */
   public enum Argument {
 
-    STARCRAFT_EXE("-e"), /* requires second string */
+    /**
+     * Set the path to "StarCraft.exe". Requires a second string.
+     */
+    STARCRAFT_EXE("-e"),
+
+    /**
+     * Host a game.
+     */
     HOST("-h"),
-    GAME_NAME("-g"), /* requires second string */
+
+    /**
+     * Set the game name when hosting. Requires a second string.
+     */
+    GAME_NAME("-g"),
+
+    /**
+     * Join the first found open game.
+     */
     JOIN_GAME("-j"),
-    MAP("-m"), /* requires second string */
-    BOT_NAME("-n"), /* requires second string */
-    BOT_RACE("-r"), /* requires second string */
-    LOAD_DLL("-l"), /* requires second string */
+
+    /**
+     * Set the map name when hosting. Requires a second string.
+     */
+    MAP("-m"),
+
+    /**
+     * Set the bot name. Requires a second string.
+     */
+    BOT_NAME("-n"),
+
+    /**
+     * Set the bot race. Requires a second string.
+     */
+    BOT_RACE("-r"),
+
+    /**
+     * Set the path to the DLL to inject. Requires a second string.
+     */
+    LOAD_DLL("-l"),
+
+    /**
+     * Enable LAN. Default is LocalPC.
+     */
     ENABLE_LAN("--lan"),
-    STARCRAFT_INSTALL_PATH("--installpath") /* requires second string */
+
+    /**
+     * Set the StarCraft installation directory. Requires a second string.
+     */
+    STARCRAFT_INSTALL_PATH("--installpath")
+
     ;
 
     private final String str;
@@ -171,10 +236,10 @@ public class BWHeadless {
    * @throws MissingStarcraftExeException if the path to StarCraft.exe is not set
    */
   private Path getStarcraftExe() throws MissingStarcraftExeException {
-    if (!this.settings.hasValue(PropertyKey.STARCRAFT_EXE.toString())) {
+    if (!this.settings.hasValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString())) {
       throw new MissingStarcraftExeException();
     }
-    String val = this.settings.getValue(PropertyKey.STARCRAFT_EXE.toString());
+    String val = this.settings.getValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString());
     return Paths.get(val);
   }
 
@@ -204,7 +269,7 @@ public class BWHeadless {
     if (starcraftExe == null) {
       throw new InvalidArgumentException(Debugging.cannotBeNull("starcraftExe"));
     }
-    this.settings.set(PropertyKey.STARCRAFT_EXE.toString(), starcraftExe.toString());
+    this.settings.set(Starcraft.PropertyKey.STARCRAFT_EXE.toString(), starcraftExe.toString());
     return this;
   }
 
@@ -433,13 +498,15 @@ public class BWHeadless {
       FileUtils.copyURLToFile(url, bwapiBroodwarMap.toFile());
     }
 
-    /* Check for DLL dependencies. */
-    for (BWAPI.ExtractableDll val : BWAPI.ExtractableDll.values()) {
-      /* If dependency is not found in the target StarCraft directory, extract it from this archive. */
-      Path dll = starcraftPath.resolve(val.toString());
-      if (!AdakiteUtils.fileExists(dll)) {
-        URL url = getClass().getResource("/droplauncher/bwapi/dll/" + val.toString());
-        FileUtils.copyURLToFile(url, dll.toFile());
+    /* Check if dependencies should be extracted to the StarCraft directory. */
+    if (Model.isPrefEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString())) {
+      for (BWAPI.ExtractableDll val : BWAPI.ExtractableDll.values()) {
+        /* If dependency is not found in the target StarCraft directory, extract it from this archive. */
+        Path dll = starcraftPath.resolve(val.toString());
+        if (!AdakiteUtils.fileExists(dll)) {
+          URL url = getClass().getResource("/droplauncher/bwapi/dll/" + val.toString());
+          FileUtils.copyURLToFile(url, dll.toFile());
+        }
       }
     }
 

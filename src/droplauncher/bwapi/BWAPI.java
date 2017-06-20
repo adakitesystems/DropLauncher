@@ -33,7 +33,15 @@ public class BWAPI {
 
   public enum PropertyKey {
 
+    /**
+     * Whether to copy the contents of the "StarCraft/bwapi-data/write/"
+     * directory to the "StarCraft/bwapi-data/read/" directory.
+     */
     COPY_WRITE_READ("copy_write_read"),
+
+    /**
+     * Whether to warn if the specified BWAPI.dll is not recognized.
+     */
     WARN_UNKNOWN_BWAPI_DLL("warn_bwapi_dll")
     ;
 
@@ -163,9 +171,9 @@ public class BWAPI {
    */
   public enum ExtractableDll {
 
-    /**
-     * BWTA
-     */
+    /**********************************************************************/
+    /* BWTA */
+    /**********************************************************************/
 
     LIBGMP("libgmp-10.dll"),
     GMP("gmp-vc90-mt.dll"),
@@ -174,9 +182,9 @@ public class BWAPI {
     MPFR("mpfr-vc90-mt.dll"),
     MPFR_GD("mpfr-vc90-mt-gd.dll"),
 
-    /**
-     * JNIBWAPI
-     */
+    /**********************************************************************/
+    /* JNIBWAPI */
+    /**********************************************************************/
 
     CLIENT_BRIDGE_1_3("client-bridge-1_3-x86.dll"),
     CLIENT_BRIDGE_1_4("client-bridge-1_4-x86.dll"),
