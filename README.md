@@ -1,6 +1,6 @@
 # DropLauncher
 
-## Version 0.4.1a has been released!
+## Version 0.4.2a has been released!
 
 [Download](https://github.com/adakitesystems/DropLauncher/releases)
 

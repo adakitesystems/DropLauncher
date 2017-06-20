@@ -346,6 +346,10 @@ public class Controller {
     this.view.update();
   }
 
+  public void clearExtraBotFiles() {
+    this.model.getBWHeadless().getBot().clearExtraBotFiles();
+  }
+
   /* ************************************************************ */
   /* Accessible data */
   /* ************************************************************ */
@@ -393,6 +397,10 @@ public class Controller {
     } catch (Exception ex) {
       return null;
     }
+  }
+
+  public List<String> getExtraBotFiles() {
+    return this.model.getBWHeadless().getBot().getExtraFiles();
   }
 
   /* ************************************************************ */

@@ -56,6 +56,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.apache.commons.io.FilenameUtils;
 
 public class View implements EventHandler<DragEvent>  {
 
@@ -119,6 +120,28 @@ public class View implements EventHandler<DragEvent>  {
     private final String str;
 
     private DialogTitle(String str) {
+      this.str = str;
+    }
+
+    @Override
+    public String toString() {
+      return this.str;
+    }
+
+  }
+
+  /**
+   * Enum for generic button text.
+   */
+  public enum ButtonText {
+
+    CLEAR("Clear"),
+    CLEAR_EXTRA_BOT_FILES("Unload Config Files")
+    ;
+
+    private final String str;
+
+    private ButtonText(String str) {
       this.str = str;
     }
 
@@ -270,6 +293,7 @@ public class View implements EventHandler<DragEvent>  {
   private Button btnClearConsoleOutput;
   private CheckBox chkAutoEject;
   private CheckBox chkAutoRejoin;
+  private Button btnClearExtraBotFiles;
 
   public View() {
     /* Do nothing. */
@@ -351,7 +375,7 @@ public class View implements EventHandler<DragEvent>  {
     this.consoleOutput.get().setMinHeight(200); //300
     this.consoleOutput.get().setEditable(false);
     this.consoleOutput.setController(new ControllerWrapper(this.controller));
-    this.btnClearConsoleOutput = new Button("Clear");
+    this.btnClearConsoleOutput = new Button(ButtonText.CLEAR.toString());
     this.btnClearConsoleOutput.setOnAction(e -> {
       Platform.runLater(() -> {
         if (new YesNoDialog().userConfirms("Confirmation", "Are you sure you want to clear the console output? You will not be able to retrieve it.")) {
@@ -359,7 +383,7 @@ public class View implements EventHandler<DragEvent>  {
         }
       });
     });
-    this.btnClearConsoleOutput.getStyleClass().add("launch-btn");
+//    this.btnClearConsoleOutput.getStyleClass().add("launch-btn");
 
     this.txtBotName.setOnKeyReleased(e -> this.controller.botNameChanged(this.txtBotName.getText()));
     this.cbRace.setOnAction(e -> {
@@ -376,6 +400,28 @@ public class View implements EventHandler<DragEvent>  {
         new ExceptionAlert().showAndWait(null, ex);
       }
     });
+
+    this.btnClearExtraBotFiles = new Button(ButtonText.CLEAR_EXTRA_BOT_FILES.toString());
+    this.btnClearExtraBotFiles.setOnAction(e -> {
+      Platform.runLater(() -> {
+        int fileCount = this.controller.getExtraBotFiles().size();
+        StringBuilder fileList = new StringBuilder();
+        for (String extra : this.controller.getExtraBotFiles()) {
+          fileList.append(FilenameUtils.getName(extra)).append(AdakiteUtils.newline());
+        }
+        if (fileCount > 0) {
+          if (new YesNoDialog().userConfirms("Confirmation",
+              "Total bot config files loaded: " + fileCount + AdakiteUtils.newline(2)
+                  + "Are you sure you want to unload the following bot config files?" + AdakiteUtils.newline(2)
+                  + fileList.toString())) {
+            this.controller.clearExtraBotFiles();
+          }
+        } else {
+          new SimpleAlert().showAndWait(AlertType.INFORMATION, DialogTitle.PROGRAM_NAME, "Total bot config files loaded: " + fileCount);
+        }
+      });
+    });
+//    this.btnClearExtraBotFiles.getStyleClass().add("launch-btn");
 
     CustomGridPane fileLabelGridPane = new CustomGridPane();
     fileLabelGridPane.add(this.lblBotFile);
@@ -407,14 +453,22 @@ public class View implements EventHandler<DragEvent>  {
     infoGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
     infoGridPane.get().setAlignment(Pos.CENTER_LEFT);
 
-    HBox boxClearConsole = new HBox();
-    boxClearConsole.getChildren().add(this.btnClearConsoleOutput);
-    boxClearConsole.setAlignment(Pos.CENTER_RIGHT);
+//    HBox boxClearExtra = new HBox();
+//    boxClearExtra.getChildren().add(this.btnClearExtraBotFiles);
+//    boxClearExtra.setAlignment(Pos.CENTER_RIGHT);
+//    HBox boxClearConsole = new HBox();
+//    boxClearConsole.getChildren().add(this.btnClearConsoleOutput);
+//    boxClearConsole.setAlignment(Pos.CENTER_RIGHT);
+    HBox boxClear = new HBox();
+    boxClear.getChildren().add(this.btnClearExtraBotFiles);
+    boxClear.getChildren().add(this.btnClearConsoleOutput);
+    boxClear.setSpacing(30);
+    boxClear.setAlignment(Pos.CENTER_RIGHT);
     VBox boxStartConsole = new VBox();
     boxStartConsole.getChildren().add(this.btnStart);
     if (Model.isPrefEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString())) {
       boxStartConsole.getChildren().add(this.consoleOutput.get());
-      boxStartConsole.getChildren().add(boxClearConsole);
+      boxStartConsole.getChildren().add(boxClear);
     }
     boxStartConsole.setSpacing(DefaultSetting.GAP.intValue());
     boxStartConsole.setAlignment(Pos.CENTER);
