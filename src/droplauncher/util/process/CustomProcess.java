@@ -116,11 +116,13 @@ public class CustomProcess {
    */
   public void stop() throws ClosePipeException {
     this.gobblerStdout.interrupt();
-    this.gobblerStdout.interrupt();
-    this.process.destroy();
-    if (this.process.isAlive()) {
-      throw new ClosePipeException("process is still alive after destroy attempt");
-    }
+    this.gobblerStderr.interrupt();
+    //TODO: This is disabled now to test if it is needed at all. The process
+    //*should* successfully terminate on its own when the output streams are interrupted.
+//    this.process.destroy();
+//    if (this.process.isAlive()) {
+//      throw new ClosePipeException("process is still alive after destroy attempt");
+//    }
   }
 
 }
