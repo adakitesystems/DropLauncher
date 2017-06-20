@@ -65,5 +65,5 @@ A: Some bots use the [BWTA library](https://bitbucket.org/auriarte/bwta2) which 
 
 ## Known Issues
 
-* If StarCraft is installed to **C:\Program Files\StarCraft\** or any write-protected directory, you will need to start DropLauncher with administrative privileges.
+* If StarCraft is installed to **"C:\Program Files\StarCraft\"** or any write-protected directory, you will need to start DropLauncher with administrative privileges.
 * If you start the bot *before* hosting a game, you may get the following error message: `"Unable to initialize network provider."`
