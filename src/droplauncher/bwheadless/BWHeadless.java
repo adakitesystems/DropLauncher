@@ -475,7 +475,9 @@ public class BWHeadless {
 
     /* Copy extra files to common bot I/O directories. */
     for (String path : this.bot.getExtraFiles()) {
-      Files.copy(Paths.get(path), Paths.get(bwapiAiPath.toString(), FilenameUtils.getName(path)), StandardCopyOption.REPLACE_EXISTING);
+      if (AdakiteUtils.fileExists(Paths.get(path))) {
+        Files.copy(Paths.get(path), Paths.get(bwapiAiPath.toString(), FilenameUtils.getName(path)), StandardCopyOption.REPLACE_EXISTING);
+      }
     }
   }
 

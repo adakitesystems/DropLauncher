@@ -32,6 +32,7 @@ import droplauncher.starcraft.exception.StarcraftProfileNameException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import org.apache.commons.io.FilenameUtils;
@@ -47,7 +48,6 @@ public class Bot {
     RACE("race"),
     PATH("path"),
     BWAPI_DLL("bwapidll"),
-    EXTRA_FILE("extrafile")
     ;
 
     private final String str;
@@ -72,10 +72,12 @@ public class Bot {
   public static final String DEFAULT_NAME = "BWAPI_BOT";
 
   private Settings settings;
+  private List<String> extraBotFiles;
 
   public Bot() {
     this.settings = new Settings();
     this.settings.set(PropertyKey.NAME.toString(), DEFAULT_NAME);
+    this.extraBotFiles = new ArrayList<>();
   }
 
   /**
@@ -209,13 +211,11 @@ public class Bot {
    * @see #addExtraFile(java.lang.String)
    */
   public List<String> getExtraFiles() {
-    List<String> files = new ArrayList<>();
-    String file;
-    int index = 0;
-    while (!AdakiteUtils.isNullOrEmpty(file = getExtraFile(index++))) {
-      files.add(file);
+    List<String> ret = new ArrayList<>();
+    for (String file : this.extraBotFiles) {
+      ret.add(file);
     }
-    return files;
+    return ret;
   }
 
   /**
@@ -232,18 +232,27 @@ public class Bot {
     }
 
     /* Check for existing extra bot files. */
-    int index = 0;
-    String val;
-    while ((val = this.settings.getValue(PropertyKey.EXTRA_FILE.toString() + Integer.toString(index))) != null) {
-      if (FilenameUtils.getName(path).equalsIgnoreCase(FilenameUtils.getName(val))) {
-        /* Save index of existing extra bot file. */
-        break;
+    String pathFilename = FilenameUtils.getName(path);
+    Iterator<String> itr = this.extraBotFiles.iterator();
+    while (itr.hasNext()) {
+      String extra = itr.next();
+      String extraFilename = FilenameUtils.getName(extra);
+      if (pathFilename.equalsIgnoreCase(extraFilename)) {
+        /* Remove the existing extra bot file. */
+        itr.remove();
       }
-      index++;
     }
 
-    /* Add/overwrite extra bot file. */
-    this.settings.set(PropertyKey.EXTRA_FILE.toString() + Integer.toString(index), path);
+    /* Add extra bot file. */
+    this.extraBotFiles.add(path);
+  }
+
+  /**
+   * Removes all of the elements from this list.
+   * The list will be empty after this call returns.
+   */
+  public void clearExtraBotFiles() {
+    this.extraBotFiles.clear();
   }
 
   /**
@@ -264,31 +273,6 @@ public class Bot {
       default:
         return Type.UNKNOWN;
     }
-  }
-
-  /**
-   * Returns the path to the extra bot file at the specified index.
-   *
-   * @param index specified index
-   * @return
-   *     the path to the extra bot file at the specified index if found,
-   *     otherwise null
-   */
-  private String getExtraFile(int index) {
-    return this.settings.getValue(PropertyKey.EXTRA_FILE.toString() + Integer.toString(index));
-  }
-
-  //TODO: Delete or keep this?
-  /**
-   * This method is currently not used. It is kept so it is not forgotten how the
-   * extra bot file system works.
-   */
-  private int getNextExtraFileIndex() {
-    int index = 0;
-    while (this.settings.getValue(PropertyKey.EXTRA_FILE.toString() + Integer.toString(index)) != null) {
-      index++;
-    }
-    return index;
   }
 
 }
