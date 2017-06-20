@@ -1,6 +1,6 @@
 # DropLauncher
 
-## Version 0.3.24a has been released!
+## Version 0.4.1a has been released!
 
 [Download](https://github.com/adakitesystems/DropLauncher/releases)
 
@@ -59,9 +59,9 @@ A: Some bots use the [BWTA library](https://bitbucket.org/auriarte/bwta2) which 
 
 ## Screenshots
 
-![alt tag](http://i.imgur.com/PnluPMg.png)
+![alt tag](http://i.imgur.com/Pv1PuQV.png)
 
-![alt tag](http://i.imgur.com/UzXIoOP.png)
+![alt tag](http://i.imgur.com/dqM5fyx.png)
 
 ## Known Issues
 
