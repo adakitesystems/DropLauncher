@@ -144,21 +144,51 @@ public class BWAPI {
    * Enum for extractable DLLs.
    *
    * sha256 checksums:
-   * 28282d77de250e4c7dd7b5ac1563c62d43465a2dda19119f551b45e7dc0d2aa7 *gmp-vc90-mt-gd.dll
-   * 9f45860228df80656d2c7407a0fa6d82c1b759d47c7dee843877700740eb4b58 *gmp-vc90-mt.dll
-   * 9be85bd8468363703304d0bbd059c9709dba270d0ff5a1a94823cb5dbbfa5f20 *libgmp-10.dll
-   * 5a72d472e892efd7d94ea287eda354637394805c2f445edec051b5c0a3d0f55b *libmpfr-4.dll
-   * b1873ca36d8ff3f0df0bbf1895916cc13e4bb95588e0e711c689bd37ead8100f *mpfr-vc90-mt-gd.dll
-   * 647760f4b63ce1a4c36de4c71176f59cfccdfbb9ad397979725228272c8c67ae *mpfr-vc90-mt.dll
+   * 68122a17f50c8836d5e3086276d35b7d *client-bridge-1_3-x86.dll
+   * 08475ed38618f04edcc648729687412a *client-bridge-1_4b-x86.dll
+   * baf2f51b05d27eae41a966b963d98781 *client-bridge-1_4c-x86.dll
+   * 08475ed38618f04edcc648729687412a *client-bridge-1_4-x86.dll
+   * 9a73fc0821d22e9e276ab673664cf061 *client-bridge-1_5-x86.dll
+   * 22df5206189ed3fe1b0ece79bfe75a06 *client-bridge-amd64.dll
+   * 59ca6ba344b0bfef8a7715b95ed7032f *client-bridge-julien-rame.dll
+   * d33de6fe1dcb11bd3516f2a2893c06f8 *client-bridge-x86.dll
+   * 08475ed38618f04edcc648729687412a *client-bridge-x86-jni-sp-1-4.dll
+   * 59ca6ba344b0bfef8a7715b95ed7032f *client-bridge-x86-lebedser.dll
+   * 2ca6cb7747d32962e2465daa89ff6863 *gmp-vc90-mt.dll
+   * 84e29a1be54c519c042bb80d13aea823 *gmp-vc90-mt-gd.dll
+   * f2a7432cb1e3a574eb4af7678359b44b *libgmp-10.dll
+   * 8afb228e4f6458b6628a202d9de9edf8 *libmpfr-4.dll
+   * 11f9098c040179efeeb16b66eff1a6ca *mpfr-vc90-mt.dll
+   * 71ac7ae0a579099b06f566a84636dd8b *mpfr-vc90-mt-gd.dll
    */
   public enum ExtractableDll {
+
+    /**
+     * BWTA
+     */
 
     LIBGMP("libgmp-10.dll"),
     GMP("gmp-vc90-mt.dll"),
     GMP_GD("gmp-vc90-mt-gd.dll"),
     LIBMPFR("libmpfr-4.dll"),
     MPFR("mpfr-vc90-mt.dll"),
-    MPFR_GD("mpfr-vc90-mt-gd.dll")
+    MPFR_GD("mpfr-vc90-mt-gd.dll"),
+
+    /**
+     * JNIBWAPI
+     */
+
+    CLIENT_BRIDGE_1_3("client-bridge-1_3-x86.dll"),
+    CLIENT_BRIDGE_1_4("client-bridge-1_4-x86.dll"),
+    CLIENT_BRIDGE_1_4b("client-bridge-1_4b-x86.dll"),
+    CLIENT_BRIDGE_1_4c("client-bridge-1_4c-x86.dll"),
+    CLIENT_BRIDGE_1_5("client-bridge-1_5-x86.dll"),
+    CLIENT_BRIDGE_AMD64("client-bridge-amd64.dll"),
+    CLIENT_BRIDGE_JULIEN_RAME("client-bridge-julien-rame.dll"),
+    CLIENT_BRIDGE_JNI_SP_1_4("client-bridge-x86-jni-sp-1-4.dll"),
+    CLIENT_BRIDGE_LEBEDSER("client-bridge-x86-lebedser.dll"),
+    CLIENT_BRIDGE("client-bridge-x86.dll")
+
     ;
 
     private final String str;
