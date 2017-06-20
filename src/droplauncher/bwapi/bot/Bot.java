@@ -75,6 +75,7 @@ public class Bot {
 
   public Bot() {
     this.settings = new Settings();
+    this.settings.set(PropertyKey.NAME.toString(), DEFAULT_NAME);
   }
 
   /**
