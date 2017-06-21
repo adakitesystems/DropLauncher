@@ -24,12 +24,6 @@ Designed to be a simple tool to aid players in setting up and playing 1v1 StarCr
 * Auto-eject bot after game has ended
 * Auto-connect bot to game lobby after eject
 
-## TODO / Future Features
-* Bot vs bot automation
-* Bot profile saving/loading
-* Download/update bot from SSCAIT
-* Display bot's StarCraft window
-
 ## Third-party Libraries/Applications
 * [bwheadless.exe](https://github.com/tscmoo/bwheadless): starts a separate StarCraft instance and injects the BWAPI bot
 * [commons-io-2.5.jar](https://commons.apache.org/proper/commons-io/): Apache's Commons IO library
@@ -62,8 +56,3 @@ A: Some bots use the [BWTA library](https://bitbucket.org/auriarte/bwta2) which 
 ![alt tag](http://i.imgur.com/Pv1PuQV.png)
 
 ![alt tag](http://i.imgur.com/dqM5fyx.png)
-
-## Known Issues
-
-* If StarCraft is installed to **"C:\Program Files\StarCraft\"** or any write-protected directory, you will need to start DropLauncher with administrative privileges.
-* If you start the bot *before* hosting a game, you may get the following error message: `"Unable to initialize network provider."`
