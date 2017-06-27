@@ -17,12 +17,15 @@
 
 package droplauncher.mvc.view;
 
+import adakite.exception.InvalidStateException;
 import adakite.util.AdakiteUtils;
 import droplauncher.DropLauncher;
 import droplauncher.mvc.controller.ControllerWrapper;
 import droplauncher.mvc.model.Model;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 
@@ -130,13 +133,16 @@ public class ConsoleOutput {
           new ExceptionAlert().showAndWait("something went wrong with the auto-rejoin timer", ex);
         });
       }
-      try {
-        this.controller.startBWHRequest();
-      } catch (Exception ex) {
-        Platform.runLater(() -> {
+      //TODO: Auto-rejoin fails if BWAPI.dll is unknown because displaying the
+      //      YesNoDialog is not within the JavaFX thread when the call is invoked.
+      //      Using "Platform.runLater" is a temporary fix for the issue.
+      Platform.runLater(() -> {
+        try {
+          this.controller.startBWHRequest();
+        } catch (Exception ex) {
           new ExceptionAlert().showAndWait("something went wrong with auto-rejoin", ex);
-        });
-      }
+        }
+      });
     }
   }
 
