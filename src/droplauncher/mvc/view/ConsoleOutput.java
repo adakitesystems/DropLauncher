@@ -19,6 +19,7 @@ package droplauncher.mvc.view;
 
 import adakite.exception.InvalidStateException;
 import adakite.util.AdakiteUtils;
+import adakite.windows.exception.WindowsException;
 import droplauncher.DropLauncher;
 import droplauncher.mvc.controller.ControllerWrapper;
 import droplauncher.mvc.model.Model;
@@ -142,6 +143,22 @@ public class ConsoleOutput {
         } catch (Exception ex) {
           new ExceptionAlert().showAndWait("something went wrong with auto-rejoin", ex);
         }
+      });
+    /* Test for "failed to load module" error. */
+    } else if (message.contains(View.Message.ERROR_126.toString())) {
+      Platform.runLater(() -> {
+        try {
+          this.controller.stopBWHRequest();
+        } catch (InvalidStateException ex) {
+          /* Do nothing. */
+          //TODO: Do something?
+        }
+        String exceptionMessage = WindowsException.SystemError.ERROR_MOD_NOT_FOUND.toString()
+            + AdakiteUtils.newline(2)
+            + "This error may be caused by missing Microsoft Visual C++ runtime files if you are trying to load BWAPI 4.2.0 or newer. "
+            + AdakiteUtils.newline(2)
+            + "Please download and install the Microsoft Visual C++ 2015 Redistributable Package for your system.";
+        new ExceptionAlert().showAndWait(exceptionMessage, new WindowsException(WindowsException.SystemError.ERROR_MOD_NOT_FOUND.toString()));
       });
     }
   }

@@ -222,6 +222,7 @@ public class View implements EventHandler<DragEvent>  {
 
     GAME_HAS_ENDED("game has ended"),
     GAME_OVER("game over"),
+    ERROR_126("error 126"),
     BOT_EJECTED("Bot has been ejected.")
     ;
 
