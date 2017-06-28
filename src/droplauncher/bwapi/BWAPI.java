@@ -63,30 +63,28 @@ public class BWAPI {
    */
   public enum Version {
 
-    VER_374,
-    VER_375,
-    VER_401B,
-    VER_410B,
-    VER_411B,
-    VER_412,
-    VER_420
+    VER_374 ("6e940dc6acc76b6e459b39a9cdd466ae", "3.7.4"),
+    VER_375 ("5e590ea55c2d3c66a36bf75537f8655a", "3.7.5"),
+    VER_401B("84f413409387ae80a4b4acc51fed3923", "4.0.1b"),
+    VER_410B("4814396fba36916fdb7cf3803b39ab51", "4.1.0b"),
+    VER_411B("5d5128709ba714aa9c6095598bcf4624", "4.1.1b"),
+    VER_412 ("1364390d0aa085fba6ac11b7177797b0", "4.1.2"),
+    VER_420 ("2f6fb401c0dcf65925ee7ad34dc6414a", "4.2.0")
     ;
+
+    private final String md5checksum;
+    private final String description;
+
+    private Version(String md5checksum, String name) {
+      this.md5checksum = md5checksum;
+      this.description = name;
+    }
 
     /**
      * Returns the MD5 checksum of the matching BWAPI.dll.
      */
     public String getMD5Checksum() {
-      switch (this) {
-        case VER_374:  return "6e940dc6acc76b6e459b39a9cdd466ae";
-        case VER_375:  return "5e590ea55c2d3c66a36bf75537f8655a";
-        case VER_401B: return "84f413409387ae80a4b4acc51fed3923";
-        case VER_410B: return "4814396fba36916fdb7cf3803b39ab51";
-        case VER_411B: return "5d5128709ba714aa9c6095598bcf4624";
-        case VER_412:  return "1364390d0aa085fba6ac11b7177797b0";
-        case VER_420:  return "2f6fb401c0dcf65925ee7ad34dc6414a";
-        default:
-          throw new LogicException("checksum missing from list");
-      }
+      return this.md5checksum;
     }
 
     /**
@@ -95,29 +93,7 @@ public class BWAPI {
      */
     @Override
     public String toString() {
-      String ret = "";
-      String name = this.name();
-
-      int index = name.indexOf('_');
-      if (index >= 0) {
-        name = name.substring(index + 1, name.length());
-      }
-
-      ret += name.charAt(0);
-      for (int i = 1; i < name.length(); i++) {
-        try {
-          /* If previous character is a number, append a period to separate
-             version sections. */
-          Integer.parseInt("" + name.charAt(i - 1));
-          ret += ".";
-        } catch (Exception ex) {
-          /* Previous character is not a number. */
-          /* Do nothing. */
-        }
-        ret += name.charAt(i);
-      }
-
-      return ret.toLowerCase(Locale.US);
+      return this.description;
     }
 
   }
