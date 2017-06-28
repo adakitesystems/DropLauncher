@@ -125,11 +125,11 @@ public class SettingsWindow {
     CustomGridPane mainGridPane = new CustomGridPane();
     mainGridPane.add(fileSelectPane.get(), true);
     mainGridPane.add(new Separator(), true);
+    mainGridPane.add(this.chkExtractBotDependencies, true);
     mainGridPane.add(this.chkCleanStarcraftDirectory, true);
     mainGridPane.add(this.chkBwapiWriteRead, true);
     mainGridPane.add(this.chkShowLogWindow, true);
     mainGridPane.add(this.chkWarnBwapiDll, true);
-    mainGridPane.add(this.chkExtractBotDependencies, true);
 
     mainGridPane.setGaps(View.DefaultSetting.GAP.intValue(), View.DefaultSetting.GAP.intValue());
     mainGridPane.get().setPadding(new Insets(
