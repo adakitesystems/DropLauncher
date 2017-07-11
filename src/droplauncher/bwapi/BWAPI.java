@@ -17,7 +17,6 @@
 
 package droplauncher.bwapi;
 
-import adakite.exception.LogicException;
 import adakite.prefs.Prefs;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
@@ -127,23 +126,24 @@ public class BWAPI {
   /**
    * Enum for extractable DLLs.
    *
-   * sha256 checksums:
-   * 68122a17f50c8836d5e3086276d35b7d *client-bridge-1_3-x86.dll
-   * 08475ed38618f04edcc648729687412a *client-bridge-1_4b-x86.dll
-   * baf2f51b05d27eae41a966b963d98781 *client-bridge-1_4c-x86.dll
-   * 08475ed38618f04edcc648729687412a *client-bridge-1_4-x86.dll
-   * 9a73fc0821d22e9e276ab673664cf061 *client-bridge-1_5-x86.dll
-   * 22df5206189ed3fe1b0ece79bfe75a06 *client-bridge-amd64.dll
-   * 59ca6ba344b0bfef8a7715b95ed7032f *client-bridge-julien-rame.dll
-   * d33de6fe1dcb11bd3516f2a2893c06f8 *client-bridge-x86.dll
-   * 08475ed38618f04edcc648729687412a *client-bridge-x86-jni-sp-1-4.dll
-   * 59ca6ba344b0bfef8a7715b95ed7032f *client-bridge-x86-lebedser.dll
-   * 2ca6cb7747d32962e2465daa89ff6863 *gmp-vc90-mt.dll
-   * 84e29a1be54c519c042bb80d13aea823 *gmp-vc90-mt-gd.dll
-   * f2a7432cb1e3a574eb4af7678359b44b *libgmp-10.dll
-   * 8afb228e4f6458b6628a202d9de9edf8 *libmpfr-4.dll
-   * 11f9098c040179efeeb16b66eff1a6ca *mpfr-vc90-mt.dll
-   * 71ac7ae0a579099b06f566a84636dd8b *mpfr-vc90-mt-gd.dll
+   * SHA-256 checksums:
+   * 9b21735b6e7cd11531cad609abb27eb2e0cacd76f7466c24228dae0ddcf2a7ba *bwapi_bridge2_5.dll
+   * ca985bdce5a7c16ad2a397df2c4ac53293c50648aa3474bbbfefa8d2fd8790ed *client-bridge-1_3-x86.dll
+   * 75dbc782e66ec8ff127176034da5cd8e0f934fc21a79135d7688689674930bd6 *client-bridge-1_4b-x86.dll
+   * e3a6ed46393507f794b051228ff995b8a4eb9d847715d33dde20076cddb23b01 *client-bridge-1_4c-x86.dll
+   * 75dbc782e66ec8ff127176034da5cd8e0f934fc21a79135d7688689674930bd6 *client-bridge-1_4-x86.dll
+   * 529637ef7bce676f9de869453eda0f57d09af2b9ebf6656bcf772c901c9aa392 *client-bridge-1_5-x86.dll
+   * 9a037024258521a3d500caaa3ca59ef9fcf6052818a3e8d2521a26ac7511403d *client-bridge-amd64.dll
+   * 732e941a23f6e5925f7837e68a60d535a8585bbd4293d9fe2db08282a8b74c0a *client-bridge-julien-rame.dll
+   * 0c1b3c79608dd5a1c25057dc49d0763c5f89077cb4a16e8c0cc0181de363ce91 *client-bridge-x86.dll
+   * 75dbc782e66ec8ff127176034da5cd8e0f934fc21a79135d7688689674930bd6 *client-bridge-x86-jni-sp-1-4.dll
+   * 732e941a23f6e5925f7837e68a60d535a8585bbd4293d9fe2db08282a8b74c0a *client-bridge-x86-lebedser.dll
+   * 9f45860228df80656d2c7407a0fa6d82c1b759d47c7dee843877700740eb4b58 *gmp-vc90-mt.dll
+   * 28282d77de250e4c7dd7b5ac1563c62d43465a2dda19119f551b45e7dc0d2aa7 *gmp-vc90-mt-gd.dll
+   * 9be85bd8468363703304d0bbd059c9709dba270d0ff5a1a94823cb5dbbfa5f20 *libgmp-10.dll
+   * 5a72d472e892efd7d94ea287eda354637394805c2f445edec051b5c0a3d0f55b *libmpfr-4.dll
+   * 647760f4b63ce1a4c36de4c71176f59cfccdfbb9ad397979725228272c8c67ae *mpfr-vc90-mt.dll
+   * b1873ca36d8ff3f0df0bbf1895916cc13e4bb95588e0e711c689bd37ead8100f *mpfr-vc90-mt-gd.dll
    */
   public enum ExtractableDll {
 
@@ -162,16 +162,22 @@ public class BWAPI {
     /* JNIBWAPI */
     /**********************************************************************/
 
-    CLIENT_BRIDGE_1_3("client-bridge-1_3-x86.dll"),
-    CLIENT_BRIDGE_1_4("client-bridge-1_4-x86.dll"),
-    CLIENT_BRIDGE_1_4b("client-bridge-1_4b-x86.dll"),
-    CLIENT_BRIDGE_1_4c("client-bridge-1_4c-x86.dll"),
-    CLIENT_BRIDGE_1_5("client-bridge-1_5-x86.dll"),
-    CLIENT_BRIDGE_AMD64("client-bridge-amd64.dll"),
-    CLIENT_BRIDGE_JULIEN_RAME("client-bridge-julien-rame.dll"),
-    CLIENT_BRIDGE_JNI_SP_1_4("client-bridge-x86-jni-sp-1-4.dll"),
-    CLIENT_BRIDGE_LEBEDSER("client-bridge-x86-lebedser.dll"),
-    CLIENT_BRIDGE("client-bridge-x86.dll")
+    JNI_CLIENT_BRIDGE_1_3("client-bridge-1_3-x86.dll"),
+    JNI_CLIENT_BRIDGE_1_4("client-bridge-1_4-x86.dll"),
+    JNI_CLIENT_BRIDGE_1_4b("client-bridge-1_4b-x86.dll"),
+    JNI_CLIENT_BRIDGE_1_4c("client-bridge-1_4c-x86.dll"),
+    JNI_CLIENT_BRIDGE_1_5("client-bridge-1_5-x86.dll"),
+    JNI_CLIENT_BRIDGE_AMD64("client-bridge-amd64.dll"),
+    JNI_CLIENT_BRIDGE_JULIEN_RAME("client-bridge-julien-rame.dll"),
+    JNI_CLIENT_BRIDGE_JNI_SP_1_4("client-bridge-x86-jni-sp-1-4.dll"),
+    JNI_CLIENT_BRIDGE_LEBEDSER("client-bridge-x86-lebedser.dll"),
+    JNI_CLIENT_BRIDGE("client-bridge-x86.dll"),
+
+    /**********************************************************************/
+    /* BWMirror */
+    /**********************************************************************/
+
+    BWMIRROR_BWAPI_BRIDGE_2_5("bwapi_bridge2_5.dll")
 
     ;
 

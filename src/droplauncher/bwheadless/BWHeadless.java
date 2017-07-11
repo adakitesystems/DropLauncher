@@ -548,12 +548,6 @@ public class BWHeadless {
     }
   }
 
-  private void print(String str) {
-    if (this.consoleOutput != null) {
-      this.consoleOutput.print(str);
-    }
-  }
-
   private void println(String line) {
     if (this.consoleOutput != null) {
       this.consoleOutput.println(line);
