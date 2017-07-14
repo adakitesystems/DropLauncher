@@ -119,17 +119,17 @@ public class SettingsWindow {
     CustomGridPane fileSelectPane = new CustomGridPane();
     fileSelectPane.add(this.lblChangeStarcraftExe);
     fileSelectPane.add(this.lblChangeStarcraftExeText);
-    fileSelectPane.add(this.btnChangeStarcraftExe, true);
+    fileSelectPane.add(this.btnChangeStarcraftExe).nextRow();
     fileSelectPane.setGaps(View.DefaultSetting.GAP.intValue(), View.DefaultSetting.GAP.intValue());
 
     CustomGridPane mainGridPane = new CustomGridPane();
-    mainGridPane.add(fileSelectPane.get(), true);
-    mainGridPane.add(new Separator(), true);
-    mainGridPane.add(this.chkExtractBotDependencies, true);
-    mainGridPane.add(this.chkCleanStarcraftDirectory, true);
-    mainGridPane.add(this.chkBwapiWriteRead, true);
-    mainGridPane.add(this.chkShowLogWindow, true);
-    mainGridPane.add(this.chkWarnBwapiDll, true);
+    mainGridPane.add(fileSelectPane.get()).nextRow();
+    mainGridPane.add(new Separator()).nextRow();
+    mainGridPane.add(this.chkExtractBotDependencies).nextRow();
+    mainGridPane.add(this.chkCleanStarcraftDirectory).nextRow();
+    mainGridPane.add(this.chkBwapiWriteRead).nextRow();
+    mainGridPane.add(this.chkShowLogWindow).nextRow();
+    mainGridPane.add(this.chkWarnBwapiDll).nextRow();
 
     mainGridPane.setGaps(View.DefaultSetting.GAP.intValue(), View.DefaultSetting.GAP.intValue());
     mainGridPane.get().setPadding(new Insets(

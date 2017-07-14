@@ -25,8 +25,6 @@ import droplauncher.mvc.controller.ControllerWrapper;
 import droplauncher.mvc.model.Model;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 

@@ -427,7 +427,7 @@ public class View implements EventHandler<DragEvent>  {
     CustomGridPane fileLabelGridPane = new CustomGridPane();
     fileLabelGridPane.add(this.lblBotFile);
     fileLabelGridPane.add(this.lblBotFileText);
-    fileLabelGridPane.add(this.cbRace, true);
+    fileLabelGridPane.add(this.cbRace).nextRow();
     fileLabelGridPane.get().setAlignment(Pos.CENTER_LEFT);
     fileLabelGridPane.setGaps(DefaultSetting.LABEL_TEXT_SPACING.intValue(), 0);
     fileLabelGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
@@ -438,18 +438,18 @@ public class View implements EventHandler<DragEvent>  {
     bwapiLabelGridPane.setGaps(DefaultSetting.LABEL_TEXT_SPACING.intValue(), 0);
     bwapiLabelGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
     CustomGridPane botNameGridPane = new CustomGridPane();
-    botNameGridPane.add(this.lblBotName, true);
-    botNameGridPane.add(this.txtBotName, true);
-    botNameGridPane.add(this.chkAutoEject, true);
-    botNameGridPane.add(this.chkAutoRejoin, true);
+    botNameGridPane.add(this.lblBotName).nextRow();
+    botNameGridPane.add(this.txtBotName).nextRow();
+    botNameGridPane.add(this.chkAutoEject).nextRow();
+    botNameGridPane.add(this.chkAutoRejoin).nextRow();
     botNameGridPane.get().setAlignment(Pos.CENTER_LEFT);
     botNameGridPane.setGaps(0, DefaultSetting.LABEL_TEXT_SPACING.intValue());
     botNameGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
 
     CustomGridPane infoGridPane = new CustomGridPane();
-    infoGridPane.add(fileLabelGridPane.get(), true);
-    infoGridPane.add(bwapiLabelGridPane.get(), true);
-    infoGridPane.add(botNameGridPane.get(), true);
+    infoGridPane.add(fileLabelGridPane.get()).nextRow();
+    infoGridPane.add(bwapiLabelGridPane.get()).nextRow();
+    infoGridPane.add(botNameGridPane.get()).nextRow();
     infoGridPane.setGaps(DefaultSetting.GAP.intValue(), DefaultSetting.GAP.intValue());
     infoGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
     infoGridPane.get().setAlignment(Pos.CENTER_LEFT);
@@ -482,8 +482,8 @@ public class View implements EventHandler<DragEvent>  {
     boxInfo.setMinWidth(Region.USE_PREF_SIZE);
 
     CustomGridPane mainGridPane = new CustomGridPane();
-    mainGridPane.add(boxInfo, true);
-    mainGridPane.add(boxStartConsole, true);
+    mainGridPane.add(boxInfo).nextRow();
+    mainGridPane.add(boxStartConsole).nextRow();
     mainGridPane.get().setPadding(new Insets(
         DefaultSetting.TOP_PADDING.intValue(),
         DefaultSetting.RIGHT_PADDING.intValue(),

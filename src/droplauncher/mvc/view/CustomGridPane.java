@@ -52,49 +52,39 @@ public class CustomGridPane {
     return this.gridPane;
   }
 
-  public void setGaps(int hGap, int vGap) {
+  public CustomGridPane setGaps(int hGap, int vGap) {
     this.gridPane.setHgap(hGap);
     this.gridPane.setVgap(vGap);
+    return this;
   }
 
   /**
    * Adds the specified node to the class GridPane object.
    *
    * @param node specified node to add
-   * @param nextRow whether to set the cursor to the next row after adding
    */
-  public void add(Node node, boolean nextRow) {
+  public CustomGridPane add(Node node) {
     GridPane.setConstraints(node, this.column, this.row);
     this.nodes.add(node);
     nextColumn();
-    if (nextRow) {
-      nextRow();
-    }
-  }
-
-  /**
-   * Adds the specified node to the class GridPane object.
-   *
-   * @param node specified node to add
-   * @see #add(javafx.scene.Node, boolean)
-   */
-  public void add(Node node) {
-    add(node, false);
+    return this;
   }
 
   /**
    * Sets the cursor to the next column.
    */
-  public void nextColumn() {
+  public CustomGridPane nextColumn() {
     this.column++;
+    return this;
   }
 
   /**
    * Sets the cursor to the next row, first column.
    */
-  public void nextRow() {
+  public CustomGridPane nextRow() {
     this.column = 0;
     this.row++;
+    return this;
   }
 
 }
