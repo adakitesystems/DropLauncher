@@ -215,9 +215,11 @@ public class Controller {
       return;
     }
 
-    String ext = AdakiteUtils.getFileExtension(path).toLowerCase(Locale.US);
+    String ext = AdakiteUtils.getFileExtension(path);
     if (AdakiteUtils.isNullOrEmpty(ext)) {
-      return;
+      ext = "";
+    } else {
+      ext = ext.toLowerCase(Locale.US);
     }
     switch (ext) {
       case "zip":
