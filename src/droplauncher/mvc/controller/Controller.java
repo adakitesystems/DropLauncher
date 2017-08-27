@@ -230,8 +230,18 @@ public class Controller {
       case "exe":
         /* Fall through. */
       case "jar":
-        if (path.getFileName().toString().equalsIgnoreCase(BWAPI.DEFAULT_DLL_FILENAME_RELEASE)) {
-          /* BWAPI.dll */
+        if (path.getFileName().toString().equalsIgnoreCase(Starcraft.DEFAULT_EXE_FILENAME)) {
+          /* Set StarCraft.exe path. */
+          Model.setPref(Starcraft.PropertyKey.STARCRAFT_EXE.toString(), path.toAbsolutePath().toString());
+          Platform.runLater(() -> {
+            new SimpleAlert().showAndWait(
+                AlertType.INFORMATION,
+                DialogTitle.PROGRAM_NAME,
+                Starcraft.DEFAULT_EXE_FILENAME + " path set to: " + path.toAbsolutePath().toString()
+            );
+          });
+        } else if (path.getFileName().toString().equalsIgnoreCase(BWAPI.DEFAULT_DLL_FILENAME_RELEASE)) {
+          /* Set BWAPI.dll path. */
           this.model.getBWHeadless().getBot().setBwapiDll(path.toAbsolutePath());
         } else {
           /* Set bot file. */
