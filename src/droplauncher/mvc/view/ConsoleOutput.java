@@ -153,10 +153,26 @@ public class ConsoleOutput {
         }
         String exceptionMessage = WindowsException.SystemError.ERROR_MOD_NOT_FOUND.toString()
             + AdakiteUtils.newline(2)
-            + "This error may be caused by missing Microsoft Visual C++ runtime files if you are trying to load BWAPI 4.2.0 or newer. "
+            + "This error may be caused by missing Microsoft Visual C++ runtime files if you are trying to load BWAPI 4.2.0 or newer."
             + AdakiteUtils.newline(2)
             + "Please download and install the Microsoft Visual C++ 2015 Redistributable Package for your system.";
         new ExceptionAlert().showAndWait(exceptionMessage, new WindowsException(WindowsException.SystemError.ERROR_MOD_NOT_FOUND.toString()));
+      });
+    /* Test for "operation requires elevation" error. */
+    } else if (message.contains(View.Message.ERROR_740.toString())) {
+      Platform.runLater(() -> {
+        try {
+          this.controller.stopBWHRequest();
+        } catch (InvalidStateException ex) {
+          /* Do nothing. */
+          //TODO: Do something?
+        }
+        String exceptionMessage = WindowsException.SystemError.ERROR_ELEVATION_REQUIRED.toString()
+            + AdakiteUtils.newline(2)
+            + "This error may be caused by trying to start StarCraft with administrative compatibility settings."
+            + AdakiteUtils.newline(2)
+            + "Please try removing all administrative compatibility and startup settings from StarCraft.exe.";
+        new ExceptionAlert().showAndWait(exceptionMessage, new WindowsException(WindowsException.SystemError.ERROR_ELEVATION_REQUIRED.toString()));
       });
     }
   }
