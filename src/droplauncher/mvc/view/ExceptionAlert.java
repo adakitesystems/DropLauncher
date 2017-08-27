@@ -57,6 +57,9 @@ public class ExceptionAlert {
 
     if (ex != null) {
       String headerText = AdakiteUtils.getFileExtension(Paths.get(ex.getClass().getName()));
+      if (AdakiteUtils.isNullOrEmpty(headerText)) {
+        headerText = "Unknown Exception";
+      }
 
       alert.setTitle("Exception Dialog");
       alert.setHeaderText(headerText);

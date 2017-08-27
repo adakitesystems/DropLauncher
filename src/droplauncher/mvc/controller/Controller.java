@@ -262,8 +262,11 @@ public class Controller {
     try {
       if (path == null) {
         throw new IllegalArgumentException(Debugging.cannotBeNull("path"));
-      } else if (!AdakiteUtils.getFileExtension(path).equalsIgnoreCase("zip")) {
-        throw new IllegalArgumentException("path does not appear to be a ZIP file: " + path.toString());
+      } else {
+        String ext = AdakiteUtils.getFileExtension(path);
+        if (AdakiteUtils.isNullOrEmpty(ext) || !ext.equalsIgnoreCase("zip")) {
+          throw new IllegalArgumentException("path does not appear to be a ZIP file: " + path.toString());
+        }
       }
 
       ZipFile zipFile = new ZipFile(path.toAbsolutePath().toString());
