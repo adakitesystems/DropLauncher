@@ -47,7 +47,7 @@ public class Bot {
     NAME("name"),
     RACE("race"),
     PATH("path"),
-    BWAPI_DLL("bwapidll"),
+    BWAPI_DLL("bwapi_dll"),
     ;
 
     private final String str;

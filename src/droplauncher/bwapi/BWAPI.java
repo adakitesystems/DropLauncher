@@ -194,12 +194,13 @@ public class BWAPI {
 
   }
 
-  public static final Path DATA_PATH = Paths.get("bwapi-data");
-  public static final Path DATA_AI_PATH = DATA_PATH.resolve(Paths.get("AI"));
-  public static final Path DATA_INI_PATH = DATA_PATH.resolve(Paths.get("bwapi.ini"));
-  public static final Path DATA_READ_PATH = DATA_PATH.resolve(Paths.get("read"));
-  public static final Path DATA_WRITE_PATH = DATA_PATH.resolve(Paths.get("write"));
-  public static final Path DATA_DATA_PATH = DATA_PATH.resolve(Paths.get("data")); /* for Broodwar.map */
+  public static final Path PATH = Paths.get("bwapi-data");
+  public static final Path AI_PATH = PATH.resolve(Paths.get("AI"));
+  public static final Path INI_PATH = PATH.resolve(Paths.get("bwapi.ini"));
+  public static final Path READ_PATH = PATH.resolve(Paths.get("read"));
+  public static final Path WRITE_PATH = PATH.resolve(Paths.get("write"));
+  public static final Path DATA_PATH = PATH.resolve(Paths.get("data")); /* for Broodwar.map */
+  
   public static final String DLL_UNKNOWN = "Unknown";
 
   public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("bwapi");
@@ -237,7 +238,7 @@ public class BWAPI {
    */
   public static Path getPath() throws MissingStarcraftExeException {
     Path starcraftDirectory = Starcraft.getPath();
-    return (starcraftDirectory == null) ? null : starcraftDirectory.resolve(BWAPI.DATA_PATH);
+    return (starcraftDirectory == null) ? null : starcraftDirectory.resolve(BWAPI.PATH);
   }
 
 }

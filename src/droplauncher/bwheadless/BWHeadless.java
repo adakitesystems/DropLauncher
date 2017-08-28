@@ -468,20 +468,20 @@ public class BWHeadless {
                                                          InvalidBotTypeException,
                                                          InvalidArgumentException {
     /* Create common BWAPI paths. */
-    Path bwapiAiPath = starcraftPath.resolve(BWAPI.DATA_AI_PATH);
-    Path bwapiReadPath = starcraftPath.resolve(BWAPI.DATA_READ_PATH);
-    Path bwapiWritePath = starcraftPath.resolve(BWAPI.DATA_WRITE_PATH);
-    Path bwapiDataDataPath = starcraftPath.resolve(BWAPI.DATA_DATA_PATH);
-    Path bwapiIniPath = starcraftPath.resolve(BWAPI.DATA_INI_PATH);
-    Path bwapiBroodwarMap = bwapiDataDataPath.resolve(BWAPI.ExtractableFile.BROODWAR_MAP.toString());
+    Path bwapiAiPath = starcraftPath.resolve(BWAPI.AI_PATH);
+    Path bwapiReadPath = starcraftPath.resolve(BWAPI.READ_PATH);
+    Path bwapiWritePath = starcraftPath.resolve(BWAPI.WRITE_PATH);
+    Path bwapiDataPath = starcraftPath.resolve(BWAPI.DATA_PATH);
+    Path bwapiIniPath = starcraftPath.resolve(BWAPI.INI_PATH);
+    Path bwapiBroodwarMap = bwapiDataPath.resolve(BWAPI.ExtractableFile.BROODWAR_MAP.toString());
     AdakiteUtils.createDirectory(bwapiAiPath);
     AdakiteUtils.createDirectory(bwapiReadPath);
     AdakiteUtils.createDirectory(bwapiWritePath);
-    AdakiteUtils.createDirectory(bwapiDataDataPath);
+    AdakiteUtils.createDirectory(bwapiDataPath);
 
     /* Create BWTA/BWTA2 paths. */
-    Path bwtaPath = starcraftPath.resolve(BWAPI.DATA_PATH).resolve("BWTA");
-    Path bwta2Path = starcraftPath.resolve(BWAPI.DATA_PATH).resolve("BWTA2");
+    Path bwtaPath = starcraftPath.resolve(BWAPI.PATH).resolve("BWTA");
+    Path bwta2Path = starcraftPath.resolve(BWAPI.PATH).resolve("BWTA2");
     AdakiteUtils.createDirectory(bwtaPath);
     AdakiteUtils.createDirectory(bwta2Path);
 
@@ -520,11 +520,11 @@ public class BWHeadless {
       case DLL:
         /* Copy DLL to "bwapi-data/AI/" directory. */
         src = this.bot.getPath();
-        dest = starcraftPath.resolve(BWAPI.DATA_AI_PATH).resolve(FilenameUtils.getName(this.bot.getPath().toString()));
+        dest = starcraftPath.resolve(BWAPI.AI_PATH).resolve(FilenameUtils.getName(this.bot.getPath().toString()));
         AdakiteUtils.createDirectory(dest.getParent());
         Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
         this.bot.setPath(dest);
-        Path iniAiPath = BWAPI.DATA_AI_PATH.resolve(FilenameUtils.getName(this.bot.getPath().toString()));
+        Path iniAiPath = BWAPI.AI_PATH.resolve(FilenameUtils.getName(this.bot.getPath().toString()));
         bwapiIni.set("ai", "ai", iniAiPath.toString());
         break;
       case CLIENT:

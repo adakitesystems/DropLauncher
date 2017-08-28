@@ -149,8 +149,8 @@ public class Controller {
     if (Model.isPrefEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString())) {
       /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
       Path starcraftDirectory = Starcraft.getPath();
-      Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.DATA_WRITE_PATH);
-      Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.DATA_READ_PATH);
+      Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.WRITE_PATH);
+      Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.READ_PATH);
       String copyMessage = View.MessagePrefix.COPY.get() + bwapiWritePath.toString() + " -> " + bwapiReadPath.toString();
       this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + copyMessage);
       FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
@@ -349,7 +349,7 @@ public class Controller {
         if (currNum != 1) {
           message += "s";
         }
-        message += " detected! These files will be copied to the \"" + BWAPI.DATA_PATH.toString() + "\" directory when the bot is launched: " + AdakiteUtils.newline(2) + sb.toString();
+        message += " detected! These files will be copied to the \"" + BWAPI.PATH.toString() + "\" directory when the bot is launched: " + AdakiteUtils.newline(2) + sb.toString();
         new SimpleAlert().showAndWait(
             AlertType.INFORMATION,
             DialogTitle.PROGRAM_NAME,
