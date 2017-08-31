@@ -17,12 +17,14 @@
 
 package droplauncher.bwapi;
 
-import adakite.prefs.Prefs;
+import adakite.util.AdakiteUtils;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
-import droplauncher.DropLauncher;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Locale;
 
 /**
@@ -200,6 +202,7 @@ public class BWAPI {
   public static final Path READ_PATH = PATH.resolve(Paths.get("read"));
   public static final Path WRITE_PATH = PATH.resolve(Paths.get("write"));
   public static final Path DATA_PATH = PATH.resolve(Paths.get("data")); /* for Broodwar.map */
+  public static final Path BWAPI_INI_BACKUP = Paths.get(INI_PATH.toString() + ".dlbak");
 
   public static final String DLL_UNKNOWN = "Unknown";
 
@@ -229,16 +232,29 @@ public class BWAPI {
     return DLL_UNKNOWN;
   }
 
-  /**
-   * Returns the path to the "StarCraft/bwapi-data/" directory.
-   * The StarCraft directory is determined by {@link Starcraft#getPath()}.
-   *
-   * @see Starcraft#getPath()
-   * @throws MissingStarcraftExeException
-   */
-  public static Path getPath() throws MissingStarcraftExeException {
-    Path starcraftDirectory = Starcraft.getPath();
-    return (starcraftDirectory == null) ? null : starcraftDirectory.resolve(BWAPI.PATH);
+//  /**
+//   * Returns the path to the "StarCraft/bwapi-data/" directory.
+//   * The StarCraft directory is determined by {@link Starcraft#getPath()}.
+//   *
+//   * @see Starcraft#getPath()
+//   * @throws MissingStarcraftExeException
+//   */
+//  public static Path getPath() throws MissingStarcraftExeException {
+//    Path starcraftDirectory = Starcraft.getPath();
+//    return (starcraftDirectory == null) ? null : starcraftDirectory.resolve(BWAPI.PATH);
+//  }
+
+  public static void backupIniFile() throws MissingStarcraftExeException, IOException {
+    if (AdakiteUtils.fileExists(Starcraft.getPath().resolve(BWAPI.INI_PATH))) {
+      Files.copy(Starcraft.getPath().resolve(BWAPI.INI_PATH), Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP), StandardCopyOption.REPLACE_EXISTING);
+    }
+  }
+
+  public static void restoreIniFile() throws MissingStarcraftExeException, IOException {
+    if (AdakiteUtils.fileExists(Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP))) {
+      Files.copy(Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP), Starcraft.getPath().resolve(BWAPI.INI_PATH), StandardCopyOption.REPLACE_EXISTING);
+      AdakiteUtils.deleteFile(Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP));
+    }
   }
 
 }

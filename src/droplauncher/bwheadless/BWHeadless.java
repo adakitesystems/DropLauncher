@@ -357,7 +357,6 @@ public class BWHeadless {
 
     configureBwapi(starcraftPath);
 
-
     /* Compile bwheadless arguments. */
     CommandBuilder bwhCommand = new CommandBuilder();
     bwhCommand.setPath(getPath().toAbsolutePath());
