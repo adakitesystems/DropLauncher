@@ -266,7 +266,7 @@ public class View implements EventHandler<DragEvent>  {
 
   }
 
-  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("ui");
+//  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("ui");
 
   private static final String RESOURCE_PATH = "/droplauncher/mvc/view/theme/";
   private static final String DEFAULT_CSS = RESOURCE_PATH + "droplauncher.css";
@@ -338,7 +338,7 @@ public class View implements EventHandler<DragEvent>  {
   }
 
   private void initComponents() {
-    this.lblBwapiVersion = new Label(BWAPI.DEFAULT_DLL_FILENAME_RELEASE + " Version:");
+    this.lblBwapiVersion = new Label(BWAPI.DLL_FILENAME_RELEASE + " Version:");
     this.lblBwapiVersion.setMinWidth(Region.USE_PREF_SIZE);
     this.lblBwapiVersionText = new Label(EMPTY_LABEL_TEXT);
     this.lblBwapiVersionText.setMinWidth(Region.USE_PREF_SIZE);
@@ -360,15 +360,15 @@ public class View implements EventHandler<DragEvent>  {
     this.btnStart.getStyleClass().add("launch-btn");
     this.chkAutoEject = new CheckBox();
     this.chkAutoEject.setText("Auto-eject bot after game has ended");
-    this.chkAutoEject.setSelected(Model.isPrefEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString()));
+    this.chkAutoEject.setSelected(Model.getSettings().isEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString()));
     this.chkAutoEject.setOnAction(e -> {
-      Model.setPrefEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString(), this.chkAutoEject.isSelected());
+      Model.getSettings().setEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString(), this.chkAutoEject.isSelected());
     });
     this.chkAutoRejoin = new CheckBox();
     this.chkAutoRejoin.setText("Auto-connect bot to game lobby after eject");
-    this.chkAutoRejoin.setSelected(Model.isPrefEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString()));
+    this.chkAutoRejoin.setSelected(Model.getSettings().isEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString()));
     this.chkAutoRejoin.setOnAction(e -> {
-      Model.setPrefEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString(), this.chkAutoRejoin.isSelected());
+      Model.getSettings().setEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString(), this.chkAutoRejoin.isSelected());
     });
     this.consoleOutput = new ConsoleOutput();
     this.consoleOutput.getBlacklist().add("fps: "); /* bwheadless.exe spam */
@@ -468,7 +468,7 @@ public class View implements EventHandler<DragEvent>  {
     boxClear.setAlignment(Pos.CENTER_RIGHT);
     VBox boxStartConsole = new VBox();
     boxStartConsole.getChildren().add(this.btnStart);
-    if (Model.isPrefEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString())) {
+    if (Model.getSettings().isEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString())) {
       boxStartConsole.getChildren().add(this.consoleOutput.get());
       boxStartConsole.getChildren().add(boxClear);
     }

@@ -29,7 +29,9 @@ omit for (final) release
 
 package droplauncher;
 
+import adakite.ini.Ini;
 import adakite.prefs.Prefs;
+import adakite.settings.Settings;
 import adakite.util.AdakiteUtils;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -94,11 +96,17 @@ public class DropLauncher {
 //  public static final String TEMP_DIRECTORY = Paths.get(System.getProperty("user.home"), "DropLauncher").toString();
   public static final Path TEMP_DIRECTORY = Paths.get("tmp");
 
-  public static final Prefs PREF_ROOT = new Prefs(Preferences.userRoot().node("droplauncher"));
+//  public static final Prefs PREF_ROOT = new Prefs(Preferences.userRoot().node("droplauncher"));
+  private static final Ini INI = new Ini();
+  public static final Path SETTINGS_FILE = Paths.get("settings.ini");
 
   public static final Path JRE_DIR = Paths.get("jre");
   public static final Path JRE_EXE = JRE_DIR.resolve("bin").resolve("java.exe");
 
   private DropLauncher() {}
+
+  public static Ini getSettings() {
+    return INI;
+  }
 
 }

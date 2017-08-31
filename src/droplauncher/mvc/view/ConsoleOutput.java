@@ -101,8 +101,8 @@ public class ConsoleOutput {
     /* Test for auto-eject option. */
     if ((message.startsWith(View.MessagePrefix.BWHEADLESS.get() + View.Message.GAME_HAS_ENDED.toString())
           || message.startsWith(View.MessagePrefix.BWHEADLESS.get() + View.Message.GAME_OVER.toString()))
-        && Model.hasPrefValue(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString())
-        && Model.isPrefEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString())) {
+        && Model.getSettings().hasValue(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString())
+        && Model.getSettings().isEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString())) {
       try {
         Thread.sleep(Model.AUTO_EJECT_DELAY);
       } catch (InterruptedException ex) {
@@ -121,8 +121,8 @@ public class ConsoleOutput {
       }
     /* Test for auto-rejoin option. */
     } else if (message.startsWith(View.MessagePrefix.DROPLAUNCHER.get() + View.Message.BOT_EJECTED.toString())
-        && Model.hasPrefValue(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString())
-        && Model.isPrefEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString())) {
+        && Model.getSettings().hasValue(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString())
+        && Model.getSettings().isEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString())) {
       try {
         Thread.sleep(Model.AUTO_REJOIN_DELAY);
       } catch (InterruptedException ex) {

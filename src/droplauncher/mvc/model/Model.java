@@ -17,22 +17,26 @@
 
 package droplauncher.mvc.model;
 
-import adakite.prefs.Prefs;
+import adakite.ini.exception.IniParseException;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.DropLauncher;
-import droplauncher.mvc.view.SimpleAlert;
-import java.util.Locale;
-import java.util.prefs.BackingStoreException;
-import javafx.scene.control.Alert.AlertType;
+import droplauncher.mvc.view.ExceptionAlert;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import javafx.application.Platform;
 
 public class Model {
 
   public static final int AUTO_EJECT_DELAY = 3500; /* milliseconds */
   public static final int AUTO_REJOIN_DELAY = 3500; /* milliseconds */
+
+  private static ProgramSettings SETTINGS = new ProgramSettings();
 
   private BWHeadless bwheadless;
 
@@ -44,55 +48,55 @@ public class Model {
     return this.bwheadless;
   }
 
-  public void ensureDefaultSettings() {
-    if (!Model.hasPrefValue(DropLauncher.PropertyKey.VERSION.toString())) {
-      /* Version is not set. */
-      Model.setPref(DropLauncher.PropertyKey.VERSION.toString(), DropLauncher.PROGRAM_VERSION);
+  public static ProgramSettings getSettings() {
+    return SETTINGS;
+  }
+
+  public void ensureDefaultSettings() throws IOException, IniParseException {
+    if (AdakiteUtils.fileExists(DropLauncher.SETTINGS_FILE)) {
+      try {
+        DropLauncher.getSettings().parse(DropLauncher.SETTINGS_FILE);
+      } catch (Exception ex) {
+        Platform.runLater(() -> {
+          new ExceptionAlert().showAndWait("Failed to parse settings file: " + DropLauncher.SETTINGS_FILE.toString(), ex);
+        });
+      }
     } else {
-      /* Check if current version was loaded last time. */
-      String previousVersion = Model.getPref(DropLauncher.PropertyKey.VERSION.toString());
-      if (!previousVersion.equalsIgnoreCase(DropLauncher.PROGRAM_VERSION)) {
-        /* Newer/older version detected. */
-        try {
-          /* Compile newer/older message. */
-          boolean isNewer = (DropLauncher.PROGRAM_VERSION.compareTo(previousVersion) > 0);
-          String message = "";
-          message += "Different version detected!" + AdakiteUtils.newline(2);
-          message += "Previously installed version: " + previousVersion + AdakiteUtils.newline();
-          message += "Currently installed version: " + DropLauncher.PROGRAM_VERSION + AdakiteUtils.newline(2);
-          message += "You are loading a";
-          if (isNewer) {
-            message += " newer";
-          } else {
-            message += "n older";
-          }
-          message += " version of " + DropLauncher.PROGRAM_NAME + ". All previous program settings have been automatically cleared to ensure stability. Please restart the application.";
-          /* Display compiled message. */
-          new SimpleAlert().showAndWait(
-              AlertType.INFORMATION,
-              View.DialogTitle.PROGRAM_NAME,
-              message
-          );
-          /* Clear all settings. */
-          DropLauncher.PREF_ROOT.clear();
-        } catch (Exception ex) {
-          /* Do nothing. */
-        }
-        /* Close program. */
-        System.exit(0);
+      try {
+        AdakiteUtils.createFile(DropLauncher.SETTINGS_FILE);
+      } catch (Exception ex) {
+        Platform.runLater(() -> {
+          new ExceptionAlert().showAndWait("Failed to create settings file: " + DropLauncher.SETTINGS_FILE.toString(), ex);
+        });
       }
     }
-    if (!Model.hasPrefValue(Starcraft.PropertyKey.CLEAN_SC_DIR.toString())) {
-      Model.setPrefEnabled(Starcraft.PropertyKey.CLEAN_SC_DIR.toString(), true);
+
+    if (!Model.getSettings().hasValue(DropLauncher.PropertyKey.VERSION.toString())) {
+      Model.getSettings().setValue(DropLauncher.PropertyKey.VERSION.toString(), DropLauncher.PROGRAM_VERSION);
+    } else {
+      String version = Model.getSettings().getValue(DropLauncher.PropertyKey.VERSION.toString());
+      if (!version.equalsIgnoreCase(DropLauncher.PROGRAM_VERSION)) {
+        try {
+          Files.copy(DropLauncher.SETTINGS_FILE, Paths.get(DropLauncher.SETTINGS_FILE.toString() + ".bak"), StandardCopyOption.REPLACE_EXISTING);
+          Model.getSettings().setValue(DropLauncher.PropertyKey.VERSION.toString(), DropLauncher.PROGRAM_VERSION);
+        } catch (Exception ex) {
+          Platform.runLater(() -> {
+            new ExceptionAlert().showAndWait("Failed to create backup of settings file: " + DropLauncher.SETTINGS_FILE.toString(), ex);
+          });
+        }
+      }
     }
-    if (!Model.hasPrefValue(BWAPI.PropertyKey.COPY_WRITE_READ.toString())) {
-      Model.setPrefEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString(), true);
+    if (!Model.getSettings().hasValue(Starcraft.PropertyKey.CLEAN_SC_DIR.toString())) {
+      Model.getSettings().setEnabled(Starcraft.PropertyKey.CLEAN_SC_DIR.toString(), true);
     }
-    if (!Model.hasPrefValue(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString())) {
-      Model.setPrefEnabled(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString(), true);
+    if (!Model.getSettings().hasValue(BWAPI.PropertyKey.COPY_WRITE_READ.toString())) {
+      Model.getSettings().setEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString(), true);
     }
-    if (!Model.hasPrefValue(View.PropertyKey.SHOW_LOG_WINDOW.toString())) {
-      Model.setPrefEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString(), true);
+    if (!Model.getSettings().hasValue(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString())) {
+      Model.getSettings().setEnabled(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString(), true);
+    }
+    if (!Model.getSettings().hasValue(View.PropertyKey.SHOW_LOG_WINDOW.toString())) {
+      Model.getSettings().setEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString(), true);
     }
     /* Disabled for now. Force user to be aware and select which StarCraft directory will be used. */
 //    if (!Model.hasPrefValue(Starcraft.Property.STARCRAFT_EXE.toString())) {
@@ -106,114 +110,25 @@ public class Model {
 //        /* Do nothing. */
 //      }
 //    }
-    if (!Model.hasPrefValue(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString())) {
-      Model.setPrefEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString(), true);
+    if (!Model.getSettings().hasValue(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString())) {
+      Model.getSettings().setEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString(), true);
     }
-    if (!Model.hasPrefValue(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString())) {
-      Model.setPrefEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString(), false);
+    if (!Model.getSettings().hasValue(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString())) {
+      Model.getSettings().setEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString(), false);
     }
-    if (!Model.hasPrefValue(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString())) {
-      Model.setPrefEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString(), true);
-    }
-  }
-
-  private static Prefs getPrefs(String uniqueKey) {
-    uniqueKey = uniqueKey.toLowerCase(Locale.US);
-
-    for (DropLauncher.PropertyKey val : DropLauncher.PropertyKey.values()) {
-      if (uniqueKey.equals(val.toString())) {
-        return DropLauncher.PREF_ROOT;
-      }
+    if (!Model.getSettings().hasValue(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString())) {
+      Model.getSettings().setEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString(), true);
     }
 
-    for (BWAPI.PropertyKey val : BWAPI.PropertyKey.values()) {
-      if (uniqueKey.equals(val.toString())) {
-        return BWAPI.PREF_ROOT;
-      }
-    }
-
-    for (View.PropertyKey val : View.PropertyKey.values()) {
-      if (uniqueKey.equals(val.toString())) {
-        return View.PREF_ROOT;
-      }
-    }
-
-    for (Starcraft.PropertyKey val : Starcraft.PropertyKey.values()) {
-      if (uniqueKey.equals(val.toString())) {
-        return Starcraft.PREF_ROOT;
-      }
-    }
-
-    throw new IllegalArgumentException("not found: uniqueKey=" + uniqueKey);
-  }
-
-  /**
-   * Removes this preference node and all of its descendants, invalidating
-   * any preferences contained in the removed nodes.
-   *
-   * @see java.util.prefs.Preferences#removeNode()
-   * @throws BackingStoreException if this operation cannot be completed
-   *     due to a failure in the backing store, or inability to
-   *     communicate with it.
-   */
-  public static void clearPrefs() throws BackingStoreException {
-    DropLauncher.PREF_ROOT.clear();
-  }
-
-  /**
-   * Returns the associated value with the specified key.
-   *
-   * @param key specified key
-   * @throws IllegalStateException if the specified key does not exist
-   */
-  public static String getPref(String key) {
-    return getPrefs(key).get(key);
-  }
-
-  /**
-   * Tests whether the specified key has an associated value.
-   *
-   * @param key specified key
-   */
-  public static boolean hasPrefValue(String key) {
     try {
-      getPref(key);
-      return true;
+      DropLauncher.getSettings().store(DropLauncher.SETTINGS_FILE);
     } catch (Exception ex) {
-      return false;
+      Platform.runLater(() -> {
+        new ExceptionAlert().showAndWait("Failed to save settings to local file: " + DropLauncher.SETTINGS_FILE.toString(), ex);
+      });
     }
   }
 
-  /**
-   * Sets the specified key to the specified value regardless if
-   * the specified key existed previously.
-   *
-   * @param key specified key
-   * @param val specified value
-   */
-  public static void setPref(String key, String val) {
-    getPrefs(key).set(key, val);
-  }
 
-  /**
-   * Tests whether the specified key has a TRUE or FALSE value. Returns
-   * FALSE even if the specified key does not exist.
-   *
-   * @param key specified key
-   */
-  public static boolean isPrefEnabled(String key) {
-    return getPrefs(key).isEnabled(key);
-  }
-
-  /**
-   * Sets the specified key to the specified boolean value regardless if
-   * the specified key existed previously.
-   *
-   * @param key specified key
-   * @param enabled specified boolean value
-   */
-  public static void setPrefEnabled(String key, boolean enabled) {
-    getPrefs(key).set(key, Boolean.toString(enabled));
-  }
 
 }

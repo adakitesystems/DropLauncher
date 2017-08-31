@@ -146,7 +146,7 @@ public class Controller {
                                        TasklistParseException {
     this.model.getBWHeadless().stop();
 
-    if (Model.isPrefEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString())) {
+    if (Model.getSettings().isEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString())) {
       /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
       Path starcraftDirectory = Starcraft.getPath();
       Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.WRITE_PATH);
@@ -181,7 +181,7 @@ public class Controller {
         throw new InvalidStateException(errorMessage);
     }
 
-    if (Model.isPrefEnabled(Starcraft.PropertyKey.CLEAN_SC_DIR.toString())) {
+    if (Model.getSettings().isEnabled(Starcraft.PropertyKey.CLEAN_SC_DIR.toString())) {
       /* Clean up StarCraft directory. */
       try {
         if (this.directoryMonitor != null) {
@@ -232,7 +232,7 @@ public class Controller {
       case "jar":
         if (path.getFileName().toString().equalsIgnoreCase(Starcraft.DEFAULT_EXE_FILENAME)) {
           /* Set StarCraft.exe path. */
-          Model.setPref(Starcraft.PropertyKey.STARCRAFT_EXE.toString(), path.toAbsolutePath().toString());
+          Model.getSettings().setValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString(), path.toAbsolutePath().toString());
           Platform.runLater(() -> {
             new SimpleAlert().showAndWait(
                 AlertType.INFORMATION,
@@ -240,7 +240,7 @@ public class Controller {
                 Starcraft.DEFAULT_EXE_FILENAME + " path set to: " + path.toAbsolutePath().toString()
             );
           });
-        } else if (path.getFileName().toString().equalsIgnoreCase(BWAPI.DEFAULT_DLL_FILENAME_RELEASE)) {
+        } else if (path.getFileName().toString().equalsIgnoreCase(BWAPI.DLL_FILENAME_RELEASE)) {
           /* Set BWAPI.dll path. */
           this.model.getBWHeadless().getBot().setBwapiDll(path.toAbsolutePath());
         } else {
@@ -466,12 +466,12 @@ public class Controller {
     /* Check if BWAPI.dll is known. */
     String bwapiDllVersion = getBwapiDllVersion();
     if (this.state == State.IDLE
-        && Model.isPrefEnabled(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString())
+        && Model.getSettings().isEnabled(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString())
         && !AdakiteUtils.isNullOrEmpty(bwapiDllVersion)
         && bwapiDllVersion.equalsIgnoreCase(BWAPI.DLL_UNKNOWN)) {
       boolean response = new YesNoDialog().userConfirms(
           "Warning",
-          "The " + BWAPI.DEFAULT_DLL_FILENAME_RELEASE + " you provided is not on the list of known official BWAPI versions.\n\nDo you want to continue anyway?"
+          "The " + BWAPI.DLL_FILENAME_RELEASE + " you provided is not on the list of known official BWAPI versions.\n\nDo you want to continue anyway?"
       );
       if (response == false) {
         /* User does not wish to continue. Abort. */
@@ -529,7 +529,7 @@ public class Controller {
             });
           } catch (MissingBwapiDllException ex) {
             Platform.runLater(() -> {
-              View.displayMissingFieldDialog(BWAPI.DEFAULT_DLL_FILENAME_RELEASE + " is not set");
+              View.displayMissingFieldDialog(BWAPI.DLL_FILENAME_RELEASE + " is not set");
             });
           } catch (MissingBotException ex) {
             Platform.runLater(() -> {

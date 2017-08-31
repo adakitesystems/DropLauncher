@@ -124,7 +124,7 @@ public class Starcraft {
 
   public static final String DEFAULT_EXE_FILENAME = "StarCraft.exe";
 
-  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("starcraft");
+//  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("starcraft");
 
   public static final String REG_ENTRY_EXE_32BIT = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Blizzard Entertainment\\Starcraft";
 //  public static final String REG_ENTRY_EXE_64BIT = ""; //TODO
@@ -169,8 +169,8 @@ public class Starcraft {
    * @throws MissingStarcraftExeException if the StarCraft path is not set
    */
   public static Path getPath() throws MissingStarcraftExeException {
-    if (Model.hasPrefValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString())) {
-      return AdakiteUtils.getParentDirectory(Paths.get(Model.getPref(Starcraft.PropertyKey.STARCRAFT_EXE.toString())));
+    if (Model.getSettings().hasValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString())) {
+      return AdakiteUtils.getParentDirectory(Paths.get(Model.getSettings().getValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString())));
     } else {
       throw new MissingStarcraftExeException();
     }

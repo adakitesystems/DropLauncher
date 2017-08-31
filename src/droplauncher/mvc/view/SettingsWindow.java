@@ -64,34 +64,34 @@ public class SettingsWindow {
 
   public SettingsWindow showAndWait() {
     this.chkShowLogWindow.setText("Show log window (requires program restart)");
-    this.chkShowLogWindow.setSelected(Model.isPrefEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString()));
+    this.chkShowLogWindow.setSelected(Model.getSettings().isEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString()));
     this.chkShowLogWindow.setOnAction(e -> {
-      Model.setPrefEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString(), this.chkShowLogWindow.isSelected());
+      Model.getSettings().setEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString(), this.chkShowLogWindow.isSelected());
     });
 
     this.chkBwapiWriteRead.setText("Copy contents of \"bwapi-data/write/\" to \"bwapi-data/read/\" after eject");
-    this.chkBwapiWriteRead.setSelected(Model.isPrefEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString()));
+    this.chkBwapiWriteRead.setSelected(Model.getSettings().isEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString()));
     this.chkBwapiWriteRead.setOnAction(e -> {
-      Model.setPrefEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString(), this.chkBwapiWriteRead.isSelected());
+      Model.getSettings().setEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString(), this.chkBwapiWriteRead.isSelected());
     });
 
     this.chkCleanStarcraftDirectory.setText("Clean StarCraft directory before closing program");
-    this.chkCleanStarcraftDirectory.setSelected(Model.isPrefEnabled(Starcraft.PropertyKey.CLEAN_SC_DIR.toString()));
+    this.chkCleanStarcraftDirectory.setSelected(Model.getSettings().isEnabled(Starcraft.PropertyKey.CLEAN_SC_DIR.toString()));
     this.chkCleanStarcraftDirectory.setOnAction(e -> {
-      Model.setPrefEnabled(Starcraft.PropertyKey.CLEAN_SC_DIR.toString(), this.chkCleanStarcraftDirectory.isSelected());
+      Model.getSettings().setEnabled(Starcraft.PropertyKey.CLEAN_SC_DIR.toString(), this.chkCleanStarcraftDirectory.isSelected());
     });
 
     this.chkWarnBwapiDll.setText("Warn about unknown BWAPI versions");
-    this.chkWarnBwapiDll.setSelected(Model.isPrefEnabled(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString()));
+    this.chkWarnBwapiDll.setSelected(Model.getSettings().isEnabled(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString()));
     this.chkWarnBwapiDll.setOnAction(e -> {
-      Model.setPrefEnabled(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString(), this.chkWarnBwapiDll.isSelected());
+      Model.getSettings().setEnabled(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString(), this.chkWarnBwapiDll.isSelected());
     });
 
     this.lblChangeStarcraftExe.setText(Starcraft.DEFAULT_EXE_FILENAME + ":");
     this.btnChangeStarcraftExe.setText("...");
     this.lblChangeStarcraftExeText.setText("");
-    if (Model.hasPrefValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString())) {
-      String starcraftExe = Model.getPref(Starcraft.PropertyKey.STARCRAFT_EXE.toString());
+    if (Model.getSettings().hasValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString())) {
+      String starcraftExe = Model.getSettings().getValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString());
       this.lblChangeStarcraftExeText.setText(starcraftExe);
     }
     this.lblChangeStarcraftExeText.setMinWidth(Region.USE_PREF_SIZE);
@@ -105,15 +105,15 @@ public class SettingsWindow {
       }
       File file = fc.showOpenDialog(this.stage);
       if (file != null) {
-        Model.setPref(Starcraft.PropertyKey.STARCRAFT_EXE.toString(), file.getAbsolutePath());
+        Model.getSettings().setValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString(), file.getAbsolutePath());
         this.lblChangeStarcraftExeText.setText(file.getAbsolutePath());
       }
     });
 
     this.chkExtractBotDependencies.setText("Auto-extract bot dependencies");
-    this.chkExtractBotDependencies.setSelected(Model.isPrefEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString()));
+    this.chkExtractBotDependencies.setSelected(Model.getSettings().isEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString()));
     this.chkExtractBotDependencies.setOnAction(e -> {
-      Model.setPrefEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString(), this.chkExtractBotDependencies.isSelected());
+      Model.getSettings().setEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString(), this.chkExtractBotDependencies.isSelected());
     });
 
     CustomGridPane fileSelectPane = new CustomGridPane();

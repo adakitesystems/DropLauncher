@@ -200,13 +200,13 @@ public class BWAPI {
   public static final Path READ_PATH = PATH.resolve(Paths.get("read"));
   public static final Path WRITE_PATH = PATH.resolve(Paths.get("write"));
   public static final Path DATA_PATH = PATH.resolve(Paths.get("data")); /* for Broodwar.map */
-  
+
   public static final String DLL_UNKNOWN = "Unknown";
 
-  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("bwapi");
+//  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("bwapi");
 
-  public static final String DEFAULT_DLL_FILENAME_RELEASE = "BWAPI.dll";
-  public static final String DEFAULT_DLL_FILENAME_DEBUG = "BWAPId.dll";
+  public static final String DLL_FILENAME_RELEASE = "BWAPI.dll";
+  public static final String DLL_FILENAME_DEBUG = "BWAPId.dll";
 
   private BWAPI() {}
 

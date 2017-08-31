@@ -503,7 +503,7 @@ public class BWHeadless {
     }
 
     /* Check if dependencies should be extracted to the StarCraft directory. */
-    if (Model.isPrefEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString())) {
+    if (Model.getSettings().isEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString())) {
       for (BWAPI.ExtractableDll val : BWAPI.ExtractableDll.values()) {
         /* If dependency is not found in the target StarCraft directory, extract it from this archive. */
         Path dll = starcraftPath.resolve(val.toString());

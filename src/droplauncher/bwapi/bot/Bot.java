@@ -209,8 +209,8 @@ public class Bot {
                                             InvalidArgumentException {
     if (path == null) {
       throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("path"));
-    } else if (!FilenameUtils.getName(path.toString()).equalsIgnoreCase(BWAPI.DEFAULT_DLL_FILENAME_RELEASE)) {
-      throw new InvalidBwapiDllException("filename does not equal " + BWAPI.DEFAULT_DLL_FILENAME_RELEASE + ": " + path);
+    } else if (!FilenameUtils.getName(path.toString()).equalsIgnoreCase(BWAPI.DLL_FILENAME_RELEASE)) {
+      throw new InvalidBwapiDllException("filename does not equal " + BWAPI.DLL_FILENAME_RELEASE + ": " + path);
     }
     this.settings.set(PropertyKey.BWAPI_DLL.toString(), path.toString());
   }
