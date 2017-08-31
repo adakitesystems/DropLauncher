@@ -19,7 +19,6 @@ package droplauncher.mvc.view;
 
 import adakite.debugging.Debugging;
 import adakite.exception.InvalidStateException;
-import adakite.prefs.Prefs;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.mvc.model.Model;

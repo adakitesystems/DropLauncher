@@ -18,11 +18,9 @@
 package droplauncher.starcraft;
 
 import adakite.debugging.Debugging;
-import adakite.prefs.Prefs;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
-import droplauncher.DropLauncher;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;

@@ -17,7 +17,6 @@
 
 package droplauncher.mvc.model;
 
-import adakite.ini.exception.IniParseException;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwheadless.BWHeadless;
@@ -25,7 +24,6 @@ import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.DropLauncher;
 import droplauncher.mvc.view.ExceptionAlert;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;

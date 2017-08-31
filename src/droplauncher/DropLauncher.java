@@ -30,12 +30,9 @@ omit for (final) release
 package droplauncher;
 
 import adakite.ini.Ini;
-import adakite.prefs.Prefs;
-import adakite.settings.Settings;
 import adakite.util.AdakiteUtils;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.prefs.Preferences;
 
 /**
  * Constants class for global constants.
@@ -75,7 +72,7 @@ public class DropLauncher {
   }
 
   public static final String PROGRAM_NAME = "DropLauncher";
-  public static final String PROGRAM_VERSION = "0.4.16a";
+  public static final String PROGRAM_VERSION = "0.4.17a";
   public static final String PROGRAM_AUTHOR = "Adakite";
   public static final String PROGRAM_TITLE = PROGRAM_NAME + " v" + PROGRAM_VERSION;
   public static final String PROGRAM_GITHUB = "https://github.com/AdakiteSystems/DropLauncher";
