@@ -10,6 +10,7 @@ commit.txt
 diff.txt
 tmp/
 *.ini
+*.bak
 *.log
 gitlog.txt
 fatjar/
