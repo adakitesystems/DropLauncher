@@ -8,7 +8,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,43 +18,18 @@ import java.util.List;
 public class SimpleProcess {
 
   private List<String> log;
-  private List<String> errorLog;
 
   public SimpleProcess() {
     this.log = new ArrayList<>();
-    this.errorLog = new ArrayList<>();
   }
 
-  /**
-   * Returns a copy of the internal output log.
-   */
   public List<String> getLog() {
-    List<String> log = new ArrayList<>();
-    Collections.copy(log, this.log);
-    return log;
+    return this.log;
   }
 
-  /**
-   * Returns a copy of the internal output error log.
-   */
-  public List<String> getErrorLog() {
-    List<String> errorLog = new ArrayList<>();
-    Collections.copy(errorLog, this.errorLog);
-    return errorLog;
-  }
-
-  /**
-   * Executes the specified path with arguments.
-   *
-   * @param path specified path to file to execute
-   * @param args specified arguments
-   * @throws UnsupportedEncodingException
-   * @throws IOException
-   */
   public void run(Path path, String[] args) throws UnsupportedEncodingException,
                                                    IOException {
     this.log.clear();
-    this.errorLog.clear();
 
     CommandBuilder command = new CommandBuilder();
     command.setPath(path);
@@ -64,31 +38,13 @@ public class SimpleProcess {
     }
     Process process = new ProcessBuilder(command.get()).start();
 
-    InputStream is;
-
-    is = process.getErrorStream();
-    try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-      String line;
-      while ((line = br.readLine()) != null) {
-        this.errorLog.add(line);
-      }
-    }
-
-    is = process.getInputStream();
+    InputStream is = process.getInputStream();
     try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
       String line;
       while ((line = br.readLine()) != null) {
         this.log.add(line);
       }
     }
-  }
-
-  /**
-   * @see #run(java.nio.file.Path, java.lang.String[])
-   */
-  public void run(Path path) throws UnsupportedEncodingException,
-                                    IOException {
-    run(path, null);
   }
 
 }
