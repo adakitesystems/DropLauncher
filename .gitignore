@@ -9,8 +9,8 @@ bwheadless.exe
 commit.txt
 diff.txt
 tmp/
-droplauncher.ini
-droplauncher.log
+*.ini
+*.log
 gitlog.txt
 fatjar/
 vcredist_x86.exe
