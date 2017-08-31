@@ -28,7 +28,7 @@ import javafx.application.Platform;
 public class ProgramSettings {
 
   public ProgramSettings() {
-
+    /* Do nothing. */
   }
 
   private static String getSection(String uniqueKey) {

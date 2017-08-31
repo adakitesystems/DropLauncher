@@ -17,11 +17,9 @@
 
 package droplauncher.mvc;
 
-import adakite.ini.exception.IniParseException;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.View;
-import java.io.IOException;
 import javafx.stage.Stage;
 
 public class MVC {
@@ -30,7 +28,7 @@ public class MVC {
   private Model model;
   private View view;
 
-  public MVC() throws IOException, IniParseException {
+  public MVC() {
     this.controller = new Controller();
     this.model = new Model();
     this.view = new View();

@@ -52,7 +52,7 @@ public class Model {
     return SETTINGS;
   }
 
-  public void ensureDefaultSettings() throws IOException, IniParseException {
+  public void ensureDefaultSettings() {
     if (AdakiteUtils.fileExists(DropLauncher.SETTINGS_FILE)) {
       try {
         DropLauncher.getSettings().parse(DropLauncher.SETTINGS_FILE);
@@ -128,7 +128,5 @@ public class Model {
       });
     }
   }
-
-
 
 }
