@@ -76,9 +76,9 @@ public class BWAPI {
     private final String md5checksum;
     private final String description;
 
-    private Version(String md5checksum, String name) {
+    private Version(String md5checksum, String description) {
       this.md5checksum = md5checksum;
-      this.description = name;
+      this.description = description;
     }
 
     /**
@@ -204,10 +204,9 @@ public class BWAPI {
   public static final Path DATA_PATH = PATH.resolve(Paths.get("data")); /* for Broodwar.map */
   public static final Path BWAPI_INI_BACKUP = Paths.get(INI_PATH.toString() + ".dlbak");
 
-  public static final String DLL_UNKNOWN = "Unknown";
-
 //  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("bwapi");
 
+  public static final String DLL_UNKNOWN = "Unknown";
   public static final String DLL_FILENAME_RELEASE = "BWAPI.dll";
   public static final String DLL_FILENAME_DEBUG = "BWAPId.dll";
 

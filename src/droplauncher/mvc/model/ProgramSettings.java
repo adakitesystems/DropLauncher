@@ -100,13 +100,12 @@ public class ProgramSettings {
 
   /**
    * Tests whether the specified key has a TRUE or FALSE value. Returns
-   * FALSE even if the specified key does not exist.
+   * FALSE if the specified key does not exist.
    *
    * @param key specified key
    */
   public static boolean isEnabled(String key) {
-    return (DropLauncher.getSettings().hasValue(getSection(key), key)
-        && DropLauncher.getSettings().getValue(getSection(key), key).equalsIgnoreCase(Boolean.TRUE.toString()));
+    return DropLauncher.getSettings().isEnabled(getSection(key), key);
   }
 
   /**
