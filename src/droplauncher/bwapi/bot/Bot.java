@@ -276,6 +276,9 @@ public class Bot {
    */
   public Type getType() throws MissingBotFileException {
     String ext = AdakiteUtils.getFileExtension(getPath()).toLowerCase(Locale.US);
+    if (ext == null) {
+      ext = "";
+    }
     switch (ext) {
       case "dll":
         return Type.DLL;

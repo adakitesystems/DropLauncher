@@ -139,7 +139,7 @@ public class BWHeadless {
     JOIN_GAME("-j"),
 
     /**
-     * Set the map name when hosting. Requires a second string.
+     * Set the map when hosting. Requires a second string.
      */
     MAP("-m"),
 
@@ -513,27 +513,27 @@ public class BWHeadless {
       }
     }
 
-    Path src;
-    Path dest;
     switch (this.bot.getType()) {
-      case DLL:
+      case DLL: {
         /* Copy DLL to "bwapi-data/AI/" directory. */
-        src = this.bot.getPath();
-        dest = starcraftPath.resolve(BWAPI.AI_PATH).resolve(FilenameUtils.getName(this.bot.getPath().toString()));
+        Path src = this.bot.getPath();
+        Path dest = starcraftPath.resolve(BWAPI.AI_PATH).resolve(FilenameUtils.getName(this.bot.getPath().toString()));
         AdakiteUtils.createDirectory(dest.getParent());
         Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
         this.bot.setPath(dest);
         Path iniAiPath = BWAPI.AI_PATH.resolve(FilenameUtils.getName(this.bot.getPath().toString()));
         bwapiIni.set("ai", "ai", iniAiPath.toString());
         break;
-      case CLIENT:
+      }
+      case CLIENT: {
         /* Copy client to StarCraft root directory. */
-        src = this.bot.getPath();
-        dest = starcraftPath.resolve(FilenameUtils.getName(this.bot.getPath().toString()));
+        Path src = this.bot.getPath();
+        Path dest = starcraftPath.resolve(FilenameUtils.getName(this.bot.getPath().toString()));
         Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
         this.bot.setPath(dest);
         bwapiIni.commentVariable("ai", "ai");
         break;
+      }
       default:
         throw new InvalidBotTypeException();
     }

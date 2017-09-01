@@ -53,10 +53,8 @@ import droplauncher.starcraft.exception.StarcraftProfileNameException;
 import droplauncher.util.process.exception.ClosePipeException;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -125,14 +123,14 @@ public class Controller {
                                         MissingBWHeadlessExeException {
     BWAPI.backupIniFile();
 
-    /* Init DirectoryMonitor if required. */
+    /* Initialize DirectoryMonitor if required. */
     Path starcraftPath = Starcraft.getPath();
     if (this.directoryMonitor == null) {
       this.directoryMonitor = new DirectoryMonitor(starcraftPath);
       this.directoryMonitor.getIgnoreList().add("maps"); /* ignore any file/directory containing "*maps*" */
       this.directoryMonitor.getIgnoreList().add("bwta"); /* ignore any file/directory containing "*bwta*" */
-      this.directoryMonitor.getIgnoreList().add("bwta2"); /* ignore any file/directory containing"*bwta2*" */
-      this.directoryMonitor.getIgnoreList().add("bwapi-data"); /* ignore any file/directory containing"*bwapi-data*" */
+      this.directoryMonitor.getIgnoreList().add("bwta2"); /* ignore any file/directory containing "*bwta2*" */
+      this.directoryMonitor.getIgnoreList().add("bwapi-data"); /* ignore any file/directory containing "*bwapi-data*" */
       this.directoryMonitor.reset();
     }
 
