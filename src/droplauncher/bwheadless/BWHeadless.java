@@ -116,7 +116,7 @@ public class BWHeadless {
   /**
    * Enum for passable arguments to bwheadless.exe.
    */
-  public enum Argument {
+  public enum RuntimeArgument {
 
     /**
      * Set the path to "StarCraft.exe". Requires a second string.
@@ -172,7 +172,7 @@ public class BWHeadless {
 
     private final String str;
 
-    private Argument(String str) {
+    private RuntimeArgument(String str) {
       this.str = str;
     }
 
@@ -360,18 +360,13 @@ public class BWHeadless {
     /* Compile bwheadless arguments. */
     CommandBuilder bwhCommand = new CommandBuilder();
     bwhCommand.setPath(getPath().toAbsolutePath());
-    bwhCommand.addArg(Argument.STARCRAFT_EXE.toString());
-    bwhCommand.addArg(getStarcraftExe().toAbsolutePath().toString());
-    bwhCommand.addArg(Argument.JOIN_GAME.toString());
-    bwhCommand.addArg(Argument.BOT_NAME.toString());
-    bwhCommand.addArg(this.bot.getName());
-    bwhCommand.addArg(Argument.BOT_RACE.toString());
-    bwhCommand.addArg(this.bot.getRace());
-    bwhCommand.addArg(Argument.LOAD_DLL.toString());
-    bwhCommand.addArg(this.bot.getBwapiDll().toAbsolutePath().toString());
-    bwhCommand.addArg(Argument.ENABLE_LAN.toString());
-    bwhCommand.addArg(Argument.STARCRAFT_INSTALL_PATH.toString());
-    bwhCommand.addArg(starcraftPath.toString());
+    bwhCommand.addArg(RuntimeArgument.STARCRAFT_EXE.toString(), getStarcraftExe().toAbsolutePath().toString());
+    bwhCommand.addArg(RuntimeArgument.JOIN_GAME.toString());
+    bwhCommand.addArg(RuntimeArgument.BOT_NAME.toString(), this.bot.getName());
+    bwhCommand.addArg(RuntimeArgument.BOT_RACE.toString(), this.bot.getRace());
+    bwhCommand.addArg(RuntimeArgument.LOAD_DLL.toString(), this.bot.getBwapiDll().toAbsolutePath().toString());
+    bwhCommand.addArg(RuntimeArgument.ENABLE_LAN.toString());
+    bwhCommand.addArg(RuntimeArgument.STARCRAFT_INSTALL_PATH.toString(), starcraftPath.toString());
 
     /* Start bwheadless. */
     this.bwheadlessProcess

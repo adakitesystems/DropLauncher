@@ -59,13 +59,15 @@ public class CommandBuilder {
   /**
    * Adds the specified argument to the list of arguments.
    *
-   * @param arg specified argument
+   * @param args specified argument
    */
-  public CommandBuilder addArg(String arg) {
-    if (AdakiteUtils.isNullOrEmpty(arg)) {
-      throw new IllegalArgumentException(Debugging.emptyString("arg"));
+  public CommandBuilder addArg(String... args) {
+    if (args == null || args.length < 1) {
+      throw new IllegalArgumentException(Debugging.nullObject("args"));
     }
-    this.args.add(arg);
+    for (String arg : args) {
+      this.args.add(arg);
+    }
     return this;
   }
 
