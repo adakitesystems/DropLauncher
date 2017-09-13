@@ -43,6 +43,7 @@ import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
 import droplauncher.DropLauncher;
 import droplauncher.bwheadless.exception.MissingBWHeadlessExeException;
+import droplauncher.jre.JRE;
 import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.ConsoleOutputWrapper;
 import droplauncher.mvc.view.View;
@@ -388,10 +389,10 @@ public class BWHeadless {
           clientCommand.setPath(this.bot.getPath());
           break;
         case "jar":
-          if (!AdakiteUtils.fileExists(DropLauncher.JRE_EXE)) {
-            throw new FileNotFoundException(DropLauncher.JRE_EXE.toAbsolutePath().toString());
+          if (!AdakiteUtils.fileExists(JRE.DEFAULT_EXE)) {
+            throw new FileNotFoundException(JRE.DEFAULT_EXE.toAbsolutePath().toString());
           }
-          clientCommand.setPath(DropLauncher.JRE_EXE);
+          clientCommand.setPath(JRE.DEFAULT_EXE);
           clientCommand.addArg("-jar");
           clientCommand.addArg(this.bot.getPath().toAbsolutePath().toString());
           break;

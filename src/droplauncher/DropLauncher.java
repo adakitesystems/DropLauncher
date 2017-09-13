@@ -97,9 +97,6 @@ public class DropLauncher {
   private static final Ini INI = new Ini();
   public static final Path SETTINGS_FILE = Paths.get("settings.ini");
 
-  public static final Path JRE_DIR = Paths.get("jre");
-  public static final Path JRE_EXE = JRE_DIR.resolve("bin").resolve("java.exe");
-
   private DropLauncher() {}
 
   public static Ini getSettings() {
