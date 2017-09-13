@@ -79,7 +79,7 @@ public class DropLauncher {
   public static final String PROGRAM_GITHUB = "https://github.com/AdakiteSystems/DropLauncher";
   public static final String PROGRAM_LICENSE = "AGPL 3.0";
   public static final String PROGRAM_LICENSE_LINK = "https://www.gnu.org/licenses/agpl-3.0.en.html";
-  public static final String PROGRAM_DESC = "Designed to be a simple tool to aid players in setting up and playing 1v1 StarCraft: Brood War against BWAPI bots using Local Area Network (UDP) as the connection type.";
+  public static final String PROGRAM_DESC = "DropLauncher is designed to be a simple tool to aid players in setting up and playing 1v1 StarCraft: Brood War games against any BWAPI bot using Local Area Network (UDP) as the connection type.";
   public static final String PROGRAM_ABOUT
       = DropLauncher.PROGRAM_NAME + AdakiteUtils.newline()
       + "Author: " + DropLauncher.PROGRAM_AUTHOR + AdakiteUtils.newline()
