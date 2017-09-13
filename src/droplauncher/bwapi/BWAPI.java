@@ -282,6 +282,8 @@ public class BWAPI {
    * @throws MissingBotFileException
    * @throws InvalidBotTypeException
    * @throws InvalidArgumentException
+   * @throws MissingBotNameException
+   * @throws MissingBotRaceException
    */
   public static void configure(Path starcraftPath, Bot bot) throws IOException,
                                                                    MissingStarcraftExeException,
