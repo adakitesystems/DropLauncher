@@ -17,6 +17,7 @@
 
 package droplauncher.bwapi;
 
+import adakite.debugging.Debugging;
 import adakite.exception.InvalidArgumentException;
 import adakite.ini.Ini;
 import adakite.ini.exception.IniParseException;
@@ -210,12 +211,12 @@ public class BWAPI {
   }
 
   public static final Path PATH = Paths.get("bwapi-data");
-  public static final Path AI_PATH = PATH.resolve(Paths.get("AI"));
-  public static final Path INI_PATH = PATH.resolve(Paths.get("bwapi.ini"));
-  public static final Path READ_PATH = PATH.resolve(Paths.get("read"));
-  public static final Path WRITE_PATH = PATH.resolve(Paths.get("write"));
-  public static final Path DATA_PATH = PATH.resolve(Paths.get("data")); /* for Broodwar.map */
-  public static final Path BWAPI_INI_BACKUP = Paths.get(INI_PATH.toString() + ".dlbak");
+  public static final Path AI_PATH = BWAPI.PATH.resolve(Paths.get("AI"));
+  public static final Path INI_PATH = BWAPI.PATH.resolve(Paths.get("bwapi.ini"));
+  public static final Path READ_PATH = BWAPI.PATH.resolve(Paths.get("read"));
+  public static final Path WRITE_PATH = BWAPI.PATH.resolve(Paths.get("write"));
+  public static final Path DATA_PATH = BWAPI.PATH.resolve(Paths.get("data")); /* for Broodwar.map */
+  public static final Path INI_BACKUP_PATH = Paths.get(BWAPI.INI_PATH.toString() + ".dlbak");
 
 //  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("bwapi");
 
@@ -226,7 +227,44 @@ public class BWAPI {
   public static final String FILES_RESOURCE_PATH = "/droplauncher/bwapi/files/";
   public static final String DLL_RESOURCE_PATH = "/droplauncher/bwapi/dll/";
 
+  private Path starcraftPath;
+
   private BWAPI() {}
+
+  public BWAPI(Path starcraftPath) {
+    if (starcraftPath == null) {
+      throw new IllegalArgumentException(Debugging.cannotBeNull("starcraftPath"));
+    }
+    this.starcraftPath = starcraftPath;
+  }
+
+  public Path getPath() {
+    return this.starcraftPath.resolve(BWAPI.PATH);
+  }
+
+  public Path getAiPath() {
+    return this.starcraftPath.resolve(BWAPI.AI_PATH);
+  }
+
+  public Path getIniPath() {
+    return this.starcraftPath.resolve(BWAPI.INI_PATH);
+  }
+
+  public Path getIniBackupPath() {
+    return this.starcraftPath.resolve(BWAPI.INI_BACKUP_PATH);
+  }
+
+  public Path getReadPath() {
+    return this.starcraftPath.resolve(BWAPI.READ_PATH);
+  }
+
+  public Path getWritePath() {
+    return this.starcraftPath.resolve(BWAPI.WRITE_PATH);
+  }
+
+  public Path getDataPath() {
+    return this.starcraftPath.resolve(BWAPI.DATA_PATH);
+  }
 
   /**
    * Returns the BWAPI version associated with the specified MD5 checksum
@@ -261,22 +299,20 @@ public class BWAPI {
 
   public static void backupIniFile() throws MissingStarcraftExeException, IOException {
     if (AdakiteUtils.fileExists(Starcraft.getPath().resolve(BWAPI.INI_PATH))) {
-      Files.copy(
-          Starcraft.getPath().resolve(BWAPI.INI_PATH),
-          Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP),
+      Files.copy(Starcraft.getPath().resolve(BWAPI.INI_PATH),
+          Starcraft.getPath().resolve(BWAPI.INI_BACKUP_PATH),
           StandardCopyOption.REPLACE_EXISTING
       );
     }
   }
 
   public static void restoreIniFile() throws MissingStarcraftExeException, IOException {
-    if (AdakiteUtils.fileExists(Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP))) {
-      Files.copy(
-          Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP),
+    if (AdakiteUtils.fileExists(Starcraft.getPath().resolve(BWAPI.INI_BACKUP_PATH))) {
+      Files.copy(Starcraft.getPath().resolve(BWAPI.INI_BACKUP_PATH),
           Starcraft.getPath().resolve(BWAPI.INI_PATH),
           StandardCopyOption.REPLACE_EXISTING
       );
-      AdakiteUtils.deleteFile(Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP));
+      AdakiteUtils.deleteFile(Starcraft.getPath().resolve(BWAPI.INI_BACKUP_PATH));
     }
   }
 
