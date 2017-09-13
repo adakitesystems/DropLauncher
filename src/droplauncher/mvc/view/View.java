@@ -569,7 +569,7 @@ public class View implements EventHandler<DragEvent>  {
 
   public void setText(Node node, String str) {
     if (AdakiteUtils.isNullOrEmpty(str)) {
-      str = EMPTY_LABEL_TEXT;
+      str = View.EMPTY_LABEL_TEXT;
     }
 
     if (node instanceof Button) {
@@ -628,7 +628,7 @@ public class View implements EventHandler<DragEvent>  {
 
   public static void addDefaultStylesheet(ObservableList<String> sheets) {
     try {
-      sheets.add(DEFAULT_CSS);
+      sheets.add(View.DEFAULT_CSS);
     } catch (Exception ex) {
       LOGGER.log(Debugging.getLogLevel(), null, ex);
     }

@@ -31,6 +31,7 @@ package droplauncher;
 
 import adakite.ini.Ini;
 import adakite.util.AdakiteUtils;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -72,7 +73,7 @@ public class DropLauncher {
   }
 
   public static final String PROGRAM_NAME = "DropLauncher";
-  public static final String PROGRAM_VERSION = "0.4.20a";
+  public static final String PROGRAM_VERSION = "0.4.21a";
   public static final String PROGRAM_AUTHOR = "Adakite";
   public static final String PROGRAM_TITLE = PROGRAM_NAME + " v" + PROGRAM_VERSION;
   public static final String PROGRAM_GITHUB = "https://github.com/AdakiteSystems/DropLauncher";
@@ -101,6 +102,10 @@ public class DropLauncher {
 
   public static Ini getSettings() {
     return INI;
+  }
+
+  public static URL getResource(String resourcePath) {
+    return DropLauncher.class.getResource(resourcePath);
   }
 
 }

@@ -349,11 +349,11 @@ public class Controller {
         sb.append(FilenameUtils.getName(extra)).append(AdakiteUtils.newline());
       }
       Platform.runLater(() -> {
-        String message = "" + currNum + " bot configuration file";
-        if (currNum != 1) {
-          message += "s";
-        }
-        message += " detected! These files will be copied to the \"" + BWAPI.PATH.toString() + "\" directory when the bot is launched: " + AdakiteUtils.newline(2) + sb.toString();
+        String message = "The following file"
+            + ((currNum != 1) ? "s" : "") + " will be treated as "
+            + ((currNum != 1) ? "configuration files" : "a configuration file")
+            + " and will be copied to the \"" + BWAPI.PATH.toString() + "/\" directory when the bot is launched: "
+            + AdakiteUtils.newline(2) + sb.toString();
         new SimpleAlert().showAndWait(
             AlertType.INFORMATION,
             DialogTitle.PROGRAM_NAME,

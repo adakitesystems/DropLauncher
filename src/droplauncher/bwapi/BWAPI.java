@@ -21,6 +21,7 @@ import adakite.exception.InvalidArgumentException;
 import adakite.ini.Ini;
 import adakite.ini.exception.IniParseException;
 import adakite.util.AdakiteUtils;
+import droplauncher.DropLauncher;
 import droplauncher.bwapi.bot.Bot;
 import droplauncher.bwapi.bot.exception.InvalidBotTypeException;
 import droplauncher.bwapi.bot.exception.MissingBotFileException;
@@ -222,6 +223,9 @@ public class BWAPI {
   public static final String DLL_FILENAME_RELEASE = "BWAPI.dll";
   public static final String DLL_FILENAME_DEBUG = "BWAPId.dll";
 
+  public static final String FILES_RESOURCE_PATH = "/droplauncher/bwapi/files/";
+  public static final String DLL_RESOURCE_PATH = "/droplauncher/bwapi/dll/";
+
   private BWAPI() {}
 
   /**
@@ -311,7 +315,7 @@ public class BWAPI {
     /* Check for bwapi.ini existence. */
     if (!AdakiteUtils.fileExists(bwapiIniPath)) {
       /* If bwapi.ini is not found in the target BWAPI directory, extract it from this program. */
-      URL url = BWAPI.class.getResource("/droplauncher/bwapi/files/" + BWAPI.ExtractableFile.BWAPI_INI.toString());
+      URL url = DropLauncher.getResource(BWAPI.FILES_RESOURCE_PATH + BWAPI.ExtractableFile.BWAPI_INI.toString());
       FileUtils.copyURLToFile(url, bwapiIniPath.toFile());
     }
     /* Read the bwapi.ini file. */
@@ -321,7 +325,7 @@ public class BWAPI {
     /* Check for the Broodwar.map file. */
     if (!AdakiteUtils.fileExists(bwapiBroodwarMap)) {
       /* If Broodwar.map is not found in the target BWAPI directory, extract it from this program. */
-      URL url = BWAPI.class.getResource("/droplauncher/bwapi/files/" + BWAPI.ExtractableFile.BROODWAR_MAP.toString());
+      URL url = DropLauncher.getResource(BWAPI.FILES_RESOURCE_PATH + BWAPI.ExtractableFile.BROODWAR_MAP.toString());
       FileUtils.copyURLToFile(url, bwapiBroodwarMap.toFile());
     }
 
@@ -331,7 +335,7 @@ public class BWAPI {
         /* If dependency is not found in the StarCraft root directory, extract it from this program. */
         Path targetDependency = starcraftPath.resolve(val.toString());
         if (!AdakiteUtils.fileExists(targetDependency)) {
-          URL url = BWAPI.class.getResource("/droplauncher/bwapi/dll/" + val.toString());
+          URL url = DropLauncher.getResource(BWAPI.DLL_RESOURCE_PATH + val.toString());
           FileUtils.copyURLToFile(url, targetDependency.toFile());
         }
       }
