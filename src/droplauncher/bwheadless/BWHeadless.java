@@ -346,7 +346,7 @@ public class BWHeadless {
     /* Check for StarCraft.exe */
     Path starcraftPath = getStarcraftPath();
     if (!AdakiteUtils.fileReadable(starcraftPath)) {
-      throw new IOException("failed to access " + Starcraft.EXE_FILENAME + ": " + starcraftPath.toString());
+      throw new IOException("failed to access " + Starcraft.defaultBinaryFilename() + ": " + starcraftPath.toString());
     }
 
     BWAPI.configure(starcraftPath, this.bot);

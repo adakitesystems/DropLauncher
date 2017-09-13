@@ -90,7 +90,7 @@ public class SettingsWindow {
       Model.getSettings().setEnabled(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString(), this.chkWarnBwapiDll.isSelected());
     });
 
-    this.lblChangeStarcraftExe.setText(Starcraft.EXE_FILENAME + ":");
+    this.lblChangeStarcraftExe.setText(Starcraft.defaultBinaryFilename() + ":");
     this.btnChangeStarcraftExe.setText("...");
     this.lblChangeStarcraftExeText.setText("");
     if (Model.getSettings().hasValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString())) {
@@ -101,8 +101,8 @@ public class SettingsWindow {
     this.lblChangeStarcraftExeText.setMinWidth(Region.USE_PREF_SIZE);
     this.btnChangeStarcraftExe.setOnAction(e -> {
       FileChooser fc = new FileChooser();
-      fc.getExtensionFilters().add(new ExtensionFilter(Starcraft.EXE_FILENAME, Starcraft.EXE_FILENAME));
-      fc.setTitle("Select " + Starcraft.EXE_FILENAME + " ...");
+      fc.getExtensionFilters().add(new ExtensionFilter(Starcraft.defaultBinaryFilename(), Starcraft.defaultBinaryFilename()));
+      fc.setTitle("Select " + Starcraft.defaultBinaryFilename() + " ...");
       String userDirectory = Windows.getUserDesktopDirectory().toAbsolutePath().toString();
       if (userDirectory != null) {
         fc.setInitialDirectory(new File(userDirectory));

@@ -120,7 +120,7 @@ public class Starcraft {
 
   }
 
-  public static final String EXE_FILENAME = "StarCraft.exe";
+  private static final String BINARY_FILENAME = "StarCraft.exe";
 
 //  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("starcraft");
 
@@ -132,12 +132,16 @@ public class Starcraft {
 
   private Starcraft() {}
 
+  public static String defaultBinaryFilename() {
+    return Starcraft.BINARY_FILENAME;
+  }
+
   /**
    * Returns a filtered string compatible with a StarCraft profile name.
    *
    * @param str specified string
    */
-  public static String cleanProfileName(String str) {
+  public static String sanitizeProfileName(String str) {
     if (AdakiteUtils.isNullOrEmpty(str, true)) {
       throw new IllegalArgumentException(Debugging.emptyString());
     }
@@ -175,7 +179,7 @@ public class Starcraft {
   }
 
   public static Path getExePath() throws MissingStarcraftExeException {
-    return getPath().resolve(Paths.get(Starcraft.EXE_FILENAME));
+    return getPath().resolve(Paths.get(Starcraft.BINARY_FILENAME));
   }
 
 }

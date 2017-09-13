@@ -28,7 +28,7 @@ public enum KillableTask {
 
   BWHEADLESS_EXE(BWHeadless.EXE_FILENAME),
   CONHOST_EXE("conhost.exe"),
-  STARCRAFT_EXE(Starcraft.EXE_FILENAME),
+  STARCRAFT_EXE(Starcraft.defaultBinaryFilename()),
   TASKLIST_EXE("tasklist.exe"),
   DLLHOST_EXE("dllhost.exe"),
   JAVA_EXE("java.exe"),

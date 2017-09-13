@@ -113,7 +113,7 @@ public class Bot {
    * @throws InvalidArgumentException if the specified name is null or empty
    * @throws StarcraftProfileNameException if the specified name does not
    *     adhere to the standard StarCraft profile name rules set by
-   *     {@link droplauncher.starcraft.Starcraft#cleanProfileName(java.lang.String)}.
+   *     {@link droplauncher.starcraft.Starcraft#sanitizeProfileName(java.lang.String)}.
    */
   public void setName(String name) throws InvalidArgumentException,
                                           StarcraftProfileNameException {
@@ -121,7 +121,7 @@ public class Bot {
       throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("name"));
     }
     String nameTrimmed = name.trim();
-    String cleaned = Starcraft.cleanProfileName(nameTrimmed);
+    String cleaned = Starcraft.sanitizeProfileName(nameTrimmed);
     if (!cleaned.equals(nameTrimmed)) {
       throw new StarcraftProfileNameException(name);
     }
