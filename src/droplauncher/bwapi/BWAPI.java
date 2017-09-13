@@ -17,15 +17,25 @@
 
 package droplauncher.bwapi;
 
+import adakite.exception.InvalidArgumentException;
+import adakite.ini.Ini;
+import adakite.ini.exception.IniParseException;
 import adakite.util.AdakiteUtils;
+import droplauncher.bwapi.bot.Bot;
+import droplauncher.bwapi.bot.exception.InvalidBotTypeException;
+import droplauncher.bwapi.bot.exception.MissingBotFileException;
+import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Locale;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * Utilities class for BWAPI-related implementations.
@@ -253,6 +263,109 @@ public class BWAPI {
     if (AdakiteUtils.fileExists(Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP))) {
       Files.copy(Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP), Starcraft.getPath().resolve(BWAPI.INI_PATH), StandardCopyOption.REPLACE_EXISTING);
       AdakiteUtils.deleteFile(Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP));
+    }
+  }
+
+  /**
+   * Configures BWAPI in the specified StarCraft directory.
+   *
+   * @param starcraftPath specified path to the StarCraft directory
+   * @throws IOException
+   * @throws MissingStarcraftExeException
+   * @throws IniParseException
+   * @throws MissingBotFileException
+   * @throws InvalidBotTypeException
+   * @throws InvalidArgumentException
+   */
+  public static void configure(Path starcraftPath, Bot bot) throws IOException,
+                                                                   MissingStarcraftExeException,
+                                                                   IniParseException,
+                                                                   MissingBotFileException,
+                                                                   InvalidBotTypeException,
+                                                                   InvalidArgumentException {
+    /* Create common BWAPI paths. */
+    Path bwapiAiPath = starcraftPath.resolve(BWAPI.AI_PATH);
+    Path bwapiReadPath = starcraftPath.resolve(BWAPI.READ_PATH);
+    Path bwapiWritePath = starcraftPath.resolve(BWAPI.WRITE_PATH);
+    Path bwapiDataPath = starcraftPath.resolve(BWAPI.DATA_PATH);
+    Path bwapiBroodwarMap = bwapiDataPath.resolve(BWAPI.ExtractableFile.BROODWAR_MAP.toString());
+    Path bwapiIniPath = starcraftPath.resolve(BWAPI.INI_PATH);
+    AdakiteUtils.createDirectory(bwapiAiPath);
+    AdakiteUtils.createDirectory(bwapiReadPath);
+    AdakiteUtils.createDirectory(bwapiWritePath);
+    AdakiteUtils.createDirectory(bwapiDataPath);
+
+    /* Create BWTA/BWTA2 paths. */
+    Path bwtaPath = starcraftPath.resolve(BWAPI.PATH).resolve("BWTA");
+    Path bwta2Path = starcraftPath.resolve(BWAPI.PATH).resolve("BWTA2");
+    AdakiteUtils.createDirectory(bwtaPath);
+    AdakiteUtils.createDirectory(bwta2Path);
+
+    /* Check for bwapi.ini existence. */
+    if (!AdakiteUtils.fileExists(bwapiIniPath)) {
+      /* If bwapi.ini is not found in the target BWAPI directory, extract it from this program. */
+      URL url = BWAPI.class.getResource("/droplauncher/bwapi/files/" + BWAPI.ExtractableFile.BWAPI_INI.toString());
+      FileUtils.copyURLToFile(url, bwapiIniPath.toFile());
+    }
+    /* Read the bwapi.ini file. */
+    Ini bwapiIni = new Ini();
+    bwapiIni.parse(bwapiIniPath);
+
+    /* Check for the Broodwar.map file. */
+    if (!AdakiteUtils.fileExists(bwapiBroodwarMap)) {
+      /* If Broodwar.map is not found in the target BWAPI directory, extract it from this program. */
+      URL url = BWAPI.class.getResource("/droplauncher/bwapi/files/" + BWAPI.ExtractableFile.BROODWAR_MAP.toString());
+      FileUtils.copyURLToFile(url, bwapiBroodwarMap.toFile());
+    }
+
+    /* Check if dependencies should be extracted to the StarCraft root directory. */
+    if (Model.getSettings().isEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString())) {
+      for (BWAPI.ExtractableDll val : BWAPI.ExtractableDll.values()) {
+        /* If dependency is not found in the StarCraft directory, extract it from this program. */
+        Path targetDependency = starcraftPath.resolve(val.toString());
+        if (!AdakiteUtils.fileExists(targetDependency)) {
+          URL url = BWAPI.class.getResource("/droplauncher/bwapi/dll/" + val.toString());
+          FileUtils.copyURLToFile(url, targetDependency.toFile());
+        }
+      }
+    }
+
+    switch (bot.getType()) {
+      case DLL: {
+        /* Copy DLL to "bwapi-data/AI/" directory. */
+        Path src = bot.getPath();
+        Path dest = starcraftPath.resolve(BWAPI.AI_PATH).resolve(FilenameUtils.getName(bot.getPath().toString()));
+        AdakiteUtils.createDirectory(dest.getParent());
+        Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+        bot.setPath(dest);
+        Path iniAiPath = BWAPI.AI_PATH.resolve(FilenameUtils.getName(bot.getPath().toString()));
+        bwapiIni.set("ai", "ai", iniAiPath.toString());
+        break;
+      }
+      case CLIENT: {
+        /* Copy client to StarCraft root directory. */
+        Path src = bot.getPath();
+        Path dest = starcraftPath.resolve(FilenameUtils.getName(bot.getPath().toString()));
+        Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+        bot.setPath(dest);
+        bwapiIni.commentVariable("ai", "ai");
+        break;
+      }
+      default: {
+        throw new InvalidBotTypeException();
+      }
+    }
+    /* Not tested yet whether it matters if ai_dbg is enabled. Disable anyway. */
+    bwapiIni.commentVariable("ai", "ai_dbg");
+
+    /* Update bwapi.ini file. */
+    bwapiIni.store(bwapiIniPath);
+
+    /* Copy extra files to common bot I/O directories. */
+    for (String path : bot.getExtraFiles()) {
+      if (AdakiteUtils.fileExists(Paths.get(path))) {
+        Files.copy(Paths.get(path), Paths.get(bwapiAiPath.toString(), FilenameUtils.getName(path)), StandardCopyOption.REPLACE_EXISTING);
+      }
     }
   }
 
