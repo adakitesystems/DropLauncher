@@ -24,6 +24,8 @@ import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.bot.Bot;
 import droplauncher.bwapi.bot.exception.InvalidBotTypeException;
 import droplauncher.bwapi.bot.exception.MissingBotFileException;
+import droplauncher.bwapi.bot.exception.MissingBotNameException;
+import droplauncher.bwapi.bot.exception.MissingBotRaceException;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
@@ -282,14 +284,19 @@ public class BWAPI {
                                                                    IniParseException,
                                                                    MissingBotFileException,
                                                                    InvalidBotTypeException,
-                                                                   InvalidArgumentException {
-    /* Create common BWAPI paths. */
+                                                                   InvalidArgumentException,
+                                                                   MissingBotNameException,
+                                                                   MissingBotRaceException {
+    /* Define common BWAPI paths. */
     Path bwapiAiPath = starcraftPath.resolve(BWAPI.AI_PATH);
     Path bwapiReadPath = starcraftPath.resolve(BWAPI.READ_PATH);
     Path bwapiWritePath = starcraftPath.resolve(BWAPI.WRITE_PATH);
     Path bwapiDataPath = starcraftPath.resolve(BWAPI.DATA_PATH);
     Path bwapiBroodwarMap = bwapiDataPath.resolve(BWAPI.ExtractableFile.BROODWAR_MAP.toString());
     Path bwapiIniPath = starcraftPath.resolve(BWAPI.INI_PATH);
+
+    /* Create common BWAPI paths. */
+    AdakiteUtils.createDirectory(starcraftPath.resolve(BWAPI.PATH));
     AdakiteUtils.createDirectory(bwapiAiPath);
     AdakiteUtils.createDirectory(bwapiReadPath);
     AdakiteUtils.createDirectory(bwapiWritePath);
@@ -321,7 +328,7 @@ public class BWAPI {
     /* Check if dependencies should be extracted to the StarCraft root directory. */
     if (Model.getSettings().isEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString())) {
       for (BWAPI.ExtractableDll val : BWAPI.ExtractableDll.values()) {
-        /* If dependency is not found in the StarCraft directory, extract it from this program. */
+        /* If dependency is not found in the StarCraft root directory, extract it from this program. */
         Path targetDependency = starcraftPath.resolve(val.toString());
         if (!AdakiteUtils.fileExists(targetDependency)) {
           URL url = BWAPI.class.getResource("/droplauncher/bwapi/dll/" + val.toString());
@@ -355,8 +362,17 @@ public class BWAPI {
         throw new InvalidBotTypeException();
       }
     }
+
     /* Not tested yet whether it matters if ai_dbg is enabled. Disable anyway. */
     bwapiIni.commentVariable("ai", "ai_dbg");
+
+    /* Set relevant variables. (bwheadless ignores these in headless mode) */
+    bwapiIni.set("auto_menu", "auto_menu", "LAN");
+    bwapiIni.set("auto_menu", "lan_mode", "Local Area Network (UDP)");
+    bwapiIni.set("auto_menu", "character_name", bot.getName());
+    bwapiIni.set("auto_menu", "pause_dbg", "OFF");
+//    bwapiIni.set("auto_menu", "auto_restart", "OFF");
+    bwapiIni.set("auto_menu", "race", bot.getRace());
 
     /* Update bwapi.ini file. */
     bwapiIni.store(bwapiIniPath);
