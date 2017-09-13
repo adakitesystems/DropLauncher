@@ -333,17 +333,19 @@ public class View implements EventHandler<DragEvent>  {
     this.menuBar.getMenus().add(this.fileMenu);
     this.menuBar.getMenus().add(this.editMenu);
     this.menuBar.getMenus().add(this.helpMenu);
-    this.menuBar.getStyleClass().add("dl-menustyle");
+    this.menuBar.getStyleClass().add("launcher-menustyle");
   }
 
   private void initComponents() {
     this.lblBwapiVersion = new Label(BWAPI.DLL_FILENAME_RELEASE + " Version:");
     this.lblBwapiVersion.setMinWidth(Region.USE_PREF_SIZE);
     this.lblBwapiVersionText = new Label(EMPTY_LABEL_TEXT);
+    this.lblBwapiVersionText.getStyleClass().add("highlighted-text");
     this.lblBwapiVersionText.setMinWidth(Region.USE_PREF_SIZE);
     this.lblBotFile = new Label("Bot File:");
     this.lblBotFile.setMinWidth(Region.USE_PREF_SIZE);
     this.lblBotFileText = new Label(EMPTY_LABEL_TEXT);
+    this.lblBotFileText.getStyleClass().add("highlighted-text");
     this.lblBotName = new Label("Bot Name (max 24 characters):");
     this.lblBotName.setMinWidth(Region.USE_PREF_SIZE);
     this.txtBotName = new TextField("");
@@ -353,6 +355,7 @@ public class View implements EventHandler<DragEvent>  {
     this.cbRace.getItems().add(Race.ZERG.toString());
     this.cbRace.getItems().add(Race.PROTOSS.toString());
     this.cbRace.getItems().add(Race.RANDOM.toString());
+    this.cbRace.getStyleClass().add("launcher-context-menu");
     this.btnStart = new Button(StartButtonText.START.toString());
     this.btnStart.setMinWidth(250);
     this.btnStart.setMinHeight(45); //30
@@ -384,7 +387,6 @@ public class View implements EventHandler<DragEvent>  {
         }
       });
     });
-//    this.btnClearConsoleOutput.getStyleClass().add("launch-btn");
 
     this.txtBotName.setOnKeyReleased(e -> this.controller.botNameChanged(this.txtBotName.getText()));
     this.cbRace.setOnAction(e -> {
@@ -422,7 +424,6 @@ public class View implements EventHandler<DragEvent>  {
         }
       });
     });
-//    this.btnClearExtraBotFiles.getStyleClass().add("launch-btn");
 
     CustomGridPane fileLabelGridPane = new CustomGridPane();
     fileLabelGridPane.add(this.lblBotFile);
@@ -517,6 +518,8 @@ public class View implements EventHandler<DragEvent>  {
     this.stage.setResizable(false);
     this.stage.setTitle(DropLauncher.PROGRAM_TITLE);
     this.stage.setScene(this.scene);
+
+    this.btnStart.requestFocus();
   }
 
   public ConsoleOutput getConsoleOutput() {
@@ -627,10 +630,12 @@ public class View implements EventHandler<DragEvent>  {
   }
 
   public static void addDefaultStylesheet(ObservableList<String> sheets) {
-    try {
-      sheets.add(View.CSS_PATH);
-    } catch (Exception ex) {
-      LOGGER.log(Debugging.getLogLevel(), null, ex);
+    if (Model.getSettings().isEnabled(DropLauncher.PropertyKey.USE_DROPLAUNCHER_THEME.toString())) {
+      try {
+        sheets.add(View.CSS_PATH);
+      } catch (Exception ex) {
+        LOGGER.log(Debugging.getLogLevel(), null, ex);
+      }
     }
   }
 

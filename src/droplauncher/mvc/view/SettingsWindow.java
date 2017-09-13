@@ -18,6 +18,7 @@
 package droplauncher.mvc.view;
 
 import adakite.windows.Windows;
+import droplauncher.DropLauncher;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft;
@@ -50,6 +51,7 @@ public class SettingsWindow {
   private Label lblChangeStarcraftExeText;
   private Button btnChangeStarcraftExe;
   private CheckBox chkExtractBotDependencies;
+  private CheckBox chkEnableColorTheme;
 
   public SettingsWindow() {
     this.chkShowLogWindow = new CheckBox();
@@ -60,6 +62,7 @@ public class SettingsWindow {
     this.lblChangeStarcraftExeText = new Label();
     this.btnChangeStarcraftExe = new Button();
     this.chkExtractBotDependencies = new CheckBox();
+    this.chkEnableColorTheme = new CheckBox();
   }
 
   public SettingsWindow showAndWait() {
@@ -94,6 +97,7 @@ public class SettingsWindow {
       String starcraftExe = Model.getSettings().getValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString());
       this.lblChangeStarcraftExeText.setText(starcraftExe);
     }
+    this.lblChangeStarcraftExeText.getStyleClass().add("highlighted-text");
     this.lblChangeStarcraftExeText.setMinWidth(Region.USE_PREF_SIZE);
     this.btnChangeStarcraftExe.setOnAction(e -> {
       FileChooser fc = new FileChooser();
@@ -116,6 +120,12 @@ public class SettingsWindow {
       Model.getSettings().setEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString(), this.chkExtractBotDependencies.isSelected());
     });
 
+    this.chkEnableColorTheme.setText("Enable color theme (requires program restart)");
+    this.chkEnableColorTheme.setSelected(Model.getSettings().isEnabled(DropLauncher.PropertyKey.USE_DROPLAUNCHER_THEME.toString()));
+    this.chkEnableColorTheme.setOnAction(e -> {
+      Model.getSettings().setEnabled(DropLauncher.PropertyKey.USE_DROPLAUNCHER_THEME.toString(), this.chkEnableColorTheme.isSelected());
+    });
+
     CustomGridPane fileSelectPane = new CustomGridPane();
     fileSelectPane.add(this.lblChangeStarcraftExe);
     fileSelectPane.add(this.lblChangeStarcraftExeText);
@@ -128,6 +138,7 @@ public class SettingsWindow {
     mainGridPane.add(this.chkExtractBotDependencies).nextRow();
     mainGridPane.add(this.chkCleanStarcraftDirectory).nextRow();
     mainGridPane.add(this.chkBwapiWriteRead).nextRow();
+    mainGridPane.add(this.chkEnableColorTheme).nextRow();
     mainGridPane.add(this.chkShowLogWindow).nextRow();
     mainGridPane.add(this.chkWarnBwapiDll).nextRow();
 

@@ -55,7 +55,12 @@ public class DropLauncher {
     /**
      * Whether to connect the bot again after it has been ejected.
      */
-    AUTO_BOT_REJOIN("auto_bot_rejoin")
+    AUTO_BOT_REJOIN("auto_bot_rejoin"),
+
+    /**
+     * Whether to use DropLauncher's theme or the system's default theme.
+     */
+    USE_DROPLAUNCHER_THEME("use_droplauncher_theme")
 
     ;
 
@@ -73,7 +78,7 @@ public class DropLauncher {
   }
 
   public static final String PROGRAM_NAME = "DropLauncher";
-  public static final String PROGRAM_VERSION = "0.4.21a";
+  public static final String PROGRAM_VERSION = "0.4.22a";
   public static final String PROGRAM_AUTHOR = "Adakite";
   public static final String PROGRAM_TITLE = PROGRAM_NAME + " v" + PROGRAM_VERSION;
   public static final String PROGRAM_GITHUB = "https://github.com/AdakiteSystems/DropLauncher";
