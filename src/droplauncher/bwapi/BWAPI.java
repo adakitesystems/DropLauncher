@@ -261,13 +261,21 @@ public class BWAPI {
 
   public static void backupIniFile() throws MissingStarcraftExeException, IOException {
     if (AdakiteUtils.fileExists(Starcraft.getPath().resolve(BWAPI.INI_PATH))) {
-      Files.copy(Starcraft.getPath().resolve(BWAPI.INI_PATH), Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP), StandardCopyOption.REPLACE_EXISTING);
+      Files.copy(
+          Starcraft.getPath().resolve(BWAPI.INI_PATH),
+          Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP),
+          StandardCopyOption.REPLACE_EXISTING
+      );
     }
   }
 
   public static void restoreIniFile() throws MissingStarcraftExeException, IOException {
     if (AdakiteUtils.fileExists(Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP))) {
-      Files.copy(Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP), Starcraft.getPath().resolve(BWAPI.INI_PATH), StandardCopyOption.REPLACE_EXISTING);
+      Files.copy(
+          Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP),
+          Starcraft.getPath().resolve(BWAPI.INI_PATH),
+          StandardCopyOption.REPLACE_EXISTING
+      );
       AdakiteUtils.deleteFile(Starcraft.getPath().resolve(BWAPI.BWAPI_INI_BACKUP));
     }
   }
