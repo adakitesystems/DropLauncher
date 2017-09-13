@@ -234,14 +234,14 @@ public class Controller {
       case "exe":
         /* Fall through. */
       case "jar":
-        if (path.getFileName().toString().equalsIgnoreCase(Starcraft.DEFAULT_EXE_FILENAME)) {
+        if (path.getFileName().toString().equalsIgnoreCase(Starcraft.EXE_FILENAME)) {
           /* Set StarCraft.exe path. */
           Model.getSettings().setValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString(), path.toAbsolutePath().toString());
           Platform.runLater(() -> {
             new SimpleAlert().showAndWait(
                 AlertType.INFORMATION,
                 DialogTitle.PROGRAM_NAME,
-                Starcraft.DEFAULT_EXE_FILENAME + " path set to: " + path.toAbsolutePath().toString()
+                Starcraft.EXE_FILENAME + " path set to: " + path.toAbsolutePath().toString()
             );
           });
         } else if (path.getFileName().toString().equalsIgnoreCase(BWAPI.DLL_FILENAME_RELEASE)) {
@@ -546,7 +546,7 @@ public class Controller {
           } catch (MissingStarcraftExeException ex) {
             //TODO: Clear StarCraft.exe path. This exception could be because the provided path was not found.
             Platform.runLater(() -> {
-              View.displayMissingFieldDialog("path to " + Starcraft.DEFAULT_EXE_FILENAME);
+              View.displayMissingFieldDialog("path to " + Starcraft.EXE_FILENAME);
             });
           } catch (MissingBWHeadlessExeException ex) {
             Platform.runLater(() -> {

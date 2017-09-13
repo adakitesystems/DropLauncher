@@ -21,7 +21,6 @@ import adakite.debugging.Debugging;
 import adakite.exception.InvalidArgumentException;
 import adakite.exception.InvalidStateException;
 import droplauncher.util.KillableTask;
-import adakite.ini.Ini;
 import adakite.ini.exception.IniParseException;
 import adakite.util.AdakiteUtils;
 import droplauncher.bwapi.BWAPI;
@@ -41,22 +40,16 @@ import droplauncher.bwapi.bot.exception.MissingBwapiDllException;
 import droplauncher.bwheadless.exception.MissingBotException;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
-import droplauncher.DropLauncher;
 import droplauncher.bwheadless.exception.MissingBWHeadlessExeException;
 import droplauncher.jre.JRE;
-import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.ConsoleOutputWrapper;
 import droplauncher.mvc.view.View;
 import droplauncher.util.process.exception.ClosePipeException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Locale;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 /**
@@ -184,7 +177,7 @@ public class BWHeadless {
 
   }
 
-  public static final String DEFAULT_EXE_FILENAME = "bwheadless.exe";
+  public static final String EXE_FILENAME = "bwheadless.exe";
 
   private Settings settings;
   private CustomProcess bwheadlessProcess;
@@ -201,7 +194,7 @@ public class BWHeadless {
     this.consoleOutput = null;
     this.taskTracker = new TaskTracker();
 
-    this.settings.set(PropertyKey.BWHEADLESS_EXE.toString(), DEFAULT_EXE_FILENAME);
+    this.settings.set(PropertyKey.BWHEADLESS_EXE.toString(), BWHeadless.EXE_FILENAME);
   }
 
   /**
@@ -353,7 +346,7 @@ public class BWHeadless {
     /* Check for StarCraft.exe */
     Path starcraftPath = getStarcraftPath();
     if (!AdakiteUtils.fileReadable(starcraftPath)) {
-      throw new IOException("failed to access " + Starcraft.DEFAULT_EXE_FILENAME + ": " + starcraftPath.toString());
+      throw new IOException("failed to access " + Starcraft.EXE_FILENAME + ": " + starcraftPath.toString());
     }
 
     BWAPI.configure(starcraftPath, this.bot);
@@ -372,7 +365,7 @@ public class BWHeadless {
     /* Start bwheadless. */
     this.bwheadlessProcess
         .setCWD(starcraftPath)
-        .setProcessName(DEFAULT_EXE_FILENAME)
+        .setProcessName(EXE_FILENAME)
         .setConsoleOutput(this.consoleOutput);
     this.bwheadlessProcess.start(bwhCommand.get());
 
@@ -389,10 +382,10 @@ public class BWHeadless {
           clientCommand.setPath(this.bot.getPath());
           break;
         case "jar":
-          if (!AdakiteUtils.fileExists(JRE.DEFAULT_EXE)) {
-            throw new FileNotFoundException(JRE.DEFAULT_EXE.toAbsolutePath().toString());
+          if (!AdakiteUtils.fileExists(JRE.EXE_PATH)) {
+            throw new FileNotFoundException(JRE.EXE_PATH.toAbsolutePath().toString());
           }
-          clientCommand.setPath(JRE.DEFAULT_EXE);
+          clientCommand.setPath(JRE.EXE_PATH);
           clientCommand.addArg("-jar");
           clientCommand.addArg(this.bot.getPath().toAbsolutePath().toString());
           break;

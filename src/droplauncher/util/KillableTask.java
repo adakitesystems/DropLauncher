@@ -26,9 +26,9 @@ import droplauncher.starcraft.Starcraft;
  */
 public enum KillableTask {
 
-  BWHEADLESS_EXE(BWHeadless.DEFAULT_EXE_FILENAME),
+  BWHEADLESS_EXE(BWHeadless.EXE_FILENAME),
   CONHOST_EXE("conhost.exe"),
-  STARCRAFT_EXE(Starcraft.DEFAULT_EXE_FILENAME),
+  STARCRAFT_EXE(Starcraft.EXE_FILENAME),
   TASKLIST_EXE("tasklist.exe"),
   DLLHOST_EXE("dllhost.exe"),
   JAVA_EXE("java.exe"),

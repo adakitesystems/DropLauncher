@@ -89,7 +89,7 @@ public class Bot {
 
   public Bot() {
     this.settings = new Settings();
-    this.settings.set(PropertyKey.NAME.toString(), DEFAULT_NAME);
+    this.settings.set(PropertyKey.NAME.toString(), Bot.DEFAULT_NAME);
     this.extraBotFiles = new ArrayList<>();
   }
 

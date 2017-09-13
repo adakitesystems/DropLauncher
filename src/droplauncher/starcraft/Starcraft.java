@@ -120,7 +120,7 @@ public class Starcraft {
 
   }
 
-  public static final String DEFAULT_EXE_FILENAME = "StarCraft.exe";
+  public static final String EXE_FILENAME = "StarCraft.exe";
 
 //  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("starcraft");
 
@@ -175,7 +175,7 @@ public class Starcraft {
   }
 
   public static Path getExePath() throws MissingStarcraftExeException {
-    return getPath().resolve(Paths.get(DEFAULT_EXE_FILENAME));
+    return getPath().resolve(Paths.get(Starcraft.EXE_FILENAME));
   }
 
 }

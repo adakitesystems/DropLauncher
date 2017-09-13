@@ -47,7 +47,7 @@ public class Model {
   }
 
   public static ProgramSettings getSettings() {
-    return SETTINGS;
+    return Model.SETTINGS;
   }
 
   public void ensureDefaultSettings() {

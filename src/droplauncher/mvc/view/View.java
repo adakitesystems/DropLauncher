@@ -268,7 +268,7 @@ public class View implements EventHandler<DragEvent>  {
 //  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("ui");
 
   private static final String RESOURCE_PATH = "/droplauncher/mvc/view/theme/";
-  private static final String DEFAULT_CSS = RESOURCE_PATH + "droplauncher.css";
+  private static final String CSS_PATH = RESOURCE_PATH + "droplauncher.css";
 
   private static final String EMPTY_LABEL_TEXT = "-";
 
@@ -628,7 +628,7 @@ public class View implements EventHandler<DragEvent>  {
 
   public static void addDefaultStylesheet(ObservableList<String> sheets) {
     try {
-      sheets.add(View.DEFAULT_CSS);
+      sheets.add(View.CSS_PATH);
     } catch (Exception ex) {
       LOGGER.log(Debugging.getLogLevel(), null, ex);
     }
