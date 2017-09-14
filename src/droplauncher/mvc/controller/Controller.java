@@ -50,6 +50,7 @@ import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
 import droplauncher.starcraft.exception.StarcraftProfileNameException;
+import droplauncher.starcraft.exception.UnsupportedStarcraftVersionException;
 import droplauncher.util.process.exception.ClosePipeException;
 import java.io.File;
 import java.io.IOException;
@@ -59,6 +60,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
@@ -120,7 +123,8 @@ public class Controller {
                                         MissingBotException,
                                         InvalidArgumentException,
                                         TasklistParseException,
-                                        MissingBWHeadlessExeException {
+                                        MissingBWHeadlessExeException,
+                                        UnsupportedStarcraftVersionException {
     /* Initialize DirectoryMonitor if required. */
     Path starcraftPath = Starcraft.getPath();
     if (this.directoryMonitor == null) {
@@ -546,6 +550,10 @@ public class Controller {
           } catch (MissingBWHeadlessExeException ex) {
             Platform.runLater(() -> {
               new ExceptionAlert().showAndWait("something went wrong with preparing bwheadless", ex);
+            });
+          } catch (UnsupportedStarcraftVersionException ex) {
+            Platform.runLater(() -> {
+              new ExceptionAlert().showAndWait("The selected " + Starcraft.BINARY_FILENAME + " is not supported. Currently, only Brood War 1.16.1 is supported. You can disable this error in the settings if you believe this to be a false positive.", ex);
             });
           }
           if (!success) {

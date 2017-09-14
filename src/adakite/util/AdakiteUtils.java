@@ -372,4 +372,21 @@ public class AdakiteUtils {
     return ret;
   }
 
+  public static boolean contains(byte[] arr, byte[] key) {
+    int ilen = arr.length - key.length + 1;
+    int jlen = key.length;
+    for (int i = 0; i < ilen; ++i) {
+      int j = 0;
+      for (j = 0; j < jlen; ++j) {
+        if (arr[i + j] != key[j]) {
+          break;
+        }
+      }
+      if (j >= jlen) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }

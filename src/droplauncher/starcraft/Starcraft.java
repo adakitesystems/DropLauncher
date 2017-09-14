@@ -21,7 +21,8 @@ import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
@@ -48,7 +49,12 @@ public class Starcraft {
      * E.g. BWTA DLLs, JNIBWAPI dlls, etc.
      * This does not include BWAPI-related files such as "Broodwar.map".
      */
-    EXTRACT_BOT_DEPENDENCIES("extract_bot_dependencies")
+    EXTRACT_BOT_DEPENDENCIES("extract_bot_dependencies"),
+
+    /**
+     * Whether to check if the specified StarCraft.exe version is supported.
+     */
+    CHECK_FOR_SUPPORTED_VERSION("check_version")
 
     ;
 
@@ -131,6 +137,10 @@ public class Starcraft {
   /* Maximum profile name length in Brood War 1.16.1 */
   public static final int MAX_PROFILE_NAME_LENGTH = 24;
 
+  public static final String BW_1161_STRING_SEARCH_KEY = "C:\\projects\\Legacy\\trunk\\Starcraft\\Starcraft1.16.1.build\\Build\\DebugInfo\\BroodWar.pdb";
+  public static final String BW_1161_HEX_SEARCH_KEY = "433A5C70726F6A656374735C4C65676163795C7472756E6B5C5374617263726166745C537461726372616674312E31362E312E6275696C645C4275696C645C4465627567496E666F5C42726F6F645761722E706462"; /*  */
+  public static final byte[] BW_1161_BINARY_SEARCH_KEY = {67, 58, 92, 112, 114, 111, 106, 101, 99, 116, 115, 92, 76, 101, 103, 97, 99, 121, 92, 116, 114, 117, 110, 107, 92, 83, 116, 97, 114, 99, 114, 97, 102, 116, 92, 83, 116, 97, 114, 99, 114, 97, 102, 116, 49, 46, 49, 54, 46, 49, 46, 98, 117, 105, 108, 100, 92, 66, 117, 105, 108, 100, 92, 68, 101, 98, 117, 103, 73, 110, 102, 111, 92, 66, 114, 111, 111, 100, 87, 97, 114, 46, 112, 100, 98};
+
   private Starcraft() {}
 
   /**
@@ -177,6 +187,21 @@ public class Starcraft {
 
   public static Path getExePath() throws MissingStarcraftExeException {
     return getPath().resolve(Paths.get(Starcraft.BINARY_FILENAME));
+  }
+
+  /**
+   * Tests whether a chunk of bytes found in the BW 1.16.1 executable is
+   * present in the specified file. Note: This method is just quick and naive for
+   * checking the executable version and may return a false positive.
+   *
+   * @param path specified path to file
+   * @throws IOException
+   */
+  public static boolean isBroodWar1161(Path path) throws IOException {
+    byte[] bytes = Files.readAllBytes(path);
+    return (bytes.length < (2 * 1024 * 1024) /* StarCraft.exe 1.16.1 is 1.164 MiB. */
+        && (bytes.length > Starcraft.BW_1161_BINARY_SEARCH_KEY.length)
+        && AdakiteUtils.contains(bytes, Starcraft.BW_1161_BINARY_SEARCH_KEY));
   }
 
 }

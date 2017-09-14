@@ -18,7 +18,6 @@
 package droplauncher.mvc.view;
 
 import adakite.windows.Windows;
-import droplauncher.DropLauncher;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft;
@@ -52,6 +51,7 @@ public class SettingsWindow {
   private Button btnChangeStarcraftExe;
   private CheckBox chkExtractBotDependencies;
   private CheckBox chkEnableColorTheme;
+  private CheckBox chkVerifyStarcraftVersion;
 
   public SettingsWindow() {
     this.chkShowLogWindow = new CheckBox();
@@ -63,6 +63,7 @@ public class SettingsWindow {
     this.btnChangeStarcraftExe = new Button();
     this.chkExtractBotDependencies = new CheckBox();
     this.chkEnableColorTheme = new CheckBox();
+    this.chkVerifyStarcraftVersion = new CheckBox();
   }
 
   public SettingsWindow showAndWait() {
@@ -126,6 +127,12 @@ public class SettingsWindow {
       Model.getSettings().setEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString(), this.chkEnableColorTheme.isSelected());
     });
 
+    this.chkVerifyStarcraftVersion.setText("Verify StarCraft.exe version");
+    this.chkVerifyStarcraftVersion.setSelected(Model.getSettings().isEnabled(Starcraft.PropertyKey.CHECK_FOR_SUPPORTED_VERSION.toString()));
+    this.chkVerifyStarcraftVersion.setOnAction(e -> {
+      Model.getSettings().setEnabled(Starcraft.PropertyKey.CHECK_FOR_SUPPORTED_VERSION.toString(), this.chkVerifyStarcraftVersion.isSelected());
+    });
+
     CustomGridPane fileSelectPane = new CustomGridPane();
     fileSelectPane.add(this.lblChangeStarcraftExe);
     fileSelectPane.add(this.lblChangeStarcraftExeText);
@@ -140,6 +147,7 @@ public class SettingsWindow {
     mainGridPane.add(this.chkBwapiWriteRead).nextRow();
     mainGridPane.add(this.chkEnableColorTheme).nextRow();
     mainGridPane.add(this.chkShowLogWindow).nextRow();
+    mainGridPane.add(this.chkVerifyStarcraftVersion).nextRow();
     mainGridPane.add(this.chkWarnBwapiDll).nextRow();
 
     mainGridPane.setGaps(View.DefaultSetting.GAP.intValue(), View.DefaultSetting.GAP.intValue());

@@ -42,8 +42,10 @@ import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
 import droplauncher.bwheadless.exception.MissingBWHeadlessExeException;
 import droplauncher.jre.JRE;
+import droplauncher.mvc.model.Model;
 import droplauncher.mvc.view.ConsoleOutputWrapper;
 import droplauncher.mvc.view.View;
+import droplauncher.starcraft.exception.UnsupportedStarcraftVersionException;
 import droplauncher.util.process.exception.ClosePipeException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -351,6 +353,7 @@ public class BWHeadless {
    * @throws InvalidStateException
    * @throws TasklistParseException
    * @throws MissingBWHeadlessExeException
+   * @throws UnsupportedStarcraftVersionException
    */
   public void start() throws IOException,
                              MissingBotException,
@@ -364,7 +367,8 @@ public class BWHeadless {
                              InvalidArgumentException,
                              InvalidStateException,
                              TasklistParseException,
-                             MissingBWHeadlessExeException {
+                             MissingBWHeadlessExeException,
+                             UnsupportedStarcraftVersionException {
     this.bwapi.backupIniFile();
 
     this.taskTracker.reset();
@@ -373,6 +377,12 @@ public class BWHeadless {
     Path starcraftPath = getStarcraftPath();
     if (!AdakiteUtils.fileReadable(starcraftPath)) {
       throw new IOException("failed to access " + Starcraft.BINARY_FILENAME + ": " + starcraftPath.toString());
+    }
+
+    /* Check StarCraft.exe version. */
+    if (Model.getSettings().isEnabled(Starcraft.PropertyKey.CHECK_FOR_SUPPORTED_VERSION.toString())
+        && !Starcraft.isBroodWar1161(getStarcraftExe())) {
+      throw new UnsupportedStarcraftVersionException();
     }
 
     this.bwapi.configure(starcraftPath, this.bot);

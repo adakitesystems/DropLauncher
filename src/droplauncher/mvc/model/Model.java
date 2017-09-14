@@ -120,6 +120,9 @@ public class Model {
     if (!Model.getSettings().hasValue(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString())) {
       Model.getSettings().setEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString(), true);
     }
+    if (!Model.getSettings().hasValue(Starcraft.PropertyKey.CHECK_FOR_SUPPORTED_VERSION.toString())) {
+      Model.getSettings().setEnabled(Starcraft.PropertyKey.CHECK_FOR_SUPPORTED_VERSION.toString(), true);
+    }
 
     try {
       DropLauncher.getSettings().store(DropLauncher.SETTINGS_FILE);
