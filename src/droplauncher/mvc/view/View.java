@@ -66,7 +66,14 @@ public class View implements EventHandler<DragEvent>  {
     /**
      * Whether to display the log window.
      */
-    SHOW_LOG_WINDOW("show_log_window");
+    SHOW_LOG_WINDOW("show_log_window"),
+
+    /**
+     * Whether to use DropLauncher's theme or the system's default theme.
+     */
+    USE_DROPLAUNCHER_THEME("use_droplauncher_theme")
+
+    ;
 
     private final String str;
 
@@ -630,7 +637,7 @@ public class View implements EventHandler<DragEvent>  {
   }
 
   public static void addDefaultStylesheet(ObservableList<String> sheets) {
-    if (Model.getSettings().isEnabled(DropLauncher.PropertyKey.USE_DROPLAUNCHER_THEME.toString())) {
+    if (Model.getSettings().isEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString())) {
       try {
         sheets.add(View.CSS_PATH);
       } catch (Exception ex) {

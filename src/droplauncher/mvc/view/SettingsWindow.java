@@ -90,7 +90,7 @@ public class SettingsWindow {
       Model.getSettings().setEnabled(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString(), this.chkWarnBwapiDll.isSelected());
     });
 
-    this.lblChangeStarcraftExe.setText(Starcraft.defaultBinaryFilename() + ":");
+    this.lblChangeStarcraftExe.setText(Starcraft.BINARY_FILENAME + ":");
     this.btnChangeStarcraftExe.setText("...");
     this.lblChangeStarcraftExeText.setText("");
     if (Model.getSettings().hasValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString())) {
@@ -101,8 +101,8 @@ public class SettingsWindow {
     this.lblChangeStarcraftExeText.setMinWidth(Region.USE_PREF_SIZE);
     this.btnChangeStarcraftExe.setOnAction(e -> {
       FileChooser fc = new FileChooser();
-      fc.getExtensionFilters().add(new ExtensionFilter(Starcraft.defaultBinaryFilename(), Starcraft.defaultBinaryFilename()));
-      fc.setTitle("Select " + Starcraft.defaultBinaryFilename() + " ...");
+      fc.getExtensionFilters().add(new ExtensionFilter(Starcraft.BINARY_FILENAME, Starcraft.BINARY_FILENAME));
+      fc.setTitle("Select " + Starcraft.BINARY_FILENAME + " ...");
       String userDirectory = Windows.getUserDesktopDirectory().toAbsolutePath().toString();
       if (userDirectory != null) {
         fc.setInitialDirectory(new File(userDirectory));
@@ -121,9 +121,9 @@ public class SettingsWindow {
     });
 
     this.chkEnableColorTheme.setText("Enable color theme (requires program restart)");
-    this.chkEnableColorTheme.setSelected(Model.getSettings().isEnabled(DropLauncher.PropertyKey.USE_DROPLAUNCHER_THEME.toString()));
+    this.chkEnableColorTheme.setSelected(Model.getSettings().isEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString()));
     this.chkEnableColorTheme.setOnAction(e -> {
-      Model.getSettings().setEnabled(DropLauncher.PropertyKey.USE_DROPLAUNCHER_THEME.toString(), this.chkEnableColorTheme.isSelected());
+      Model.getSettings().setEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString(), this.chkEnableColorTheme.isSelected());
     });
 
     CustomGridPane fileSelectPane = new CustomGridPane();

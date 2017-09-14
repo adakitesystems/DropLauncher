@@ -121,8 +121,6 @@ public class Controller {
                                         InvalidArgumentException,
                                         TasklistParseException,
                                         MissingBWHeadlessExeException {
-    BWAPI.backupIniFile();
-
     /* Initialize DirectoryMonitor if required. */
     Path starcraftPath = Starcraft.getPath();
     if (this.directoryMonitor == null) {
@@ -150,15 +148,12 @@ public class Controller {
 
     if (Model.getSettings().isEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString())) {
       /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
-      Path starcraftDirectory = Starcraft.getPath();
-      Path bwapiWritePath = starcraftDirectory.resolve(BWAPI.WRITE_PATH);
-      Path bwapiReadPath = starcraftDirectory.resolve(BWAPI.READ_PATH);
+      Path bwapiWritePath = this.model.getBWHeadless().getBwapi().getWritePath();
+      Path bwapiReadPath = this.model.getBWHeadless().getBwapi().getReadPath();
       String copyMessage = View.MessagePrefix.COPY.get() + bwapiWritePath.toString() + " -> " + bwapiReadPath.toString();
       this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + copyMessage);
       FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
     }
-
-    BWAPI.restoreIniFile();
   }
 
   /**
@@ -234,14 +229,14 @@ public class Controller {
       case "exe":
         /* Fall through. */
       case "jar":
-        if (path.getFileName().toString().equalsIgnoreCase(Starcraft.defaultBinaryFilename())) {
+        if (path.getFileName().toString().equalsIgnoreCase(Starcraft.BINARY_FILENAME)) {
           /* Set StarCraft.exe path. */
           Model.getSettings().setValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString(), path.toAbsolutePath().toString());
           Platform.runLater(() -> {
             new SimpleAlert().showAndWait(
                 AlertType.INFORMATION,
                 DialogTitle.PROGRAM_NAME,
-                Starcraft.defaultBinaryFilename() + " path set to: " + path.toAbsolutePath().toString()
+                Starcraft.BINARY_FILENAME + " path set to: " + path.toAbsolutePath().toString()
             );
           });
         } else if (path.getFileName().toString().equalsIgnoreCase(BWAPI.DLL_FILENAME_RELEASE)) {
@@ -546,7 +541,7 @@ public class Controller {
           } catch (MissingStarcraftExeException ex) {
             //TODO: Clear StarCraft.exe path. This exception could be because the provided path was not found.
             Platform.runLater(() -> {
-              View.displayMissingFieldDialog("path to " + Starcraft.defaultBinaryFilename());
+              View.displayMissingFieldDialog("path to " + Starcraft.BINARY_FILENAME);
             });
           } catch (MissingBWHeadlessExeException ex) {
             Platform.runLater(() -> {

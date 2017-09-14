@@ -21,6 +21,7 @@ import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
@@ -120,7 +121,7 @@ public class Starcraft {
 
   }
 
-  private static final String BINARY_FILENAME = "StarCraft.exe";
+  public static final String BINARY_FILENAME = "StarCraft.exe";
 
 //  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("starcraft");
 
@@ -131,10 +132,6 @@ public class Starcraft {
   public static final int MAX_PROFILE_NAME_LENGTH = 24;
 
   private Starcraft() {}
-
-  public static String defaultBinaryFilename() {
-    return Starcraft.BINARY_FILENAME;
-  }
 
   /**
    * Returns a filtered string compatible with a StarCraft profile name.

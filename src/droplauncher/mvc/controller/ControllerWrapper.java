@@ -29,13 +29,23 @@ public class ControllerWrapper {
     this.controller = controller;
   }
 
-  public void startBWHRequest() throws InvalidStateException {
+  /**
+   * Makes a request to start BWHeadless.
+   *
+   * @throws InvalidStateException
+   */
+  public void startBWHeadless() throws InvalidStateException {
     if (this.controller.getState() == Controller.State.IDLE) {
       this.controller.btnStartClicked();
     }
   }
 
-  public void stopBWHRequest() throws InvalidStateException {
+  /**
+   * Makes a request to stop BWHeadless.
+   *
+   * @throws InvalidStateException
+   */
+  public void stopBWHeadless() throws InvalidStateException {
     if (this.controller.getState() == Controller.State.RUNNING) {
       this.controller.btnStartClicked();
     }

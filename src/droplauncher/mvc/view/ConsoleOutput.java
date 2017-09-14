@@ -113,7 +113,7 @@ public class ConsoleOutput {
         });
       }
       try {
-        this.controller.stopBWHRequest();
+        this.controller.stopBWHeadless();
       } catch (Exception ex) {
         Platform.runLater(() -> {
           new ExceptionAlert().showAndWait("something went wrong with auto-ejecting the bot", ex);
@@ -137,7 +137,7 @@ public class ConsoleOutput {
       //      Using "Platform.runLater" is a temporary fix for the issue.
       Platform.runLater(() -> {
         try {
-          this.controller.startBWHRequest();
+          this.controller.startBWHeadless();
         } catch (Exception ex) {
           new ExceptionAlert().showAndWait("something went wrong with auto-rejoin", ex);
         }
@@ -146,7 +146,7 @@ public class ConsoleOutput {
     } else if (message.contains(View.Message.ERROR_126.toString())) {
       Platform.runLater(() -> {
         try {
-          this.controller.stopBWHRequest();
+          this.controller.stopBWHeadless();
         } catch (InvalidStateException ex) {
           /* Do nothing. */
           //TODO: Do something?
@@ -162,7 +162,7 @@ public class ConsoleOutput {
     } else if (message.contains(View.Message.ERROR_740.toString())) {
       Platform.runLater(() -> {
         try {
-          this.controller.stopBWHRequest();
+          this.controller.stopBWHeadless();
         } catch (InvalidStateException ex) {
           /* Do nothing. */
           //TODO: Do something?

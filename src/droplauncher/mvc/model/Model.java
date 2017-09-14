@@ -117,8 +117,8 @@ public class Model {
     if (!Model.getSettings().hasValue(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString())) {
       Model.getSettings().setEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString(), true);
     }
-    if (!Model.getSettings().hasValue(DropLauncher.PropertyKey.USE_DROPLAUNCHER_THEME.toString())) {
-      Model.getSettings().setEnabled(DropLauncher.PropertyKey.USE_DROPLAUNCHER_THEME.toString(), true);
+    if (!Model.getSettings().hasValue(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString())) {
+      Model.getSettings().setEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString(), true);
     }
 
     try {

@@ -177,11 +177,12 @@ public class BWHeadless {
 
   }
 
-  public static final String EXE_FILENAME = "bwheadless.exe";
+  public static final String BINARY_FILENAME = "bwheadless.exe";
 
   private Settings settings;
   private CustomProcess bwheadlessProcess;
   private CustomProcess botProcess;
+  private BWAPI bwapi;
   private Bot bot;
   private ConsoleOutputWrapper consoleOutput;
   private TaskTracker taskTracker;
@@ -190,11 +191,12 @@ public class BWHeadless {
     this.settings = new Settings();
     this.bwheadlessProcess = new CustomProcess();
     this.botProcess = new CustomProcess();
+    this.bwapi = new BWAPI();
     this.bot = new Bot();
     this.consoleOutput = null;
     this.taskTracker = new TaskTracker();
 
-    this.settings.set(PropertyKey.BWHEADLESS_EXE.toString(), BWHeadless.EXE_FILENAME);
+    this.settings.set(PropertyKey.BWHEADLESS_EXE.toString(), BWHeadless.BINARY_FILENAME);
   }
 
   /**
@@ -238,22 +240,6 @@ public class BWHeadless {
   }
 
   /**
-   * Returns the path to the StarCraft directory.
-   *
-   * @see #getStarcraftExe()
-   * @throws MissingStarcraftExeException
-   * @throws IOException
-   */
-  private Path getStarcraftPath() throws MissingStarcraftExeException,
-                                         IOException {
-    Path parent = AdakiteUtils.getParentDirectory(getStarcraftExe());
-    if (parent == null) {
-      throw new IOException();
-    }
-    return parent;
-  }
-
-  /**
    * Sets the specified path to StarCraft.exe.
    *
    * @param starcraftExe specified path
@@ -263,7 +249,45 @@ public class BWHeadless {
     if (starcraftExe == null) {
       throw new InvalidArgumentException(Debugging.cannotBeNull("starcraftExe"));
     }
+
     this.settings.set(Starcraft.PropertyKey.STARCRAFT_EXE.toString(), starcraftExe.toString());
+
+    Path parent = starcraftExe.getParent();
+    if (parent == null) {
+      parent = Paths.get("");
+    }
+    this.bwapi.setPath(parent.resolve(BWAPI.PATH));
+
+    return this;
+  }
+
+  /**
+   * Returns the path to the StarCraft directory.
+   *
+   * @see #getStarcraftExe()
+   * @throws MissingStarcraftExeException
+   * @throws IOException
+   */
+  private Path getStarcraftPath() throws MissingStarcraftExeException, IOException {
+    Path parent = AdakiteUtils.getParentDirectory(getStarcraftExe());
+    if (parent == null) {
+      throw new IOException();
+    }
+    return parent;
+  }
+
+  /**
+   * Returns the internal object which represents the BWAPI directory structure.
+   */
+  public BWAPI getBwapi() {
+    return this.bwapi;
+  }
+
+  public BWHeadless setBwapi(BWAPI bwapi) throws InvalidArgumentException {
+    if (bwapi == null) {
+      throw new InvalidArgumentException(Debugging.cannotBeNull("bwapi"));
+    }
+    this.bwapi = bwapi;
     return this;
   }
 
@@ -341,15 +365,17 @@ public class BWHeadless {
                              InvalidStateException,
                              TasklistParseException,
                              MissingBWHeadlessExeException {
+    this.bwapi.backupIniFile();
+
     this.taskTracker.reset();
 
     /* Check for StarCraft.exe */
     Path starcraftPath = getStarcraftPath();
     if (!AdakiteUtils.fileReadable(starcraftPath)) {
-      throw new IOException("failed to access " + Starcraft.defaultBinaryFilename() + ": " + starcraftPath.toString());
+      throw new IOException("failed to access " + Starcraft.BINARY_FILENAME + ": " + starcraftPath.toString());
     }
 
-    BWAPI.configure(starcraftPath, this.bot);
+    this.bwapi.configure(starcraftPath, this.bot);
 
     /* Compile bwheadless arguments. */
     CommandBuilder bwhCommand = new CommandBuilder();
@@ -365,7 +391,7 @@ public class BWHeadless {
     /* Start bwheadless. */
     this.bwheadlessProcess
         .setCWD(starcraftPath)
-        .setProcessName(EXE_FILENAME)
+        .setProcessName(BINARY_FILENAME)
         .setConsoleOutput(this.consoleOutput);
     this.bwheadlessProcess.start(bwhCommand.get());
 
@@ -436,6 +462,8 @@ public class BWHeadless {
         }
       }
     }
+
+    this.bwapi.restoreIniFile();
   }
 
   private void println(String line) {
