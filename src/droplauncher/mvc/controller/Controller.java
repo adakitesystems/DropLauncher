@@ -347,7 +347,7 @@ public class Controller {
         String message = "The following file"
             + ((currNum != 1) ? "s" : "") + " will be treated as "
             + ((currNum != 1) ? "configuration files" : "a configuration file")
-            + " and will be copied to the \"" + BWAPI.PATH.toString() + "/\" directory when the bot is launched: "
+            + " and will be copied to the \"" + BWAPI.PATH.resolve(BWAPI.AI_PATH).toString() + "\" directory when the bot is launched: "
             + AdakiteUtils.newline(2) + sb.toString();
         new SimpleAlert().showAndWait(
             AlertType.INFORMATION,

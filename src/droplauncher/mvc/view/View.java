@@ -142,7 +142,7 @@ public class View implements EventHandler<DragEvent>  {
   public enum ButtonText {
 
     CLEAR("Clear"),
-    CLEAR_EXTRA_BOT_FILES("Unload Config Files")
+    CLEAR_EXTRA_BOT_FILES("Config Files")
     ;
 
     private final String str;
@@ -422,20 +422,22 @@ public class View implements EventHandler<DragEvent>  {
         if (fileCount > 0) {
           if (new YesNoDialog().userConfirms("Confirmation",
               "Total bot config files loaded: " + fileCount + AdakiteUtils.newline(2)
-                  + "Are you sure you want to unload the following bot config files?" + AdakiteUtils.newline(2)
+                  + "Do you want to unload the following bot config files?" + AdakiteUtils.newline(2)
                   + fileList.toString())) {
             this.controller.clearExtraBotFiles();
           }
         } else {
           new SimpleAlert().showAndWait(AlertType.INFORMATION, DialogTitle.PROGRAM_NAME, "Total bot config files loaded: " + fileCount);
         }
+        update();
       });
     });
 
     CustomGridPane fileLabelGridPane = new CustomGridPane();
     fileLabelGridPane.add(this.lblBotFile);
     fileLabelGridPane.add(this.lblBotFileText);
-    fileLabelGridPane.add(this.cbRace).nextRow();
+    fileLabelGridPane.add(this.cbRace);
+    fileLabelGridPane.add(this.btnClearExtraBotFiles).nextRow();
     fileLabelGridPane.get().setAlignment(Pos.CENTER_LEFT);
     fileLabelGridPane.setGaps(DefaultSetting.LABEL_TEXT_SPACING.intValue(), 0);
     fileLabelGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
@@ -469,7 +471,7 @@ public class View implements EventHandler<DragEvent>  {
 //    boxClearConsole.getChildren().add(this.btnClearConsoleOutput);
 //    boxClearConsole.setAlignment(Pos.CENTER_RIGHT);
     HBox boxClear = new HBox();
-    boxClear.getChildren().add(this.btnClearExtraBotFiles);
+//    boxClear.getChildren().add(this.btnClearExtraBotFiles);
     boxClear.getChildren().add(this.btnClearConsoleOutput);
     boxClear.setSpacing(30);
     boxClear.setAlignment(Pos.CENTER_RIGHT);
@@ -560,6 +562,13 @@ public class View implements EventHandler<DragEvent>  {
       updateRaceChoiceBox();
     } else {
       this.cbRace.setVisible(false);
+    }
+
+    if (this.controller.getExtraBotFiles().size() > 0) {
+      this.btnClearExtraBotFiles.setText(ButtonText.CLEAR_EXTRA_BOT_FILES + " (" + this.controller.getExtraBotFiles().size() + ")");
+      this.btnClearExtraBotFiles.setVisible(true);
+    } else {
+      this.btnClearExtraBotFiles.setVisible(false);
     }
 
     setText(this.txtBotName, this.controller.getBotName());
