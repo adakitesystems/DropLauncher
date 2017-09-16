@@ -32,6 +32,7 @@ import adakite.windows.task.Task;
 import adakite.windows.task.TaskTracker;
 import adakite.windows.task.Tasklist;
 import adakite.windows.task.exception.TasklistParseException;
+import droplauncher.bwapi.BwapiDirectory;
 import droplauncher.bwapi.bot.Bot;
 import droplauncher.bwapi.bot.exception.MissingBotFileException;
 import droplauncher.bwapi.bot.exception.MissingBotNameException;
@@ -184,7 +185,7 @@ public class BWHeadless {
   private Settings settings;
   private CustomProcess bwheadlessProcess;
   private CustomProcess botProcess;
-  private BWAPI bwapi;
+  private BwapiDirectory bwapiDirectory;
   private Bot bot;
   private ConsoleOutputWrapper consoleOutput;
   private TaskTracker taskTracker;
@@ -193,7 +194,7 @@ public class BWHeadless {
     this.settings = new Settings();
     this.bwheadlessProcess = new CustomProcess();
     this.botProcess = new CustomProcess();
-    this.bwapi = new BWAPI();
+    this.bwapiDirectory = new BwapiDirectory();
     this.bot = new Bot();
     this.consoleOutput = null;
     this.taskTracker = new TaskTracker();
@@ -258,7 +259,7 @@ public class BWHeadless {
     if (parent == null) {
       parent = Paths.get("");
     }
-    this.bwapi.setPath(parent.resolve(BWAPI.PATH));
+    this.bwapiDirectory.setPath(parent.resolve(BWAPI.PATH));
 
     return this;
   }
@@ -281,15 +282,15 @@ public class BWHeadless {
   /**
    * Returns the internal object which represents the BWAPI directory structure.
    */
-  public BWAPI getBwapi() {
-    return this.bwapi;
+  public BwapiDirectory getBwapiDirectory() {
+    return this.bwapiDirectory;
   }
 
-  public BWHeadless setBwapi(BWAPI bwapi) throws InvalidArgumentException {
-    if (bwapi == null) {
+  public BWHeadless setBwapiDirectory(BwapiDirectory bwapiDirectory) throws InvalidArgumentException {
+    if (bwapiDirectory == null) {
       throw new InvalidArgumentException(Debugging.cannotBeNull("bwapi"));
     }
-    this.bwapi = bwapi;
+    this.bwapiDirectory = bwapiDirectory;
     return this;
   }
 
@@ -369,7 +370,7 @@ public class BWHeadless {
                              TasklistParseException,
                              MissingBWHeadlessExeException,
                              UnsupportedStarcraftVersionException {
-    this.bwapi.backupIniFile();
+    this.bwapiDirectory.backupIniFile();
 
     this.taskTracker.reset();
 
@@ -385,7 +386,7 @@ public class BWHeadless {
       throw new UnsupportedStarcraftVersionException();
     }
 
-    this.bwapi.configure(starcraftPath, this.bot);
+    this.bwapiDirectory.configure(starcraftPath, this.bot);
 
     /* Compile bwheadless arguments. */
     CommandBuilder bwhCommand = new CommandBuilder();
@@ -473,7 +474,7 @@ public class BWHeadless {
       }
     }
 
-    this.bwapi.restoreIniFile();
+    this.bwapiDirectory.restoreIniFile();
   }
 
   private void println(String line) {

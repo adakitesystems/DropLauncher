@@ -85,12 +85,12 @@ public class Bot {
   public static final String DEFAULT_NAME = "BWAPI_BOT";
 
   private Settings settings;
-  private List<String> extraBotFiles;
+  private List<String> extraFiles;
 
   public Bot() {
     this.settings = new Settings();
     this.settings.set(PropertyKey.NAME.toString(), Bot.DEFAULT_NAME);
-    this.extraBotFiles = new ArrayList<>();
+    this.extraFiles = new ArrayList<>();
   }
 
   /**
@@ -225,7 +225,7 @@ public class Bot {
    */
   public List<String> getExtraFiles() {
     List<String> ret = new ArrayList<>();
-    for (String file : this.extraBotFiles) {
+    for (String file : this.extraFiles) {
       ret.add(file);
     }
     return ret;
@@ -246,7 +246,7 @@ public class Bot {
 
     /* Check for existing extra bot files. */
     String pathFilename = FilenameUtils.getName(path);
-    Iterator<String> itr = this.extraBotFiles.iterator();
+    Iterator<String> itr = this.extraFiles.iterator();
     while (itr.hasNext()) {
       String extra = itr.next();
       String extraFilename = FilenameUtils.getName(extra);
@@ -257,15 +257,15 @@ public class Bot {
     }
 
     /* Add extra bot file. */
-    this.extraBotFiles.add(path);
+    this.extraFiles.add(path);
   }
 
   /**
    * Removes all of the elements from this list.
    * The list will be empty after this call returns.
    */
-  public void clearExtraBotFiles() {
-    this.extraBotFiles.clear();
+  public void clearExtraFiles() {
+    this.extraFiles.clear();
   }
 
   /**

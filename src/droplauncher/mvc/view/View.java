@@ -362,7 +362,7 @@ public class View implements EventHandler<DragEvent>  {
     this.cbRace.getItems().add(Race.ZERG.toString());
     this.cbRace.getItems().add(Race.PROTOSS.toString());
     this.cbRace.getItems().add(Race.RANDOM.toString());
-    this.cbRace.getStyleClass().add("launcher-context-menu");
+//    this.cbRace.getStyleClass().add("launcher-context-menu");
     this.btnStart = new Button(StartButtonText.START.toString());
     this.btnStart.setMinWidth(250);
     this.btnStart.setMinHeight(45); //30
@@ -559,15 +559,18 @@ public class View implements EventHandler<DragEvent>  {
     setText(this.lblBotFileText, this.controller.getBotFilename());
     if (!AdakiteUtils.isNullOrEmpty(this.controller.getBotFilename())) {
       this.cbRace.setVisible(true);
+      if (this.controller.getExtraBotFiles().size() > 0) {
+        this.btnClearExtraBotFiles.setText(ButtonText.CLEAR_EXTRA_BOT_FILES.toString() + " (" + this.controller.getExtraBotFiles().size() + ")");
+        this.btnClearExtraBotFiles.setVisible(true);
+        this.btnClearExtraBotFiles.setDisable(false);
+      } else {
+        this.btnClearExtraBotFiles.setText(ButtonText.CLEAR_EXTRA_BOT_FILES.toString());
+        this.btnClearExtraBotFiles.setVisible(true);
+        this.btnClearExtraBotFiles.setDisable(true);
+      }
       updateRaceChoiceBox();
     } else {
       this.cbRace.setVisible(false);
-    }
-
-    if (this.controller.getExtraBotFiles().size() > 0) {
-      this.btnClearExtraBotFiles.setText(ButtonText.CLEAR_EXTRA_BOT_FILES + " (" + this.controller.getExtraBotFiles().size() + ")");
-      this.btnClearExtraBotFiles.setVisible(true);
-    } else {
       this.btnClearExtraBotFiles.setVisible(false);
     }
 

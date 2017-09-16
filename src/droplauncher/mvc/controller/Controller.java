@@ -60,8 +60,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
@@ -152,8 +150,8 @@ public class Controller {
 
     if (Model.getSettings().isEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString())) {
       /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
-      Path bwapiWritePath = this.model.getBWHeadless().getBwapi().getWritePath();
-      Path bwapiReadPath = this.model.getBWHeadless().getBwapi().getReadPath();
+      Path bwapiWritePath = this.model.getBWHeadless().getBwapiDirectory().getWritePath();
+      Path bwapiReadPath = this.model.getBWHeadless().getBwapiDirectory().getReadPath();
       String copyMessage = View.MessagePrefix.COPY.get() + bwapiWritePath.toString() + " -> " + bwapiReadPath.toString();
       this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + copyMessage);
       FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
@@ -365,7 +363,7 @@ public class Controller {
   }
 
   public void clearExtraBotFiles() {
-    this.model.getBWHeadless().getBot().clearExtraBotFiles();
+    this.model.getBWHeadless().getBot().clearExtraFiles();
   }
 
   /* ************************************************************ */
