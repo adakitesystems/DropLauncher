@@ -1,6 +1,6 @@
 # DropLauncher
 
-## Version 0.4.18a has been released!
+## Version 0.5.7a has been released!
 
 [Download](https://github.com/adakitesystems/DropLauncher/releases)
 
@@ -41,9 +41,9 @@ Q: How do I use DropLauncher to play against a bot?<br/>
 A: After you've downloaded and extracted DropLauncher:
 * Create a Melee game over Local Area Network (UDP) in StarCraft.
 * Run **DropLauncher.exe**.
-* Load a bot by **dragging all bot files (including the BWAPI.dll)** into DropLauncher or by using the **File -> Select bot files...** menu option.
-* Press the **Start** button and the bot should connect to your game.
-* More detailed instructions are provided in the **Instructions.html** file included with DropLauncher.
+* Load a bot by dragging **all bot files** into DropLauncher or by using the **File -> Select bot files...** menu option. Bot files may appear as \*.dll, \*.exe, \*.jar, \*.txt, \*.json, etc. files.
+* Press the **Start** button in DropLauncher and the bot should connect to your game.
+* More detailed instructions about running and downloading bots are provided in the **Instructions.html** file included with DropLauncher.
 
 Q: How do I launch StarCraft before playing against a bot?<br/>
 A: As long as you can create a Melee game over LAN UDP, you can launch StarCraft using any launcher (e.g. mca64launcher, Chaoslauncher) or no launcher at all.
@@ -51,8 +51,13 @@ A: As long as you can create a Melee game over LAN UDP, you can launch StarCraft
 Q: Why does the bot freeze when the game starts?<br/>
 A: Some bots use the [BWTA library](https://bitbucket.org/auriarte/bwta2) which is a terrain analyzer. This library allows the bot to read map information before the game starts. Depending on the size of the map and the speed of the computer, this may take up to a few minutes to generate a cache file for the currently selected map. If a cache file for the map is already present, the bot will load the map data almost instantaneously and should not freeze at the start of the game. These cache files are saved to **StarCraft/bwapi-data/BWTA/** and/or **StarCraft/bwapi-data/BWTA2/**.
 
+Q: Why is the DropLauncher directory so large?<br/>
+A: DropLauncher is designed to include all runtime files and dependencies. The large set and size of the bundled dependencies are the majority of DropLauncher's filesize foot print. A couple examples of these dependencies are:
+  * BWTA cache files and related dynamic linking libraries
+  * BWMirror and JNI BWAPI runtime bridges
+
 ## Screenshots
 
-![alt tag](http://i.imgur.com/Pv1PuQV.png)
+![alt tag](https://i.imgur.com/L1M8CLH.png)
 
-![alt tag](http://i.imgur.com/dqM5fyx.png)
+![alt tag](https://i.imgur.com/Ap2XNbb.png)
