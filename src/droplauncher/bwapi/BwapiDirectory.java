@@ -28,6 +28,7 @@ import droplauncher.bwapi.bot.exception.InvalidBotTypeException;
 import droplauncher.bwapi.bot.exception.MissingBotFileException;
 import droplauncher.bwapi.bot.exception.MissingBotNameException;
 import droplauncher.bwapi.bot.exception.MissingBotRaceException;
+import droplauncher.bwta.BWTA;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft;
 import java.io.IOException;
@@ -152,6 +153,28 @@ public class BwapiDirectory {
         if (!AdakiteUtils.fileExists(targetDependency)) {
           URL url = DropLauncher.getResource(BWAPI.DLL_RESOURCE_PATH + val.toString());
           FileUtils.copyURLToFile(url, targetDependency.toFile());
+        }
+      }
+
+      /* Copy BWTA cache files. */ {
+        Path bwtaCacheDirectory = getPath().resolve(BWTA.V1_DIRECTORY);
+        for (BWTA.CacheV1 val : BWTA.CacheV1.values()) {
+          Path targetDependency = bwtaCacheDirectory.resolve(val.toString());
+          if (!AdakiteUtils.fileExists(targetDependency)) {
+            URL url = DropLauncher.getResource(BWTA.V1_RESOURCE_PATH + val.toString());
+            FileUtils.copyURLToFile(url, targetDependency.toFile());
+          }
+        }
+      }
+
+      /* Copy BWTA2 cache files. */ {
+        Path bwtaCacheDirectory = getPath().resolve(BWTA.V2_DIRECTORY);
+        for (BWTA.CacheV2 val : BWTA.CacheV2.values()) {
+          Path targetDependency = bwtaCacheDirectory.resolve(val.toString());
+          if (!AdakiteUtils.fileExists(targetDependency)) {
+            URL url = DropLauncher.getResource(BWTA.V2_RESOURCE_PATH + val.toString());
+            FileUtils.copyURLToFile(url, targetDependency.toFile());
+          }
         }
       }
     }
