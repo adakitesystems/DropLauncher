@@ -187,7 +187,8 @@ public class BwapiDirectory {
         AdakiteUtils.createDirectory(dest.getParent());
         Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
         bot.setPath(dest);
-        Path iniAiPath = getAiPath().resolve(FilenameUtils.getName(bot.getPath().toString()));
+//        Path iniAiPath = getAiPath().resolve(FilenameUtils.getName(bot.getPath().toString()));
+        Path iniAiPath = BWAPI.PATH.resolve(BWAPI.AI_PATH).resolve(FilenameUtils.getName(bot.getPath().toString()));
         bwapiIni.set("ai", "ai", iniAiPath.toString());
         break;
       }
