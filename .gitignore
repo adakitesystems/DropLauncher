@@ -20,6 +20,7 @@ vcredist_x86.exe
 src/droplauncher/bwapi/files/
 src/droplauncher/bwapi/dll/
 src/droplauncher/bwta/cache/
+bwta-cache/
 
 # Checkstyle
 checkstyle/checkstyle-7.5.1-all.jar

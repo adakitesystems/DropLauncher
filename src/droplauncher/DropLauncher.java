@@ -73,7 +73,7 @@ public class DropLauncher {
   }
 
   public static final String PROGRAM_NAME = "DropLauncher";
-  public static final String PROGRAM_VERSION = "0.5.6a";
+  public static final String PROGRAM_VERSION = "0.5.7a";
   public static final String PROGRAM_AUTHOR = "Adakite";
   public static final String PROGRAM_TITLE = PROGRAM_NAME + " v" + PROGRAM_VERSION;
   public static final String PROGRAM_GITHUB = "https://github.com/AdakiteSystems/DropLauncher";
@@ -90,6 +90,8 @@ public class DropLauncher {
       + "Source:" + AdakiteUtils.newline()
       + DropLauncher.PROGRAM_GITHUB + AdakiteUtils.newline()
       ;
+
+  public static final Path ROOT_DIRECTORY = Paths.get("");
 
 //  public static final String TEMP_DIRECTORY = Paths.get(System.getProperty("user.home"), "DropLauncher").toString();
   public static final Path TEMP_DIRECTORY = Paths.get("tmp");

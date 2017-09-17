@@ -156,24 +156,28 @@ public class BwapiDirectory {
         }
       }
 
-      /* Copy BWTA cache files. */ {
+      /* Copy BWTA version 1 cache files. */ {
         Path bwtaCacheDirectory = getDirectory().resolve(BWTA.V1_DIRECTORY);
         for (BWTA.CacheV1 val : BWTA.CacheV1.values()) {
+          Path sourceDependency = BWTA.V1_RESOURCE_DIRECTORY.resolve(val.toString());
           Path targetDependency = bwtaCacheDirectory.resolve(val.toString());
-          if (!AdakiteUtils.fileExists(targetDependency)) {
-            URL url = DropLauncher.getResource(BWTA.V1_RESOURCE_DIRECTORY + val.toString());
-            FileUtils.copyURLToFile(url, targetDependency.toFile());
+          if (AdakiteUtils.fileExists(sourceDependency) && !AdakiteUtils.fileExists(targetDependency)) {
+//            URL url = DropLauncher.getResource(BWTA.V1_RESOURCE_DIRECTORY + val.toString());
+//            FileUtils.copyURLToFile(url, targetDependency.toFile());
+            Files.copy(sourceDependency, targetDependency, StandardCopyOption.REPLACE_EXISTING);
           }
         }
       }
 
-      /* Copy BWTA2 cache files. */ {
+      /* Copy BWTA version 2 cache files. */ {
         Path bwtaCacheDirectory = getDirectory().resolve(BWTA.V2_DIRECTORY);
         for (BWTA.CacheV2 val : BWTA.CacheV2.values()) {
+          Path sourceDependency = BWTA.V2_RESOURCE_DIRECTORY.resolve(val.toString());
           Path targetDependency = bwtaCacheDirectory.resolve(val.toString());
           if (!AdakiteUtils.fileExists(targetDependency)) {
-            URL url = DropLauncher.getResource(BWTA.V2_RESOURCE_DIRECTORY + val.toString());
-            FileUtils.copyURLToFile(url, targetDependency.toFile());
+//            URL url = DropLauncher.getResource(BWTA.V2_RESOURCE_DIRECTORY + val.toString());
+//            FileUtils.copyURLToFile(url, targetDependency.toFile());
+            Files.copy(sourceDependency, targetDependency, StandardCopyOption.REPLACE_EXISTING);
           }
         }
       }
