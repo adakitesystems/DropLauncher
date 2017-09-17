@@ -124,7 +124,7 @@ public class Controller {
                                         MissingBWHeadlessExeException,
                                         UnsupportedStarcraftVersionException {
     /* Initialize DirectoryMonitor if required. */
-    Path starcraftPath = Starcraft.getPath();
+    Path starcraftPath = Starcraft.getDirectory();
     if (this.directoryMonitor == null) {
       this.directoryMonitor = new DirectoryMonitor(starcraftPath);
       this.directoryMonitor.getIgnoreList().add("maps"); /* ignore any file/directory containing "*maps*" */
@@ -135,7 +135,7 @@ public class Controller {
     }
 
     this.model.getBWHeadless()
-        .setStarcraftExe(Starcraft.getExePath())
+        .setStarcraftExe(Starcraft.getExe())
         .enableConsoleOutput(new ConsoleOutputWrapper(this.view.getConsoleOutput()));
     this.model.getBWHeadless().start();
   }
@@ -150,8 +150,8 @@ public class Controller {
 
     if (Model.getSettings().isEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString())) {
       /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
-      Path bwapiWritePath = this.model.getBWHeadless().getBwapiDirectory().getWritePath();
-      Path bwapiReadPath = this.model.getBWHeadless().getBwapiDirectory().getReadPath();
+      Path bwapiWritePath = this.model.getBWHeadless().getBwapiDirectory().getWriteDirectory();
+      Path bwapiReadPath = this.model.getBWHeadless().getBwapiDirectory().getReadDirectory();
       String copyMessage = View.MessagePrefix.COPY.get() + bwapiWritePath.toString() + " -> " + bwapiReadPath.toString();
       this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + copyMessage);
       FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
@@ -205,18 +205,22 @@ public class Controller {
 
   /**
    * Reads a dropped or selected file which is meant for bwheadless and
-   * sets the appropiate settings.
+   * sets the appropriate settings.
    *
-   * @param path specified file to process
+   * @param file specified file to process
    */
-  private void processFile(Path path) throws InvalidArgumentException,
+  private void processFile(Path file) throws InvalidArgumentException,
                                              StarcraftProfileNameException,
                                              InvalidBwapiDllException {
     if (this.state != State.IDLE) {
       return;
     }
 
-    String ext = AdakiteUtils.getFileExtension(path);
+    if (file == null) {
+      throw new InvalidArgumentException(Debugging.cannotBeNull("file"));
+    }
+
+    String ext = AdakiteUtils.getFileExtension(file);
     if (AdakiteUtils.isNullOrEmpty(ext)) {
       ext = "";
     } else {
@@ -224,40 +228,39 @@ public class Controller {
     }
     switch (ext) {
       case "zip":
-        processZipFile(path);
+        processZipFile(file);
         break;
       case "dll":
         /* Fall through. */
       case "exe":
         /* Fall through. */
       case "jar":
-        if (path.getFileName().toString().equalsIgnoreCase(Starcraft.BINARY_FILENAME)) {
+        if (file.getFileName().toString().equalsIgnoreCase(Starcraft.BINARY_FILENAME)) {
           /* Set StarCraft.exe path. */
-          Model.getSettings().setValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString(), path.toAbsolutePath().toString());
+          Model.getSettings().setValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString(), file.toAbsolutePath().toString());
           Platform.runLater(() -> {
-            new SimpleAlert().showAndWait(
-                AlertType.INFORMATION,
+            new SimpleAlert().showAndWait(AlertType.INFORMATION,
                 DialogTitle.PROGRAM_NAME,
-                Starcraft.BINARY_FILENAME + " path set to: " + path.toAbsolutePath().toString()
+                Starcraft.BINARY_FILENAME + " path set to: " + file.toAbsolutePath().toString()
             );
           });
-        } else if (path.getFileName().toString().equalsIgnoreCase(BWAPI.DLL_FILENAME_RELEASE)) {
+        } else if (file.getFileName().toString().equalsIgnoreCase(BWAPI.DLL_FILENAME_RELEASE)) {
           /* Set BWAPI.dll path. */
-          this.model.getBWHeadless().getBot().setBwapiDll(path.toAbsolutePath());
+          this.model.getBWHeadless().getBot().setBwapiDll(file.toAbsolutePath());
         } else {
           /* Set bot file. */
-          this.model.getBWHeadless().getBot().setPath(path.toAbsolutePath());
+          this.model.getBWHeadless().getBot().setFile(file.toAbsolutePath());
           /* Set bot race. */
           this.model.getBWHeadless().getBot().setRace(Race.RANDOM.toString());
           /* Set clean bot name. */
-          String name = FilenameUtils.getBaseName(path.toString());
+          String name = FilenameUtils.getBaseName(file.toString());
           name = Starcraft.sanitizeProfileName(name);
           this.model.getBWHeadless().getBot().setName(name);
         }
         break;
       default:
         /* Treat as a config file. */
-        this.model.getBWHeadless().getBot().addExtraFile(path.toAbsolutePath().toString());
+        this.model.getBWHeadless().getBot().addExtraFile(file);
         break;
     }
   }
@@ -266,21 +269,21 @@ public class Controller {
    * Processes a ZIP file. Extracts the ZIP file and processes its contents
    * via {@link #processFile(java.nio.file.Path)}.
    *
-   * @param path specified path to the ZIP file
+   * @param file specified path to the ZIP file
    * @see #processFile(java.nio.file.Path)
    */
-  private void processZipFile(Path path) {
+  private void processZipFile(Path file) {
     try {
-      if (path == null) {
-        throw new IllegalArgumentException(Debugging.cannotBeNull("path"));
+      if (file == null) {
+        throw new IllegalArgumentException(Debugging.cannotBeNull("file"));
       } else {
-        String ext = AdakiteUtils.getFileExtension(path);
+        String ext = AdakiteUtils.getFileExtension(file);
         if (AdakiteUtils.isNullOrEmpty(ext) || !ext.equalsIgnoreCase("zip")) {
-          throw new IllegalArgumentException("path does not appear to be a ZIP file: " + path.toString());
+          throw new IllegalArgumentException("path does not appear to be a ZIP file: " + file.toString());
         }
       }
 
-      ZipFile zipFile = new ZipFile(path.toAbsolutePath().toString());
+      ZipFile zipFile = new ZipFile(file.toAbsolutePath().toString());
       if (zipFile.isEncrypted()) {
         throw new EncryptedArchiveException("encrypted archive not supported: " + zipFile.getFile().getAbsolutePath());
       }
@@ -302,7 +305,7 @@ public class Controller {
     }
   }
 
-  public void filesDropped(List<File> files) throws IOException,
+  public void filesDropped(List<File> paths) throws IOException,
                                                     InvalidArgumentException,
                                                     StarcraftProfileNameException,
                                                     InvalidBwapiDllException {
@@ -317,14 +320,14 @@ public class Controller {
        dropping a directory does NOT include all subdirectories and
        files by default. */
     List<Path> fileList = new ArrayList<>();
-    for (File file : files) {
-      if (file.isDirectory()) {
-        Path[] tmpList = AdakiteUtils.getDirectoryContents(file.toPath(), true);
+    for (File path : paths) {
+      if (path.isDirectory()) {
+        Path[] tmpList = AdakiteUtils.getDirectoryContents(path.toPath(), true);
         fileList.addAll(Arrays.asList(tmpList));
-      } else if (file.isFile()) {
-        fileList.add(file.toPath());
+      } else if (path.isFile()) {
+        fileList.add(path.toPath());
       } else {
-        throw new InvalidArgumentException("unknown file dropped: " + file.getAbsolutePath());
+        throw new InvalidArgumentException("unknown file dropped: " + path.getAbsolutePath());
       }
     }
 
@@ -332,8 +335,8 @@ public class Controller {
     int prevNum = this.model.getBWHeadless().getBot().getExtraFiles().size();
 
     /* Process all files. */
-    for (Path path : fileList) {
-      processFile(path);
+    for (Path file : fileList) {
+      processFile(file);
     }
 
     /* Find current number of extra bot files. */
@@ -349,7 +352,7 @@ public class Controller {
         String message = "The following file"
             + ((currNum != 1) ? "s" : "") + " will be treated as "
             + ((currNum != 1) ? "configuration files" : "a configuration file")
-            + " and will be copied to the \"" + BWAPI.PATH.resolve(BWAPI.AI_PATH).toString() + "\" directory when the bot is launched: "
+            + " and will be copied to the \"" + BWAPI.ROOT_DIRECTORY.resolve(BWAPI.AI_DIRECTORY).toString() + "\" directory when the bot is launched: "
             + AdakiteUtils.newline(2) + sb.toString();
         new SimpleAlert().showAndWait(
             AlertType.INFORMATION,
@@ -379,7 +382,7 @@ public class Controller {
 
   public String getBotFilename() {
     try {
-      String name = FilenameUtils.getName(this.model.getBWHeadless().getBot().getPath().toString());
+      String name = FilenameUtils.getName(this.model.getBWHeadless().getBot().getFile().toString());
       return name;
     } catch (Exception ex) {
       return null;

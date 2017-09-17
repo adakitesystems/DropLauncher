@@ -214,8 +214,8 @@ public class BWTA {
   public static final Path V1_DIRECTORY = Paths.get("BWTA");
   public static final Path V2_DIRECTORY = Paths.get("BWTA2");
 
-  public static final String V1_RESOURCE_PATH = "/droplauncher/bwta/cache/v1/";
-  public static final String V2_RESOURCE_PATH = "/droplauncher/bwta/cache/v2/";
+  public static final String V1_RESOURCE_DIRECTORY = "/droplauncher/bwta/cache/v1/";
+  public static final String V2_RESOURCE_DIRECTORY = "/droplauncher/bwta/cache/v2/";
 
   private BWTA() {}
 

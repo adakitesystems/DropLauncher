@@ -207,7 +207,7 @@ public class BWHeadless {
    *
    * @throws MissingBWHeadlessExeException if path is not set
    */
-  public Path getPath() throws MissingBWHeadlessExeException {
+  public Path getFile() throws MissingBWHeadlessExeException {
     if (!this.settings.hasValue(PropertyKey.BWHEADLESS_EXE.toString())) {
       throw new MissingBWHeadlessExeException();
     }
@@ -218,14 +218,14 @@ public class BWHeadless {
   /**
    * Sets the specified path to bwheadlesse.exe.
    *
-   * @param path specified path
+   * @param file specified path
    * @throws InvalidArgumentException if the specified path is null
    */
-  public BWHeadless setPath(Path path) throws InvalidArgumentException {
-    if (path == null) {
-      throw new InvalidArgumentException(Debugging.cannotBeNull("path"));
+  public BWHeadless setFile(Path file) throws InvalidArgumentException {
+    if (file == null) {
+      throw new InvalidArgumentException(Debugging.cannotBeNull("file"));
     }
-    this.settings.set(PropertyKey.BWHEADLESS_EXE.toString(), path.toString());
+    this.settings.set(PropertyKey.BWHEADLESS_EXE.toString(), file.toString());
     return this;
   }
 
@@ -243,23 +243,23 @@ public class BWHeadless {
   }
 
   /**
-   * Sets the specified path to StarCraft.exe.
+   * Sets the internal path of StarCraft.exe to the specified path.
    *
-   * @param starcraftExe specified path
+   * @param file specified path
    * @throws InvalidArgumentException if the specified path is null
    */
-  public BWHeadless setStarcraftExe(Path starcraftExe) throws InvalidArgumentException {
-    if (starcraftExe == null) {
+  public BWHeadless setStarcraftExe(Path file) throws InvalidArgumentException {
+    if (file == null) {
       throw new InvalidArgumentException(Debugging.cannotBeNull("starcraftExe"));
     }
 
-    this.settings.set(Starcraft.PropertyKey.STARCRAFT_EXE.toString(), starcraftExe.toString());
+    this.settings.set(Starcraft.PropertyKey.STARCRAFT_EXE.toString(), file.toString());
 
-    Path parent = starcraftExe.getParent();
+    Path parent = file.getParent();
     if (parent == null) {
       parent = Paths.get("");
     }
-    this.bwapiDirectory.setPath(parent.resolve(BWAPI.PATH));
+    this.bwapiDirectory.setDirectory(parent.resolve(BWAPI.ROOT_DIRECTORY));
 
     return this;
   }
@@ -271,7 +271,7 @@ public class BWHeadless {
    * @throws MissingStarcraftExeException
    * @throws IOException
    */
-  private Path getStarcraftPath() throws MissingStarcraftExeException, IOException {
+  private Path getStarcraftDirectory() throws MissingStarcraftExeException, IOException {
     Path parent = AdakiteUtils.getParentDirectory(getStarcraftExe());
     if (parent == null) {
       throw new IOException();
@@ -375,9 +375,8 @@ public class BWHeadless {
     this.taskTracker.reset();
 
     /* Check for StarCraft.exe */
-    Path starcraftPath = getStarcraftPath();
-    if (!AdakiteUtils.fileReadable(starcraftPath)) {
-      throw new IOException("failed to access " + Starcraft.BINARY_FILENAME + ": " + starcraftPath.toString());
+    if (!AdakiteUtils.fileReadable(getStarcraftExe())) {
+      throw new IOException("failed to access " + Starcraft.BINARY_FILENAME + ": " + getStarcraftExe().toAbsolutePath().toString());
     }
 
     /* Check StarCraft.exe version. */
@@ -386,22 +385,22 @@ public class BWHeadless {
       throw new UnsupportedStarcraftVersionException();
     }
 
-    this.bwapiDirectory.configure(starcraftPath, this.bot);
+    this.bwapiDirectory.configure(getStarcraftDirectory(), this.bot);
 
     /* Compile bwheadless arguments. */
     CommandBuilder bwhCommand = new CommandBuilder();
-    bwhCommand.setPath(getPath().toAbsolutePath());
+    bwhCommand.setPath(getFile().toAbsolutePath());
     bwhCommand.addArg(RuntimeArgument.STARCRAFT_EXE.toString(), getStarcraftExe().toAbsolutePath().toString());
     bwhCommand.addArg(RuntimeArgument.JOIN_GAME.toString());
     bwhCommand.addArg(RuntimeArgument.BOT_NAME.toString(), this.bot.getName());
     bwhCommand.addArg(RuntimeArgument.BOT_RACE.toString(), this.bot.getRace());
     bwhCommand.addArg(RuntimeArgument.LOAD_DLL.toString(), this.bot.getBwapiDll().toAbsolutePath().toString());
     bwhCommand.addArg(RuntimeArgument.ENABLE_LAN.toString());
-    bwhCommand.addArg(RuntimeArgument.STARCRAFT_INSTALL_PATH.toString(), starcraftPath.toString());
+    bwhCommand.addArg(RuntimeArgument.STARCRAFT_INSTALL_PATH.toString(), getStarcraftDirectory().toString());
 
     /* Start bwheadless. */
     this.bwheadlessProcess
-        .setCWD(starcraftPath)
+        .setCWD(getStarcraftDirectory())
         .setProcessName(BINARY_FILENAME)
         .setConsoleOutput(this.consoleOutput);
     this.bwheadlessProcess.start(bwhCommand.get());
@@ -410,27 +409,27 @@ public class BWHeadless {
     if (this.bot.getType() == Bot.Type.CLIENT) {
       /* Compile bot client arguments. */
       CommandBuilder clientCommand = new CommandBuilder();
-      String ext = AdakiteUtils.getFileExtension(this.bot.getPath());
+      String ext = AdakiteUtils.getFileExtension(this.bot.getFile());
       if (AdakiteUtils.isNullOrEmpty(ext)) {
-        throw new IllegalArgumentException("bot file does not have a file extension: " + this.bot.getPath().toString());
+        throw new IllegalArgumentException("bot file does not have a file extension: " + this.bot.getFile().toString());
       }
       switch (ext) {
         case "exe":
-          clientCommand.setPath(this.bot.getPath());
+          clientCommand.setPath(this.bot.getFile());
           break;
         case "jar":
-          if (!AdakiteUtils.fileExists(JRE.EXE_PATH)) {
-            throw new FileNotFoundException(JRE.EXE_PATH.toAbsolutePath().toString());
+          if (!AdakiteUtils.fileExists(JRE.BINARY_FILE)) {
+            throw new FileNotFoundException(JRE.BINARY_FILE.toAbsolutePath().toString());
           }
-          clientCommand.setPath(JRE.EXE_PATH);
+          clientCommand.setPath(JRE.BINARY_FILE);
           clientCommand.addArg("-jar");
-          clientCommand.addArg(this.bot.getPath().toAbsolutePath().toString());
+          clientCommand.addArg(this.bot.getFile().toAbsolutePath().toString());
           break;
         default:
-          throw new InvalidBotTypeException(FilenameUtils.getName(this.bot.getPath().toString()));
+          throw new InvalidBotTypeException(FilenameUtils.getName(this.bot.getFile().toString()));
       }
       this.botProcess
-          .setCWD(starcraftPath)
+          .setCWD(getStarcraftDirectory())
           .setProcessName(View.MessagePrefix.BOT.toString())
           .setConsoleOutput(this.consoleOutput);
       this.botProcess.start(clientCommand.get());
@@ -455,7 +454,7 @@ public class BWHeadless {
     }
 
     /* Kill new tasks that were started after bwheadless. */
-    String botName = FilenameUtils.getBaseName(this.bot.getPath().toString());
+    String botName = FilenameUtils.getBaseName(this.bot.getFile().toString());
     this.taskTracker.update();
     for (Task task : this.taskTracker.getNewTasks()) {
       /* Kill bot client. */

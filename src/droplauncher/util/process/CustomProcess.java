@@ -49,10 +49,10 @@ public class CustomProcess {
   /**
    * Sets the current working directory for the executable.
    *
-   * @param path specified current working directory
+   * @param directory specified current working directory
    */
-  public CustomProcess setCWD(Path path) {
-    this.cwd = path;
+  public CustomProcess setCWD(Path directory) {
+    this.cwd = directory;
     return this;
   }
 

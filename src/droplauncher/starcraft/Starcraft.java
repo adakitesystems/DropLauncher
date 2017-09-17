@@ -177,7 +177,7 @@ public class Starcraft {
    *
    * @throws MissingStarcraftExeException if the StarCraft path is not set
    */
-  public static Path getPath() throws MissingStarcraftExeException {
+  public static Path getDirectory() throws MissingStarcraftExeException {
     if (Model.getSettings().hasValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString())) {
       return AdakiteUtils.getParentDirectory(Paths.get(Model.getSettings().getValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString())));
     } else {
@@ -185,8 +185,8 @@ public class Starcraft {
     }
   }
 
-  public static Path getExePath() throws MissingStarcraftExeException {
-    return getPath().resolve(Paths.get(Starcraft.BINARY_FILENAME));
+  public static Path getExe() throws MissingStarcraftExeException {
+    return getDirectory().resolve(Paths.get(Starcraft.BINARY_FILENAME));
   }
 
   /**
@@ -194,11 +194,11 @@ public class Starcraft {
    * present in the specified file. Note: This method is just quick and naive for
    * checking the executable version and may return a false positive.
    *
-   * @param path specified path to file
+   * @param file specified path to file
    * @throws IOException
    */
-  public static boolean isBroodWar1161(Path path) throws IOException {
-    byte[] bytes = Files.readAllBytes(path);
+  public static boolean isBroodWar1161(Path file) throws IOException {
+    byte[] bytes = Files.readAllBytes(file);
     return (bytes.length < (2 * 1024 * 1024) /* StarCraft.exe 1.16.1 is 1.164 MiB. */
         && (bytes.length > Starcraft.BW_1161_BINARY_SEARCH_KEY.length)
         && AdakiteUtils.contains(bytes, Starcraft.BW_1161_BINARY_SEARCH_KEY));

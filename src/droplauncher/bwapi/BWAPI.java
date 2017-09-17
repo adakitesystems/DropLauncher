@@ -15,12 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
-TODO: Split this file into BWAPI and BwapiStructure:
-  - BWAPI: Static variables/methods/utilities.
-  - BwapiStructure: BWAPI directory structure and files.
-*/
-
 package droplauncher.bwapi;
 
 import java.nio.file.Path;
@@ -196,13 +190,13 @@ public class BWAPI {
 
   }
 
-  public static final Path PATH = Paths.get("bwapi-data");
-  public static final Path AI_PATH = Paths.get("AI");
-  public static final Path INI_PATH = Paths.get("bwapi.ini");
-  public static final Path INI_BACKUP_PATH = Paths.get(BWAPI.INI_PATH.toString() + ".dlbak");
-  public static final Path READ_PATH = Paths.get("read");
-  public static final Path WRITE_PATH = Paths.get("write");
-  public static final Path DATA_PATH = Paths.get("data"); /* for Broodwar.map */
+  public static final Path ROOT_DIRECTORY = Paths.get("bwapi-data");
+  public static final Path AI_DIRECTORY = Paths.get("AI");
+  public static final Path INI_FILE = Paths.get("bwapi.ini");
+  public static final Path INI_BACKUP_FILE = Paths.get(BWAPI.INI_FILE.toString() + ".dlbak");
+  public static final Path READ_DIRECTORY = Paths.get("read");
+  public static final Path WRITE_DIRECTORY = Paths.get("write");
+  public static final Path DATA_DIRECTORY = Paths.get("data"); /* for Broodwar.map */
 
 //  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("bwapi");
 
@@ -210,8 +204,8 @@ public class BWAPI {
   public static final String DLL_FILENAME_RELEASE = "BWAPI.dll";
   public static final String DLL_FILENAME_DEBUG = "BWAPId.dll";
 
-  public static final String FILES_RESOURCE_PATH = "/droplauncher/bwapi/files/";
-  public static final String DLL_RESOURCE_PATH = "/droplauncher/bwapi/dll/";
+  public static final String FILES_RESOURCE_DIRECTORY = "/droplauncher/bwapi/files/";
+  public static final String DLL_RESOURCE_DIRECTORY = "/droplauncher/bwapi/dll/";
 
   private BWAPI() {}
 

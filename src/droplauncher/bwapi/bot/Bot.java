@@ -46,7 +46,7 @@ public class Bot {
 
     NAME("name"),
     RACE("race"),
-    PATH("path"),
+    FILE("file"),
     BWAPI_DLL("bwapi_dll"),
     ;
 
@@ -163,25 +163,25 @@ public class Bot {
    *
    * @throws MissingBotFileException if path is not set
    */
-  public Path getPath() throws MissingBotFileException {
-    if (!this.settings.hasValue(PropertyKey.PATH.toString())) {
+  public Path getFile() throws MissingBotFileException {
+    if (!this.settings.hasValue(PropertyKey.FILE.toString())) {
       throw new MissingBotFileException();
     }
-    String val = this.settings.getValue(PropertyKey.PATH.toString());
+    String val = this.settings.getValue(PropertyKey.FILE.toString());
     return Paths.get(val);
   }
 
   /**
    * Sets the path of this bot file to the specified input path.
    *
-   * @param path specified input path
+   * @param file specified input path
    * @throws InvalidArgumentException if the path is null or empty
    */
-  public void setPath(Path path) throws InvalidArgumentException {
-    if (path == null) {
-      throw new InvalidArgumentException(Debugging.cannotBeNull("path"));
+  public void setFile(Path file) throws InvalidArgumentException {
+    if (file == null) {
+      throw new InvalidArgumentException(Debugging.cannotBeNull("file"));
     }
-    this.settings.set(PropertyKey.PATH.toString(), path.toString());
+    this.settings.set(PropertyKey.FILE.toString(), file.toString());
   }
 
   /**
@@ -200,19 +200,19 @@ public class Bot {
   /**
    * Sets the path of the BWAPI.dll to the specified input path.
    *
-   * @param path specified input path
+   * @param file specified input path
    * @throws InvalidArgumentException if the path is null or empty
    * @throws InvalidBwapiDllException if the path does not
    *     equal BWAPI.dll as the filename
    */
-  public void setBwapiDll(Path path) throws InvalidBwapiDllException,
+  public void setBwapiDll(Path file) throws InvalidBwapiDllException,
                                             InvalidArgumentException {
-    if (path == null) {
-      throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("path"));
-    } else if (!FilenameUtils.getName(path.toString()).equalsIgnoreCase(BWAPI.DLL_FILENAME_RELEASE)) {
-      throw new InvalidBwapiDllException("filename does not equal " + BWAPI.DLL_FILENAME_RELEASE + ": " + path);
+    if (file == null) {
+      throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("file"));
+    } else if (!FilenameUtils.getName(file.toString()).equalsIgnoreCase(BWAPI.DLL_FILENAME_RELEASE)) {
+      throw new InvalidBwapiDllException("filename does not equal " + BWAPI.DLL_FILENAME_RELEASE + ": " + file);
     }
-    this.settings.set(PropertyKey.BWAPI_DLL.toString(), path.toString());
+    this.settings.set(PropertyKey.BWAPI_DLL.toString(), file.toString());
   }
 
   /**
@@ -236,28 +236,28 @@ public class Bot {
    * path's filename matches a filename of an existing extra bot file path, the
    * old path will be overwritten.
    *
-   * @param path specified path to file
+   * @param file specified path to file
    * @throws InvalidArgumentException if path is null or empty
    */
-  public void addExtraFile(String path) throws InvalidArgumentException {
-    if (AdakiteUtils.isNullOrEmpty(path, true)) {
-      throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("path"));
+  public void addExtraFile(Path file) throws InvalidArgumentException {
+    if (file == null) {
+      throw new InvalidArgumentException(Debugging.cannotBeNull("file"));
     }
 
     /* Check for existing extra bot files. */
-    String pathFilename = FilenameUtils.getName(path);
+    String filename = FilenameUtils.getName(file.toString());
     Iterator<String> itr = this.extraFiles.iterator();
     while (itr.hasNext()) {
       String extra = itr.next();
       String extraFilename = FilenameUtils.getName(extra);
-      if (pathFilename.equalsIgnoreCase(extraFilename)) {
+      if (filename.equalsIgnoreCase(extraFilename)) {
         /* Remove the existing extra bot file. */
         itr.remove();
       }
     }
 
     /* Add extra bot file. */
-    this.extraFiles.add(path);
+    this.extraFiles.add(file.toAbsolutePath().toString());
   }
 
   /**
@@ -272,10 +272,10 @@ public class Bot {
    * Returns the type of this bot.
    * Example: {@link Type#CLIENT}, {@link Type#DLL}, etc.
    *
-   * @throws MissingBotFileException if an error occurs with {@link #getPath()}.
+   * @throws MissingBotFileException if an error occurs with {@link #getFile()}.
    */
   public Type getType() throws MissingBotFileException {
-    String ext = AdakiteUtils.getFileExtension(getPath()).toLowerCase(Locale.US);
+    String ext = AdakiteUtils.getFileExtension(getFile()).toLowerCase(Locale.US);
     if (ext == null) {
       ext = "";
     }
