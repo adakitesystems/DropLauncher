@@ -20,7 +20,7 @@ package droplauncher.util.process;
 import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.view.ConsoleOutputWrapper;
-import droplauncher.util.StreamGobbler;
+import droplauncher.util.CustomStreamGobbler;
 import droplauncher.util.process.exception.ClosePipeException;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -32,8 +32,8 @@ public class CustomProcess {
 
   private Process process;
   private Path cwd;
-  private StreamGobbler gobblerStdout;
-  private StreamGobbler gobblerStderr;
+  private Thread gobblerStdout;
+  private Thread gobblerStderr;
   private String processName;
   private ConsoleOutputWrapper consoleOutput;
 
@@ -96,15 +96,13 @@ public class CustomProcess {
 
     this.process = pb.start();
 
-    this.gobblerStdout = new StreamGobbler()
-        .setInputStream(this.process.getInputStream())
+    this.gobblerStdout = new Thread(new CustomStreamGobbler(this.process.getInputStream())
         .setConsoleOutput(this.consoleOutput)
-        .setStreamName(this.processName);
-    this.gobblerStderr = new StreamGobbler()
-        .setInputStream(this.process.getErrorStream())
-        .setConsoleOutput(this.consoleOutput)
-        .setStreamName(this.processName);
+        .setStreamName(this.processName));
     this.gobblerStdout.start();
+    this.gobblerStderr = new Thread(new CustomStreamGobbler(this.process.getErrorStream())
+        .setConsoleOutput(this.consoleOutput)
+        .setStreamName(this.processName));
     this.gobblerStderr.start();
   }
 
@@ -120,7 +118,7 @@ public class CustomProcess {
     this.process.destroy();
     try {
       Thread.sleep(250);
-    } catch (InterruptedException ex) {
+    } catch (Exception ex) {
       /* Do nothing. */
     }
     if (this.process.isAlive()) {

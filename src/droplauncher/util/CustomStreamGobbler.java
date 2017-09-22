@@ -29,29 +29,26 @@ import javafx.application.Platform;
 /**
  * Class for consuming output from an input stream.
  */
-public class StreamGobbler extends Thread {
+public class CustomStreamGobbler extends Thread {
 
   private InputStream inputStream;
   private ConsoleOutputWrapper consoleOutput;
   private String streamName;
 
-  public StreamGobbler() {
-    this.inputStream = null;
+  private CustomStreamGobbler() {}
+
+  public CustomStreamGobbler(InputStream inputStream) {
+    this.inputStream = inputStream;
     this.consoleOutput = null;
     this.streamName = null;
   }
 
-  public StreamGobbler setInputStream(InputStream is) {
-    this.inputStream = is;
-    return this;
-  }
-
-  public StreamGobbler setConsoleOutput(ConsoleOutputWrapper consoleOutput) {
+  public CustomStreamGobbler setConsoleOutput(ConsoleOutputWrapper consoleOutput) {
     this.consoleOutput = consoleOutput;
     return this;
   }
 
-  public StreamGobbler setStreamName(String name) {
+  public CustomStreamGobbler setStreamName(String name) {
     this.streamName = name;
     return this;
   }
@@ -62,8 +59,8 @@ public class StreamGobbler extends Thread {
       BufferedReader br = new BufferedReader(new InputStreamReader(this.inputStream, StandardCharsets.UTF_8));
       String line;
       while ((line = br.readLine()) != null) {
-        if (this.consoleOutput != null) {
-          if (!AdakiteUtils.isNullOrEmpty(this.streamName)) {
+        if (this.consoleOutput != null && !AdakiteUtils.isNullOrEmpty(line, true)) {
+          if (!AdakiteUtils.isNullOrEmpty(this.streamName, true)) {
             line = this.streamName + ": " + line;
           }
           /* Redirect output. */
