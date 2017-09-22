@@ -212,7 +212,7 @@ public class Controller {
   private void processFile(Path file) throws InvalidArgumentException,
                                              StarcraftProfileNameException,
                                              InvalidBwapiDllException {
-    if (this.state != State.IDLE) {
+    if (getState() != State.IDLE) {
       return;
     }
 
@@ -309,7 +309,7 @@ public class Controller {
                                                     InvalidArgumentException,
                                                     StarcraftProfileNameException,
                                                     InvalidBwapiDllException {
-    if (this.state != State.IDLE) {
+    if (getState() != State.IDLE) {
       Platform.runLater(() -> {
         View.displayOperationProhibitedDialog("Loading bot files is not allowed while a bot is running.");
       });
@@ -377,7 +377,11 @@ public class Controller {
    * Gets the manually set state indicator of the program.
    */
   public State getState() {
-    return this.state;
+    State currentState;
+    synchronized(this.stateLock) {
+      currentState = this.state;
+    }
+    return currentState;
   }
 
   public String getBotFilename() {
@@ -453,7 +457,7 @@ public class Controller {
   }
 
   public void mnuEditSettingsClicked() {
-    if (this.state != State.IDLE) {
+    if (getState() != State.IDLE) {
       Platform.runLater(() -> {
         View.displayOperationProhibitedDialog("Program settings are locked while bot is running.");
       });
@@ -469,7 +473,7 @@ public class Controller {
   public void btnStartClicked() throws InvalidStateException {
     /* Check if BWAPI.dll is known. */
     String bwapiDllVersion = getBwapiDllVersion();
-    if (this.state == State.IDLE
+    if (getState() == State.IDLE
         && Model.getSettings().isEnabled(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString())
         && !AdakiteUtils.isNullOrEmpty(bwapiDllVersion)
         && bwapiDllVersion.equalsIgnoreCase(BWAPI.DLL_UNKNOWN)) {
@@ -488,10 +492,10 @@ public class Controller {
       }
     }
 
-    State prevState = this.state;
+    State prevState = getState();
 
     if (prevState == State.LOCKED) {
-      throw new InvalidStateException("unable to start/stop, current_state=" + State.LOCKED.toString());
+      throw new InvalidStateException("unable to start/stop, current_state=" + prevState.toString());
     }
 
     setState(State.LOCKED);
@@ -598,13 +602,13 @@ public class Controller {
         break;
     }
 
-    if (this.state == State.LOCKED) {
+    if (getState() == State.LOCKED) {
       throw new InvalidStateException("current_state=" + State.LOCKED.toString());
     }
   }
 
   public void botRaceChanged(String str) {
-    if (this.state != State.IDLE) {
+    if (getState() != State.IDLE) {
       Platform.runLater(() -> {
         View.displayWarningDialog(DialogTitle.WARNING, "Changing the bot's race while it is running has no effect.");
       });
@@ -621,7 +625,7 @@ public class Controller {
 
   //TODO: Provide some feedback when a user types an invalid bot name.
   public void botNameChanged(String str) {
-    if (this.state != State.IDLE) {
+    if (getState() != State.IDLE) {
       Platform.runLater(() -> {
         View.displayWarningDialog(DialogTitle.WARNING, "Changing the bot's name while it is running has no effect.");
       });
