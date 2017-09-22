@@ -150,11 +150,11 @@ public class Controller {
 
     if (Model.getSettings().isEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString())) {
       /* Copy contents of "bwapi-data/write/" to "bwapi-data/read/". */
-      Path bwapiWritePath = this.model.getBWHeadless().getBwapiDirectory().getWriteDirectory();
-      Path bwapiReadPath = this.model.getBWHeadless().getBwapiDirectory().getReadDirectory();
-      String copyMessage = View.MessagePrefix.COPY.get() + bwapiWritePath.toString() + " -> " + bwapiReadPath.toString();
+      Path bwapiWriteDirectory = this.model.getBWHeadless().getBwapiDirectory().getWriteDirectory();
+      Path bwapiReadDirectory = this.model.getBWHeadless().getBwapiDirectory().getReadDirectory();
+      String copyMessage = View.MessagePrefix.COPY.get() + bwapiWriteDirectory.toString() + " -> " + bwapiReadDirectory.toString();
       this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + copyMessage);
-      FileUtils.copyDirectory(bwapiWritePath.toFile(), bwapiReadPath.toFile());
+      FileUtils.copyDirectory(bwapiWriteDirectory.toFile(), bwapiReadDirectory.toFile());
     }
   }
 
@@ -166,7 +166,8 @@ public class Controller {
    */
   public void closeProgramRequest(Stage stage) throws InvalidStateException {
     /* Check the program's current state. */
-    switch (this.state) {
+    State state = getState();
+    switch (state) {
       case IDLE:
         /* Do nothing. */
         break;
@@ -175,7 +176,7 @@ public class Controller {
       case LOCKED:
         /* Fall through. */
       default:
-        String errorMessage = "program is still in state " + this.state.toString()
+        String errorMessage = "program is still in state " + state.toString()
             + AdakiteUtils.newline(2)
             + "Try ejecting the bot first or wait for the current operation to finish."
             ;
@@ -602,6 +603,7 @@ public class Controller {
         break;
     }
 
+    //TODO: It does not seem effectively possible to reach this line. Delete? Refactor above code?
     if (getState() == State.LOCKED) {
       throw new InvalidStateException("current_state=" + State.LOCKED.toString());
     }
