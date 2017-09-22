@@ -454,11 +454,11 @@ public class BWHeadless {
     }
 
     /* Kill new tasks that were started after bwheadless. */
-    String botName = FilenameUtils.getBaseName(this.bot.getFile().toString());
+    String botFilename = FilenameUtils.getBaseName(this.bot.getFile().toString());
     this.taskTracker.update();
     for (Task task : this.taskTracker.getNewTasks()) {
       /* Kill bot client. */
-      if (this.bot.getType() == Bot.Type.CLIENT && botName.contains(task.getImageName())) {
+      if (this.bot.getType() == Bot.Type.CLIENT && botFilename.contains(task.getImageName())) {
         println(View.MessagePrefix.DROPLAUNCHER.get() + View.MessagePrefix.KILL.get() + task.getPID() + " " + task.getImageName());
         Tasklist.kill(task.getPID());
         continue;
