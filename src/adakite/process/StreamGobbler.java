@@ -8,17 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class StreamGobbler implements Runnable {
+public class StreamGobbler {
 
-  private static class StreamGobblerThread extends Thread {
+  private static class StreamGobblerRunnable implements Runnable {
 
     private InputStream inputStream;
     private CopyOnWriteArrayList<String> gobbledOutput;
 
-    private StreamGobblerThread() {}
+    private StreamGobblerRunnable() {}
 
-    public StreamGobblerThread(InputStream inputStream) {
+    public StreamGobblerRunnable(InputStream inputStream) {
       this.inputStream = inputStream;
+      this.gobbledOutput = new CopyOnWriteArrayList<>();
     }
 
     public List<String> getOutput() {
@@ -44,17 +45,16 @@ public class StreamGobbler implements Runnable {
   }
 
   private Thread thread;
-  private StreamGobblerThread gobblerThread;
-  private InputStream inputStream;
+  private StreamGobblerRunnable runnable;
 
   private StreamGobbler() {}
 
   public StreamGobbler(InputStream inputStream) {
-    this.inputStream = inputStream;
+    this.runnable = new StreamGobblerRunnable(inputStream);
   }
 
   public List<String> getCurrentOutput() {
-    return this.gobblerThread.getOutput();
+    return this.runnable.getOutput();
   }
 
   public void interrupt() {
@@ -69,10 +69,8 @@ public class StreamGobbler implements Runnable {
     return this.thread.isAlive();
   }
 
-  @Override
   public void run() {
-    this.gobblerThread = new StreamGobblerThread(this.inputStream);
-    this.thread = new Thread(this.gobblerThread);
+    this.thread = new Thread(this.runnable);
     this.thread.start();
   }
 
