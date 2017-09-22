@@ -29,7 +29,7 @@ import javafx.application.Platform;
 /**
  * Class for consuming output from an input stream.
  */
-public class CustomStreamGobbler extends Thread {
+public class CustomStreamGobbler implements Runnable {
 
   private InputStream inputStream;
   private ConsoleOutputWrapper consoleOutput;
