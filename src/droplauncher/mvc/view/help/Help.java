@@ -39,8 +39,8 @@ public class Help {
     QUICK_GUIDE("Quick Guide", HTML_DIRECTORY.resolve("quick-guide.html")),
     STARCRAFT_SETUP("Connecting " + DropLauncher.PROGRAM_NAME + " to " + Starcraft.NAME, HTML_DIRECTORY.resolve("connect-dl-to-sc.html")),
     DOWNLOADING_BOTS("Downloading Bots", HTML_DIRECTORY.resolve("download-bots.html")),
-    PLAY_VS_BOTS("Playing Against Bots", HTML_DIRECTORY.resolve("play-vs-bot.html")),
-    SYS_REQS("System Requirements", HTML_DIRECTORY.resolve("system-req.html")),
+    PLAY_VS_BOTS("Playing Against a Bot", HTML_DIRECTORY.resolve("play-vs-bot.html")),
+    SYS_REQS("Runtime Requirements", HTML_DIRECTORY.resolve("runtime-req.html")),
     TECHNICAL_DETAILS("Technical Details", HTML_DIRECTORY.resolve("tech-details.html"))
     ;
 

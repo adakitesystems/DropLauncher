@@ -109,7 +109,8 @@ public class Ini {
   }
 
   public boolean hasValue(String name, String key) {
-    return (getValue(name, key) != null);
+    String val = getValue(name, key);
+    return !AdakiteUtils.isNullOrEmpty(val, true);
   }
 
   public boolean isEnabled(String name, String key) {
