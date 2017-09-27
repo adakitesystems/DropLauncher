@@ -134,7 +134,7 @@ public class SettingsWindow {
     this.chkEnableColorTheme.setOnAction(e -> {
       Model.getSettings().setEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString(), this.chkEnableColorTheme.isSelected());
     });
-    this.chkEnableColorTheme.setTooltip(createTooltip("Enable/disable color theme for UI objects (buttons, text fields, etc.", this.chkEnableColorTheme));
+    this.chkEnableColorTheme.setTooltip(createTooltip("Enable/disable color theme for UI objects (buttons, text fields, etc.)", this.chkEnableColorTheme));
 
     this.chkVerifyStarcraftVersion = new CheckBox();
     this.chkVerifyStarcraftVersion.setText("Verify " + Starcraft.BINARY_FILENAME + " version");
