@@ -255,12 +255,10 @@ public class View implements EventHandler<DragEvent>  {
     EDIT("Edit"),
       SETTINGS("Settings..."),
 
-//    VIEW("View"),
-//      LOG_WINDOW("Log Window"),
-
     HELP("Help"),
       HELP_CONTENTS("DropLauncher Help"),
       ABOUT("About")
+
     ;
 
     private final String str;
@@ -291,7 +289,6 @@ public class View implements EventHandler<DragEvent>  {
   private MenuBar menuBar;
   private Menu fileMenu;
   private Menu editMenu;
-//  private Menu viewMenu;
   private Menu helpMenu;
 
   private Label lblBwapiVersion;
@@ -319,32 +316,24 @@ public class View implements EventHandler<DragEvent>  {
   private void initMenus() {
     /* File */
     MenuItem mnuFileSelectBotFiles = new MenuItem(MenuText.SELECT_BOT_FILES.toString());
-    mnuFileSelectBotFiles.setOnAction(e -> this.controller.mnuFileSelectBotFilesClicked(this.stage));
+    mnuFileSelectBotFiles.setOnAction(e -> { this.controller.mnuFileSelectBotFilesClicked(this.stage); });
     MenuItem mnuFileExit = new MenuItem(MenuText.EXIT.toString());
-    mnuFileExit.setOnAction(e -> {
-      this.controller.mnuFileExitClicked(this.stage);
-    });
+    mnuFileExit.setOnAction(e -> { this.controller.mnuFileExitClicked(this.stage); });
     this.fileMenu = new Menu(MenuText.FILE.toString());
     this.fileMenu.getItems().add(mnuFileSelectBotFiles);
     this.fileMenu.getItems().add(mnuFileExit);
 
     /* Edit */
     MenuItem mnuEditSettings = new MenuItem(MenuText.SETTINGS.toString());
-    mnuEditSettings.setOnAction(e -> this.controller.mnuEditSettingsClicked());
+    mnuEditSettings.setOnAction(e -> { this.controller.mnuEditSettingsClicked(); });
     this.editMenu = new Menu(MenuText.EDIT.toString());
     this.editMenu.getItems().add(mnuEditSettings);
 
-//    /* View */
-//    MenuItem mnuViewLogWindow = new MenuItem(MenuText.LOG_WINDOW.toString());
-//    mnuViewLogWindow.setOnAction(e -> this.controller.mnuLogWindowClicked());
-//    this.viewMenu = new Menu(MenuText.VIEW.toString());
-//    this.viewMenu.getItems().add(mnuViewLogWindow);
-
     /* Help */
     MenuItem mnuHelpAbout = new MenuItem(MenuText.ABOUT.toString());
-    mnuHelpAbout.setOnAction(e -> this.controller.mnuHelpAboutClicked());
+    mnuHelpAbout.setOnAction(e -> { this.controller.mnuHelpAboutClicked(); });
     MenuItem mnuHelpHelpContents = new MenuItem(MenuText.HELP_CONTENTS.toString());
-    mnuHelpHelpContents.setOnAction(e -> this.controller.mnuHelpContentsClicked());
+    mnuHelpHelpContents.setOnAction(e -> { this.controller.mnuHelpContentsClicked(); });
     this.helpMenu = new Menu(MenuText.HELP.toString());
     this.helpMenu.getItems().add(mnuHelpHelpContents);
     this.helpMenu.getItems().add(mnuHelpAbout);
@@ -353,7 +342,6 @@ public class View implements EventHandler<DragEvent>  {
     this.menuBar = new MenuBar();
     this.menuBar.getMenus().add(this.fileMenu);
     this.menuBar.getMenus().add(this.editMenu);
-//    this.menuBar.getMenus().add(this.viewMenu);
     this.menuBar.getMenus().add(this.helpMenu);
     this.menuBar.getStyleClass().add("launcher-menustyle");
   }
@@ -372,28 +360,39 @@ public class View implements EventHandler<DragEvent>  {
     this.lblBotName.setMinWidth(Region.USE_PREF_SIZE);
     this.txtBotName = new TextField("");
     this.txtBotName.setMinWidth(Region.USE_PREF_SIZE);
+    this.txtBotName.setOnKeyReleased(e -> { this.controller.botNameChanged(this.txtBotName.getText()); });
     this.cbRace = new ChoiceBox<>();
     this.cbRace.getItems().add(Race.TERRAN.toString());
     this.cbRace.getItems().add(Race.ZERG.toString());
     this.cbRace.getItems().add(Race.PROTOSS.toString());
     this.cbRace.getItems().add(Race.RANDOM.toString());
 //    this.cbRace.getStyleClass().add("launcher-context-menu");
+    this.cbRace.setOnAction(e -> {
+      String previous = this.controller.getBotRace().toString();
+      String current = this.cbRace.getValue();
+      if (!current.equals(previous)) {
+        this.controller.botRaceChanged(current);
+      }
+    });
     this.btnStart = new Button(StartButtonText.START.toString());
     this.btnStart.setMinWidth(250);
-    this.btnStart.setMinHeight(45); //30
+    this.btnStart.setMinHeight(45); //Changed from 30
     this.btnStart.getStyleClass().add("launch-btn");
+    this.btnStart.setOnAction(e -> {
+      try {
+        this.controller.btnStartClicked();
+      } catch (InvalidStateException ex) {
+        new ExceptionAlert().showAndWait(null, ex);
+      }
+    });
     this.chkAutoEject = new CheckBox();
     this.chkAutoEject.setText("Auto-eject bot after game has ended");
     this.chkAutoEject.setSelected(Model.getSettings().isEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString()));
-    this.chkAutoEject.setOnAction(e -> {
-      Model.getSettings().setEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString(), this.chkAutoEject.isSelected());
-    });
+    this.chkAutoEject.setOnAction(e -> { Model.getSettings().setEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString(), this.chkAutoEject.isSelected()); });
     this.chkAutoRejoin = new CheckBox();
     this.chkAutoRejoin.setText("Auto-connect bot to game lobby after eject");
     this.chkAutoRejoin.setSelected(Model.getSettings().isEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString()));
-    this.chkAutoRejoin.setOnAction(e -> {
-      Model.getSettings().setEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString(), this.chkAutoRejoin.isSelected());
-    });
+    this.chkAutoRejoin.setOnAction(e -> { Model.getSettings().setEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString(), this.chkAutoRejoin.isSelected()); });
     this.consoleOutput = new ConsoleOutput();
     this.consoleOutput.getBlacklist().add("fps: "); /* bwheadless.exe spam */
     this.consoleOutput.get().getStyleClass().add("console-output");
@@ -409,23 +408,6 @@ public class View implements EventHandler<DragEvent>  {
         }
       });
     });
-
-    this.txtBotName.setOnKeyReleased(e -> this.controller.botNameChanged(this.txtBotName.getText()));
-    this.cbRace.setOnAction(e -> {
-      String previous = this.controller.getBotRace().toString();
-      String current = this.cbRace.getValue();
-      if (!current.equals(previous)) {
-        this.controller.botRaceChanged(current);
-      }
-    });
-    this.btnStart.setOnAction(e -> {
-      try {
-        this.controller.btnStartClicked();
-      } catch (InvalidStateException ex) {
-        new ExceptionAlert().showAndWait(null, ex);
-      }
-    });
-
     this.btnClearExtraBotFiles = new Button(ButtonText.CLEAR_EXTRA_BOT_FILES.toString());
     this.btnClearExtraBotFiles.setOnAction(e -> {
       Platform.runLater(() -> {
@@ -479,14 +461,7 @@ public class View implements EventHandler<DragEvent>  {
     infoGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
     infoGridPane.get().setAlignment(Pos.CENTER_LEFT);
 
-//    HBox boxClearExtra = new HBox();
-//    boxClearExtra.getChildren().add(this.btnClearExtraBotFiles);
-//    boxClearExtra.setAlignment(Pos.CENTER_RIGHT);
-//    HBox boxClearConsole = new HBox();
-//    boxClearConsole.getChildren().add(this.btnClearConsoleOutput);
-//    boxClearConsole.setAlignment(Pos.CENTER_RIGHT);
     HBox boxClear = new HBox();
-//    boxClear.getChildren().add(this.btnClearExtraBotFiles);
     boxClear.getChildren().add(this.btnClearConsoleOutput);
     boxClear.setSpacing(30);
     boxClear.setAlignment(Pos.CENTER_RIGHT);
@@ -583,7 +558,7 @@ public class View implements EventHandler<DragEvent>  {
         this.btnClearExtraBotFiles.setVisible(true);
         this.btnClearExtraBotFiles.setDisable(true);
       }
-      updateRaceChoiceBox();
+      this.cbRace.getSelectionModel().select(this.controller.getBotRace().toString());
     } else {
       this.cbRace.setVisible(false);
       this.btnClearExtraBotFiles.setVisible(false);
@@ -615,26 +590,17 @@ public class View implements EventHandler<DragEvent>  {
     } else if (node instanceof Label) {
       Label label = (Label) node;
       label.setText(str);
-    } else if (node instanceof ChoiceBox) {
-      ChoiceBox choiceBox = (ChoiceBox) node;
-      //TODO: Use ChoiceBox.getSelectionModel().select(int)
-      choiceBox.setValue(str);
     } else if (node instanceof TextField) {
       TextField textField = (TextField) node;
       textField.setText(str);
     }
   }
 
-  public void updateRaceChoiceBox() {
-    setText(getRaceChoiceBox(), this.controller.getBotRace().toString());
-    sizeToScene();
-  }
-
   public void btnStartSetText(String str) {
     setText(this.btnStart, str);
   }
 
-  public void btnStartEnabled(boolean enabled) {
+  public void btnStartSetEnabled(boolean enabled) {
     this.btnStart.setDisable(!enabled);
   }
 

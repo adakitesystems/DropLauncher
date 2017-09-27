@@ -31,7 +31,7 @@ public class ProgramSettings {
     /* Do nothing. */
   }
 
-  private static String getSection(String uniqueKey) {
+  private String getSection(String uniqueKey) {
     uniqueKey = uniqueKey.toLowerCase(Locale.US);
 
     for (DropLauncher.PropertyKey val : DropLauncher.PropertyKey.values()) {
@@ -67,7 +67,7 @@ public class ProgramSettings {
    * @param key specified key
    * @throws IllegalStateException if the specified key does not exist
    */
-  public static String getValue(String key) {
+  public String getValue(String key) {
     return DropLauncher.getSettings().getValue(getSection(key), key);
   }
 
@@ -76,7 +76,7 @@ public class ProgramSettings {
    *
    * @param key specified key
    */
-  public static boolean hasValue(String key) {
+  public boolean hasValue(String key) {
     return DropLauncher.getSettings().hasValue(getSection(key), key);
   }
 
@@ -87,7 +87,7 @@ public class ProgramSettings {
    * @param key specified key
    * @param val specified value
    */
-  public static void setValue(String key, String val) {
+  public void setValue(String key, String val) {
     DropLauncher.getSettings().set(getSection(key), key, val);
     try {
       DropLauncher.getSettings().store(DropLauncher.SETTINGS_FILE);
@@ -104,7 +104,7 @@ public class ProgramSettings {
    *
    * @param key specified key
    */
-  public static boolean isEnabled(String key) {
+  public boolean isEnabled(String key) {
     return DropLauncher.getSettings().isEnabled(getSection(key), key);
   }
 
@@ -115,7 +115,7 @@ public class ProgramSettings {
    * @param key specified key
    * @param enabled specified boolean value
    */
-  public static void setEnabled(String key, boolean enabled) {
+  public void setEnabled(String key, boolean enabled) {
     setValue(key, Boolean.toString(enabled));
   }
 

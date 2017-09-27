@@ -1,12 +1,12 @@
 /**
  * Source: http://docs.oracle.com/javafx/2/webview/jfxpub-webview.htm
- * Date: 2017-09-26
+ * Last Updated: January 2014
  *
  * Modified by: Adakite
  * Date: 2017-09-26
  */
 
-package droplauncher.mvc.view.browser;
+package droplauncher.mvc.view;
 
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;

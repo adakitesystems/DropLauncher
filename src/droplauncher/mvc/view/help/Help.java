@@ -19,7 +19,7 @@ package droplauncher.mvc.view.help;
 
 import droplauncher.DropLauncher;
 import droplauncher.mvc.view.View;
-import droplauncher.mvc.view.browser.WebViewWrapper;
+import droplauncher.mvc.view.WebViewWrapper;
 import droplauncher.mvc.view.help.exception.CategoryParseException;
 import droplauncher.starcraft.Starcraft;
 import java.nio.file.Path;
@@ -74,8 +74,8 @@ public class Help {
 
   private static final Path HTML_DIRECTORY = Paths.get("docs").resolve("help-contents");
 
-  private Scene scene;
   private Stage stage;
+  private Scene scene;
 
   private ListView<String> list;
   private WebViewWrapper browser;
@@ -98,7 +98,7 @@ public class Help {
       String item = this.list.getSelectionModel().getSelectedItem();
       this.browser.load("file:///" + Category.parseCategory(item).getFile().toAbsolutePath().toString());
     });
-    
+
     if (Category.values().length > 0) {
       this.browser.load("file:///" + Category.values()[0].getFile().toAbsolutePath().toString());
     }

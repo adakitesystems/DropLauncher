@@ -197,12 +197,24 @@ public class Controller {
             }
           }
         }
+//        if (Model.getSettings().hasValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString())) {
+//          Path starcraftDirectory = AdakiteUtils.getParentDirectory(Paths.get(Model.getSettings().getValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString())));
+//          if (starcraftDirectory != null) {
+//            for (BWAPI.ExtractableDll val : BWAPI.ExtractableDll.values()) {
+//              Path file = starcraftDirectory.resolve(Paths.get(val.toString()));
+//              if (AdakiteUtils.fileExists(file)) {
+//                AdakiteUtils.deleteFile(file);
+//              }
+//            }
+//          }
+//        }
       } catch (Exception ex) {
         new ExceptionAlert().showAndWait("failed to clean up StarCraft directory", ex);
       }
     }
 
     stage.close();
+    Platform.exit();
   }
 
   /**
@@ -511,7 +523,7 @@ public class Controller {
     switch (prevState) {
       case IDLE:
         /* Start bwheadless. */
-        this.view.btnStartEnabled(false);
+        this.view.btnStartSetEnabled(false);
         new Thread(() -> {
           boolean success = false;
           try {
@@ -519,7 +531,7 @@ public class Controller {
             startBWHeadless();
             Platform.runLater(() -> {
               this.view.btnStartSetText(View.StartButtonText.STOP.toString());
-              this.view.btnStartEnabled(true);
+              this.view.btnStartSetEnabled(true);
             });
             setState(State.RUNNING);
             success = true;
@@ -574,21 +586,21 @@ public class Controller {
             setState(prevState);
             Platform.runLater(() -> {
               this.view.btnStartSetText(View.StartButtonText.START.toString());
-              this.view.btnStartEnabled(true);
+              this.view.btnStartSetEnabled(true);
             });
           }
         }).start();
         return;
       case RUNNING:
         /* Stop bwheadless. */
-        this.view.btnStartEnabled(false);
+        this.view.btnStartSetEnabled(false);
         new Thread(() -> {
           try {
             this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "Ejecting bot...");
             stopBWHeadless();
             Platform.runLater(() -> {
               this.view.btnStartSetText(View.StartButtonText.START.toString());
-              this.view.btnStartEnabled(true);
+              this.view.btnStartSetEnabled(true);
             });
             setState(State.IDLE);
             this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + View.Message.BOT_EJECTED.toString());
@@ -601,7 +613,7 @@ public class Controller {
             setState(prevState);
             Platform.runLater(() -> {
               this.view.btnStartSetText(View.StartButtonText.STOP.toString());
-              this.view.btnStartEnabled(true);
+              this.view.btnStartSetEnabled(true);
             });
           }
         }).start();
