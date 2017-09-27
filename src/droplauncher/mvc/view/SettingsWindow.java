@@ -17,7 +17,9 @@
 
 package droplauncher.mvc.view;
 
+import droplauncher.mvc.view.tooltip.TooltipWrapper;
 import adakite.windows.Windows;
+import droplauncher.DropLauncher;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft;
@@ -72,24 +74,28 @@ public class SettingsWindow {
     this.chkShowLogWindow.setOnAction(e -> {
       Model.getSettings().setEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString(), this.chkShowLogWindow.isSelected());
     });
+    this.chkShowLogWindow.setTooltip(new TooltipWrapper("When enabled, output messages from " + DropLauncher.PROGRAM_NAME + ", bwheadless.exe, and the BWAPI bot will be displayed in a window at the bottom of the window.").toTooltip());
 
-    this.chkBwapiWriteRead.setText("Copy contents of \"bwapi-data/write/\" to \"bwapi-data/read/\" after eject");
+    this.chkBwapiWriteRead.setText("Copy contents of `" + BWAPI.ROOT_DIRECTORY.resolve(BWAPI.WRITE_DIRECTORY).toString() + "' to `" + BWAPI.ROOT_DIRECTORY.resolve(BWAPI.READ_DIRECTORY.toString()) + "' after eject");
     this.chkBwapiWriteRead.setSelected(Model.getSettings().isEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString()));
     this.chkBwapiWriteRead.setOnAction(e -> {
       Model.getSettings().setEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString(), this.chkBwapiWriteRead.isSelected());
     });
+    this.chkBwapiWriteRead.setTooltip(new TooltipWrapper("Copy contents of `" + BWAPI.ROOT_DIRECTORY.resolve(BWAPI.WRITE_DIRECTORY).toString() + "' to `" + BWAPI.ROOT_DIRECTORY.resolve(BWAPI.READ_DIRECTORY.toString()) + "' after eject").toTooltip());
 
     this.chkCleanStarcraftDirectory.setText("Clean StarCraft directory before closing program");
     this.chkCleanStarcraftDirectory.setSelected(Model.getSettings().isEnabled(Starcraft.PropertyKey.CLEAN_SC_DIR.toString()));
     this.chkCleanStarcraftDirectory.setOnAction(e -> {
       Model.getSettings().setEnabled(Starcraft.PropertyKey.CLEAN_SC_DIR.toString(), this.chkCleanStarcraftDirectory.isSelected());
     });
+    this.chkCleanStarcraftDirectory.setTooltip(new TooltipWrapper("When enabled, " + DropLauncher.PROGRAM_NAME + " will attempt to remove any unnecessary files created or extracted by " + DropLauncher.PROGRAM_NAME + " before exiting.").toTooltip());
 
     this.chkWarnBwapiDll.setText("Warn about unknown BWAPI versions");
     this.chkWarnBwapiDll.setSelected(Model.getSettings().isEnabled(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString()));
     this.chkWarnBwapiDll.setOnAction(e -> {
       Model.getSettings().setEnabled(BWAPI.PropertyKey.WARN_UNKNOWN_BWAPI_DLL.toString(), this.chkWarnBwapiDll.isSelected());
     });
+    this.chkWarnBwapiDll.setTooltip(new TooltipWrapper("When enabled, a warning message will popup if the selected BWAPI.dll file does not match a list of known official versions").toTooltip());
 
     this.lblChangeStarcraftExe.setText(Starcraft.BINARY_FILENAME + ":");
     this.btnChangeStarcraftExe.setText("...");
@@ -120,18 +126,21 @@ public class SettingsWindow {
     this.chkExtractBotDependencies.setOnAction(e -> {
       Model.getSettings().setEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString(), this.chkExtractBotDependencies.isSelected());
     });
+    this.chkExtractBotDependencies.setTooltip(new TooltipWrapper("Note: BWAPI bots can be compiled in different languages (i.e. C++, Java, Scala, etc.) and different formats (.exe, .dll, .jar, etc.). This option will automatically extract all dependencies to the StarCraft directory that may be required to run the bot.").toTooltip());
 
     this.chkEnableColorTheme.setText("Enable color theme (requires program restart)");
     this.chkEnableColorTheme.setSelected(Model.getSettings().isEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString()));
     this.chkEnableColorTheme.setOnAction(e -> {
       Model.getSettings().setEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString(), this.chkEnableColorTheme.isSelected());
     });
+    this.chkEnableColorTheme.setTooltip(new TooltipWrapper("Enable/disable color theme for UI objects (buttons, text fields, etc.").toTooltip());
 
-    this.chkVerifyStarcraftVersion.setText("Verify StarCraft.exe version");
+    this.chkVerifyStarcraftVersion.setText("Verify " + Starcraft.BINARY_FILENAME + " version");
     this.chkVerifyStarcraftVersion.setSelected(Model.getSettings().isEnabled(Starcraft.PropertyKey.CHECK_FOR_SUPPORTED_VERSION.toString()));
     this.chkVerifyStarcraftVersion.setOnAction(e -> {
       Model.getSettings().setEnabled(Starcraft.PropertyKey.CHECK_FOR_SUPPORTED_VERSION.toString(), this.chkVerifyStarcraftVersion.isSelected());
     });
+    this.chkVerifyStarcraftVersion.setTooltip(new TooltipWrapper("Verify that the selected " + Starcraft.BINARY_FILENAME + " is supported. (i.e.: " + Starcraft.FULL_EXPANSION_NAME + " 1.16.1)").toTooltip());
 
     CustomGridPane fileSelectPane = new CustomGridPane();
     fileSelectPane.add(this.lblChangeStarcraftExe);

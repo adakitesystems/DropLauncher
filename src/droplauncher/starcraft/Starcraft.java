@@ -127,6 +127,9 @@ public class Starcraft {
 
   }
 
+  public static final String NAME = "StarCraft";
+  public static final String EXPANSION_NAME = "Brood War";
+  public static final String FULL_EXPANSION_NAME = NAME + ": " + EXPANSION_NAME;
   public static final String BINARY_FILENAME = "StarCraft.exe";
 
 //  public static final Prefs PREF_ROOT = DropLauncher.PREF_ROOT.getChild("starcraft");

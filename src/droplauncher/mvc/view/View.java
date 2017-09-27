@@ -255,7 +255,11 @@ public class View implements EventHandler<DragEvent>  {
     EDIT("Edit"),
       SETTINGS("Settings..."),
 
+//    VIEW("View"),
+//      LOG_WINDOW("Log Window"),
+
     HELP("Help"),
+      HELP_CONTENTS("DropLauncher Help"),
       ABOUT("About")
     ;
 
@@ -287,6 +291,7 @@ public class View implements EventHandler<DragEvent>  {
   private MenuBar menuBar;
   private Menu fileMenu;
   private Menu editMenu;
+//  private Menu viewMenu;
   private Menu helpMenu;
 
   private Label lblBwapiVersion;
@@ -329,16 +334,26 @@ public class View implements EventHandler<DragEvent>  {
     this.editMenu = new Menu(MenuText.EDIT.toString());
     this.editMenu.getItems().add(mnuEditSettings);
 
+//    /* View */
+//    MenuItem mnuViewLogWindow = new MenuItem(MenuText.LOG_WINDOW.toString());
+//    mnuViewLogWindow.setOnAction(e -> this.controller.mnuLogWindowClicked());
+//    this.viewMenu = new Menu(MenuText.VIEW.toString());
+//    this.viewMenu.getItems().add(mnuViewLogWindow);
+
     /* Help */
     MenuItem mnuHelpAbout = new MenuItem(MenuText.ABOUT.toString());
     mnuHelpAbout.setOnAction(e -> this.controller.mnuHelpAboutClicked());
+    MenuItem mnuHelpHelpContents = new MenuItem(MenuText.HELP_CONTENTS.toString());
+    mnuHelpHelpContents.setOnAction(e -> this.controller.mnuHelpContentsClicked());
     this.helpMenu = new Menu(MenuText.HELP.toString());
+    this.helpMenu.getItems().add(mnuHelpHelpContents);
     this.helpMenu.getItems().add(mnuHelpAbout);
 
     /* Compile menus. */
     this.menuBar = new MenuBar();
     this.menuBar.getMenus().add(this.fileMenu);
     this.menuBar.getMenus().add(this.editMenu);
+//    this.menuBar.getMenus().add(this.viewMenu);
     this.menuBar.getMenus().add(this.helpMenu);
     this.menuBar.getStyleClass().add("launcher-menustyle");
   }

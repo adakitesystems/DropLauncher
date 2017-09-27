@@ -46,6 +46,7 @@ import droplauncher.mvc.view.ConsoleOutputWrapper;
 import droplauncher.mvc.view.ExceptionAlert;
 import droplauncher.mvc.view.View.DialogTitle;
 import droplauncher.mvc.view.YesNoDialog;
+import droplauncher.mvc.view.help.Help;
 import droplauncher.starcraft.Starcraft;
 import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
@@ -465,6 +466,12 @@ public class Controller {
       return;
     }
     new SettingsWindow().showAndWait();
+  }
+
+  public void mnuHelpContentsClicked() {
+    Platform.runLater(() -> {
+      new Help().show();
+    });
   }
 
   public void mnuHelpAboutClicked() {
