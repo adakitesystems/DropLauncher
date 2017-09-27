@@ -1,6 +1,9 @@
 # WIP theme
 src/droplauncher/mvc/view/theme/
 
+# Docs
+docs/
+
 # Libraries
 lib/
 
