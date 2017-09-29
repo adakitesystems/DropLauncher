@@ -51,7 +51,6 @@ public class SettingsWindow {
   private Label lblChangeStarcraftExeText;
   private Button btnChangeStarcraftExe;
   private CheckBox chkExtractBotDependencies;
-  private CheckBox chkEnableColorTheme;
   private CheckBox chkVerifyStarcraftVersion;
 
   public SettingsWindow() {
@@ -119,19 +118,6 @@ public class SettingsWindow {
     });
     this.chkExtractBotDependencies.setTooltip(createTooltip("Note: BWAPI bots can be compiled in different languages (i.e. C++, Java, Scala, etc.) and different formats (.exe, .dll, .jar, etc.). This option will automatically extract all dependencies to the StarCraft directory that may be required to run the bot.", this.chkExtractBotDependencies));
 
-    this.chkEnableColorTheme = new CheckBox();
-    this.chkEnableColorTheme.setText("Enable color theme");
-    this.chkEnableColorTheme.setSelected(Model.getSettings().isEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString()));
-    this.chkEnableColorTheme.setOnAction(e -> {
-      Model.getSettings().setEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString(), this.chkEnableColorTheme.isSelected());
-//      if (!this.chkEnableColorTheme.isSelected()) {
-//        View.removeDefaultStylesheet(this.scene.getStylesheets());
-//      } else {
-//        View.addDefaultStylesheet(this.scene.getStylesheets());
-//      }
-    });
-    this.chkEnableColorTheme.setTooltip(createTooltip("Enable/disable color theme for UI objects (buttons, text fields, etc.)", this.chkEnableColorTheme));
-
     this.chkVerifyStarcraftVersion = new CheckBox();
     this.chkVerifyStarcraftVersion.setText("Verify " + Starcraft.BINARY_FILENAME + " version");
     this.chkVerifyStarcraftVersion.setSelected(Model.getSettings().isEnabled(Starcraft.PropertyKey.CHECK_FOR_SUPPORTED_VERSION.toString()));
@@ -152,7 +138,6 @@ public class SettingsWindow {
     mainGridPane.add(this.chkExtractBotDependencies).nextRow();
     mainGridPane.add(this.chkCleanStarcraftDirectory).nextRow();
     mainGridPane.add(this.chkBwapiWriteRead).nextRow();
-    mainGridPane.add(this.chkEnableColorTheme).nextRow();
     mainGridPane.add(this.chkVerifyStarcraftVersion).nextRow();
     mainGridPane.add(this.chkWarnBwapiDll).nextRow();
 

@@ -263,6 +263,9 @@ public class View implements EventHandler<DragEvent>  {
       EXIT("Exit"),
 
     EDIT("Edit"),
+      THEME("Select Theme"),
+        THEME_NONE("None"),
+        THEME_STARCRAFT("StarCraft Replica"),
       SETTINGS("Settings..."),
 
     WINDOW("Window"),
@@ -302,6 +305,7 @@ public class View implements EventHandler<DragEvent>  {
   private MenuBar menuBar;
   private Menu fileMenu;
   private Menu editMenu;
+  private Menu themeMenu;
   private Menu windowMenu;
   private Menu helpMenu;
 
@@ -338,10 +342,26 @@ public class View implements EventHandler<DragEvent>  {
     this.fileMenu.getItems().add(mnuFileSelectBotFiles);
     this.fileMenu.getItems().add(mnuFileExit);
 
+    /* Theme */
+    MenuItem mnuEditThemeNone = new MenuItem(MenuText.THEME_NONE.toString());
+    mnuEditThemeNone.setOnAction(e -> {
+      Model.getSettings().setEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString(), false);
+      update();
+    });
+    MenuItem mnuEditThemeStarcraft = new MenuItem(MenuText.THEME_STARCRAFT.toString());
+    mnuEditThemeStarcraft.setOnAction(e -> {
+      Model.getSettings().setEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString(), true);
+      update();
+    });
+    this.themeMenu = new Menu(MenuText.THEME.toString());
+    this.themeMenu.getItems().add(mnuEditThemeNone);
+    this.themeMenu.getItems().add(mnuEditThemeStarcraft);
+
     /* Edit */
     MenuItem mnuEditSettings = new MenuItem(MenuText.SETTINGS.toString());
     mnuEditSettings.setOnAction(e -> { this.controller.mnuEditSettingsClicked(); });
     this.editMenu = new Menu(MenuText.EDIT.toString());
+    this.editMenu.getItems().add(this.themeMenu);
     this.editMenu.getItems().add(mnuEditSettings);
 
     /* Help */
