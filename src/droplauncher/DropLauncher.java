@@ -73,7 +73,7 @@ public class DropLauncher {
   }
 
   public static final String PROGRAM_NAME = "DropLauncher";
-  public static final String PROGRAM_VERSION = "0.5.10a";
+  public static final String PROGRAM_VERSION = "0.5.11a";
   public static final String PROGRAM_AUTHOR = "Adakite";
   public static final String PROGRAM_TITLE = PROGRAM_NAME + " v" + PROGRAM_VERSION;
   public static final String PROGRAM_GITHUB = "https://github.com/AdakiteSystems/DropLauncher";
@@ -93,12 +93,15 @@ public class DropLauncher {
 
   public static final Path ROOT_DIRECTORY = Paths.get("");
 
+  public static final Path DATA_DIRECTORY = ROOT_DIRECTORY.resolve("data");
+  public static final Path BINARY_DIRECTORY = ROOT_DIRECTORY.resolve("bin");
+
 //  public static final String TEMP_DIRECTORY = Paths.get(System.getProperty("user.home"), "DropLauncher").toString();
-  public static final Path TEMP_DIRECTORY = Paths.get("tmp");
+  public static final Path TEMP_DIRECTORY = DATA_DIRECTORY.resolve("tmp");
 
 //  public static final Prefs PREF_ROOT = new Prefs(Preferences.userRoot().node("droplauncher"));
   private static final Ini INI = new Ini();
-  public static final Path SETTINGS_FILE = Paths.get("settings.ini");
+  public static final Path SETTINGS_FILE = DATA_DIRECTORY.resolve("settings.ini");
 
   private DropLauncher() {}
 

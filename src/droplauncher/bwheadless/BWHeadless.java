@@ -32,6 +32,7 @@ import adakite.windows.task.Task;
 import adakite.windows.task.TaskTracker;
 import adakite.windows.task.Tasklist;
 import adakite.windows.task.exception.TasklistParseException;
+import droplauncher.DropLauncher;
 import droplauncher.bwapi.BwapiDirectory;
 import droplauncher.bwapi.bot.Bot;
 import droplauncher.bwapi.bot.exception.MissingBotFileException;
@@ -199,7 +200,7 @@ public class BWHeadless {
     this.consoleOutput = null;
     this.taskTracker = new TaskTracker();
 
-    this.settings.set(PropertyKey.BWHEADLESS_EXE.toString(), BWHeadless.BINARY_FILENAME);
+    this.settings.set(PropertyKey.BWHEADLESS_EXE.toString(), DropLauncher.BINARY_DIRECTORY.resolve(BWHeadless.BINARY_FILENAME).toString());
   }
 
   /**

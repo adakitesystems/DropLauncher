@@ -72,7 +72,7 @@ public class Help {
 
   }
 
-  private static final Path HTML_DIRECTORY = Paths.get("docs").resolve("help-contents");
+  private static final Path HTML_DIRECTORY = DropLauncher.DATA_DIRECTORY.resolve("docs").resolve("help-contents");
 
   private Stage stage;
   private Scene scene;
