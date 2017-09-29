@@ -318,8 +318,10 @@ public class View implements EventHandler<DragEvent>  {
   private CheckBox chkAutoRejoin;
   private Button btnClearExtraBotFiles;
 
+  private boolean isColorThemeEnabled;
+
   public View() {
-    /* Do nothing. */
+    this.isColorThemeEnabled = false;
   }
 
   public void setController(Controller controller) {
@@ -574,7 +576,7 @@ public class View implements EventHandler<DragEvent>  {
     this.scene = new Scene(borderPane);
     this.scene.setOnDragOver(this);
     this.scene.setOnDragDropped(this);
-    View.addDefaultStylesheet(this.scene.getStylesheets());
+//    View.addDefaultStylesheet(this.scene.getStylesheets());
 
     this.stage.setOnCloseRequest(e -> {
       e.consume();
@@ -646,6 +648,14 @@ public class View implements EventHandler<DragEvent>  {
 
     setText(this.txtBotName, this.controller.getBotName());
 
+    if (!this.isColorThemeEnabled && Model.getSettings().isEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString())) {
+      this.isColorThemeEnabled = true;
+      View.addDefaultStylesheet(this.scene.getStylesheets());
+    } else if (this.isColorThemeEnabled && !Model.getSettings().isEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString())) {
+      this.isColorThemeEnabled = false;
+      View.removeDefaultStylesheet(this.scene.getStylesheets());
+    }
+
     sizeToScene();
   }
 
@@ -716,6 +726,14 @@ public class View implements EventHandler<DragEvent>  {
       } catch (Exception ex) {
         LOGGER.log(Debugging.getLogLevel(), null, ex);
       }
+    }
+  }
+
+  public static void removeDefaultStylesheet(ObservableList<String> sheets) {
+    try {
+      sheets.remove(View.CSS_PATH);
+    } catch (Exception ex) {
+      LOGGER.log(Debugging.getLogLevel(), null, ex);
     }
   }
 

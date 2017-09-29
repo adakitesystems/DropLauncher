@@ -479,6 +479,7 @@ public class Controller {
       return;
     }
     new SettingsWindow().showAndWait();
+    this.view.update();
   }
 
   public void mnuHelpContentsClicked() {

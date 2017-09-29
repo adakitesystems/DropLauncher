@@ -120,10 +120,15 @@ public class SettingsWindow {
     this.chkExtractBotDependencies.setTooltip(createTooltip("Note: BWAPI bots can be compiled in different languages (i.e. C++, Java, Scala, etc.) and different formats (.exe, .dll, .jar, etc.). This option will automatically extract all dependencies to the StarCraft directory that may be required to run the bot.", this.chkExtractBotDependencies));
 
     this.chkEnableColorTheme = new CheckBox();
-    this.chkEnableColorTheme.setText("Enable color theme (requires program restart)");
+    this.chkEnableColorTheme.setText("Enable color theme");
     this.chkEnableColorTheme.setSelected(Model.getSettings().isEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString()));
     this.chkEnableColorTheme.setOnAction(e -> {
       Model.getSettings().setEnabled(View.PropertyKey.USE_DROPLAUNCHER_THEME.toString(), this.chkEnableColorTheme.isSelected());
+//      if (!this.chkEnableColorTheme.isSelected()) {
+//        View.removeDefaultStylesheet(this.scene.getStylesheets());
+//      } else {
+//        View.addDefaultStylesheet(this.scene.getStylesheets());
+//      }
     });
     this.chkEnableColorTheme.setTooltip(createTooltip("Enable/disable color theme for UI objects (buttons, text fields, etc.)", this.chkEnableColorTheme));
 
