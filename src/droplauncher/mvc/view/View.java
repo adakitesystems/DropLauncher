@@ -429,6 +429,9 @@ public class View implements EventHandler<DragEvent>  {
     ContextMenu cmConsoleOutput = new ContextMenu();
     MenuItem miClear = new MenuItem("Clear");
     miClear.setOnAction(e -> {
+      if (AdakiteUtils.isNullOrEmpty(getOutputLog(), true)) {
+        return;
+      }
       Platform.runLater(() -> {
         if (new YesNoDialog().userConfirms("Confirmation", "Are you sure you want to clear the console output? You will not be able to retrieve it.")) {
           this.consoleOutput.clear();
@@ -439,6 +442,11 @@ public class View implements EventHandler<DragEvent>  {
     cmConsoleOutput.getItems().add(new SeparatorMenuItem());
     MenuItem miSave = new MenuItem("Save to file...");
     miSave.setOnAction(e -> {
+      if (AdakiteUtils.isNullOrEmpty(getOutputLog(), true)) {
+        new SimpleAlert().showAndWait(AlertType.INFORMATION, DialogTitle.PROGRAM_NAME, "Log is empty. Nothing to save.");
+        return;
+      }
+
       FileChooser fc = new FileChooser();
       fc.getExtensionFilters().add(new ExtensionFilter("*.log", "log"));
       String botName = this.controller.getBotName();
@@ -475,7 +483,7 @@ public class View implements EventHandler<DragEvent>  {
         }
 
         try {
-          this.controller.saveToFile(saveFile, this.consoleOutput.get().getText());
+          this.controller.saveToFile(saveFile, getOutputLog());
           new SimpleAlert().showAndWait(AlertType.INFORMATION, DialogTitle.PROGRAM_NAME, "File saved to: " + AdakiteUtils.newline(2) + saveFile.toAbsolutePath().toString());
         } catch (Exception ex) {
           new ExceptionAlert().showAndWait(null, ex);
@@ -692,6 +700,10 @@ public class View implements EventHandler<DragEvent>  {
 
   public void btnStartSetEnabled(boolean enabled) {
     this.btnStart.setDisable(!enabled);
+  }
+
+  public String getOutputLog() {
+    return this.consoleOutput.get().getText();
   }
 
   @Override
