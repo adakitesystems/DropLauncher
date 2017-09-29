@@ -26,6 +26,7 @@ import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.DropLauncher;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.controller.ControllerWrapper;
+import droplauncher.starcraft.Starcraft;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -538,6 +539,16 @@ public class View implements EventHandler<DragEvent>  {
     this.stage.show();
 
     update();
+
+    if (!Model.getSettings().hasValue(Starcraft.PropertyKey.STARCRAFT_EXE.toString())) {
+      new SimpleAlert().showAndWait(AlertType.INFORMATION, DialogTitle.PROGRAM_NAME,
+          "Welcome to DropLauncher!"
+          + AdakiteUtils.newline(2)
+          + Starcraft.BINARY_FILENAME + " is not set. Please go to the \""
+          + View.MenuText.EDIT.toString() + " > " + View.MenuText.SETTINGS.toString()
+          + "\" menu option and set it before playing against a bot."
+      );
+    }
   }
 
   /**

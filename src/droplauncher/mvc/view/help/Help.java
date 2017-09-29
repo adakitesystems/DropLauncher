@@ -41,7 +41,7 @@ public class Help {
     DOWNLOADING_BOTS("Downloading Bots", HTML_DIRECTORY.resolve("download-bots.html")),
     PLAY_VS_BOTS("Playing Against a Bot", HTML_DIRECTORY.resolve("play-vs-bot.html")),
     SYS_REQS("Runtime Requirements", HTML_DIRECTORY.resolve("runtime-req.html")),
-    TECHNICAL_DETAILS("Technical Details", HTML_DIRECTORY.resolve("tech-details.html"))
+//    TECHNICAL_DETAILS("Technical Details", HTML_DIRECTORY.resolve("tech-details.html"))
     ;
 
     private final String str;
