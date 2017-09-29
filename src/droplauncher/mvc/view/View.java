@@ -536,6 +536,7 @@ public class View implements EventHandler<DragEvent>  {
         update();
       });
     });
+    this.btnClearExtraBotFiles.managedProperty().bind(this.btnClearExtraBotFiles.visibleProperty());
 
     CustomGridPane fileLabelGridPane = new CustomGridPane();
     fileLabelGridPane.add(this.lblBotFile);
@@ -662,11 +663,9 @@ public class View implements EventHandler<DragEvent>  {
       if (this.controller.getExtraBotFiles().size() > 0) {
         this.btnClearExtraBotFiles.setText(ButtonText.CLEAR_EXTRA_BOT_FILES.toString() + " (" + this.controller.getExtraBotFiles().size() + ")");
         this.btnClearExtraBotFiles.setVisible(true);
-        this.btnClearExtraBotFiles.setDisable(false);
       } else {
         this.btnClearExtraBotFiles.setText(ButtonText.CLEAR_EXTRA_BOT_FILES.toString());
-        this.btnClearExtraBotFiles.setVisible(true);
-        this.btnClearExtraBotFiles.setDisable(true);
+        this.btnClearExtraBotFiles.setVisible(false);
       }
       this.cbRace.getSelectionModel().select(this.controller.getBotRace().toString());
     } else {
