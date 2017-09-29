@@ -20,6 +20,7 @@ package droplauncher.mvc.view;
 import adakite.debugging.Debugging;
 import adakite.exception.InvalidStateException;
 import adakite.util.AdakiteUtils;
+import adakite.windows.Windows;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft.Race;
@@ -28,6 +29,10 @@ import droplauncher.bwapi.BWAPI;
 import droplauncher.mvc.controller.ControllerWrapper;
 import droplauncher.starcraft.Starcraft;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -43,10 +48,12 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -55,6 +62,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import org.apache.commons.io.FilenameUtils;
 
@@ -301,7 +310,6 @@ public class View implements EventHandler<DragEvent>  {
   private ChoiceBox<String> cbRace;
   private Button btnStart;
   private ConsoleOutput consoleOutput;
-  private Button btnClearConsoleOutput;
   private CheckBox chkAutoEject;
   private CheckBox chkAutoRejoin;
   private Button btnClearExtraBotFiles;
@@ -401,14 +409,65 @@ public class View implements EventHandler<DragEvent>  {
     this.consoleOutput.get().setMinHeight(200); //300
     this.consoleOutput.get().setEditable(false);
     this.consoleOutput.setController(new ControllerWrapper(this.controller));
-    this.btnClearConsoleOutput = new Button(ButtonText.CLEAR.toString());
-    this.btnClearConsoleOutput.setOnAction(e -> {
+    ContextMenu cmConsoleOutput = new ContextMenu();
+    MenuItem miClear = new MenuItem("Clear");
+    miClear.setOnAction(e -> {
       Platform.runLater(() -> {
         if (new YesNoDialog().userConfirms("Confirmation", "Are you sure you want to clear the console output? You will not be able to retrieve it.")) {
           this.consoleOutput.clear();
         }
       });
     });
+    cmConsoleOutput.getItems().add(miClear);
+    cmConsoleOutput.getItems().add(new SeparatorMenuItem());
+    MenuItem miSave = new MenuItem("Save to file...");
+    miSave.setOnAction(e -> {
+      FileChooser fc = new FileChooser();
+      fc.getExtensionFilters().add(new ExtensionFilter("*.log", "log"));
+      String botName = this.controller.getBotName();
+      String datetime = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss").format(LocalDateTime.now());
+      String initialFilename = datetime + "_" + (AdakiteUtils.isNullOrEmpty(botName, true) ? "DropLauncher" : botName) + ".log";
+      fc.setInitialFileName(initialFilename);
+      String userDirectory = Windows.getUserDesktopDirectory().toAbsolutePath().toString();
+      if (userDirectory != null) {
+        fc.setInitialDirectory(new File(userDirectory));
+      }
+      File userFile = fc.showSaveDialog(this.stage);
+      if (userFile != null) {
+        Path saveFile = userFile.toPath().toAbsolutePath();
+        String filename = FilenameUtils.getBaseName(saveFile.toString());
+        Path saveParent = AdakiteUtils.getParentDirectory(saveFile);
+        if (saveParent == null) {
+          saveParent = Paths.get("");
+        }
+        String saveExt = fc.getSelectedExtensionFilter().getExtensions().get(0);
+        if (AdakiteUtils.isNullOrEmpty(saveExt, true) || saveExt.equals("*")) {
+          saveExt = "log";
+        }
+        String userExt = AdakiteUtils.getFileExtension(saveFile);
+        if (!AdakiteUtils.isNullOrEmpty(userExt, true)) {
+          /* If user used a file extention, use that one over the context menu selected file extension. */
+          saveExt = userExt;
+        }
+
+        try {
+          saveFile = saveParent.resolve(filename + (AdakiteUtils.isNullOrEmpty(saveExt, true) ? "" : ("." + saveExt)));
+        } catch (Exception ex) {
+          new ExceptionAlert().showAndWait("Failed to save file due to an invalid filename or directory", ex);
+          return;
+        }
+
+        try {
+          this.controller.saveToFile(saveFile, this.consoleOutput.get().getText());
+          new SimpleAlert().showAndWait(AlertType.INFORMATION, DialogTitle.PROGRAM_NAME, "File saved to: " + AdakiteUtils.newline(2) + saveFile.toAbsolutePath().toString());
+        } catch (Exception ex) {
+          new ExceptionAlert().showAndWait(null, ex);
+          return;
+        }
+      }
+    });
+    cmConsoleOutput.getItems().add(miSave);
+    this.consoleOutput.get().setContextMenu(cmConsoleOutput);
     this.btnClearExtraBotFiles = new Button(ButtonText.CLEAR_EXTRA_BOT_FILES.toString());
     this.btnClearExtraBotFiles.setOnAction(e -> {
       Platform.runLater(() -> {
@@ -463,7 +522,6 @@ public class View implements EventHandler<DragEvent>  {
     infoGridPane.get().setAlignment(Pos.CENTER_LEFT);
 
     HBox boxClear = new HBox();
-    boxClear.getChildren().add(this.btnClearConsoleOutput);
     boxClear.setSpacing(30);
     boxClear.setAlignment(Pos.CENTER_RIGHT);
     VBox boxStartConsole = new VBox();

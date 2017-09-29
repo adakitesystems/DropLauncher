@@ -24,6 +24,7 @@ import adakite.ini.exception.IniParseException;
 import adakite.md5sum.MD5Checksum;
 import adakite.util.AdakiteUtils;
 import adakite.util.DirectoryMonitor;
+import adakite.util.MemoryFile;
 import adakite.windows.Windows;
 import adakite.windows.task.exception.TasklistParseException;
 import droplauncher.bwapi.BWAPI;
@@ -663,6 +664,12 @@ public class Controller {
     } catch (Exception ex) {
       new ExceptionAlert().showAndWait(null, ex);
     }
+  }
+
+  public void saveToFile(Path file, String str) throws IOException {
+    MemoryFile mf = new MemoryFile();
+    mf.getLines().add(str);
+    mf.dumpToFile(file);
   }
 
 }
