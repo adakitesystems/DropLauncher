@@ -30,7 +30,7 @@ DropLauncher uses the following third-party libraries and applications:
 
 | Name | Type | Description |
 |-|-|-|
-| [bwheadless.exe](https://github.com/tscmoo/bwheadless) | Binary | Starts a separate StarCraft instance and injects the BWAPI bot. |
+| [bwheadless.exe](https://github.com/tscmoo/bwheadless) | Binary | Starts a separate StarCraft instance and injects BWAPI |
 | [commons-io-2.5.jar](https://commons.apache.org/proper/commons-io/) | Library | Assists with developing IO functionality.
 | [zip4j_1.3.2.jar](http://www.lingala.net/zip4j/) | Library | ZIP file support
 
