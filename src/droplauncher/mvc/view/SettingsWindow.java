@@ -44,7 +44,6 @@ public class SettingsWindow {
   private Stage stage;
   private Scene scene;
 
-  private CheckBox chkShowLogWindow;
   private CheckBox chkBwapiWriteRead;
   private CheckBox chkCleanStarcraftDirectory;
   private CheckBox chkWarnBwapiDll;
@@ -60,14 +59,6 @@ public class SettingsWindow {
   }
 
   public SettingsWindow showAndWait() {
-    this.chkShowLogWindow = new CheckBox();
-    this.chkShowLogWindow.setText("Show log window (requires program restart)");
-    this.chkShowLogWindow.setSelected(Model.getSettings().isEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString()));
-    this.chkShowLogWindow.setOnAction(e -> {
-      Model.getSettings().setEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString(), this.chkShowLogWindow.isSelected());
-    });
-    this.chkShowLogWindow.setTooltip(createTooltip("When enabled, output messages from " + DropLauncher.PROGRAM_NAME + ", bwheadless.exe, and the BWAPI bot will be displayed in a window at the bottom of the window.", this.chkShowLogWindow));
-
     this.chkBwapiWriteRead = new CheckBox();
     this.chkBwapiWriteRead.setText("Copy contents of `" + BWAPI.ROOT_DIRECTORY.resolve(BWAPI.WRITE_DIRECTORY).toString() + "' to `" + BWAPI.ROOT_DIRECTORY.resolve(BWAPI.READ_DIRECTORY.toString()) + "' after eject");
     this.chkBwapiWriteRead.setSelected(Model.getSettings().isEnabled(BWAPI.PropertyKey.COPY_WRITE_READ.toString()));
@@ -157,7 +148,6 @@ public class SettingsWindow {
     mainGridPane.add(this.chkCleanStarcraftDirectory).nextRow();
     mainGridPane.add(this.chkBwapiWriteRead).nextRow();
     mainGridPane.add(this.chkEnableColorTheme).nextRow();
-    mainGridPane.add(this.chkShowLogWindow).nextRow();
     mainGridPane.add(this.chkVerifyStarcraftVersion).nextRow();
     mainGridPane.add(this.chkWarnBwapiDll).nextRow();
 

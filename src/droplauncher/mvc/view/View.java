@@ -265,6 +265,9 @@ public class View implements EventHandler<DragEvent>  {
     EDIT("Edit"),
       SETTINGS("Settings..."),
 
+    WINDOW("Window"),
+      TOGGLE_LOG_OUTPUT("Toggle Log Output"),
+
     HELP("Help"),
       HELP_CONTENTS("DropLauncher Help"),
       ABOUT("About")
@@ -299,6 +302,7 @@ public class View implements EventHandler<DragEvent>  {
   private MenuBar menuBar;
   private Menu fileMenu;
   private Menu editMenu;
+  private Menu windowMenu;
   private Menu helpMenu;
 
   private Label lblBwapiVersion;
@@ -347,10 +351,21 @@ public class View implements EventHandler<DragEvent>  {
     this.helpMenu.getItems().add(mnuHelpHelpContents);
     this.helpMenu.getItems().add(mnuHelpAbout);
 
+    /* Window */
+    MenuItem mnuWindowLogOutput = new MenuItem(MenuText.TOGGLE_LOG_OUTPUT.toString());
+    mnuWindowLogOutput.setOnAction(e -> {
+      this.consoleOutput.get().setVisible(!this.consoleOutput.get().isVisible());
+      Model.getSettings().setEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString(), this.consoleOutput.get().isVisible());
+      update();
+    });
+    this.windowMenu = new Menu(MenuText.WINDOW.toString());
+    this.windowMenu.getItems().add(mnuWindowLogOutput);
+
     /* Compile menus. */
     this.menuBar = new MenuBar();
     this.menuBar.getMenus().add(this.fileMenu);
     this.menuBar.getMenus().add(this.editMenu);
+    this.menuBar.getMenus().add(this.windowMenu);
     this.menuBar.getMenus().add(this.helpMenu);
     this.menuBar.getStyleClass().add("launcher-menustyle");
   }
@@ -468,6 +483,8 @@ public class View implements EventHandler<DragEvent>  {
     });
     cmConsoleOutput.getItems().add(miSave);
     this.consoleOutput.get().setContextMenu(cmConsoleOutput);
+    this.consoleOutput.get().managedProperty().bind(this.consoleOutput.get().visibleProperty());
+    this.consoleOutput.get().setVisible(Model.getSettings().isEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString()));
     this.btnClearExtraBotFiles = new Button(ButtonText.CLEAR_EXTRA_BOT_FILES.toString());
     this.btnClearExtraBotFiles.setOnAction(e -> {
       Platform.runLater(() -> {
@@ -521,15 +538,9 @@ public class View implements EventHandler<DragEvent>  {
     infoGridPane.get().setMinWidth(Region.USE_PREF_SIZE);
     infoGridPane.get().setAlignment(Pos.CENTER_LEFT);
 
-    HBox boxClear = new HBox();
-    boxClear.setSpacing(30);
-    boxClear.setAlignment(Pos.CENTER_RIGHT);
     VBox boxStartConsole = new VBox();
     boxStartConsole.getChildren().add(this.btnStart);
-    if (Model.getSettings().isEnabled(View.PropertyKey.SHOW_LOG_WINDOW.toString())) {
-      boxStartConsole.getChildren().add(this.consoleOutput.get());
-      boxStartConsole.getChildren().add(boxClear);
-    }
+    boxStartConsole.getChildren().add(this.consoleOutput.get());
     boxStartConsole.setSpacing(DefaultSetting.GAP.intValue());
     boxStartConsole.setAlignment(Pos.CENTER);
     boxStartConsole.setMinWidth(Region.USE_PREF_SIZE);
