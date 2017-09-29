@@ -1,6 +1,6 @@
 # DropLauncher
 
-## Version 0.5.7a has been released!
+## Version 0.5.19a has been released!
 
 [Download](https://github.com/adakitesystems/DropLauncher/releases)
 
@@ -63,6 +63,6 @@ A: DropLauncher is designed to include all runtime files and dependencies. The l
 
 ## Screenshots
 
-![alt tag](https://i.imgur.com/L1M8CLH.png)
+![alt tag](https://i.imgur.com/DXylcdQ.png)
 
-![alt tag](https://i.imgur.com/Ap2XNbb.png)
+![alt tag](https://i.imgur.com/JpO9Lhd.png)
