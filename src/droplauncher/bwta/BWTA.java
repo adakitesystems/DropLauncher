@@ -215,8 +215,10 @@ public class BWTA {
   public static final Path V1_DIRECTORY = Paths.get("BWTA");
   public static final Path V2_DIRECTORY = Paths.get("BWTA2");
 
-  public static final Path V1_RESOURCE_DIRECTORY = DropLauncher.DATA_DIRECTORY.resolve("bwta-cache").resolve("BWTA");
-  public static final Path V2_RESOURCE_DIRECTORY = DropLauncher.DATA_DIRECTORY.resolve("bwta-cache").resolve("BWTA2");
+//  public static final Path V1_RESOURCE_DIRECTORY = DropLauncher.DATA_DIRECTORY.resolve("bwta-cache").resolve("BWTA");
+//  public static final Path V2_RESOURCE_DIRECTORY = DropLauncher.DATA_DIRECTORY.resolve("bwta-cache").resolve("BWTA2");
+
+  public static final Path CACHE_ARCHIVE_FILE = DropLauncher.DATA_DIRECTORY.resolve("bwta-cache.zip");
 
   private BWTA() {}
 

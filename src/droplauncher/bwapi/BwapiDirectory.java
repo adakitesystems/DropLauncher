@@ -37,6 +37,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -156,30 +158,31 @@ public class BwapiDirectory {
         }
       }
 
-      /* Copy BWTA version 1 cache files. */ {
-        Path bwtaCacheDirectory = getDirectory().resolve(BWTA.V1_DIRECTORY);
-        for (BWTA.CacheV1 val : BWTA.CacheV1.values()) {
-          Path sourceDependency = BWTA.V1_RESOURCE_DIRECTORY.resolve(val.toString());
-          Path targetDependency = bwtaCacheDirectory.resolve(val.toString());
-          if (AdakiteUtils.fileExists(sourceDependency) && !AdakiteUtils.fileExists(targetDependency)) {
-//            URL url = DropLauncher.getResource(BWTA.V1_RESOURCE_DIRECTORY + val.toString());
-//            FileUtils.copyURLToFile(url, targetDependency.toFile());
-            Files.copy(sourceDependency, targetDependency, StandardCopyOption.REPLACE_EXISTING);
-          }
-        }
-      }
+      /* Extract BWTA cache files. */
+      try {
+        ZipFile bwtaZip = new ZipFile(BWTA.CACHE_ARCHIVE_FILE.toFile());
 
-      /* Copy BWTA version 2 cache files. */ {
-        Path bwtaCacheDirectory = getDirectory().resolve(BWTA.V2_DIRECTORY);
-        for (BWTA.CacheV2 val : BWTA.CacheV2.values()) {
-          Path sourceDependency = BWTA.V2_RESOURCE_DIRECTORY.resolve(val.toString());
-          Path targetDependency = bwtaCacheDirectory.resolve(val.toString());
-          if (!AdakiteUtils.fileExists(targetDependency)) {
-//            URL url = DropLauncher.getResource(BWTA.V2_RESOURCE_DIRECTORY + val.toString());
-//            FileUtils.copyURLToFile(url, targetDependency.toFile());
-            Files.copy(sourceDependency, targetDependency, StandardCopyOption.REPLACE_EXISTING);
+          /* Check for BWTA version 1 cache files. */
+          {
+            Path bwtaCacheDirectory = getDirectory().resolve(BWTA.V1_DIRECTORY);
+            for (BWTA.CacheV1 val : BWTA.CacheV1.values()) {
+              if (!AdakiteUtils.fileExists(bwtaCacheDirectory.resolve(val.toString()))) {
+                bwtaZip.extractFile(BWTA.V1_DIRECTORY.resolve(val.toString()).toString(), getDirectory().toString());
+              }
+            }
           }
-        }
+
+          /* Check for BWTA version 2 cache files. */
+          {
+            Path bwtaCacheDirectory = getDirectory().resolve(BWTA.V2_DIRECTORY);
+            for (BWTA.CacheV2 val : BWTA.CacheV2.values()) {
+              if (!AdakiteUtils.fileExists(bwtaCacheDirectory.resolve(val.toString()))) {
+                bwtaZip.extractFile(BWTA.V2_DIRECTORY.resolve(val.toString()).toString(), getDirectory().toString());
+              }
+            }
+          }
+      } catch (ZipException ex) {
+        /* Do nothing. */
       }
     }
 
