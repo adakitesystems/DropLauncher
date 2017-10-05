@@ -147,7 +147,7 @@ public class BwapiDirectory {
       FileUtils.copyURLToFile(url, bwapiBroodwarMap.toFile());
     }
 
-    /* Check if dependencies should be extracted to the StarCraft root directory. */
+    /* Check if bot dependencies should be extracted to the StarCraft root directory. */
     if (Model.getSettings().isEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString())) {
       for (BWAPI.ExtractableDll val : BWAPI.ExtractableDll.values()) {
         /* If dependency is not found in the StarCraft root directory, extract it from this program. */
