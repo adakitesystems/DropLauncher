@@ -31,16 +31,16 @@ public class CustomProcess {
 
   private Process process;
   private Path cwd;
-  private Thread gobblerStdout;
-  private Thread gobblerStderr;
+  private Thread stdoutGobbler;
+  private Thread stderrGobbler;
   private String processName;
   private ConsoleOutputWrapper consoleOutput;
 
   public CustomProcess() {
     this.process = null;
     this.cwd = null;
-    this.gobblerStdout = null;
-    this.gobblerStderr = null;
+    this.stdoutGobbler = null;
+    this.stderrGobbler = null;
     this.processName = null;
     this.consoleOutput = null;
   }
@@ -82,7 +82,7 @@ public class CustomProcess {
    * @param args specified command and arguments to run
    * @throws IOException if an I/O error occurs
    */
-  public void start(String[] args) throws IOException {
+  public void run(String[] args) throws IOException {
     if (args == null) {
       throw new IllegalArgumentException(Debugging.cannotBeNull("args"));
     }
@@ -95,14 +95,16 @@ public class CustomProcess {
 
     this.process = pb.start();
 
-    this.gobblerStdout = new Thread(new CustomStreamGobbler(this.process.getInputStream())
+    this.stdoutGobbler = new Thread(new CustomStreamGobbler(this.process.getInputStream())
         .setConsoleOutput(this.consoleOutput)
-        .setStreamName(this.processName));
-    this.gobblerStdout.start();
-    this.gobblerStderr = new Thread(new CustomStreamGobbler(this.process.getErrorStream())
+        .setStreamName(this.processName)
+    );
+    this.stdoutGobbler.start();
+    this.stderrGobbler = new Thread(new CustomStreamGobbler(this.process.getErrorStream())
         .setConsoleOutput(this.consoleOutput)
-        .setStreamName(this.processName));
-    this.gobblerStderr.start();
+        .setStreamName(this.processName)
+    );
+    this.stderrGobbler.start();
   }
 
   /**
@@ -112,8 +114,8 @@ public class CustomProcess {
    *     after attempting to destroy
    */
   public void stop() throws ClosePipeException {
-    this.gobblerStdout.interrupt();
-    this.gobblerStderr.interrupt();
+    this.stdoutGobbler.interrupt();
+    this.stderrGobbler.interrupt();
     this.process.destroy();
     try {
       Thread.sleep(250);

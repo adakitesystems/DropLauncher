@@ -20,6 +20,8 @@ public class SimpleProcess implements Runnable {
   public SimpleProcess(Path file, String[] args) {
     this.file = file;
     this.args = args;
+    this.stdoutGobbler = null;
+    this.stderrGobbler = null;
   }
 
   public List<String> getStdoutLog() {

@@ -404,7 +404,7 @@ public class BWHeadless {
         .setCWD(getStarcraftDirectory())
         .setProcessName(BINARY_FILENAME)
         .setConsoleOutput(this.consoleOutput);
-    this.bwheadlessProcess.start(bwhCommand.get());
+    this.bwheadlessProcess.run(bwhCommand.get());
 
     /* Start bot client. */
     if (this.bot.getType() == Bot.Type.CLIENT) {
@@ -433,7 +433,7 @@ public class BWHeadless {
           .setCWD(getStarcraftDirectory())
           .setProcessName(View.MessagePrefix.BOT.toString())
           .setConsoleOutput(this.consoleOutput);
-      this.botProcess.start(clientCommand.get());
+      this.botProcess.run(clientCommand.get());
     }
   }
 
