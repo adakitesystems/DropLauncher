@@ -1,11 +1,6 @@
 package adakite.process;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,36 +10,53 @@ import java.util.List;
  * handle errors such that if the specified program does not successfully
  * terminate itself.
  */
-public class SimpleProcess {
+public class SimpleProcess implements Runnable {
 
-  private List<String> log;
+  private Path file;
+  private String[] args;
+  private StreamGobbler stdoutGobbler;
+  private StreamGobbler stderrGobbler;
 
-  public SimpleProcess() {
-    this.log = new ArrayList<>();
+  public SimpleProcess(Path file, String[] args) {
+    this.file = file;
+    this.args = args;
   }
 
-  public List<String> getLog() {
-    return this.log;
+  public List<String> getStdoutLog() {
+    return (this.stdoutGobbler == null)
+        ? new ArrayList<>()
+        : new ArrayList<>(this.stdoutGobbler.getOutput());
   }
 
-  public void run(Path path, String[] args) throws UnsupportedEncodingException,
-                                                   IOException {
-    this.log.clear();
+  public List<String> getStderrLog() {
+    return (this.stderrGobbler == null)
+        ? new ArrayList<>()
+        : new ArrayList<>(this.stderrGobbler.getOutput());
+  }
 
+  @Override
+  public void run() {
     CommandBuilder command = new CommandBuilder();
-    command.setPath(path);
+    command.setPath(this.file);
     if (args != null) {
       command.setArgs(args);
     }
-    Process process = new ProcessBuilder(command.get()).start();
-
-    InputStream is = process.getInputStream();
-    try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-      String line;
-      while ((line = br.readLine()) != null) {
-        this.log.add(line);
-      }
+    Process process;
+    try {
+      process = new ProcessBuilder(command.get()).start();
+    } catch (IOException ex) {
+      //TODO: Handle error.
+      return;
     }
+
+    this.stdoutGobbler = new StreamGobbler(process.getInputStream());
+    this.stderrGobbler = new StreamGobbler(process.getErrorStream());
+
+    Thread stdoutThread = new Thread(this.stdoutGobbler);
+    Thread stderrThread = new Thread(this.stderrGobbler);
+
+    stdoutThread.start();
+    stderrThread.start();
   }
 
 }

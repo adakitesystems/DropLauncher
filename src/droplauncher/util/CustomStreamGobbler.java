@@ -18,6 +18,7 @@
 package droplauncher.util;
 
 import adakite.util.AdakiteUtils;
+import adakite.util.AdakiteUtils.StringCompareOption;
 import droplauncher.mvc.view.ConsoleOutputWrapper;
 import droplauncher.mvc.view.ExceptionAlert;
 import java.io.BufferedReader;
@@ -59,12 +60,17 @@ public class CustomStreamGobbler implements Runnable {
       BufferedReader br = new BufferedReader(new InputStreamReader(this.inputStream, StandardCharsets.UTF_8));
       String line;
       while ((line = br.readLine()) != null) {
-        if (this.consoleOutput != null && !AdakiteUtils.isNullOrEmpty(line, true)) {
-          if (!AdakiteUtils.isNullOrEmpty(this.streamName, true)) {
+        if (this.consoleOutput != null && !AdakiteUtils.isNullOrEmpty(line, StringCompareOption.TRIM)) {
+          if (!AdakiteUtils.isNullOrEmpty(this.streamName, StringCompareOption.TRIM)) {
             line = this.streamName + ": " + line;
           }
           /* Redirect output. */
           this.consoleOutput.println(line);
+        }
+        if (Thread.interrupted()) {
+//          this.inputStream.close();
+//          br.close();
+          break;
         }
       }
     } catch (Exception ex) {

@@ -23,6 +23,8 @@ import adakite.exception.InvalidStateException;
 import adakite.ini.exception.IniParseException;
 import adakite.md5sum.MD5Checksum;
 import adakite.util.AdakiteUtils;
+import adakite.util.AdakiteUtils.DirectoryTraverseOption;
+import adakite.util.AdakiteUtils.StringCompareOption;
 import adakite.util.DirectoryMonitor;
 import adakite.util.MemoryFile;
 import adakite.windows.Windows;
@@ -337,7 +339,7 @@ public class Controller {
     List<Path> fileList = new ArrayList<>();
     for (File path : paths) {
       if (path.isDirectory()) {
-        Path[] tmpList = AdakiteUtils.getDirectoryContents(path.toPath(), true);
+        Path[] tmpList = AdakiteUtils.getDirectoryContents(path.toPath(), DirectoryTraverseOption.OMIT_DIRECTORY_NAMES);
         fileList.addAll(Arrays.asList(tmpList));
       } else if (path.isFile()) {
         fileList.add(path.toPath());
@@ -656,7 +658,7 @@ public class Controller {
       return;
     }
     try {
-      if (AdakiteUtils.isNullOrEmpty(str, true)) {
+      if (AdakiteUtils.isNullOrEmpty(str, StringCompareOption.TRIM)) {
         this.model.getBWHeadless().getBot().setName(Bot.DEFAULT_NAME);
       } else {
         String cleaned = Starcraft.sanitizeProfileName(str);

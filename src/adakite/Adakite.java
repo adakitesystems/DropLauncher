@@ -7,7 +7,7 @@ public class Adakite {
 
   public static final String LIB_AUTHOR = "Adakite";
   public static final String LIB_NAME = "AdakiteLibrary";
-  public static final String LIB_VER = "0.2.41a";
+  public static final String LIB_VER = "0.3.1a";
 
   private Adakite() {}
 

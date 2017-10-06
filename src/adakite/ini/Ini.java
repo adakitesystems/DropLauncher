@@ -3,6 +3,7 @@ package adakite.ini;
 import adakite.ini.exception.IniParseException;
 import adakite.settings.Settings;
 import adakite.util.AdakiteUtils;
+import adakite.util.AdakiteUtils.StringCompareOption;
 import adakite.util.MemoryFile;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -70,7 +71,7 @@ public class Ini {
     while (i < this.memoryFile.getLines().size()) {
       String line = this.memoryFile.getLines().get(i);
       if (AdakiteUtils.isNullOrEmpty(line)
-          || AdakiteUtils.isNullOrEmpty(removeComment(line), true)) {
+          || AdakiteUtils.isNullOrEmpty(removeComment(line), StringCompareOption.TRIM)) {
         /* Line does not contain any data. Skip it. */
         i++;
       } else if (isSectionHeader(line)) {
@@ -110,7 +111,7 @@ public class Ini {
 
   public boolean hasValue(String name, String key) {
     String val = getValue(name, key);
-    return !AdakiteUtils.isNullOrEmpty(val, true);
+    return !AdakiteUtils.isNullOrEmpty(val, StringCompareOption.TRIM);
   }
 
   public boolean isEnabled(String name, String key) {
@@ -345,7 +346,7 @@ public class Ini {
     for (int i = 0; i < this.memoryFile.getLines().size(); i++) {
       String line = this.memoryFile.getLines().get(i);
       if (AdakiteUtils.isNullOrEmpty(line)
-          || AdakiteUtils.isNullOrEmpty(removeComment(line), true)) {
+          || AdakiteUtils.isNullOrEmpty(removeComment(line), StringCompareOption.TRIM)) {
         continue;
       }
       if (isSectionHeader(line) && parseSectionName(line).equalsIgnoreCase(name)) {
@@ -363,7 +364,7 @@ public class Ini {
     for (int i = sectionIndex + 1; i < this.memoryFile.getLines().size(); i++) {
       String line = this.memoryFile.getLines().get(i);
       if (AdakiteUtils.isNullOrEmpty(line)
-          || AdakiteUtils.isNullOrEmpty(removeComment(line), true)) {
+          || AdakiteUtils.isNullOrEmpty(removeComment(line), StringCompareOption.TRIM)) {
         continue;
       }
       if (isSectionHeader(line)) {

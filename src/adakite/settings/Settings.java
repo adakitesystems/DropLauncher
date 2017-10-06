@@ -1,6 +1,7 @@
 package adakite.settings;
 
 import adakite.util.AdakiteUtils;
+import adakite.util.AdakiteUtils.StringCompareOption;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -70,7 +71,7 @@ public class Settings {
    * @param key specified key
    */
   public boolean hasValue(String key) {
-    return (!AdakiteUtils.isNullOrEmpty(getValue(key), true));
+    return (!AdakiteUtils.isNullOrEmpty(getValue(key), StringCompareOption.TRIM));
   }
 
 }

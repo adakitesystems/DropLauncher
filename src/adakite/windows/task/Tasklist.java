@@ -4,6 +4,7 @@ import adakite.debugging.Debugging;
 import adakite.process.CommandBuilder;
 import adakite.util.AdakiteUtils;
 import adakite.process.SimpleProcess;
+import adakite.util.AdakiteUtils.StringCompareOption;
 import adakite.windows.Windows;
 import adakite.windows.task.exception.TasklistParseException;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -69,8 +71,14 @@ public class Tasklist {
         .setPath(Windows.Program.TASKKILL.getPath().toAbsolutePath())
         .setArgs(Windows.Program.TASKKILL.getPredefinedArgs())
         .addArg(pid);
-    SimpleProcess process = new SimpleProcess();
-    process.run(command.getPath(), command.getArgs());
+    SimpleProcess process = new SimpleProcess(command.getPath(), command.getArgs());
+    Thread thread = new Thread(process);
+    thread.start();
+    try {
+      thread.join();
+    } catch (InterruptedException ex) {
+      /* Do nothing. */
+    }
   }
 
   /**
@@ -108,24 +116,30 @@ public class Tasklist {
   public void update() throws IOException, TasklistParseException {
     this.tasks.clear();
 
-    SimpleProcess process = new SimpleProcess();
-    process.run(Windows.Program.TASKLIST.getPath().toAbsolutePath(), Windows.Program.TASKLIST.getPredefinedArgs());
+    SimpleProcess process = new SimpleProcess(Windows.Program.TASKLIST.getPath().toAbsolutePath(), Windows.Program.TASKLIST.getPredefinedArgs());
+    Thread thread = new Thread(process);
+    thread.start();
+    try {
+      thread.join();
+    } catch (InterruptedException ex) {
+      /* Do nothing. */
+    }
 
     /* Find beginning of process list. */
     int index;
-    for (index = 0; index < process.getLog().size(); index++) {
-      String line = process.getLog().get(index);
+    for (index = 0; index < process.getStdoutLog().size(); index++) {
+      String line = process.getStdoutLog().get(index);
       if (line.startsWith("=")) {
         break;
       }
     }
-    if (index >= process.getLog().size()) {
+    if (index >= process.getStdoutLog().size()) {
       throw new TasklistParseException("error parsing Tasklist output");
     }
 
     /* Determine length of each column. */
     List<Integer> colLengths = new ArrayList<>();
-    String colLine = process.getLog().get(index);
+    String colLine = process.getStdoutLog().get(index);
     StringTokenizer st = new StringTokenizer(colLine);
     while (st.hasMoreTokens()) {
       String token = st.nextToken();
@@ -136,9 +150,9 @@ public class Tasklist {
     index++;
 
     /* Parse remaining lines. */
-    for (int i = index; i < process.getLog().size(); i++) {
-      String line = process.getLog().get(i);
-      if (AdakiteUtils.isNullOrEmpty(line, true)) {
+    for (int i = index; i < process.getStdoutLog().size(); i++) {
+      String line = process.getStdoutLog().get(i);
+      if (AdakiteUtils.isNullOrEmpty(line, StringCompareOption.TRIM)) {
         continue;
       }
 

@@ -10,12 +10,27 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
  * Utitilies class for useful or wrapped variables and methods.
  */
 public class AdakiteUtils {
+
+  public enum StringCompareOption {
+
+    TRIM
+    ;
+
+  }
+
+  public enum DirectoryTraverseOption {
+
+    OMIT_DIRECTORY_NAMES
+    ;
+
+  }
 
   /**
    * Wrapped Java's built-in platform-dependent newline character.
@@ -28,17 +43,21 @@ public class AdakiteUtils {
    * Tests whether the specified string is null or empty.
    *
    * @param str the specified string
-   * @param trim whether to trim the specified string
+   * @param options
    * @return
    *     true if string is null or the length is less than one,
    *     otherwise false
    */
-  public static boolean isNullOrEmpty(String str, boolean trim) {
+  public static boolean isNullOrEmpty(String str, StringCompareOption... options) {
     if (str == null) {
       return true;
     }
-    if (trim) {
-      str = str.trim();
+    if (options != null && options.length >= 1) {
+      for (StringCompareOption option : StringCompareOption.values()) {
+        if (option == StringCompareOption.TRIM) {
+          str = str.trim();
+        }
+      }
     }
     return (str.length() < 1);
   }
@@ -138,7 +157,10 @@ public class AdakiteUtils {
       return "";
     }
 
-    String[] tokens = str.replace("\t", " ").trim().split(" ");
+    String[] tokens = str
+        .replace("\t", " ")
+        .trim()
+        .split(" ");
     StringBuilder ret = new StringBuilder(tokens.length);
     ret.append(tokens[0]);
     for (int i = 1; i < tokens.length; i++) {
@@ -201,24 +223,30 @@ public class AdakiteUtils {
    * supports regular files and directories.
    *
    * @param path the specified path to directory
-   * @param omitDirectoryNames whether directory names should be included
-   *     in the list
+   * @param options
    * @return
    *     a list of all files and subdirectories,
    *     otherwise an empty list if directory does not exist or is empty
    * @throws FileNotFoundException
    * @throws IOException
    */
-  public static Path[] getDirectoryContents(Path path, boolean omitDirectoryNames) throws FileNotFoundException,
-                                                                                          IOException {
+  public static Path[] getDirectoryContents(Path path, DirectoryTraverseOption... options) throws FileNotFoundException,
+                                                                                                  IOException {
     if (!directoryExists(path)) {
       throw new FileNotFoundException();
     }
 
-    ArrayList<Path> list = new ArrayList<>();
+    List<DirectoryTraverseOption> directoryTraverseOptions = new ArrayList<>();
+    if (options != null && options.length == 1) {
+      for (DirectoryTraverseOption option : options) {
+        directoryTraverseOptions.add(option);
+      }
+    }
+
+    List<Path> list = new ArrayList<>();
     Files.walk(path)
         .forEach(p -> {
-          if (fileExists(p) || (directoryExists(p) && !omitDirectoryNames)) {
+          if (fileExists(p) || (directoryExists(p) && !directoryTraverseOptions.contains(DirectoryTraverseOption.OMIT_DIRECTORY_NAMES))) {
             list.add(p);
           }
         });
@@ -229,23 +257,6 @@ public class AdakiteUtils {
     }
 
     return ret;
-  }
-
-  /**
-   * Returns a list of all files and subdirectories recursively. Default
-   * omitDirectoryNames is false.
-   *
-   * @param path the specified path to directory
-   * @return
-   *     a list of all files and subdirectories,
-   *     otherwise an empty list if directory does not exist or is empty
-   * @see #getDirectoryContents(Path, boolean)
-   * @throws FileNotFoundException
-   * @throws IOException
-   */
-  public static Path[] getDirectoryContents(Path path) throws FileNotFoundException,
-                                                              IOException {
-    return getDirectoryContents(path, false);
   }
 
   /**
@@ -318,7 +329,7 @@ public class AdakiteUtils {
         FileOutputStream fos = new FileOutputStream(path.toString(), true);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8))
     ) {
-      bw.write(str + newline());
+      bw.write(str + AdakiteUtils.newline());
     }
   }
 

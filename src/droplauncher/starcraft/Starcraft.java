@@ -19,6 +19,7 @@ package droplauncher.starcraft;
 
 import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
+import adakite.util.AdakiteUtils.StringCompareOption;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
 import java.io.IOException;
@@ -152,7 +153,7 @@ public class Starcraft {
    * @param str specified string
    */
   public static String sanitizeProfileName(String str) {
-    if (AdakiteUtils.isNullOrEmpty(str, true)) {
+    if (AdakiteUtils.isNullOrEmpty(str, StringCompareOption.TRIM)) {
       throw new IllegalArgumentException(Debugging.emptyString());
     }
 

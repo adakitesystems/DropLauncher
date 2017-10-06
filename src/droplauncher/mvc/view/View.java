@@ -20,6 +20,7 @@ package droplauncher.mvc.view;
 import adakite.debugging.Debugging;
 import adakite.exception.InvalidStateException;
 import adakite.util.AdakiteUtils;
+import adakite.util.AdakiteUtils.StringCompareOption;
 import adakite.windows.Windows;
 import droplauncher.mvc.controller.Controller;
 import droplauncher.mvc.model.Model;
@@ -449,7 +450,7 @@ public class View implements EventHandler<DragEvent>  {
     ContextMenu cmConsoleOutput = new ContextMenu();
     MenuItem miClear = new MenuItem("Clear");
     miClear.setOnAction(e -> {
-      if (AdakiteUtils.isNullOrEmpty(getOutputLog(), true)) {
+      if (AdakiteUtils.isNullOrEmpty(getOutputLog(), StringCompareOption.TRIM)) {
         return;
       }
       Platform.runLater(() -> {
@@ -462,7 +463,7 @@ public class View implements EventHandler<DragEvent>  {
     cmConsoleOutput.getItems().add(new SeparatorMenuItem());
     MenuItem miSave = new MenuItem("Save to file...");
     miSave.setOnAction(e -> {
-      if (AdakiteUtils.isNullOrEmpty(getOutputLog(), true)) {
+      if (AdakiteUtils.isNullOrEmpty(getOutputLog(), StringCompareOption.TRIM)) {
         new SimpleAlert().showAndWait(AlertType.INFORMATION, DialogTitle.PROGRAM_NAME, "Log is empty. Nothing to save.");
         return;
       }
@@ -471,7 +472,7 @@ public class View implements EventHandler<DragEvent>  {
       fc.getExtensionFilters().add(new ExtensionFilter("*.log", "log"));
       String botName = this.controller.getBotName();
       String datetime = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss").format(LocalDateTime.now());
-      String initialFilename = datetime + "_" + (AdakiteUtils.isNullOrEmpty(botName, true) ? "DropLauncher" : botName) + ".log";
+      String initialFilename = datetime + "_" + (AdakiteUtils.isNullOrEmpty(botName, StringCompareOption.TRIM) ? "DropLauncher" : botName) + ".log";
       fc.setInitialFileName(initialFilename);
       String userDirectory = Windows.getUserDesktopDirectory().toAbsolutePath().toString();
       if (userDirectory != null) {
@@ -486,17 +487,17 @@ public class View implements EventHandler<DragEvent>  {
           saveParent = Paths.get("");
         }
         String saveExt = fc.getSelectedExtensionFilter().getExtensions().get(0);
-        if (AdakiteUtils.isNullOrEmpty(saveExt, true) || saveExt.equals("*")) {
+        if (AdakiteUtils.isNullOrEmpty(saveExt, StringCompareOption.TRIM) || saveExt.equals("*")) {
           saveExt = "log";
         }
         String userExt = AdakiteUtils.getFileExtension(saveFile);
-        if (!AdakiteUtils.isNullOrEmpty(userExt, true)) {
+        if (!AdakiteUtils.isNullOrEmpty(userExt, StringCompareOption.TRIM)) {
           /* If user used a file extention, use that one over the context menu selected file extension. */
           saveExt = userExt;
         }
 
         try {
-          saveFile = saveParent.resolve(filename + (AdakiteUtils.isNullOrEmpty(saveExt, true) ? "" : ("." + saveExt)));
+          saveFile = saveParent.resolve(filename + (AdakiteUtils.isNullOrEmpty(saveExt, StringCompareOption.TRIM) ? "" : ("." + saveExt)));
         } catch (Exception ex) {
           new ExceptionAlert().showAndWait("Failed to save file due to an invalid filename or directory", ex);
           return;

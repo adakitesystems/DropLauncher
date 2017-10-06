@@ -8,16 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class StreamGobbler {
-
-  private static class StreamGobblerRunnable implements Runnable {
+public class StreamGobbler implements Runnable {
 
     private InputStream inputStream;
     private CopyOnWriteArrayList<String> gobbledOutput;
 
-    private StreamGobblerRunnable() {}
+    private StreamGobbler() {}
 
-    public StreamGobblerRunnable(InputStream inputStream) {
+    public StreamGobbler(InputStream inputStream) {
       this.inputStream = inputStream;
       this.gobbledOutput = new CopyOnWriteArrayList<>();
     }
@@ -30,48 +28,20 @@ public class StreamGobbler {
     @Override
     public void run() {
       this.gobbledOutput.clear();
-
       try {
         BufferedReader br = new BufferedReader(new InputStreamReader(this.inputStream, StandardCharsets.UTF_8));
         String line;
         while ((line = br.readLine()) != null) {
           this.gobbledOutput.add(line);
+          if (Thread.interrupted()) {
+//            this.inputStream.close();
+//            br.close();
+            break;
+          }
         }
       } catch (Exception ex) {
         //TODO: Handle error.
       }
     }
-
-  }
-
-  private Thread thread;
-  private StreamGobblerRunnable runnable;
-
-  private StreamGobbler() {}
-
-  public StreamGobbler(InputStream inputStream) {
-    this.runnable = new StreamGobblerRunnable(inputStream);
-  }
-
-  public List<String> getCurrentOutput() {
-    return this.runnable.getOutput();
-  }
-
-  public void interrupt() {
-    this.thread.interrupt();
-  }
-
-  public boolean isInterrupted() {
-    return this.thread.isInterrupted();
-  }
-
-  public boolean isAlive() {
-    return this.thread.isAlive();
-  }
-
-  public void run() {
-    this.thread = new Thread(this.runnable);
-    this.thread.start();
-  }
 
 }

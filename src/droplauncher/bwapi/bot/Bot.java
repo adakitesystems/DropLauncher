@@ -21,6 +21,7 @@ import adakite.debugging.Debugging;
 import adakite.exception.InvalidArgumentException;
 import adakite.settings.Settings;
 import adakite.util.AdakiteUtils;
+import adakite.util.AdakiteUtils.StringCompareOption;
 import droplauncher.bwapi.BWAPI;
 import droplauncher.bwapi.bot.exception.InvalidBwapiDllException;
 import droplauncher.bwapi.bot.exception.MissingBotFileException;
@@ -117,7 +118,7 @@ public class Bot {
    */
   public void setName(String name) throws InvalidArgumentException,
                                           StarcraftProfileNameException {
-    if (AdakiteUtils.isNullOrEmpty(name, true)) {
+    if (AdakiteUtils.isNullOrEmpty(name, StringCompareOption.TRIM)) {
       throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("name"));
     }
     String nameTrimmed = name.trim();

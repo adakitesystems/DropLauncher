@@ -18,6 +18,7 @@
 package droplauncher.mvc.view;
 
 import adakite.util.AdakiteUtils;
+import adakite.util.AdakiteUtils.StringCompareOption;
 import droplauncher.mvc.view.View.DialogTitle;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -45,11 +46,11 @@ public class ExceptionAlert {
     alert.setTitle(DialogTitle.PROGRAM_NAME.toString());
     alert.setHeaderText("An error has occurred");
 
-    if (AdakiteUtils.isNullOrEmpty(message, true)
+    if (AdakiteUtils.isNullOrEmpty(message, StringCompareOption.TRIM)
         && !AdakiteUtils.isNullOrEmpty(ex.getMessage())) {
       message = ex.getMessage();
     }
-    if (!AdakiteUtils.isNullOrEmpty(message, true)) {
+    if (!AdakiteUtils.isNullOrEmpty(message, StringCompareOption.TRIM)) {
       alert.setContentText("Error: " + message);
     } else {
       alert.setContentText(null);

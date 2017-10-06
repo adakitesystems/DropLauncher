@@ -3,11 +3,14 @@ package adakite.windows.registry;
 import adakite.util.AdakiteUtils;
 import adakite.process.CommandBuilder;
 import adakite.process.SimpleProcess;
+import adakite.util.AdakiteUtils.StringCompareOption;
 import adakite.windows.Windows;
 import adakite.windows.registry.exception.RegistryQueryException;
 import adakite.windows.registry.exception.RegistryEntryNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class for handling Windows Registry operations.
@@ -48,7 +51,7 @@ public class WinRegistry {
     /* Find the result containing the specified "entryName". */
     String ret = null;
     for (String result : queryResult) {
-      if (AdakiteUtils.isNullOrEmpty(result, true)) {
+      if (AdakiteUtils.isNullOrEmpty(result, StringCompareOption.TRIM)) {
         continue;
       }
 
@@ -88,17 +91,23 @@ public class WinRegistry {
     command.addArg("query");
     command.addArg(path);
 
-    SimpleProcess process = new SimpleProcess();
-    process.run(command.getPath(), command.getArgs());
+    SimpleProcess process = new SimpleProcess(command.getPath(), command.getArgs());
+    Thread thread = new Thread(process);
+    thread.start();
+    try {
+      thread.join();
+    } catch (InterruptedException ex) {
+      /* Do nothing. */
+    }
 
-    List<String> log = process.getLog();
+    List<String> log = process.getStdoutLog();
     if (log == null
         || log.isEmpty()
         || log.get(0).startsWith(QUERY_ERROR_MESSAGE)) {
       throw new RegistryQueryException();
     }
 
-    return process.getLog();
+    return process.getStdoutLog();
   }
 
   private static RegEntry.Type getType(String queryLine) {
