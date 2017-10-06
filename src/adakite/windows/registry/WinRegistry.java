@@ -9,8 +9,6 @@ import adakite.windows.registry.exception.RegistryQueryException;
 import adakite.windows.registry.exception.RegistryEntryNotFoundException;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Class for handling Windows Registry operations.
