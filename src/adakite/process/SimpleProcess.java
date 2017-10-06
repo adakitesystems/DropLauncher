@@ -57,6 +57,18 @@ public class SimpleProcess implements Runnable {
 
     stdoutThread.start();
     stderrThread.start();
+
+    try {
+      stdoutThread.join();
+    } catch (InterruptedException ex) {
+      /* Do nothing. */
+    }
+
+    try {
+      stderrThread.join();
+    } catch (InterruptedException ex) {
+      /* Do nothing. */
+    }
   }
 
 }
