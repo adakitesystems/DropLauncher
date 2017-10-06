@@ -15,13 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package droplauncher.util.process;
+package droplauncher.process;
 
 import adakite.debugging.Debugging;
 import adakite.util.AdakiteUtils;
 import droplauncher.mvc.view.ConsoleOutputWrapper;
-import droplauncher.util.CustomStreamGobbler;
-import droplauncher.util.process.exception.ClosePipeException;
+import droplauncher.process.exception.ClosePipeException;
 import java.io.IOException;
 import java.nio.file.Path;
 

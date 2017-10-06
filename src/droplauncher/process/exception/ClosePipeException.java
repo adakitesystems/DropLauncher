@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package droplauncher.util.process.exception;
+package droplauncher.process.exception;
 
 public class ClosePipeException extends Exception {
 

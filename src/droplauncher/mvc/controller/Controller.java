@@ -55,7 +55,7 @@ import droplauncher.starcraft.Starcraft.Race;
 import droplauncher.starcraft.exception.MissingStarcraftExeException;
 import droplauncher.starcraft.exception.StarcraftProfileNameException;
 import droplauncher.starcraft.exception.UnsupportedStarcraftVersionException;
-import droplauncher.util.process.exception.ClosePipeException;
+import droplauncher.process.exception.ClosePipeException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
