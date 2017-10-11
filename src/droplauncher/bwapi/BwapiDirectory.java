@@ -56,7 +56,7 @@ public class BwapiDirectory {
 
   public void setDirectory(Path directory) {
     if (directory == null) {
-      throw new IllegalArgumentException(Debugging.cannotBeNull("directory"));
+      throw new IllegalArgumentException(Debugging.Message.CANNOT_BE_NULL.toString("directory"));
     }
     this.directory = directory;
   }
@@ -196,7 +196,7 @@ public class BwapiDirectory {
         bot.setFile(dest);
 //        Path iniAiPath = getAiPath().resolve(FilenameUtils.getName(bot.getPath().toString()));
         Path iniAiPath = BWAPI.ROOT_DIRECTORY.resolve(BWAPI.AI_DIRECTORY).resolve(FilenameUtils.getName(bot.getFile().toString()));
-        bwapiIni.set("ai", "ai", iniAiPath.toString());
+        bwapiIni.setValue("ai", "ai", iniAiPath.toString());
         break;
       }
       case CLIENT: {
@@ -217,12 +217,12 @@ public class BwapiDirectory {
     bwapiIni.commentVariable("ai", "ai_dbg");
 
     /* Set relevant variables. (bwheadless ignores these in headless mode) */
-    bwapiIni.set("auto_menu", "auto_menu", "LAN");
-    bwapiIni.set("auto_menu", "lan_mode", "Local Area Network (UDP)");
-    bwapiIni.set("auto_menu", "character_name", bot.getName());
-    bwapiIni.set("auto_menu", "pause_dbg", "OFF");
+    bwapiIni.setValue("auto_menu", "auto_menu", "LAN");
+    bwapiIni.setValue("auto_menu", "lan_mode", "Local Area Network (UDP)");
+    bwapiIni.setValue("auto_menu", "character_name", bot.getName());
+    bwapiIni.setValue("auto_menu", "pause_dbg", "OFF");
 //    bwapiIni.set("auto_menu", "auto_restart", "OFF");
-    bwapiIni.set("auto_menu", "race", bot.getRace());
+    bwapiIni.setValue("auto_menu", "race", bot.getRace());
 
     /* Update bwapi.ini file. */
     bwapiIni.store(getIniFile());

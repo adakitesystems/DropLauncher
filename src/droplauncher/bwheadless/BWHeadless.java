@@ -224,7 +224,7 @@ public class BWHeadless {
    */
   public BWHeadless setFile(Path file) throws InvalidArgumentException {
     if (file == null) {
-      throw new InvalidArgumentException(Debugging.cannotBeNull("file"));
+      throw new InvalidArgumentException(Debugging.Message.CANNOT_BE_NULL.toString("file"));
     }
     this.settings.set(PropertyKey.BWHEADLESS_EXE.toString(), file.toString());
     return this;
@@ -251,7 +251,7 @@ public class BWHeadless {
    */
   public BWHeadless setStarcraftExe(Path file) throws InvalidArgumentException {
     if (file == null) {
-      throw new InvalidArgumentException(Debugging.cannotBeNull("starcraftExe"));
+      throw new InvalidArgumentException(Debugging.Message.CANNOT_BE_NULL.toString("starcraftExe"));
     }
 
     this.settings.set(Starcraft.PropertyKey.STARCRAFT_EXE.toString(), file.toString());
@@ -289,7 +289,7 @@ public class BWHeadless {
 
   public BWHeadless setBwapiDirectory(BwapiDirectory bwapiDirectory) throws InvalidArgumentException {
     if (bwapiDirectory == null) {
-      throw new InvalidArgumentException(Debugging.cannotBeNull("bwapi"));
+      throw new InvalidArgumentException(Debugging.Message.CANNOT_BE_NULL.toString("bwapi"));
     }
     this.bwapiDirectory = bwapiDirectory;
     return this;
@@ -310,7 +310,7 @@ public class BWHeadless {
    */
   public BWHeadless setBot(Bot bot) throws InvalidArgumentException {
     if (bot == null) {
-      throw new InvalidArgumentException(Debugging.cannotBeNull("bot"));
+      throw new InvalidArgumentException(Debugging.Message.CANNOT_BE_NULL.toString("bot"));
     }
     this.bot = bot;
     return this;
@@ -323,7 +323,7 @@ public class BWHeadless {
    */
   public BWHeadless enableConsoleOutput(ConsoleOutputWrapper consoleOutput) {
     if (consoleOutput == null) {
-      throw new IllegalArgumentException(Debugging.cannotBeNull("consoleOutput"));
+      throw new IllegalArgumentException(Debugging.Message.CANNOT_BE_NULL.toString("consoleOutput"));
     }
     this.consoleOutput = consoleOutput;
     return this;
@@ -390,7 +390,7 @@ public class BWHeadless {
 
     /* Compile bwheadless arguments. */
     CommandBuilder bwhCommand = new CommandBuilder();
-    bwhCommand.setPath(getFile().toAbsolutePath());
+    bwhCommand.setFile(getFile().toAbsolutePath());
     bwhCommand.addArg(RuntimeArgument.STARCRAFT_EXE.toString(), getStarcraftExe().toAbsolutePath().toString());
     bwhCommand.addArg(RuntimeArgument.JOIN_GAME.toString());
     bwhCommand.addArg(RuntimeArgument.BOT_NAME.toString(), this.bot.getName());
@@ -410,19 +410,19 @@ public class BWHeadless {
     if (this.bot.getType() == Bot.Type.CLIENT) {
       /* Compile bot client arguments. */
       CommandBuilder clientCommand = new CommandBuilder();
-      String ext = AdakiteUtils.getFileExtension(this.bot.getFile());
+      String ext = FilenameUtils.getExtension(this.bot.getFile().toString()).toLowerCase(Locale.US);
       if (AdakiteUtils.isNullOrEmpty(ext)) {
         throw new IllegalArgumentException("bot file does not have a file extension: " + this.bot.getFile().toString());
       }
       switch (ext) {
         case "exe":
-          clientCommand.setPath(this.bot.getFile());
+          clientCommand.setFile(this.bot.getFile());
           break;
         case "jar":
           if (!AdakiteUtils.fileExists(JRE.BINARY_FILE)) {
             throw new FileNotFoundException(JRE.BINARY_FILE.toAbsolutePath().toString());
           }
-          clientCommand.setPath(JRE.BINARY_FILE);
+          clientCommand.setFile(JRE.BINARY_FILE);
           clientCommand.addArg("-jar");
           clientCommand.addArg(this.bot.getFile().toAbsolutePath().toString());
           break;

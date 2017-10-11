@@ -37,7 +37,7 @@ public class SimpleAlert {
     }
     Alert alert = new Alert(alertType);
     if (title == null) {
-      throw new IllegalArgumentException(Debugging.cannotBeNullOrEmpty("title"));
+      throw new IllegalArgumentException(Debugging.Message.CANNOT_BE_NULL.toString("title"));
     } else {
       alert.setTitle(title.toString());
     }

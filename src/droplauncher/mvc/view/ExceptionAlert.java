@@ -29,6 +29,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import org.apache.commons.io.FilenameUtils;
 
 public class ExceptionAlert {
 
@@ -57,7 +58,7 @@ public class ExceptionAlert {
     }
 
     if (ex != null) {
-      String headerText = AdakiteUtils.getFileExtension(Paths.get(ex.getClass().getName()));
+      String headerText = FilenameUtils.getExtension(Paths.get(ex.getClass().getName()).toString());
       if (AdakiteUtils.isNullOrEmpty(headerText)) {
         headerText = "Unknown Exception";
       }

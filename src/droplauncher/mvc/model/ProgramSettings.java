@@ -88,7 +88,7 @@ public class ProgramSettings {
    * @param val specified value
    */
   public void setValue(String key, String val) {
-    DropLauncher.getSettings().set(getSection(key), key, val);
+    DropLauncher.getSettings().setValue(getSection(key), key, val);
     try {
       DropLauncher.getSettings().store(DropLauncher.SETTINGS_FILE);
     } catch (Exception ex) {

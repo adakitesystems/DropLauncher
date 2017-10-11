@@ -84,7 +84,7 @@ public class CustomProcess {
    */
   public void run(String[] args) throws IOException {
     if (args == null) {
-      throw new IllegalArgumentException(Debugging.cannotBeNull("args"));
+      throw new IllegalArgumentException(Debugging.Message.CANNOT_BE_NULL.toString("args"));
     }
 
     ProcessBuilder pb = new ProcessBuilder(args);

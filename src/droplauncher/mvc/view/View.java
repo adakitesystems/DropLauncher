@@ -37,6 +37,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -490,7 +491,7 @@ public class View implements EventHandler<DragEvent>  {
         if (AdakiteUtils.isNullOrEmpty(saveExt, StringCompareOption.TRIM) || saveExt.equals("*")) {
           saveExt = "log";
         }
-        String userExt = AdakiteUtils.getFileExtension(saveFile);
+        String userExt = FilenameUtils.getExtension(saveFile.toString());
         if (!AdakiteUtils.isNullOrEmpty(userExt, StringCompareOption.TRIM)) {
           /* If user used a file extention, use that one over the context menu selected file extension. */
           saveExt = userExt;
@@ -756,7 +757,7 @@ public class View implements EventHandler<DragEvent>  {
       try {
         sheets.add(View.CSS_PATH);
       } catch (Exception ex) {
-        LOGGER.log(Debugging.getLogLevel(), null, ex);
+        LOGGER.log(Level.WARNING, null, ex);
       }
     }
   }
@@ -765,7 +766,7 @@ public class View implements EventHandler<DragEvent>  {
     try {
       sheets.remove(View.CSS_PATH);
     } catch (Exception ex) {
-      LOGGER.log(Debugging.getLogLevel(), null, ex);
+      LOGGER.log(Level.WARNING, null, ex);
     }
   }
 

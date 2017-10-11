@@ -17,11 +17,12 @@
 
 package droplauncher.mvc.controller;
 
+import adakite.checksum.Checksum;
 import adakite.debugging.Debugging;
+import adakite.exception.DirectoryNotFoundException;
 import adakite.exception.InvalidArgumentException;
 import adakite.exception.InvalidStateException;
 import adakite.ini.exception.IniParseException;
-import adakite.md5sum.MD5Checksum;
 import adakite.util.AdakiteUtils;
 import adakite.util.AdakiteUtils.DirectoryTraverseOption;
 import adakite.util.AdakiteUtils.StringCompareOption;
@@ -64,6 +65,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
@@ -126,7 +129,8 @@ public class Controller {
                                         InvalidArgumentException,
                                         TasklistParseException,
                                         MissingBWHeadlessExeException,
-                                        UnsupportedStarcraftVersionException {
+                                        UnsupportedStarcraftVersionException,
+                                        DirectoryNotFoundException {
     /* Initialize DirectoryMonitor if required. */
     Path starcraftPath = Starcraft.getDirectory();
     if (this.directoryMonitor == null) {
@@ -234,14 +238,12 @@ public class Controller {
     }
 
     if (file == null) {
-      throw new InvalidArgumentException(Debugging.cannotBeNull("file"));
+      throw new InvalidArgumentException(Debugging.Message.CANNOT_BE_NULL.toString("file"));
     }
 
-    String ext = AdakiteUtils.getFileExtension(file);
-    if (AdakiteUtils.isNullOrEmpty(ext)) {
+    String ext = FilenameUtils.getExtension(file.toString()).toLowerCase(Locale.US);
+    if (AdakiteUtils.isNullOrEmpty(ext, StringCompareOption.TRIM)) {
       ext = "";
-    } else {
-      ext = ext.toLowerCase(Locale.US);
     }
     switch (ext) {
       case "zip":
@@ -292,10 +294,10 @@ public class Controller {
   private void processZipFile(Path file) {
     try {
       if (file == null) {
-        throw new IllegalArgumentException(Debugging.cannotBeNull("file"));
+        throw new IllegalArgumentException(Debugging.Message.CANNOT_BE_NULL.toString("file"));
       } else {
-        String ext = AdakiteUtils.getFileExtension(file);
-        if (AdakiteUtils.isNullOrEmpty(ext) || !ext.equalsIgnoreCase("zip")) {
+        String ext = FilenameUtils.getExtension(file.toString()).toLowerCase(Locale.US);
+        if (AdakiteUtils.isNullOrEmpty(ext, StringCompareOption.TRIM) || !ext.equals("zip")) {
           throw new IllegalArgumentException("path does not appear to be a ZIP file: " + file.toString());
         }
       }
@@ -325,7 +327,8 @@ public class Controller {
   public void filesDropped(List<File> paths) throws IOException,
                                                     InvalidArgumentException,
                                                     StarcraftProfileNameException,
-                                                    InvalidBwapiDllException {
+                                                    InvalidBwapiDllException,
+                                                    DirectoryNotFoundException {
     if (getState() != State.IDLE) {
       Platform.runLater(() -> {
         View.displayOperationProhibitedDialog("Loading bot files is not allowed while a bot is running.");
@@ -413,7 +416,7 @@ public class Controller {
   public String getBwapiDllVersion() {
     try {
       String dll = this.model.getBWHeadless().getBot().getBwapiDll().toString();
-      String md5sum = MD5Checksum.get(Paths.get(dll));
+      String md5sum = new Checksum(Paths.get(dll), Checksum.Algorithm.MD5).get();
       String version = BWAPI.getBwapiVersion(md5sum);
       return version;
     } catch (Exception ex) {
@@ -583,6 +586,10 @@ public class Controller {
           } catch (UnsupportedStarcraftVersionException ex) {
             Platform.runLater(() -> {
               new ExceptionAlert().showAndWait("The selected " + Starcraft.BINARY_FILENAME + " is not supported. Currently, only Brood War 1.16.1 is supported. You can disable this error in the settings if you believe this to be a false positive.", ex);
+            });
+          } catch (DirectoryNotFoundException ex) {
+            Platform.runLater(() -> {
+              new ExceptionAlert().showAndWait("something went wrong while processing directory contents", ex);
             });
           }
           if (!success) {

@@ -119,7 +119,7 @@ public class Bot {
   public void setName(String name) throws InvalidArgumentException,
                                           StarcraftProfileNameException {
     if (AdakiteUtils.isNullOrEmpty(name, StringCompareOption.TRIM)) {
-      throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("name"));
+      throw new InvalidArgumentException(Debugging.Message.CANNOT_BE_NULL_OR_EMPTY.toString("name"));
     }
     String nameTrimmed = name.trim();
     String cleaned = Starcraft.sanitizeProfileName(nameTrimmed);
@@ -180,7 +180,7 @@ public class Bot {
    */
   public void setFile(Path file) throws InvalidArgumentException {
     if (file == null) {
-      throw new InvalidArgumentException(Debugging.cannotBeNull("file"));
+      throw new InvalidArgumentException(Debugging.Message.CANNOT_BE_NULL.toString("file"));
     }
     this.settings.set(PropertyKey.FILE.toString(), file.toString());
   }
@@ -209,7 +209,7 @@ public class Bot {
   public void setBwapiDll(Path file) throws InvalidBwapiDllException,
                                             InvalidArgumentException {
     if (file == null) {
-      throw new InvalidArgumentException(Debugging.cannotBeNullOrEmpty("file"));
+      throw new InvalidArgumentException(Debugging.Message.CANNOT_BE_NULL.toString("file"));
     } else if (!FilenameUtils.getName(file.toString()).equalsIgnoreCase(BWAPI.DLL_FILENAME_RELEASE)) {
       throw new InvalidBwapiDllException("filename does not equal " + BWAPI.DLL_FILENAME_RELEASE + ": " + file);
     }
@@ -242,7 +242,7 @@ public class Bot {
    */
   public void addExtraFile(Path file) throws InvalidArgumentException {
     if (file == null) {
-      throw new InvalidArgumentException(Debugging.cannotBeNull("file"));
+      throw new InvalidArgumentException(Debugging.Message.CANNOT_BE_NULL.toString("file"));
     }
 
     /* Check for existing extra bot files. */
@@ -276,7 +276,7 @@ public class Bot {
    * @throws MissingBotFileException if an error occurs with {@link #getFile()}.
    */
   public Type getType() throws MissingBotFileException {
-    String ext = AdakiteUtils.getFileExtension(getFile()).toLowerCase(Locale.US);
+    String ext = FilenameUtils.getExtension(getFile().toString()).toLowerCase(Locale.US);
     if (ext == null) {
       ext = "";
     }

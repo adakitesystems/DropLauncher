@@ -154,7 +154,7 @@ public class Starcraft {
    */
   public static String sanitizeProfileName(String str) {
     if (AdakiteUtils.isNullOrEmpty(str, StringCompareOption.TRIM)) {
-      throw new IllegalArgumentException(Debugging.emptyString());
+      throw new IllegalArgumentException(Debugging.Message.CANNOT_BE_NULL_OR_EMPTY.toString());
     }
 
     StringBuilder sb = new StringBuilder();
