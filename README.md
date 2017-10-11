@@ -9,9 +9,11 @@ DropLauncher is designed to be a simple tool to aid players in setting up and pl
 
 ## Licenses
 * DropLauncher: [GNU Affero General Public License version 3](https://www.gnu.org/licenses/agpl-3.0.en.html)
+* AdakiteLibrary: [The MIT License](https://opensource.org/licenses/MIT)
 * bwheadless.exe: [CC0 1.0 Universal](https://github.com/tscmoo/bwheadless/blob/master/LICENSE)
 
 ## Supported Software
+* **Windows 7** and higher
 * StarCraft: Brood War version **1.16.1**
 * BWAPI versions **3.7.4** to **4.2.0**
 * BWAPI bot types: **module (\*.dll)**, **client (\*.exe, \*.jar)**
@@ -31,6 +33,7 @@ DropLauncher uses the following third-party libraries and applications:
 | Name | Type | Description |
 |-|-|-|
 | [bwheadless.exe](https://github.com/tscmoo/bwheadless) | Binary | Starts a separate StarCraft instance and injects BWAPI |
+| [AdakiteLibrary](https://github.com/adakitesystems/AdakiteLibrary) | Library | Useful general utilities |
 | [commons-io-2.5.jar](https://commons.apache.org/proper/commons-io/) | Library | Assists with developing IO functionality
 | [zip4j_1.3.2.jar](http://www.lingala.net/zip4j/) | Library | ZIP file support
 
