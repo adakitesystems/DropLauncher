@@ -18,7 +18,7 @@
 /*
 Software versioning:
 
-major.minor[.build[status]]
+major.minor[.build][status]
 
 Statuses:
 a for alpha
