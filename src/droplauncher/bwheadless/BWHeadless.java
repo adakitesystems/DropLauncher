@@ -386,6 +386,7 @@ public class BWHeadless {
       throw new UnsupportedStarcraftVersionException();
     }
 
+    this.bwapiDirectory.setConsoleOutput(this.consoleOutput);
     this.bwapiDirectory.configure(getStarcraftDirectory(), this.bot);
 
     /* Compile bwheadless arguments. */
@@ -460,14 +461,14 @@ public class BWHeadless {
     for (Task task : this.taskTracker.getNewTasks()) {
       /* Kill bot client. */
       if (this.bot.getType() == Bot.Type.CLIENT && botFilename.contains(task.getImageName())) {
-        println(View.MessagePrefix.DROPLAUNCHER.get() + View.MessagePrefix.KILL.get() + task.getPID() + " " + task.getImageName());
+        println(View.MessagePrefix.DROPLAUNCHER.get(View.MessagePrefix.KILL.get(task.getPID() + " " + task.getImageName())));
         Tasklist.kill(task.getPID());
         continue;
       }
       /* Only kill tasks whose names start with known associated tasks. */
       for (KillableTask kt : KillableTask.values()) {
         if (task.getImageName().toLowerCase(Locale.US).startsWith(FilenameUtils.getBaseName(kt.toString()).toLowerCase(Locale.US))) {
-          println(View.MessagePrefix.DROPLAUNCHER.get() + View.MessagePrefix.KILL.get() + task.getPID() + " " + task.getImageName());
+          println(View.MessagePrefix.DROPLAUNCHER.get(View.MessagePrefix.KILL.get(task.getPID() + " " + task.getImageName())));
           Tasklist.kill(task.getPID());
           break;
         }

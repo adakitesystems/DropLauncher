@@ -30,6 +30,8 @@ import droplauncher.bwapi.bot.exception.MissingBotNameException;
 import droplauncher.bwapi.bot.exception.MissingBotRaceException;
 import droplauncher.bwta.BWTA;
 import droplauncher.mvc.model.Model;
+import droplauncher.mvc.view.ConsoleOutputWrapper;
+import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Starcraft;
 import java.io.IOException;
 import java.net.URL;
@@ -45,9 +47,15 @@ import org.apache.commons.io.FilenameUtils;
 public class BwapiDirectory {
 
   private Path directory;
+  private ConsoleOutputWrapper consoleOutput;
 
   public BwapiDirectory() {
     this.directory = Paths.get("");
+    this.consoleOutput = null;
+  }
+
+  public void setConsoleOutput(ConsoleOutputWrapper consoleOutput) {
+    this.consoleOutput = consoleOutput;
   }
 
   public Path getDirectory() {
@@ -118,7 +126,11 @@ public class BwapiDirectory {
                                                                  InvalidBotTypeException,
                                                                  MissingBotNameException,
                                                                  MissingBotRaceException {
+    uilog("Configuring BWAPI in " + starcraftDirectory.toAbsolutePath().toString());
+    int logDepth = 2;
+
     /* Create common BWAPI paths. */
+    uilog("Configuring common BWAPI directories", logDepth);
     AdakiteUtils.createDirectory(getDirectory());
     AdakiteUtils.createDirectory(getAiDirectory());
     AdakiteUtils.createDirectory(getReadDirectory());
@@ -126,22 +138,28 @@ public class BwapiDirectory {
     AdakiteUtils.createDirectory(getDataDirectory());
 
     /* Create BWTA/BWTA2 paths. */
+    uilog("Configuring common BWTA directories", logDepth);
     AdakiteUtils.createDirectory(getDirectory().resolve("BWTA"));
     AdakiteUtils.createDirectory(getDirectory().resolve("BWTA2"));
 
     /* Check for bwapi.ini existence. */
+    uilog("Configuring " + BWAPI.ExtractableFile.BWAPI_INI.toString(), logDepth);
     if (!AdakiteUtils.fileExists(getIniFile())) {
+      uilog("Extracting " + BWAPI.ExtractableFile.BWAPI_INI.toString(), logDepth);
       /* If bwapi.ini is not found in the target BWAPI directory, extract it from this program. */
       URL url = DropLauncher.getResource(BWAPI.FILES_RESOURCE_DIRECTORY + BWAPI.ExtractableFile.BWAPI_INI.toString());
       FileUtils.copyURLToFile(url, getIniFile().toFile());
     }
     /* Read the bwapi.ini file. */
     Ini bwapiIni = new Ini();
+    uilog("Parsing " + BWAPI.ExtractableFile.BWAPI_INI.toString(), logDepth);
     bwapiIni.parse(getIniFile());
 
     /* Check for the Broodwar.map file. */
+    uilog("Configuring " + BWAPI.ExtractableFile.BROODWAR_MAP.toString(), logDepth);
     Path bwapiBroodwarMap = getDataDirectory().resolve(BWAPI.ExtractableFile.BROODWAR_MAP.toString());
     if (!AdakiteUtils.fileExists(bwapiBroodwarMap)) {
+      uilog("Extracting " + BWAPI.ExtractableFile.BROODWAR_MAP.toString(), logDepth);
       /* If Broodwar.map is not found in the target BWAPI directory, extract it from this program. */
       URL url = DropLauncher.getResource(BWAPI.FILES_RESOURCE_DIRECTORY + BWAPI.ExtractableFile.BROODWAR_MAP.toString());
       FileUtils.copyURLToFile(url, bwapiBroodwarMap.toFile());
@@ -149,6 +167,7 @@ public class BwapiDirectory {
 
     /* Check if bot dependencies should be extracted to the StarCraft root directory. */
     if (Model.getSettings().isEnabled(Starcraft.PropertyKey.EXTRACT_BOT_DEPENDENCIES.toString())) {
+      uilog("Extracting bot dependencies", logDepth);
       for (BWAPI.ExtractableDll val : BWAPI.ExtractableDll.values()) {
         /* If dependency is not found in the StarCraft root directory, extract it from this program. */
         Path targetDependency = starcraftDirectory.resolve(val.toString());
@@ -160,10 +179,13 @@ public class BwapiDirectory {
 
       /* Extract BWTA cache files. */
       try {
+        uilog("Configuring BWTA cache files", logDepth);
+
         ZipFile bwtaZip = new ZipFile(BWTA.CACHE_ARCHIVE_FILE.toFile());
 
           /* Check for BWTA version 1 cache files. */
           {
+            uilog("Configuring BWTA version 1 cache files", logDepth + 1);
             Path bwtaCacheDirectory = getDirectory().resolve(BWTA.V1_DIRECTORY);
             for (BWTA.CacheV1 val : BWTA.CacheV1.values()) {
               if (!AdakiteUtils.fileExists(bwtaCacheDirectory.resolve(val.toString()))) {
@@ -174,6 +196,7 @@ public class BwapiDirectory {
 
           /* Check for BWTA version 2 cache files. */
           {
+            uilog("Configuring BWTA version 2 cache files", logDepth + 1);
             Path bwtaCacheDirectory = getDirectory().resolve(BWTA.V2_DIRECTORY);
             for (BWTA.CacheV2 val : BWTA.CacheV2.values()) {
               if (!AdakiteUtils.fileExists(bwtaCacheDirectory.resolve(val.toString()))) {
@@ -186,8 +209,10 @@ public class BwapiDirectory {
       }
     }
 
+    uilog("Determining bot type", logDepth);
     switch (bot.getType()) {
       case DLL: {
+        uilog("Configuring DLL bot", logDepth + 1);
         /* Copy DLL to "bwapi-data/AI/" directory. */
         Path src = bot.getFile();
         Path dest = getAiDirectory().resolve(FilenameUtils.getName(bot.getFile().toString()));
@@ -200,6 +225,7 @@ public class BwapiDirectory {
         break;
       }
       case CLIENT: {
+        uilog("Configuring client bot", logDepth + 1);
         /* Copy client to StarCraft root directory. */
         Path src = bot.getFile();
         Path dest = starcraftDirectory.resolve(FilenameUtils.getName(bot.getFile().toString()));
@@ -213,6 +239,7 @@ public class BwapiDirectory {
       }
     }
 
+    uilog("Configuring " + BWAPI.ExtractableFile.BWAPI_INI.toString(), logDepth);
     /* Not tested yet whether it matters if ai_dbg is enabled. Disable anyway. */
     bwapiIni.commentVariable("ai", "ai_dbg");
 
@@ -224,15 +251,36 @@ public class BwapiDirectory {
 //    bwapiIni.set("auto_menu", "auto_restart", "OFF");
     bwapiIni.setValue("auto_menu", "race", bot.getRace());
 
+    uilog("Creating a backup of " + BWAPI.ExtractableFile.BWAPI_INI.toString(), logDepth);
     /* Update bwapi.ini file. */
     bwapiIni.store(getIniFile());
 
+    if (bot.getExtraFiles().size() > 0) {
+      uilog("Copying extra bot configuration files to " + getAiDirectory().toString(), logDepth);
+    }
     /* Copy extra files to common bot I/O directories. */
     for (String file : bot.getExtraFiles()) {
       if (AdakiteUtils.fileExists(Paths.get(file))) {
         Files.copy(Paths.get(file), Paths.get(getAiDirectory().toString(), FilenameUtils.getName(file)), StandardCopyOption.REPLACE_EXISTING);
       }
     }
+  }
+
+  private void uilog(String message, int depth) {
+    if (this.consoleOutput == null) {
+      return;
+    }
+    String ret = "";
+    for (int i = 1; i < depth; ++i) {
+      ret += "    ";
+    }
+    ret += message + "...";
+    ret = View.MessagePrefix.DROPLAUNCHER.get(ret);
+    this.consoleOutput.println(ret);
+  }
+
+  private void uilog(String message) {
+    uilog(message, 1);
   }
 
 }

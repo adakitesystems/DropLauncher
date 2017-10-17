@@ -175,8 +175,8 @@ public class View implements EventHandler<DragEvent>  {
    */
   public enum StartButtonText {
 
-    START("Start"),
-    STOP("Eject")
+    START("Join Game"),
+    STOP("Disconnect")
     ;
 
     private final String str;
@@ -215,12 +215,12 @@ public class View implements EventHandler<DragEvent>  {
      * Returns the string version of this enum with an appended
      * colon character and space.
      *
-     * @param str specified message to include
+     * @param message specified message to include
      */
-    public String get(String str) {
+    public String get(String message) {
       String ret = this.str + ": ";
-      if (!AdakiteUtils.isNullOrEmpty(str)) {
-        ret += str;
+      if (!AdakiteUtils.isNullOrEmpty(message, StringCompareOption.TRIM)) {
+        ret += message;
       }
       return ret;
     }

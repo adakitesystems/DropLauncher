@@ -65,8 +65,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
@@ -534,7 +532,7 @@ public class Controller {
         new Thread(() -> {
           boolean success = false;
           try {
-            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "Connecting bot to StarCraft...");
+            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "Attempting to join game...");
             startBWHeadless();
             Platform.runLater(() -> {
               this.view.btnStartSetText(View.StartButtonText.STOP.toString());
@@ -593,7 +591,7 @@ public class Controller {
             });
           }
           if (!success) {
-            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "Failed to connect bot to StarCraft.");
+            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "Failed to join game.");
             setState(prevState);
             Platform.runLater(() -> {
               this.view.btnStartSetText(View.StartButtonText.START.toString());
@@ -607,7 +605,7 @@ public class Controller {
         this.view.btnStartSetEnabled(false);
         new Thread(() -> {
           try {
-            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "Ejecting bot...");
+            this.view.getConsoleOutput().println(View.MessagePrefix.DROPLAUNCHER.get() + "Disconnecting bot...");
             stopBWHeadless();
             Platform.runLater(() -> {
               this.view.btnStartSetText(View.StartButtonText.START.toString());
