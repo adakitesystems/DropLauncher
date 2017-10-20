@@ -23,7 +23,6 @@ import droplauncher.mvc.view.WebViewWrapper;
 import droplauncher.mvc.view.help.exception.CategoryParseException;
 import droplauncher.starcraft.Starcraft;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -39,6 +38,7 @@ public class Help {
     QUICK_GUIDE("Quick Guide", HTML_DIRECTORY.resolve("quick-guide.html")),
     STARCRAFT_SETUP("Connecting " + DropLauncher.PROGRAM_NAME + " to " + Starcraft.NAME, HTML_DIRECTORY.resolve("connect-dl-to-sc.html")),
     DOWNLOADING_BOTS("Downloading Bots", HTML_DIRECTORY.resolve("download-bots.html")),
+    KICKING_BOT_FROM_LOBBY("Kicking a Bot from the Game Lobby", HTML_DIRECTORY.resolve("kick-bot-from-lobby.html")),
     PLAY_VS_BOTS("Playing Against a Bot", HTML_DIRECTORY.resolve("play-vs-bot.html")),
     SYS_REQS("Runtime Requirements", HTML_DIRECTORY.resolve("runtime-req.html")),
 //    TECHNICAL_DETAILS("Technical Details", HTML_DIRECTORY.resolve("tech-details.html"))
