@@ -176,7 +176,7 @@ public class View implements EventHandler<DragEvent>  {
   public enum StartButtonText {
 
     START("Join Game"),
-    STOP("Disconnect")
+    STOP("Terminate")
     ;
 
     private final String str;
@@ -434,11 +434,11 @@ public class View implements EventHandler<DragEvent>  {
       }
     });
     this.chkAutoEject = new CheckBox();
-    this.chkAutoEject.setText("Auto-eject bot after game has ended");
+    this.chkAutoEject.setText("Terminate bot after game has ended");
     this.chkAutoEject.setSelected(Model.getSettings().isEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString()));
     this.chkAutoEject.setOnAction(e -> { Model.getSettings().setEnabled(DropLauncher.PropertyKey.AUTO_EJECT_BOT.toString(), this.chkAutoEject.isSelected()); });
     this.chkAutoRejoin = new CheckBox();
-    this.chkAutoRejoin.setText("Auto-connect bot to game lobby after eject");
+    this.chkAutoRejoin.setText("Tell bot to rejoin lobby after termination");
     this.chkAutoRejoin.setSelected(Model.getSettings().isEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString()));
     this.chkAutoRejoin.setOnAction(e -> { Model.getSettings().setEnabled(DropLauncher.PropertyKey.AUTO_BOT_REJOIN.toString(), this.chkAutoRejoin.isSelected()); });
     this.consoleOutput = new ConsoleOutput();

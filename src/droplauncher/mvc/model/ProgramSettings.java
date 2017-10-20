@@ -19,6 +19,7 @@ package droplauncher.mvc.model;
 
 import droplauncher.DropLauncher;
 import droplauncher.bwapi.BWAPI;
+import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.view.ExceptionAlert;
 import droplauncher.mvc.view.View;
 import droplauncher.starcraft.Starcraft;
@@ -55,6 +56,12 @@ public class ProgramSettings {
     for (Starcraft.PropertyKey val : Starcraft.PropertyKey.values()) {
       if (uniqueKey.equals(val.toString())) {
         return "starcraft";
+      }
+    }
+
+    for (BWHeadless.PropertyKey val : BWHeadless.PropertyKey.values()) {
+      if (uniqueKey.endsWith(val.toString())) {
+        return "bwh";
       }
     }
 

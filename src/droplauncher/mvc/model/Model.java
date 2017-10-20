@@ -123,6 +123,9 @@ public class Model {
     if (!Model.getSettings().hasValue(Starcraft.PropertyKey.CHECK_FOR_SUPPORTED_VERSION.toString())) {
       Model.getSettings().setEnabled(Starcraft.PropertyKey.CHECK_FOR_SUPPORTED_VERSION.toString(), true);
     }
+    if(!Model.getSettings().hasValue(BWHeadless.PropertyKey.KICK_BOT_ON_LAG.toString())) {
+      Model.getSettings().setEnabled(BWHeadless.PropertyKey.KICK_BOT_ON_LAG.toString(), false);
+    }
 
     try {
       DropLauncher.getSettings().store(DropLauncher.SETTINGS_FILE);

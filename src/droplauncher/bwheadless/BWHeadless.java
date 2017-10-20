@@ -61,7 +61,7 @@ import org.apache.commons.io.FilenameUtils;
  */
 public class BWHeadless {
 
-  private enum PropertyKey {
+  public enum PropertyKey {
 
     /**********************************************************************/
     /* Specific to bwheadless.exe */
@@ -94,7 +94,12 @@ public class BWHeadless {
     /**
      * Path to "bwheadless.exe".
      */
-    BWHEADLESS_EXE("bwheadless_exe")
+    BWHEADLESS_EXE("bwheadless_exe"),
+
+    /**
+     * Whether to use BWH's kick feature when a bot lags too much.
+     */
+    KICK_BOT_ON_LAG("kick_bot_on_lag")
 
     ;
 
@@ -182,6 +187,9 @@ public class BWHeadless {
   }
 
   public static final String BINARY_FILENAME = "bwheadless.exe";
+  public static final Path BINARY_DIRECTORY = DropLauncher.BINARY_DIRECTORY.resolve("bwh");
+  public static final String BINARY_FILENAME_AUTO_DROP = "bwheadless_kick.exe";
+  public static final String BINARY_FILENAME_NO_DROP = "bwheadless_nokick.exe";
 
   private Settings settings;
   private CustomProcess bwheadlessProcess;
@@ -200,7 +208,7 @@ public class BWHeadless {
     this.consoleOutput = null;
     this.taskTracker = new TaskTracker();
 
-    this.settings.set(PropertyKey.BWHEADLESS_EXE.toString(), DropLauncher.BINARY_DIRECTORY.resolve(BWHeadless.BINARY_FILENAME).toString());
+//    this.settings.set(PropertyKey.BWHEADLESS_EXE.toString(), BWHeadless.BINARY_DIRECTORY.resolve(BWHeadless.BINARY_FILENAME).toString());
   }
 
   /**
@@ -209,10 +217,17 @@ public class BWHeadless {
    * @throws MissingBWHeadlessExeException if path is not set
    */
   public Path getFile() throws MissingBWHeadlessExeException {
-    if (!this.settings.hasValue(PropertyKey.BWHEADLESS_EXE.toString())) {
+    if (Model.getSettings().hasValue(BWHeadless.PropertyKey.KICK_BOT_ON_LAG.toString())) {
+      if (Model.getSettings().isEnabled(BWHeadless.PropertyKey.KICK_BOT_ON_LAG.toString())) {
+        Model.getSettings().setValue(BWHeadless.PropertyKey.BWHEADLESS_EXE.toString(), BWHeadless.BINARY_DIRECTORY.resolve(BWHeadless.BINARY_FILENAME_AUTO_DROP).toAbsolutePath().toString());
+      } else {
+        Model.getSettings().setValue(BWHeadless.PropertyKey.BWHEADLESS_EXE.toString(), BWHeadless.BINARY_DIRECTORY.resolve(BWHeadless.BINARY_FILENAME_NO_DROP).toAbsolutePath().toString());
+      }
+    }
+    if (!Model.getSettings().hasValue(PropertyKey.BWHEADLESS_EXE.toString())) {
       throw new MissingBWHeadlessExeException();
     }
-    String val = this.settings.getValue(PropertyKey.BWHEADLESS_EXE.toString());
+    String val = Model.getSettings().getValue(PropertyKey.BWHEADLESS_EXE.toString());
     return Paths.get(val);
   }
 

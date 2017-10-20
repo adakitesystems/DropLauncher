@@ -20,6 +20,7 @@ package droplauncher.mvc.view;
 import adakite.windows.Windows;
 import droplauncher.DropLauncher;
 import droplauncher.bwapi.BWAPI;
+import droplauncher.bwheadless.BWHeadless;
 import droplauncher.mvc.model.Model;
 import droplauncher.starcraft.Starcraft;
 import java.io.File;
@@ -52,6 +53,7 @@ public class SettingsWindow {
   private Button btnChangeStarcraftExe;
   private CheckBox chkExtractBotDependencies;
   private CheckBox chkVerifyStarcraftVersion;
+  private CheckBox chkKickBotOnLag;
 
   public SettingsWindow() {
     /* Do nothing. */
@@ -126,6 +128,14 @@ public class SettingsWindow {
     });
     this.chkVerifyStarcraftVersion.setTooltip(createTooltip("Verify that the selected " + Starcraft.BINARY_FILENAME + " is supported. (i.e.: " + Starcraft.FULL_EXPANSION_NAME + " 1.16.1)", this.chkVerifyStarcraftVersion));
 
+    this.chkKickBotOnLag = new CheckBox();
+    this.chkKickBotOnLag.setText("Kick the bot if it lags too much (Experimental)");
+    this.chkKickBotOnLag.setSelected(Model.getSettings().isEnabled(BWHeadless.PropertyKey.KICK_BOT_ON_LAG.toString()));
+    this.chkKickBotOnLag.setOnAction(e -> {
+      Model.getSettings().setEnabled(BWHeadless.PropertyKey.KICK_BOT_ON_LAG.toString(), this.chkKickBotOnLag.isSelected());
+    });
+    this.chkKickBotOnLag.setTooltip(createTooltip("Kick the bot if it starts lagging too much during the game or when frame timeout becomes too high.", this.chkKickBotOnLag));
+
     CustomGridPane fileSelectPane = new CustomGridPane();
     fileSelectPane.add(this.lblChangeStarcraftExe);
     fileSelectPane.add(this.lblChangeStarcraftExeText);
@@ -138,6 +148,7 @@ public class SettingsWindow {
     mainGridPane.add(this.chkExtractBotDependencies).nextRow();
     mainGridPane.add(this.chkCleanStarcraftDirectory).nextRow();
     mainGridPane.add(this.chkBwapiWriteRead).nextRow();
+    mainGridPane.add(this.chkKickBotOnLag).nextRow();
     mainGridPane.add(this.chkVerifyStarcraftVersion).nextRow();
     mainGridPane.add(this.chkWarnBwapiDll).nextRow();
 
