@@ -2,7 +2,8 @@
 
 ## Version 0.5.24a has been released!
 
-[Download](https://github.com/adakitesystems/DropLauncher/releases)
+* [Download](https://github.com/adakitesystems/DropLauncher/releases)
+* [Instructions](INSTRUCTIONS.md)
 
 ## Description
 DropLauncher is designed to be a simple tool to aid players in setting up and playing **1v1 StarCraft: Brood War** games against any [BWAPI bot](https://github.com/bwapi/bwapi) using **Local Area Network (UDP)** as the connection type. *Optional/Recommended: Make a copy of your StarCraft directory and let DropLauncher use that copy for the BWAPI bot.*
