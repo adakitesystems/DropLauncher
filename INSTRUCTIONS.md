@@ -28,7 +28,7 @@ You should be able to use any bot from any site that was created with BWAPI vers
 1. Start **StarCraft**.
   * You are **NOT** required to use Chaoslauncher to play against the bot. If you would like to use Chaoslauncher, make sure to **DISABLE** the **BWAPI Plugin**. If the BWAPI Plugin is enabled, there is a high chance that your BWAPI instance will clash with the bot's BWAPI instance. If you still would like to enable the BWAPI Plugin, it is recommended to put the bot on another computer/laptop or in a virtual machine.
   * You should be able to use mca64launcher, Chaoslauncher (if BWAPI is disabled), or any other launcher when playing against the bot with DropLauncher.
-2. Host a **Melee** using **Local Area Network (UDP)**.
+2. Host a **Melee** game using **Local Area Network (UDP)**.
 3. Run **DropLauncher.exe** if you haven't already.
 4. Drag-n-drop the bot files into DropLauncher or select them using the **File > Select Bot Files...** menu option.
 5. Select the bot's race in DropLauncher.
